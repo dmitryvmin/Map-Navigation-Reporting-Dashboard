@@ -1,0 +1,14 @@
+image: onelouder/alpine-docker:3.7
+buildTool: docker
+branches:
+  - ALL
+stages:
+  - name: build
+    script:
+      - docker build -t report-tools .
+  - name: tag & push
+    script:
+      - docker tag report-tools:latest docker.metaverse.l11.com/global-good/report-tools:$GIT_HASH_SHORT
+      - docker tag report-tools:latest docker.metaverse.l11.com/global-good/report-tools:latest
+      - docker push docker.metaverse.l11.com/global-good/report-tools:$GIT_HASH_SHORT
+      - docker push docker.metaverse.l11.com/global-good/report-tools:latest
