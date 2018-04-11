@@ -96,6 +96,13 @@ export default class TopHead extends Component {
     this.props.contentChange(content);
   }
 
+  resetdata(e) {
+    e.preventDefault();
+    console.log("resetting data and clearing UI");
+    //this.props.contentChange(content);
+    //  /demo/clear/samples
+  }
+
   render () {
     return (
         <header style={styles.topHeader}>
@@ -127,7 +134,7 @@ export default class TopHead extends Component {
               <MenuItem primaryText="Change MOH" onClick={(e) => this.testclick(e, "changemoh")} />
               <MenuItem primaryText="Change User" onClick={(e) => this.testclick(e, "changeuser")} />
               <MenuItem primaryText="Settings" onClick={(e) => this.testclick(e, "settings")} />
-              <MenuItem primaryText="Help" onClick={(e) => this.testclick(e, "help")} />
+              <MenuItem primaryText="Reset Data" onClick={(e) => this.resetdata(e)} />
               <MenuItem primaryText="Sign out" onClick={(e) => this.testclick(e, "signout")} />
             </IconMenu>
           </div>

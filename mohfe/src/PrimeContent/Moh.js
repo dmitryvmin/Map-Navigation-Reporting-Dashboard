@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import FlatButton from 'material-ui/FlatButton';
+import RaisedButton from 'material-ui/RaisedButton';
 import {
   Table,
   TableBody,
@@ -125,143 +126,143 @@ const styles = {
   },
 };
 
-let deviceReport = { sensors: [
-  {
-    "manufacturer": "Acuma",
-    "id" : "1",
-    "status": "green",
-    "model": "MetaFridge",
-    "facility": {
-      "name": "Singida Clinic North",
-      "country": "Tanzania",
-      "district": "Signda State"
-    },
-    "temperature": {
-      "value": 1,
-      "timestamp": "2017-08-21T04:32:16.342Z"
-    }
-  },
-  {
-    "manufacturer": "Next Leaf",
-    "id" : "1",
-    "status": "yellow",
-    "model": "Next Leaf",
-    "facility": {
-      "name": "Singida Clinic North",
-      "country": "Tanzania",
-      "district": "Signda State"
-    },
-    "temperature": {
-      "value": 2,
-      "timestamp": "2017-08-21T04:32:16.342Z"
-    }
-  },
-  {
-    "manufacturer": "Acuma",
-    "id" : "1",
-    "status": "red",
-    "model": "MetaFridge",
-    "facility": {
-      "name": "Singida Clinic North",
-      "country": "Tanzania",
-      "district": "Signda State"
-    },
-    "temperature": {
-      "value": 4,
-      "timestamp": "2017-08-21T04:32:16.342Z"
-    }
-  },
-  {
-    "manufacturer": "Next Leaf",
-    "id" : "1",
-    "status": "green",
-    "model": "Next Leaf",
-    "facility": {
-      "name": "Singida Clinic North",
-      "country": "Tanzania",
-      "district": "Signda State"
-    },
-    "temperature": {
-      "value": 3,
-      "timestamp": "2017-08-21T04:32:16.342Z"
-    }
-  },
-  {
-    "manufacturer": "Acuma",
-    "id" : "1",
-    "status": "yellow",
-    "model": "MetaFridge",
-    "facility": {
-      "name": "Singida Clinic North",
-      "country": "Tanzania",
-      "district": "Signda State"
-    },
-    "temperature": {
-      "value": 5,
-      "timestamp": "2017-08-21T04:32:16.342Z"
-    }
-  },
-  {
-    "manufacturer": "Next Leaf",
-    "id" : "1",
-    "status": "green",
-    "model": "Next Leaf",
-    "facility": {
-      "name": "Singida Clinic North",
-      "country": "Tanzania",
-      "district": "Signda State"
-    },
-    "temperature": {
-      "value": 7,
-      "timestamp": "2017-08-21T04:32:16.342Z"
-    }
-  },
-  {
-    "manufacturer": "Acuma",
-    "id" : "1",
-    "status": "green",
-    "model": "MetaFridge",
-    "facility": {
-      "name": "Singida Clinic North",
-      "country": "Tanzania",
-      "district": "Signda State"
-    },
-    "temperature": {
-      "value": 8,
-      "timestamp": "2017-08-21T04:32:16.342Z"
-    }
-  },
-  {
-    "manufacturer": "Next Leaf",
-    "id" : "1",
-    "status": "green",
-    "model": "Next Leaf",
-    "facility": {
-      "name": "Singida Clinic North",
-      "country": "Tanzania",
-      "district": "Signda State"
-    },
-    "temperature": {
-      "value": 9,
-      "timestamp": "2017-08-21T04:32:16.342Z"
-    }
-  },
-  {
-    "manufacturer": "Acuma",
-    "id" : "1",
-    "status": "green",
-    "model": "MetaFridge",
-    "facility": {
-      "name": "Singida Clinic North",
-      "country": "Tanzania",
-      "district": "Signda State"
-    },
-    "temperature": {
-      "value": 2,
-      "timestamp": "2017-08-21T04:32:16.342Z"
-    }
-  },
-]}
+// let deviceReport = { sensors: [
+//   {
+//     "manufacturer": "Acuma",
+//     "id" : "1",
+//     "status": "green",
+//     "model": "MetaFridge",
+//     "facility": {
+//       "name": "Singida Clinic North",
+//       "country": "Tanzania",
+//       "district": "Signda State"
+//     },
+//     "temperature": {
+//       "value": 1,
+//       "timestamp": "2017-08-21T04:32:16.342Z"
+//     }
+//   },
+//   {
+//     "manufacturer": "Next Leaf",
+//     "id" : "1",
+//     "status": "yellow",
+//     "model": "Next Leaf",
+//     "facility": {
+//       "name": "Singida Clinic North",
+//       "country": "Tanzania",
+//       "district": "Signda State"
+//     },
+//     "temperature": {
+//       "value": 2,
+//       "timestamp": "2017-08-21T04:32:16.342Z"
+//     }
+//   },
+//   {
+//     "manufacturer": "Acuma",
+//     "id" : "1",
+//     "status": "red",
+//     "model": "MetaFridge",
+//     "facility": {
+//       "name": "Singida Clinic North",
+//       "country": "Tanzania",
+//       "district": "Signda State"
+//     },
+//     "temperature": {
+//       "value": 4,
+//       "timestamp": "2017-08-21T04:32:16.342Z"
+//     }
+//   },
+//   {
+//     "manufacturer": "Next Leaf",
+//     "id" : "1",
+//     "status": "green",
+//     "model": "Next Leaf",
+//     "facility": {
+//       "name": "Singida Clinic North",
+//       "country": "Tanzania",
+//       "district": "Signda State"
+//     },
+//     "temperature": {
+//       "value": 3,
+//       "timestamp": "2017-08-21T04:32:16.342Z"
+//     }
+//   },
+//   {
+//     "manufacturer": "Acuma",
+//     "id" : "1",
+//     "status": "yellow",
+//     "model": "MetaFridge",
+//     "facility": {
+//       "name": "Singida Clinic North",
+//       "country": "Tanzania",
+//       "district": "Signda State"
+//     },
+//     "temperature": {
+//       "value": 5,
+//       "timestamp": "2017-08-21T04:32:16.342Z"
+//     }
+//   },
+//   {
+//     "manufacturer": "Next Leaf",
+//     "id" : "1",
+//     "status": "green",
+//     "model": "Next Leaf",
+//     "facility": {
+//       "name": "Singida Clinic North",
+//       "country": "Tanzania",
+//       "district": "Signda State"
+//     },
+//     "temperature": {
+//       "value": 7,
+//       "timestamp": "2017-08-21T04:32:16.342Z"
+//     }
+//   },
+//   {
+//     "manufacturer": "Acuma",
+//     "id" : "1",
+//     "status": "green",
+//     "model": "MetaFridge",
+//     "facility": {
+//       "name": "Singida Clinic North",
+//       "country": "Tanzania",
+//       "district": "Signda State"
+//     },
+//     "temperature": {
+//       "value": 8,
+//       "timestamp": "2017-08-21T04:32:16.342Z"
+//     }
+//   },
+//   {
+//     "manufacturer": "Next Leaf",
+//     "id" : "1",
+//     "status": "green",
+//     "model": "Next Leaf",
+//     "facility": {
+//       "name": "Singida Clinic North",
+//       "country": "Tanzania",
+//       "district": "Signda State"
+//     },
+//     "temperature": {
+//       "value": 9,
+//       "timestamp": "2017-08-21T04:32:16.342Z"
+//     }
+//   },
+//   {
+//     "manufacturer": "Acuma",
+//     "id" : "1",
+//     "status": "green",
+//     "model": "MetaFridge",
+//     "facility": {
+//       "name": "Singida Clinic North",
+//       "country": "Tanzania",
+//       "district": "Signda State"
+//     },
+//     "temperature": {
+//       "value": 2,
+//       "timestamp": "2017-08-21T04:32:16.342Z"
+//     }
+//   },
+// ]}
 
 const statusDisplay = (statusString) => {
   switch (statusString) {
@@ -300,7 +301,7 @@ export default class Moh extends Component {
     super(props, context);
     // Default text
     this.state = {
-      devices: deviceReport,
+      devices: null,
     }
     this.loadDevices = this.loadDevices.bind(this);
   }
@@ -311,10 +312,26 @@ export default class Moh extends Component {
     xhttp.onreadystatechange = function() {
       if (this.readyState === 4 && this.status === 200) {
         let json = JSON.parse(this.responseText);
-       that.setState({devices: json});
+        that.setState({devices: json});
       }
     };
     xhttp.open("GET", "http://20.36.19.106:9000/sensor", true);
+    xhttp.setRequestHeader('Authorization','Basic Z2xvYmFsLmdvb2Q6fkYoRzNtKUtQeT8/ZHd4fg==');
+    xhttp.send();
+  }
+
+  resetdata(e) {
+    e.preventDefault();
+    console.log("resetting data and clearing UI");
+    var xhttp = new XMLHttpRequest();
+    var that = this;
+    xhttp.onreadystatechange = function() {
+      if (this.readyState === 4 && this.status === 200) {
+        console.log("Looks like it cleared the data on back-end");
+        that.setState({devices: null});
+      }
+    };
+    xhttp.open("POST", "http://20.36.19.106:9000/demo/clear/samples", true);
     xhttp.setRequestHeader('Authorization','Basic Z2xvYmFsLmdvb2Q6fkYoRzNtKUtQeT8/ZHd4fg==');
     xhttp.send();
   }
@@ -347,7 +364,7 @@ export default class Moh extends Component {
                       </TableRow>
                     </TableHeader>
                     <TableBody displayRowCheckbox={false}>
-                      {this.state.devices.sensors.map((row, i) =>
+                      {(this.state.devices !== null) ? this.state.devices.sensors.map((row, i) =>
                         <TableRow key={i}>
                           <TableRowColumn>{statusDisplay(row.status)}</TableRowColumn>
                           <TableRowColumn>{row.manufacturer + ' ' + row.model}</TableRowColumn>
@@ -357,7 +374,7 @@ export default class Moh extends Component {
                           <TableRowColumn>{row.temperature.timestamp}</TableRowColumn>
                           <TableRowColumn>{tempuratureShape(Math.round(row.temperature.value * 10) / 10)}</TableRowColumn>
                         </TableRow>
-                      )}
+                      ) : <TableRow key="00nul00"><TableRowColumn>none</TableRowColumn></TableRow>}
                     </TableBody>
                   </Table>
               </div>
@@ -525,8 +542,7 @@ export default class Moh extends Component {
                       showExpandableButton={true}
                     />
                     <CardActions>
-                      <FlatButton label="Place Order" />
-                      <FlatButton label="Delivery" />
+                      <RaisedButton label="DESTROY ALL DATA" secondary={true} onClick={(e) => this.resetdata(e)} />
                     </CardActions>
                     <CardText expandable={true}>
                       Lorem ipsum dolor sit amet, consectetur adipiscing elit.

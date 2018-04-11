@@ -104,7 +104,7 @@ export default class TopHead extends Component {
               size={60}
               style={styles.avatarFlag}
             />
-            Cold Chain Device Interchange
+            Aucma Reporting Tool
           </div>
            {/* <div style={styles.topNavArea}>
             <FlatButton label="Dashboard" style={styles.topNavButton} onClick={(e) => this.testclick(e, "dashboard")} />
