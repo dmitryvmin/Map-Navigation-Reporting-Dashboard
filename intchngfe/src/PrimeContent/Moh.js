@@ -169,8 +169,7 @@ export default class Moh extends Component {
     return (
       <div>
         <div style={styles.idBar}>
-          <h1 style={styles.idBarH}>Kenya Moh {this.props.content}</h1>
-          <p style={styles.idBarP}>Manage the data flow for Kenya Cold Chain Devices</p>
+          <h1 style={styles.idBarH}>Aucma Reporting {this.props.content}</h1>
         </div>
         <div style={styles.wrapwrap}>
           <div style={styles.wrapTabs} >
