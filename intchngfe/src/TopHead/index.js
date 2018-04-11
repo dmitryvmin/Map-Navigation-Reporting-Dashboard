@@ -6,6 +6,7 @@ import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-dow
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
+import FlatButton from 'material-ui/FlatButton';
 import 'typeface-roboto'; // Font
 
 const styles = {
@@ -106,12 +107,12 @@ export default class TopHead extends Component {
             />
             Aucma Reporting Tool
           </div>
-           {/* <div style={styles.topNavArea}>
+           <div style={styles.topNavArea}>
             <FlatButton label="Dashboard" style={styles.topNavButton} onClick={(e) => this.testclick(e, "dashboard")} />
             <FlatButton label="People" style={styles.topNavButton} onClick={(e) => this.testclick(e, "people")} />
             <FlatButton label="Int ORGS" style={styles.topNavButton} onClick={(e) => this.testclick(e, "intorgs")} />
             <FlatButton label="Admin Tools" style={styles.topNavButton} onClick={(e) => this.testclick(e, "admin")} />
-          </div> */}
+          </div>
           <div style={styles.userArea} >
             <Avatar
               icon={<SocialPersonOutline />}

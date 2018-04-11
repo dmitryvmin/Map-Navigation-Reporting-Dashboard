@@ -42,7 +42,7 @@ export default class FootPane extends Component {
           <div>
             &copy; 2018 globalgood All Rights Reserved.
           </div>
-          <div>
+          {/* <div>
               <h3 style={styles.footerHeader}>Footer</h3>
               <ul style={styles.footerUL}>
                 <li>Footer Item</li>
@@ -73,7 +73,7 @@ export default class FootPane extends Component {
                 <li>Footer Item</li>
                 <li>Footer Item</li>
               </ul>
-          </div>
+          </div> */}
         </footer>
       </div>
       )
