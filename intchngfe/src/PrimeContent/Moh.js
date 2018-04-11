@@ -78,155 +78,15 @@ const styles = {
   },
 };
 
-let deviceReport = { sensors: [
-  {
-    "manufacturer": "Acuma",
-    "id" : "1",
-    "status": "green",
-    "model": "MetaFridge",
-    "facility": {
-      "name": "Singida Clinic North",
-      "country": "Tanzania",
-      "district": "Signda State"
+let accountDefault = { accounts:
+  [
+    {
+      "id": "5896a5c1-a931-4595-8205-8e7635ca4469",
+      "name": "Ministry of Health Kenya",
+      "category": "moh",
+      "description": "Ministration of Health in Kenya"
     },
-    "temperature": {
-      "value": 1,
-      "timestamp": "2017-08-21T04:32:16.342Z"
-    }
-  },
-  {
-    "manufacturer": "Next Leaf",
-    "id" : "1",
-    "status": "yellow",
-    "model": "Next Leaf",
-    "facility": {
-      "name": "Singida Clinic North",
-      "country": "Tanzania",
-      "district": "Signda State"
-    },
-    "temperature": {
-      "value": 2,
-      "timestamp": "2017-08-21T04:32:16.342Z"
-    }
-  },
-  {
-    "manufacturer": "Acuma",
-    "id" : "1",
-    "status": "red",
-    "model": "MetaFridge",
-    "facility": {
-      "name": "Singida Clinic North",
-      "country": "Tanzania",
-      "district": "Signda State"
-    },
-    "temperature": {
-      "value": 4,
-      "timestamp": "2017-08-21T04:32:16.342Z"
-    }
-  },
-  {
-    "manufacturer": "Next Leaf",
-    "id" : "1",
-    "status": "green",
-    "model": "Next Leaf",
-    "facility": {
-      "name": "Singida Clinic North",
-      "country": "Tanzania",
-      "district": "Signda State"
-    },
-    "temperature": {
-      "value": 3,
-      "timestamp": "2017-08-21T04:32:16.342Z"
-    }
-  },
-  {
-    "manufacturer": "Acuma",
-    "id" : "1",
-    "status": "yellow",
-    "model": "MetaFridge",
-    "facility": {
-      "name": "Singida Clinic North",
-      "country": "Tanzania",
-      "district": "Signda State"
-    },
-    "temperature": {
-      "value": 5,
-      "timestamp": "2017-08-21T04:32:16.342Z"
-    }
-  },
-  {
-    "manufacturer": "Next Leaf",
-    "id" : "1",
-    "status": "green",
-    "model": "Next Leaf",
-    "facility": {
-      "name": "Singida Clinic North",
-      "country": "Tanzania",
-      "district": "Signda State"
-    },
-    "temperature": {
-      "value": 7,
-      "timestamp": "2017-08-21T04:32:16.342Z"
-    }
-  },
-  {
-    "manufacturer": "Acuma",
-    "id" : "1",
-    "status": "green",
-    "model": "MetaFridge",
-    "facility": {
-      "name": "Singida Clinic North",
-      "country": "Tanzania",
-      "district": "Signda State"
-    },
-    "temperature": {
-      "value": 8,
-      "timestamp": "2017-08-21T04:32:16.342Z"
-    }
-  },
-  {
-    "manufacturer": "Next Leaf",
-    "id" : "1",
-    "status": "green",
-    "model": "Next Leaf",
-    "facility": {
-      "name": "Singida Clinic North",
-      "country": "Tanzania",
-      "district": "Signda State"
-    },
-    "temperature": {
-      "value": 9,
-      "timestamp": "2017-08-21T04:32:16.342Z"
-    }
-  },
-  {
-    "manufacturer": "Acuma",
-    "id" : "1",
-    "status": "green",
-    "model": "MetaFridge",
-    "facility": {
-      "name": "Singida Clinic North",
-      "country": "Tanzania",
-      "district": "Signda State"
-    },
-    "temperature": {
-      "value": 2,
-      "timestamp": "2017-08-21T04:32:16.342Z"
-    }
-  },
-]}
-
-const statusDisplay = (statusString) => {
-  switch (statusString) {
-    case "red":
-      return <div style={styles.reddot} />
-    case "yellow":
-      return <div style={styles.yellowdot} />
-    case "green":
-      return <div style={styles.greendot} />
-    default:
-      return <div style={styles.cleardot} />
-  }
+  ]
 }
 
 export default class Moh extends Component {
@@ -234,7 +94,7 @@ export default class Moh extends Component {
     super(props, context);
     // Default text
     this.state = {
-      devices: deviceReport,
+      accounts: accountDefault,
     }
     this.loadDevices = this.loadDevices.bind(this);
   }
@@ -245,7 +105,7 @@ export default class Moh extends Component {
     xhttp.onreadystatechange = function() {
       if (this.readyState === 4 && this.status === 200) {
         let json = JSON.parse(this.responseText);
-       that.setState({devices: json});
+       that.setState({accounts: json});
       }
     };
     xhttp.open("GET", "http://20.36.19.106:8099/account", true);
@@ -277,23 +137,23 @@ export default class Moh extends Component {
                   <Table>
                     <TableHeader displaySelectAll={false} enableSelectAll={false} adjustForCheckbox={false}>
                       <TableRow>
-                        <TableHeaderColumn>Brand</TableHeaderColumn>
-                        <TableHeaderColumn>Model</TableHeaderColumn>
+                        <TableHeaderColumn>Category</TableHeaderColumn>
+                        <TableHeaderColumn>Description</TableHeaderColumn>
                         <TableHeaderColumn>Device ID</TableHeaderColumn>
                         <TableHeaderColumn>Shared with</TableHeaderColumn>
                         <TableHeaderColumn>Date Added</TableHeaderColumn>
                       </TableRow>
                     </TableHeader>
                     <TableBody displayRowCheckbox={false}>
-                      {/* {this.state.devices.sensors.map((row, i) =>
+                      {this.state.accounts.accounts.map((row, i) =>
                         <TableRow key={i}>
-                          <TableRowColumn>{row.model}</TableRowColumn>
-                          <TableRowColumn>{row.manufacturer}</TableRowColumn>
-                          <TableRowColumn>{row.facility.name}</TableRowColumn>
-                          <TableRowColumn>{row.facility.district}</TableRowColumn>
-                          <TableRowColumn>{row.temperature.timestamp}</TableRowColumn>
+                          <TableRowColumn>{row.category}</TableRowColumn>
+                          <TableRowColumn>{row.description}</TableRowColumn>
+                          <TableRowColumn>{row.id}</TableRowColumn>
+                          <TableRowColumn>{row.name}</TableRowColumn>
+                          <TableRowColumn>{row.temperature}</TableRowColumn>
                         </TableRow>
-                      )} */}
+                      )}
                     </TableBody>
                   </Table>
               </div>
