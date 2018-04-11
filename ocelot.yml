@@ -1,4 +1,4 @@
-image: docker.metaverse.l11.com/level11/alpine-docker:3.7
+image: onelouder/alpine-docker:3.7
 buildTool: docker
 branches:
   - ALL
