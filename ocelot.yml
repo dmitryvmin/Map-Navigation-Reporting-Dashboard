@@ -12,3 +12,10 @@ stages:
       - docker tag report-tools:latest docker.metaverse.l11.com/global-good/report-tools:latest
       - docker push docker.metaverse.l11.com/global-good/report-tools:$GIT_HASH_SHORT
       - docker push docker.metaverse.l11.com/global-good/report-tools:latest
+  - name: push to azure
+    script:
+      - docker tag report-tools:latest l11gg.azurecr.io/reporting/report-tools:$GIT_HASH_SHORT
+      - docker tag report-tools:latest l11gg.azurecr.io/reporting/report-tools:latest
+      - echo -n "IuGEMBBznJiv+Pu6ExKHkf/1pI9WCuVC" | docker login l11gg.azurecr.io --username l11gg --password-stdin
+      - docker push l11gg.azurecr.io/reporting/report-tools:$GIT_HASH_SHORT
+      - docker push l11gg.azurecr.io/reporting/report-tools:latest
