@@ -131,6 +131,33 @@ export default class Moh extends Component {
     this.loadDevices = this.loadDevices.bind(this);
   }
 
+  tableDisplay = () => {
+    if (this.state.devices === null ||
+        (Object.keys(this.state.devices).length === 0
+         && this.state.devices.constructor === Object)) {
+      return <TableRow key="00nul00"><TableRowColumn>none</TableRowColumn></TableRow>
+    } else {
+      debugger;
+      if (this.state.devices.sensors === null ||
+          (Object.keys(this.state.devices.sensors).length === 0
+          && this.state.devices.sensors.constructor === Object)) {
+        return <TableRow key="00nul00"><TableRowColumn>none</TableRowColumn></TableRow>
+      } else {
+          return this.state.devices.sensors.map((row, i) =>
+           <TableRow key={i}>
+             <TableRowColumn>{statusDisplay(row.status)}</TableRowColumn>
+             <TableRowColumn>{row.manufacturer + ' ' + row.model}</TableRowColumn>
+             <TableRowColumn>{row.facility.name}</TableRowColumn>
+             <TableRowColumn>{row.facility.district}</TableRowColumn>
+             <TableRowColumn>{row.holdover}</TableRowColumn>
+             <TableRowColumn>{row.temperature.timestamp}</TableRowColumn>
+             <TableRowColumn>{tempuratureShape(Math.round(row.temperature.value * 10) / 10)}</TableRowColumn>
+           </TableRow>
+         )
+       }
+    }
+  }
+
   loadDevices() {
     var xhttp = new XMLHttpRequest();
     var that = this;
@@ -189,17 +216,7 @@ export default class Moh extends Component {
                       </TableRow>
                     </TableHeader>
                     <TableBody displayRowCheckbox={false}>
-                      {(this.state.devices !== null) ? this.state.devices.sensors.map((row, i) =>
-                        <TableRow key={i}>
-                          <TableRowColumn>{statusDisplay(row.status)}</TableRowColumn>
-                          <TableRowColumn>{row.manufacturer + ' ' + row.model}</TableRowColumn>
-                          <TableRowColumn>{row.facility.name}</TableRowColumn>
-                          <TableRowColumn>{row.facility.district}</TableRowColumn>
-                          <TableRowColumn>{row.holdover}</TableRowColumn>
-                          <TableRowColumn>{row.temperature.timestamp}</TableRowColumn>
-                          <TableRowColumn>{tempuratureShape(Math.round(row.temperature.value * 10) / 10)}</TableRowColumn>
-                        </TableRow>
-                      ) : <TableRow key="00nul00"><TableRowColumn>none</TableRowColumn></TableRow>}
+                      {this.tableDisplay()}
                     </TableBody>
                   </Table>
               </div>
