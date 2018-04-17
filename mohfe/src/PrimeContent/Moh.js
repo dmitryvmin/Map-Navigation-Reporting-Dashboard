@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {Tabs, Tab} from 'material-ui/Tabs';
-import FlatButton from 'material-ui/FlatButton';
+//import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import {
   Table,
@@ -399,101 +399,11 @@ export default class Moh extends Component {
               </div>
 
               </Tab>
-              <Tab label="Reports" >
+              {/*<Tab label="Reports" >
                 <div>
-                  <Card style={styles.halfCard} >
-                    <CardHeader
-                      title="Report on Temp"
-                      subtitle="Hot News!"
-                      actAsExpander={true}
-                      showExpandableButton={true}
-                    />
-                    <CardActions>
-                      <FlatButton label="Extinguish" />
-                      <FlatButton label="Call Police" />
-                    </CardActions>
-                    <CardText expandable={true}>
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                      Donec mattis pretium massa. Aliquam erat volutpat. Nulla facilisi.
-                      Donec vulputate interdum sollicitudin. Nunc lacinia auctor quam sed pellentesque.
-                      Aliquam dui mauris, mattis quis lacus id, pellentesque lobortis odio.
-                    </CardText>
-                  </Card>
-                  <Card style={styles.halfCard} >
-                    <CardHeader
-                      title="3 Phase Profit Plan"
-                      subtitle="Step 1...Steal Fridges..."
-                      actAsExpander={true}
-                      showExpandableButton={true}
-                    />
-                    <CardActions>
-                      <FlatButton label="Hire Gnomes" />
-                      <FlatButton label="Fire Gnomes" />
-                    </CardActions>
-                    <CardText expandable={true}>
-                      Stage 2 ??????? Stage3 Profit!!! Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                      Donec mattis pretium massa. Aliquam erat volutpat. Nulla facilisi.
-                      Donec vulputate interdum sollicitudin. Nunc lacinia auctor quam sed pellentesque.
-                      Aliquam dui mauris, mattis quis lacus id, pellentesque lobortis odio.
-                    </CardText>
-                  </Card>
 
-                  <Card style={styles.thirdCard} >
-                    <CardHeader
-                      title="Report on Temp"
-                      subtitle="Hot News!"
-                      actAsExpander={true}
-                      showExpandableButton={true}
-                    />
-                    <CardActions>
-                      <FlatButton label="Extinguish" />
-                      <FlatButton label="Call Police" />
-                    </CardActions>
-                    <CardText expandable={true}>
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                      Donec mattis pretium massa. Aliquam erat volutpat. Nulla facilisi.
-                      Donec vulputate interdum sollicitudin. Nunc lacinia auctor quam sed pellentesque.
-                      Aliquam dui mauris, mattis quis lacus id, pellentesque lobortis odio.
-                    </CardText>
-                  </Card>
-                  <Card style={styles.thirdCard} >
-                    <CardHeader
-                      title="3 Phase Profit Plan"
-                      subtitle="Step 1...Steal Fridges..."
-                      actAsExpander={true}
-                      showExpandableButton={true}
-                    />
-                    <CardActions>
-                      <FlatButton label="Hire Gnomes" />
-                      <FlatButton label="Fire Gnomes" />
-                    </CardActions>
-                    <CardText expandable={true}>
-                      Stage 2 ??????? Stage3 Profit!!! Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                      Donec mattis pretium massa. Aliquam erat volutpat. Nulla facilisi.
-                      Donec vulputate interdum sollicitudin. Nunc lacinia auctor quam sed pellentesque.
-                      Aliquam dui mauris, mattis quis lacus id, pellentesque lobortis odio.
-                    </CardText>
-                  </Card>
-                  <Card style={styles.thirdCard} >
-                    <CardHeader
-                      title="Report on Temp"
-                      subtitle="Hot News!"
-                      actAsExpander={true}
-                      showExpandableButton={true}
-                    />
-                    <CardActions>
-                      <FlatButton label="Extinguish" />
-                      <FlatButton label="Call Police" />
-                    </CardActions>
-                    <CardText expandable={true}>
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                      Donec mattis pretium massa. Aliquam erat volutpat. Nulla facilisi.
-                      Donec vulputate interdum sollicitudin. Nunc lacinia auctor quam sed pellentesque.
-                      Aliquam dui mauris, mattis quis lacus id, pellentesque lobortis odio.
-                    </CardText>
-                  </Card>
                 </div>
-              </Tab>
+              </Tab>*/}
               <Tab
                 label="Locations"
               >
@@ -501,14 +411,12 @@ export default class Moh extends Component {
                   <h2 style={styles.headline}>Locations</h2>
                   <Card style={styles.fourthCard} >
                     <CardHeader
-                      title="Vaccineville"
-                      subtitle="Buy One Get One Free"
+                      title="Sample"
+                      subtitle="For future use"
                       actAsExpander={true}
                       showExpandableButton={true}
                     />
                     <CardActions>
-                      <FlatButton label="Place Order" />
-                      <FlatButton label="Delivery" />
                     </CardActions>
                     <CardText expandable={true}>
                       Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -519,14 +427,12 @@ export default class Moh extends Component {
                   </Card>
                   <Card style={styles.fourthCard} >
                     <CardHeader
-                      title="Vaccineville"
-                      subtitle="Buy One Get One Free"
+                      title="Sample"
+                      subtitle="For future use"
                       actAsExpander={true}
                       showExpandableButton={true}
                     />
                     <CardActions>
-                      <FlatButton label="Place Order" />
-                      <FlatButton label="Delivery" />
                     </CardActions>
                     <CardText expandable={true}>
                       Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -537,14 +443,12 @@ export default class Moh extends Component {
                   </Card>
                   <Card style={styles.fourthCard} >
                     <CardHeader
-                      title="Vaccineville"
-                      subtitle="Buy One Get One Free"
+                      title="Sample"
+                      subtitle="For future use"
                       actAsExpander={true}
                       showExpandableButton={true}
                     />
                     <CardActions>
-                      <FlatButton label="Place Order" />
-                      <FlatButton label="Delivery" />
                     </CardActions>
                     <CardText expandable={true}>
                       Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -555,19 +459,20 @@ export default class Moh extends Component {
                   </Card>
                   <Card style={styles.fourthCard} >
                     <CardHeader
-                      title="Vaccineville"
-                      subtitle="Buy One Get One Free"
+                      title="Sample"
+                      subtitle="For future use"
                       actAsExpander={true}
                       showExpandableButton={true}
                     />
                     <CardActions>
-                      <RaisedButton label="DESTROY ALL DATA" secondary={true} onClick={(e) => this.resetdata(e)} />
+
                     </CardActions>
                     <CardText expandable={true}>
                       Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                       Donec mattis pretium massa. Aliquam erat volutpat. Nulla facilisi.
                       Donec vulputate interdum sollicitudin. Nunc lacinia auctor quam sed pellentesque.
                       Aliquam dui mauris, mattis quis lacus id, pellentesque lobortis odio.
+                      <RaisedButton label="RESET DATA" secondary={true} onClick={(e) => this.resetdata(e)} />
                     </CardText>
                   </Card>
                 </div>

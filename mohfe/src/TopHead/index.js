@@ -116,9 +116,9 @@ export default class TopHead extends Component {
           </div>
            <div style={styles.topNavArea}>
             <FlatButton label="Dashboard" style={styles.topNavButton} onClick={(e) => this.testclick(e, "dashboard")} />
-            <FlatButton label="People" style={styles.topNavButton} onClick={(e) => this.testclick(e, "people")} />
+            {/*<FlatButton label="People" style={styles.topNavButton} onClick={(e) => this.testclick(e, "people")} />
             <FlatButton label="Int ORGS" style={styles.topNavButton} onClick={(e) => this.testclick(e, "intorgs")} />
-            <FlatButton label="Admin Tools" style={styles.topNavButton} onClick={(e) => this.testclick(e, "admin")} />
+            <FlatButton label="Admin Tools" style={styles.topNavButton} onClick={(e) => this.testclick(e, "admin")} />*/}
           </div>
           <div style={styles.userArea} >
             <Avatar
