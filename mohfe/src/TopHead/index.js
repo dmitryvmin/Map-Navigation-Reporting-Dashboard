@@ -115,7 +115,6 @@ export default class TopHead extends Component {
             {this.state.moh} MOH Reporting Tool
           </div>
            <div style={styles.topNavArea}>
-            <FlatButton label="Dashboard" style={styles.topNavButton} onClick={(e) => this.testclick(e, "dashboard")} />
             {/*<FlatButton label="People" style={styles.topNavButton} onClick={(e) => this.testclick(e, "people")} />
             <FlatButton label="Int ORGS" style={styles.topNavButton} onClick={(e) => this.testclick(e, "intorgs")} />
             <FlatButton label="Admin Tools" style={styles.topNavButton} onClick={(e) => this.testclick(e, "admin")} />*/}

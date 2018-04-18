@@ -22,7 +22,7 @@ const styles = {
     fontWeight: 400,
   },
   idBar: {
-    backgroundColor: '#5c9aab',
+    backgroundColor: '#51326c',
     width: '100%',
     textAlign: 'center',
     paddingTop: '14px',
@@ -32,12 +32,13 @@ const styles = {
   },
   idBarH: {
     fontWeight: '500',
-    marginTop: '5px',
-    marginBottom: '30px',
+    marginTop: '20px',
+    marginBottom: '40px',
   },
   wrapwrap: {
     width: '100%',
     margin: '0 auto',
+    marginTop: '-48px'
   },
   wrapTabs: {
     width: '80vw',
@@ -47,7 +48,7 @@ const styles = {
     marginTop: '-48px',
   },
   deviceTableHeader: {
-    margin: "16px 0 16px 0",
+    margin: "0",
   },
   halfCard: {
     width: '48%',
@@ -124,6 +125,9 @@ const styles = {
     textAlign: 'center',
     borderRadius: '4px',
   },
+  middlePane: {
+    flex: '1'
+  }
 };
 
 // let deviceReport = { sensors: [
@@ -311,27 +315,61 @@ export default class Moh extends Component {
   tableDisplay = () => {
     if (this.state.devices === null ||
         (Object.keys(this.state.devices).length === 0
-         && this.state.devices.constructor === Object)) {
+         && this.state.devices.constructor === Object)) 
+    {
       return <TableRow key="00nul00"><TableRowColumn>none</TableRowColumn></TableRow>
-    } else {
-      debugger;
+    } 
+    else {
       if (this.state.devices.sensors === null ||
           (Object.keys(this.state.devices.sensors).length === 0
-          && this.state.devices.sensors.constructor === Object)) {
+          && this.state.devices.sensors.constructor === Object)) 
+      {
         return <TableRow key="00nul00"><TableRowColumn>none</TableRowColumn></TableRow>
-      } else {
-          return this.state.devices.sensors.map((row, i) =>
-           <TableRow key={i}>
-             <TableRowColumn>{statusDisplay(row.status)}</TableRowColumn>
-             <TableRowColumn>{row.manufacturer + ' ' + row.model}</TableRowColumn>
-             <TableRowColumn>{row.facility.name}</TableRowColumn>
-             <TableRowColumn>{row.facility.district}</TableRowColumn>
-             <TableRowColumn>{row.holdover}</TableRowColumn>
-             <TableRowColumn>{row.temperature.timestamp}</TableRowColumn>
-             <TableRowColumn>{tempuratureShape(Math.round(row.temperature.value * 10) / 10)}</TableRowColumn>
-           </TableRow>
-         )
-       }
+      } 
+      else {
+        let tableRows = []; 
+        this.state.devices.sensors.map((row, i) => {
+
+          let timeLabel;  
+          if (row.temperature && row.temperature.timestamp) {
+            let timestamp = row.temperature.timestamp; 
+            let date = timestamp.slice(0, -1).split('T')[0];
+            let time = timestamp.slice(0, -1).split('T')[1];
+            let [h,m,s] = time.split(":");
+            // round up hour if over 30 minutes
+            m = parseInt(m);
+            h = Math.round(h)
+            h += parseInt(Math.round(m/60));
+            let todaysDate = new Date().toISOString().split('T')[0];
+            let daysSinceLastPing = parseInt(todaysDate.replace(/-/g,"")) - parseInt(date.replace(/-/g,""));
+            console.log('hours:minutes:seconds ago', h,m,s);
+            console.log('todaysDate: ', typeof(todaysDate));
+            console.log('timestampDate: ', date);
+            console.log('Days since last ping: ', daysSinceLastPing);
+            if (daysSinceLastPing) {
+              timeLabel = (daysSinceLastPing === 1 ) ? `${daysSinceLastPing} day` : `${daysSinceLastPing} days`; 
+            } else if (daysSinceLastPing === 0 && h) {
+              timeLabel = (h === 1) ? `${h} hour` : `${h} hours`;
+            } else {
+              timeLabel = `${m} minutes`; 
+            }
+            console.log('Time since last ping: ', timeLabel);
+          }
+          
+          tableRows.push(
+            <TableRow key={i}>
+              <TableRowColumn>{statusDisplay(row.status)}</TableRowColumn>
+              <TableRowColumn>{row.manufacturer + ' ' + row.model}</TableRowColumn>
+              <TableRowColumn>{row.facility.name}</TableRowColumn>
+              <TableRowColumn>{row.facility.district}</TableRowColumn>
+              <TableRowColumn>{Math.round(row.holdover)}</TableRowColumn>
+              <TableRowColumn>{timeLabel}</TableRowColumn>
+              <TableRowColumn>{tempuratureShape(Math.round(row.temperature.value))}</TableRowColumn>
+            </TableRow>
+          )
+        })
+        return tableRows;
+      }
     }
   }
 
@@ -371,13 +409,15 @@ export default class Moh extends Component {
 
   render () {
     return (
-      <div>
+      <div style={styles.middlePane}>
         <div style={styles.idBar}>
           <h1 style={styles.idBarH}>Kenya Moh {this.props.content}</h1>
         </div>
         <div style={styles.wrapwrap}>
           <div style={styles.wrapTabs} >
-            <Tabs style={styles.tabMod} >
+            <Tabs tabItemContainerStyle={{backgroundColor:"#51326C"}}
+                  style={{width: "50vw", marginLeft: "auto", marginRight: "auto"}}
+                  inkBarStyle={{backgroundColor:"#B897D5", height:"4px", marginTop:"-4px"}}>
               <Tab label="Devices" >
                 <div style={styles.deviceTableHeader}>
                   <Table>

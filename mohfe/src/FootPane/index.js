@@ -7,10 +7,11 @@ const styles = {
   footerwrap: {
     width: '100%',
     backgroundColor: 'white',
-    position: 'fixed',
+    // position: 'fixed',
     bottom: 0,
     left: 0,
     padding: '2em 0',
+    marginTop: '20px'
   },
   ggfooter: {
     width: '80vw',
