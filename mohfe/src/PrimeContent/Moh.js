@@ -312,6 +312,11 @@ export default class Moh extends Component {
     this.loadDevices = this.loadDevices.bind(this);
   }
 
+  precisionRound = (number, precision) => {
+    var factor = Math.pow(10, precision);
+    return Math.round(number * factor) / factor;
+  }
+
   tableDisplay = () => {
     if (this.state.devices === null ||
         (Object.keys(this.state.devices).length === 0
@@ -362,7 +367,7 @@ export default class Moh extends Component {
               <TableRowColumn>{row.manufacturer + ' ' + row.model}</TableRowColumn>
               <TableRowColumn>{row.facility.name}</TableRowColumn>
               <TableRowColumn>{row.facility.district}</TableRowColumn>
-              <TableRowColumn>{Math.round(row.holdover)}</TableRowColumn>
+              <TableRowColumn>{this.precisionRound(row.holdover, 2)}</TableRowColumn>
               <TableRowColumn>{timeLabel}</TableRowColumn>
               <TableRowColumn>{tempuratureShape(Math.round(row.temperature.value))}</TableRowColumn>
             </TableRow>
