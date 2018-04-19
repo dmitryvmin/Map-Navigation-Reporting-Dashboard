@@ -7,7 +7,7 @@ const styles = {
   footerwrap: {
     width: '100%',
     backgroundColor: 'white',
-    position: 'fixed',
+    // position: 'fixed',
     bottom: 0,
     left: 0,
     padding: '2em 0',

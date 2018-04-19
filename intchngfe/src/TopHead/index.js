@@ -79,6 +79,15 @@ const styles = {
   deviceTableHeader: {
     margin: "16px 0 16px 0",
   },
+  logo: {
+    height: "100%"
+  },
+  logoContainer: {
+    height: "40px",
+    margin: "20px 40px",
+    display: "flex",
+    alignItems: "center"
+  }
 };
 
 export default class TopHead extends Component {
@@ -100,15 +109,9 @@ export default class TopHead extends Component {
     return (
         <header style={styles.topHeader}>
           <div style={styles.titleArea} >
-            <Avatar
-              src="/img/coldchainflag.png"
-              size={60}
-              style={styles.avatarFlag}
-            />
-            Aucma Reporting Tool
+            <div style={styles.logoContainer}><img style={styles.logo} src="/img/aucma_logo.jpg" /><span>Aucma Reporting Tool</span></div>
           </div>
            <div style={styles.topNavArea}>
-            <FlatButton label="Dashboard" style={styles.topNavButton} onClick={(e) => this.testclick(e, "dashboard")} />
             {/*<FlatButton label="People" style={styles.topNavButton} onClick={(e) => this.testclick(e, "people")} />
             <FlatButton label="Int ORGS" style={styles.topNavButton} onClick={(e) => this.testclick(e, "intorgs")} />
             <FlatButton label="Admin Tools" style={styles.topNavButton} onClick={(e) => this.testclick(e, "admin")} />*/}

@@ -22,7 +22,7 @@ const styles = {
     fontWeight: 400,
   },
   idBar: {
-    backgroundColor: '#7cd33b',
+    backgroundColor: '#7ED321',
     width: '100%',
     textAlign: 'center',
     paddingTop: '14px',
@@ -32,17 +32,13 @@ const styles = {
   },
   idBarH: {
     fontWeight: '500',
-    marginTop: '5px',
-    marginBottom: '30px',
-  },
-  idBarP: {
-    color: 'black',
-    marginTop: '-10px',
-    marginBottom: '30px',
+    marginTop: '20px',
+    marginBottom: '40px',
   },
   wrapwrap: {
     width: '100%',
     margin: '0 auto',
+    marginTop: '-48px'
   },
   wrapTabs: {
     width: '80vw',
@@ -52,7 +48,7 @@ const styles = {
     marginTop: '-48px',
   },
   deviceTableHeader: {
-    margin: "16px 0 16px 0",
+    margin: "0",
   },
   halfCard: {
     width: '48%',
@@ -69,25 +65,210 @@ const styles = {
     margin: '24px 1%',
     display: 'inline-block',
   },
-  wrapAddButton: {
-    textAlign: 'right',
+  greendot: {
+    height: '20px',
+    width: '20px',
+    backgroundColor: 'green',
+    border: '1px solid #aaa',
+    borderRadius: '20px',
   },
-  addButton: {
-    marginTop: '1em',
-    textAlign: 'right',
+  yellowdot: {
+    height: '20px',
+    width: '20px',
+    backgroundColor: 'yellow',
+    border: '1px solid #aaa',
+    borderRadius: '20px',
   },
+  reddot: {
+    height: '20px',
+    width: '20px',
+    backgroundColor: 'red',
+    border: '1px solid #aaa',
+    borderRadius: '20px',
+  },
+  cleardot: {
+    height: '20px',
+    width: '20px',
+    backgroundColor: 'white',
+    border: '1px solid #aaa',
+    borderRadius: '20px',
+  },
+  coldtemp: {
+    padding: '5px',
+    backgroundColor: 'skyblue',
+    color: 'white',
+    maxWidth: '50px',
+    textAlign: 'center',
+    borderRadius: '4px',
+  },
+  hottemp: {
+    padding: '5px',
+    backgroundColor: 'red',
+    color: 'white',
+    maxWidth: '50px',
+    textAlign: 'center',
+    borderRadius: '4px',
+  },
+  warntemp: {
+    padding: '5px',
+    backgroundColor: 'orange',
+    color: 'white',
+    maxWidth: '50px',
+    textAlign: 'center',
+    borderRadius: '4px',
+  },
+  goodtemp: {
+    padding: '5px',
+    backgroundColor: 'white',
+    color: 'black',
+    maxWidth: '50px',
+    textAlign: 'center',
+    borderRadius: '4px',
+  },
+  middlePane: {
+    flex: '1'
+  }
 };
 
-// let accountDefault = { accounts:
-//   [
-//     {
-//       "id": "5896a5c1-a931-4595-8205-8e7635ca4469",
-//       "name": "Ministry of Health Kenya",
-//       "category": "moh",
-//       "description": "Ministration of Health in Kenya"
+// let deviceReport = { sensors: [
+//   {
+//     "manufacturer": "Acuma",
+//     "id" : "1",
+//     "status": "green",
+//     "model": "MetaFridge",
+//     "facility": {
+//       "name": "Singida Clinic North",
+//       "country": "Tanzania",
+//       "district": "Signda State"
 //     },
-//   ]
-// }
+//     "temperature": {
+//       "value": 1,
+//       "timestamp": "2017-08-21T04:32:16.342Z"
+//     }
+//   },
+//   {
+//     "manufacturer": "Next Leaf",
+//     "id" : "1",
+//     "status": "yellow",
+//     "model": "Next Leaf",
+//     "facility": {
+//       "name": "Singida Clinic North",
+//       "country": "Tanzania",
+//       "district": "Signda State"
+//     },
+//     "temperature": {
+//       "value": 2,
+//       "timestamp": "2017-08-21T04:32:16.342Z"
+//     }
+//   },
+//   {
+//     "manufacturer": "Acuma",
+//     "id" : "1",
+//     "status": "red",
+//     "model": "MetaFridge",
+//     "facility": {
+//       "name": "Singida Clinic North",
+//       "country": "Tanzania",
+//       "district": "Signda State"
+//     },
+//     "temperature": {
+//       "value": 4,
+//       "timestamp": "2017-08-21T04:32:16.342Z"
+//     }
+//   },
+//   {
+//     "manufacturer": "Next Leaf",
+//     "id" : "1",
+//     "status": "green",
+//     "model": "Next Leaf",
+//     "facility": {
+//       "name": "Singida Clinic North",
+//       "country": "Tanzania",
+//       "district": "Signda State"
+//     },
+//     "temperature": {
+//       "value": 3,
+//       "timestamp": "2017-08-21T04:32:16.342Z"
+//     }
+//   },
+//   {
+//     "manufacturer": "Acuma",
+//     "id" : "1",
+//     "status": "yellow",
+//     "model": "MetaFridge",
+//     "facility": {
+//       "name": "Singida Clinic North",
+//       "country": "Tanzania",
+//       "district": "Signda State"
+//     },
+//     "temperature": {
+//       "value": 5,
+//       "timestamp": "2017-08-21T04:32:16.342Z"
+//     }
+//   },
+//   {
+//     "manufacturer": "Next Leaf",
+//     "id" : "1",
+//     "status": "green",
+//     "model": "Next Leaf",
+//     "facility": {
+//       "name": "Singida Clinic North",
+//       "country": "Tanzania",
+//       "district": "Signda State"
+//     },
+//     "temperature": {
+//       "value": 7,
+//       "timestamp": "2017-08-21T04:32:16.342Z"
+//     }
+//   },
+//   {
+//     "manufacturer": "Acuma",
+//     "id" : "1",
+//     "status": "green",
+//     "model": "MetaFridge",
+//     "facility": {
+//       "name": "Singida Clinic North",
+//       "country": "Tanzania",
+//       "district": "Signda State"
+//     },
+//     "temperature": {
+//       "value": 8,
+//       "timestamp": "2017-08-21T04:32:16.342Z"
+//     }
+//   },
+//   {
+//     "manufacturer": "Next Leaf",
+//     "id" : "1",
+//     "status": "green",
+//     "model": "Next Leaf",
+//     "facility": {
+//       "name": "Singida Clinic North",
+//       "country": "Tanzania",
+//       "district": "Signda State"
+//     },
+//     "temperature": {
+//       "value": 9,
+//       "timestamp": "2017-08-21T04:32:16.342Z"
+//     }
+//   },
+//   {
+//     "manufacturer": "Acuma",
+//     "id" : "1",
+//     "status": "green",
+//     "model": "MetaFridge",
+//     "facility": {
+//       "name": "Singida Clinic North",
+//       "country": "Tanzania",
+//       "district": "Signda State"
+//     },
+//     "temperature": {
+//       "value": 2,
+//       "timestamp": "2017-08-21T04:32:16.342Z"
+//     }
+//   },
+// ]}
+
+
 
 const statusDisplay = (statusString) => {
   switch (statusString) {
@@ -131,30 +312,69 @@ export default class Moh extends Component {
     this.loadDevices = this.loadDevices.bind(this);
   }
 
+  precisionRound = (number, precision) => {
+    var factor = Math.pow(10, precision);
+    return Math.round(number * factor) / factor;
+  }
+
   tableDisplay = () => {
     if (this.state.devices === null ||
         (Object.keys(this.state.devices).length === 0
-         && this.state.devices.constructor === Object)) {
+         && this.state.devices.constructor === Object)) 
+    {
       return <TableRow key="00nul00"><TableRowColumn>none</TableRowColumn></TableRow>
-    } else {
-      debugger;
+    } 
+    else {
       if (this.state.devices.sensors === null ||
           (Object.keys(this.state.devices.sensors).length === 0
-          && this.state.devices.sensors.constructor === Object)) {
+          && this.state.devices.sensors.constructor === Object)) 
+      {
         return <TableRow key="00nul00"><TableRowColumn>none</TableRowColumn></TableRow>
-      } else {
-          return this.state.devices.sensors.map((row, i) =>
-           <TableRow key={i}>
-             <TableRowColumn>{statusDisplay(row.status)}</TableRowColumn>
-             <TableRowColumn>{row.manufacturer + ' ' + row.model}</TableRowColumn>
-             <TableRowColumn>{row.facility.name}</TableRowColumn>
-             <TableRowColumn>{row.facility.district}</TableRowColumn>
-             <TableRowColumn>{row.holdover}</TableRowColumn>
-             <TableRowColumn>{row.temperature.timestamp}</TableRowColumn>
-             <TableRowColumn>{tempuratureShape(Math.round(row.temperature.value * 10) / 10)}</TableRowColumn>
-           </TableRow>
-         )
-       }
+      } 
+      else {
+        let tableRows = []; 
+        this.state.devices.sensors.map((row, i) => {
+
+          let timeLabel;  
+          if (row.temperature && row.temperature.timestamp) {
+            let timestamp = row.temperature.timestamp; 
+            let date = timestamp.slice(0, -1).split('T')[0];
+            let time = timestamp.slice(0, -1).split('T')[1];
+            let [h,m,s] = time.split(":");
+            // round up hour if over 30 minutes
+            m = parseInt(m);
+            h = Math.round(h)
+            h += parseInt(Math.round(m/60));
+            let todaysDate = new Date().toISOString().split('T')[0];
+            let daysSinceLastPing = parseInt(todaysDate.replace(/-/g,"")) - parseInt(date.replace(/-/g,""));
+            console.log('hours:minutes:seconds ago', h,m,s);
+            console.log('todaysDate: ', typeof(todaysDate));
+            console.log('timestampDate: ', date);
+            console.log('Days since last ping: ', daysSinceLastPing);
+            if (daysSinceLastPing) {
+              timeLabel = (daysSinceLastPing === 1 ) ? `${daysSinceLastPing} day` : `${daysSinceLastPing} days`; 
+            } else if (daysSinceLastPing === 0 && h) {
+              timeLabel = (h === 1) ? `${h} hour` : `${h} hours`;
+            } else {
+              timeLabel = `${m} minutes`; 
+            }
+            console.log('Time since last ping: ', timeLabel);
+          }
+          
+          tableRows.push(
+            <TableRow key={i}>
+              <TableRowColumn>{statusDisplay(row.status)}</TableRowColumn>
+              <TableRowColumn>{row.manufacturer + ' ' + row.model}</TableRowColumn>
+              <TableRowColumn>{row.facility.name}</TableRowColumn>
+              <TableRowColumn>{row.facility.district}</TableRowColumn>
+              <TableRowColumn>{this.precisionRound(row.holdover, 2)}</TableRowColumn>
+              <TableRowColumn>{timeLabel}</TableRowColumn>
+              <TableRowColumn>{tempuratureShape(Math.round(row.temperature.value))}</TableRowColumn>
+            </TableRow>
+          )
+        })
+        return tableRows;
+      }
     }
   }
 
@@ -167,7 +387,7 @@ export default class Moh extends Component {
         that.setState({devices: json});
       }
     };
-    xhttp.open("GET", "http://20.36.19.106:9003/sensor", true);
+    xhttp.open("GET", "http://20.36.19.106:9000/sensor", true);
     xhttp.setRequestHeader('Authorization','Basic Z2xvYmFsLmdvb2Q6fkYoRzNtKUtQeT8/ZHd4fg==');
     xhttp.send();
   }
@@ -183,7 +403,7 @@ export default class Moh extends Component {
         that.setState({devices: null});
       }
     };
-    xhttp.open("POST", "http://20.36.19.106:9003/demo/clear/samples", true);
+    xhttp.open("POST", "http://20.36.19.106:9000/demo/clear/samples", true);
     xhttp.setRequestHeader('Authorization','Basic Z2xvYmFsLmdvb2Q6fkYoRzNtKUtQeT8/ZHd4fg==');
     xhttp.send();
   }
@@ -194,13 +414,15 @@ export default class Moh extends Component {
 
   render () {
     return (
-      <div>
+      <div style={styles.middlePane}>
         <div style={styles.idBar}>
-          <h1 style={styles.idBarH}>Aucma Reporting {this.props.content}</h1>
+          <h1 style={styles.idBarH}>Kenya Moh {this.props.content}</h1>
         </div>
         <div style={styles.wrapwrap}>
           <div style={styles.wrapTabs} >
-            <Tabs style={styles.tabMod} >
+            <Tabs tabItemContainerStyle={{backgroundColor:"#7cd33b"}}
+                  style={{width: "50vw", marginLeft: "auto", marginRight: "auto"}}
+                  inkBarStyle={{backgroundColor:"#4B7C17", height:"4px", marginTop:"-4px"}}>
               <Tab label="Devices" >
                 <div style={styles.deviceTableHeader}>
                   <Table>
@@ -221,15 +443,18 @@ export default class Moh extends Component {
                   </Table>
               </div>
 
-            </Tab>
+              </Tab>
               {/*<Tab label="Reports" >
                 <div>
 
                 </div>
               </Tab>*/}
-              <Tab label="info" >
+              <Tab
+                label="Locations"
+              >
                 <div>
-                  <Card style={styles.halfCard} >
+                  <h2 style={styles.headline}>Locations</h2>
+                  <Card style={styles.fourthCard} >
                     <CardHeader
                       title="Sample"
                       subtitle="For future use"
@@ -245,7 +470,39 @@ export default class Moh extends Component {
                       Aliquam dui mauris, mattis quis lacus id, pellentesque lobortis odio.
                     </CardText>
                   </Card>
-                  <Card style={styles.halfCard} >
+                  <Card style={styles.fourthCard} >
+                    <CardHeader
+                      title="Sample"
+                      subtitle="For future use"
+                      actAsExpander={true}
+                      showExpandableButton={true}
+                    />
+                    <CardActions>
+                    </CardActions>
+                    <CardText expandable={true}>
+                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                      Donec mattis pretium massa. Aliquam erat volutpat. Nulla facilisi.
+                      Donec vulputate interdum sollicitudin. Nunc lacinia auctor quam sed pellentesque.
+                      Aliquam dui mauris, mattis quis lacus id, pellentesque lobortis odio.
+                    </CardText>
+                  </Card>
+                  <Card style={styles.fourthCard} >
+                    <CardHeader
+                      title="Sample"
+                      subtitle="For future use"
+                      actAsExpander={true}
+                      showExpandableButton={true}
+                    />
+                    <CardActions>
+                    </CardActions>
+                    <CardText expandable={true}>
+                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                      Donec mattis pretium massa. Aliquam erat volutpat. Nulla facilisi.
+                      Donec vulputate interdum sollicitudin. Nunc lacinia auctor quam sed pellentesque.
+                      Aliquam dui mauris, mattis quis lacus id, pellentesque lobortis odio.
+                    </CardText>
+                  </Card>
+                  <Card style={styles.fourthCard} >
                     <CardHeader
                       title="Sample"
                       subtitle="For future use"
@@ -259,61 +516,12 @@ export default class Moh extends Component {
                       Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                       Donec mattis pretium massa. Aliquam erat volutpat. Nulla facilisi.
                       Donec vulputate interdum sollicitudin. Nunc lacinia auctor quam sed pellentesque.
-                      Aliquam dui mauris, mattis quis lacus id, pellentesque lobortis odio. <RaisedButton label="RESET DATA" secondary={true} onClick={(e) => this.resetdata(e)} />
-                    </CardText>
-                  </Card>
-
-                  <Card style={styles.thirdCard} >
-                    <CardHeader
-                      title="Sample"
-                      subtitle="For future use"
-                      actAsExpander={true}
-                      showExpandableButton={true}
-                    />
-                    <CardActions>
-                    </CardActions>
-                    <CardText expandable={true}>
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                      Donec mattis pretium massa. Aliquam erat volutpat. Nulla facilisi.
-                      Donec vulputate interdum sollicitudin. Nunc lacinia auctor quam sed pellentesque.
                       Aliquam dui mauris, mattis quis lacus id, pellentesque lobortis odio.
-                    </CardText>
-                  </Card>
-                  <Card style={styles.thirdCard} >
-                    <CardHeader
-                      title="Sample"
-                      subtitle="For future use"
-                      actAsExpander={true}
-                      showExpandableButton={true}
-                    />
-                    <CardActions>
-                    </CardActions>
-                    <CardText expandable={true}>
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                      Donec mattis pretium massa. Aliquam erat volutpat. Nulla facilisi.
-                      Donec vulputate interdum sollicitudin. Nunc lacinia auctor quam sed pellentesque.
-                      Aliquam dui mauris, mattis quis lacus id, pellentesque lobortis odio.
-                    </CardText>
-                  </Card>
-                  <Card style={styles.thirdCard} >
-                    <CardHeader
-                      title="Sample"
-                      subtitle="For future use"
-                      actAsExpander={true}
-                      showExpandableButton={true}
-                    />
-                    <CardActions>
-                    </CardActions>
-                    <CardText expandable={true}>
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                      Donec mattis pretium massa. Aliquam erat volutpat. Nulla facilisi.
-                      Donec vulputate interdum sollicitudin. Nunc lacinia auctor quam sed pellentesque.
-                      Aliquam dui mauris, mattis quis lacus id, pellentesque lobortis odio.
+                      <RaisedButton label="RESET DATA" secondary={true} onClick={(e) => this.resetdata(e)} />
                     </CardText>
                   </Card>
                 </div>
               </Tab>
-
             </Tabs>
           </div>
         </div>
