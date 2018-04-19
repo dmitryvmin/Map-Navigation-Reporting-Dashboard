@@ -22,7 +22,7 @@ const styles = {
     fontWeight: 400,
   },
   idBar: {
-    backgroundColor: '#7ED321',
+    backgroundColor: '#e32427',
     width: '100%',
     textAlign: 'center',
     paddingTop: '14px',
@@ -305,7 +305,6 @@ const tempuratureShape = (temperature) => {
 export default class Moh extends Component {
   constructor (props, context) {
     super(props, context);
-    // Default text
     this.state = {
       devices: null,
     }
@@ -367,7 +366,7 @@ export default class Moh extends Component {
               <TableRowColumn>{row.manufacturer + ' ' + row.model}</TableRowColumn>
               <TableRowColumn>{row.facility.name}</TableRowColumn>
               <TableRowColumn>{row.facility.district}</TableRowColumn>
-              <TableRowColumn>{this.precisionRound(row.holdover, 2)}</TableRowColumn>
+              <TableRowColumn>{this.precisionRound(row.holdover, 0)}</TableRowColumn>
               <TableRowColumn>{timeLabel}</TableRowColumn>
               <TableRowColumn>{tempuratureShape(Math.round(row.temperature.value))}</TableRowColumn>
             </TableRow>
@@ -416,13 +415,13 @@ export default class Moh extends Component {
     return (
       <div style={styles.middlePane}>
         <div style={styles.idBar}>
-          <h1 style={styles.idBarH}>Kenya Moh {this.props.content}</h1>
+          <h1 style={styles.idBarH}>Aucma Reporting Tool</h1>
         </div>
         <div style={styles.wrapwrap}>
           <div style={styles.wrapTabs} >
-            <Tabs tabItemContainerStyle={{backgroundColor:"#7cd33b"}}
+            <Tabs tabItemContainerStyle={{backgroundColor:"#e32427"}}
                   style={{width: "50vw", marginLeft: "auto", marginRight: "auto"}}
-                  inkBarStyle={{backgroundColor:"#4B7C17", height:"4px", marginTop:"-4px"}}>
+                  inkBarStyle={{backgroundColor:"#a21a1e", height:"4px", marginTop:"-4px"}}>
               <Tab label="Devices" >
                 <div style={styles.deviceTableHeader}>
                   <Table>
@@ -432,7 +431,7 @@ export default class Moh extends Component {
                         <TableHeaderColumn>Brand/Model</TableHeaderColumn>
                         <TableHeaderColumn>Facility</TableHeaderColumn>
                         <TableHeaderColumn>State/District</TableHeaderColumn>
-                        <TableHeaderColumn>Holdover Remaining</TableHeaderColumn>
+                        <TableHeaderColumn>Holdover Days</TableHeaderColumn>
                         <TableHeaderColumn>Last Ping</TableHeaderColumn>
                         <TableHeaderColumn>Last Temp (C)</TableHeaderColumn>
                       </TableRow>

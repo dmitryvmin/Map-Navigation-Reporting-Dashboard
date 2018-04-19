@@ -109,7 +109,7 @@ export default class TopHead extends Component {
     return (
         <header style={styles.topHeader}>
           <div style={styles.titleArea} >
-            <div style={styles.logoContainer}><img style={styles.logo} src="/img/aucma_logo.jpg" /><span>Aucma Reporting Tool</span></div>
+            <div style={styles.logoContainer}><img style={styles.logo} src="/img/aucma_logo.jpg" /></div>
           </div>
            <div style={styles.topNavArea}>
             {/*<FlatButton label="People" style={styles.topNavButton} onClick={(e) => this.testclick(e, "people")} />
