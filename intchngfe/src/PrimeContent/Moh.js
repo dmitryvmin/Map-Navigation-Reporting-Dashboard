@@ -319,24 +319,24 @@ export default class Moh extends Component {
   tableDisplay = () => {
     if (this.state.devices === null ||
         (Object.keys(this.state.devices).length === 0
-         && this.state.devices.constructor === Object)) 
+         && this.state.devices.constructor === Object))
     {
       return <TableRow key="00nul00"><TableRowColumn>none</TableRowColumn></TableRow>
-    } 
+    }
     else {
       if (this.state.devices.sensors === null ||
           (Object.keys(this.state.devices.sensors).length === 0
-          && this.state.devices.sensors.constructor === Object)) 
+          && this.state.devices.sensors.constructor === Object))
       {
         return <TableRow key="00nul00"><TableRowColumn>none</TableRowColumn></TableRow>
-      } 
+      }
       else {
-        let tableRows = []; 
+        let tableRows = [];
         this.state.devices.sensors.map((row, i) => {
 
-          let timeLabel;  
+          let timeLabel;
           if (row.temperature && row.temperature.timestamp) {
-            let timestamp = row.temperature.timestamp; 
+            let timestamp = row.temperature.timestamp;
             let date = timestamp.slice(0, -1).split('T')[0];
             let time = timestamp.slice(0, -1).split('T')[1];
             let [h,m,s] = time.split(":");
@@ -351,15 +351,15 @@ export default class Moh extends Component {
             console.log('timestampDate: ', date);
             console.log('Days since last ping: ', daysSinceLastPing);
             if (daysSinceLastPing) {
-              timeLabel = (daysSinceLastPing === 1 ) ? `${daysSinceLastPing} day` : `${daysSinceLastPing} days`; 
+              timeLabel = (daysSinceLastPing === 1 ) ? `${daysSinceLastPing} day` : `${daysSinceLastPing} days`;
             } else if (daysSinceLastPing === 0 && h) {
               timeLabel = (h === 1) ? `${h} hour` : `${h} hours`;
             } else {
-              timeLabel = `${m} minutes`; 
+              timeLabel = `${m} minutes`;
             }
             console.log('Time since last ping: ', timeLabel);
           }
-          
+
           tableRows.push(
             <TableRow key={i}>
               <TableRowColumn>{statusDisplay(row.status)}</TableRowColumn>
@@ -386,7 +386,7 @@ export default class Moh extends Component {
         that.setState({devices: json});
       }
     };
-    xhttp.open("GET", "http://20.36.19.106:9000/sensor", true);
+    xhttp.open("GET", "http://20.36.19.106:9003/sensor", true);
     xhttp.setRequestHeader('Authorization','Basic Z2xvYmFsLmdvb2Q6fkYoRzNtKUtQeT8/ZHd4fg==');
     xhttp.send();
   }
@@ -402,7 +402,7 @@ export default class Moh extends Component {
         that.setState({devices: null});
       }
     };
-    xhttp.open("POST", "http://20.36.19.106:9000/demo/clear/samples", true);
+    xhttp.open("POST", "http://20.36.19.106:9003/demo/clear/samples", true);
     xhttp.setRequestHeader('Authorization','Basic Z2xvYmFsLmdvb2Q6fkYoRzNtKUtQeT8/ZHd4fg==');
     xhttp.send();
   }
