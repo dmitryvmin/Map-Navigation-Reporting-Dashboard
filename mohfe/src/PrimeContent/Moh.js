@@ -367,7 +367,7 @@ export default class Moh extends Component {
               <TableRowColumn>{row.manufacturer + ' ' + row.model}</TableRowColumn>
               <TableRowColumn>{row.facility.name}</TableRowColumn>
               <TableRowColumn>{row.facility.district}</TableRowColumn>
-              <TableRowColumn>{this.precisionRound(row.holdover, 2)}</TableRowColumn>
+              <TableRowColumn>{this.precisionRound(row.holdover, 0)}</TableRowColumn>
               <TableRowColumn>{timeLabel}</TableRowColumn>
               <TableRowColumn>{tempuratureShape(Math.round(row.temperature.value))}</TableRowColumn>
             </TableRow>
@@ -432,7 +432,7 @@ export default class Moh extends Component {
                         <TableHeaderColumn>Brand/Model</TableHeaderColumn>
                         <TableHeaderColumn>Facility</TableHeaderColumn>
                         <TableHeaderColumn>State/District</TableHeaderColumn>
-                        <TableHeaderColumn>Holdover Remaining</TableHeaderColumn>
+                        <TableHeaderColumn>Holdover Days</TableHeaderColumn>
                         <TableHeaderColumn>Last Ping</TableHeaderColumn>
                         <TableHeaderColumn>Last Temp (C)</TableHeaderColumn>
                       </TableRow>
