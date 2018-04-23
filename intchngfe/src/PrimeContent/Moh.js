@@ -128,7 +128,23 @@ const styles = {
   },
   middlePane: {
     flex: '1'
-  }
+  },
+  redPing: {
+    padding: '5px',
+    backgroundColor: 'red',
+    color: 'white',
+    maxWidth: '80px',
+    textAlign: 'center',
+    borderRadius: '4px',
+  },
+  clearPing: {
+    padding: '5px',
+    backgroundColor: 'white',
+    color: 'black',
+    maxWidth: '80px',
+    textAlign: 'center',
+    borderRadius: '4px',
+  },
 };
 
 // let deviceReport = { sensors: [
@@ -317,6 +333,23 @@ export default class Moh extends Component {
     return Math.round(number * factor) / factor;
   }
 
+  timechecker48 = (rowtemp) => {
+      if (rowtemp && rowtemp.timestamp) {
+        let ping = moment(rowtemp.timestamp + "Z");
+        let now = moment(Date.now());
+        console.log("ping:", ping, " now: " , now);
+        let diff = now.diff(ping, 'days');
+        console.log("Diff", diff);
+        if ( diff >= 2 ) {
+          return true;
+        } else {
+          return false;
+        }
+     } else {
+       return false;
+     }
+  }
+
   tableDisplay = () => {
     if (this.state.devices === null ||
         (Object.keys(this.state.devices).length === 0
@@ -333,14 +366,20 @@ export default class Moh extends Component {
       }
       else {
         return this.state.devices.sensors.map((row, i) =>
+
             <TableRow key={i}>
               <TableRowColumn>{statusDisplay(row.status)}</TableRowColumn>
               <TableRowColumn>{row.manufacturer + ' ' + row.model}</TableRowColumn>
               <TableRowColumn>{row.facility.name}</TableRowColumn>
               <TableRowColumn>{row.facility.district}</TableRowColumn>
               <TableRowColumn>{this.precisionRound(row.holdover, 0)}</TableRowColumn>
-              <TableRowColumn>{ (row.temperature && row.temperature.timestamp) ? moment(row.temperature.timestamp + "Z").fromNow() : "-" }</TableRowColumn>
+              <TableRowColumn>
+                <div style={( this.timechecker48(row.temperature) ) ? styles.redPing : styles.clearPing } >
+                  { (row.temperature && row.temperature.timestamp) ? moment(row.temperature.timestamp + "Z").fromNow() : "-" }
+                </div>
+              </TableRowColumn>
               <TableRowColumn>{tempuratureShape(Math.round(row.temperature.value))}</TableRowColumn>
+              { console.log( moment(row.temperature.timestamp + "Z") ) }
             </TableRow>
         )
       }
