@@ -6,7 +6,7 @@ import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-dow
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
-import FlatButton from 'material-ui/FlatButton';
+//import FlatButton from 'material-ui/FlatButton';
 import 'typeface-roboto'; // Font
 
 const styles = {
@@ -109,7 +109,9 @@ export default class TopHead extends Component {
     return (
         <header style={styles.topHeader}>
           <div style={styles.titleArea} >
-            <div style={styles.logoContainer}><img style={styles.logo} src="/img/aucma_logo.jpg" /></div>
+            <div style={styles.logoContainer}>
+              <img style={styles.logo} src="/img/aucma_logo.jpg" alt="logo icon" />
+            </div>
           </div>
            <div style={styles.topNavArea}>
             {/*<FlatButton label="People" style={styles.topNavButton} onClick={(e) => this.testclick(e, "people")} />

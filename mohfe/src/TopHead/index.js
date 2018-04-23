@@ -6,7 +6,7 @@ import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-dow
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
-import FlatButton from 'material-ui/FlatButton';
+//import FlatButton from 'material-ui/FlatButton';
 import 'typeface-roboto'; // Font
 
 const styles = {
@@ -111,6 +111,7 @@ export default class TopHead extends Component {
               src="/img/flag4.png"
               size={60}
               style={styles.avatarFlag}
+              alt="flag icon"
             />
             {this.state.moh} MOH Reporting Tool
           </div>

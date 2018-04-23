@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {Tabs, Tab} from 'material-ui/Tabs';
 //import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
+import moment from 'moment-timezone';
 import {
   Table,
   TableBody,
@@ -331,48 +332,17 @@ export default class Moh extends Component {
         return <TableRow key="00nul00"><TableRowColumn>none</TableRowColumn></TableRow>
       }
       else {
-        let tableRows = [];
-        this.state.devices.sensors.map((row, i) => {
-
-          let timeLabel;
-          if (row.temperature && row.temperature.timestamp) {
-            let timestamp = row.temperature.timestamp;
-            let date = timestamp.slice(0, -1).split('T')[0];
-            let time = timestamp.slice(0, -1).split('T')[1];
-            let [h,m,s] = time.split(":");
-            // round up hour if over 30 minutes
-            m = parseInt(m);
-            h = Math.round(h)
-            h += parseInt(Math.round(m/60));
-            let todaysDate = new Date().toISOString().split('T')[0];
-            let daysSinceLastPing = parseInt(todaysDate.replace(/-/g,"")) - parseInt(date.replace(/-/g,""));
-            console.log('hours:minutes:seconds ago', h,m,s);
-            console.log('todaysDate: ', typeof(todaysDate));
-            console.log('timestampDate: ', date);
-            console.log('Days since last ping: ', daysSinceLastPing);
-            if (daysSinceLastPing) {
-              timeLabel = (daysSinceLastPing === 1 ) ? `${daysSinceLastPing} day` : `${daysSinceLastPing} days`;
-            } else if (daysSinceLastPing === 0 && h) {
-              timeLabel = (h === 1) ? `${h} hour` : `${h} hours`;
-            } else {
-              timeLabel = `${m} minutes`;
-            }
-            console.log('Time since last ping: ', timeLabel);
-          }
-
-          tableRows.push(
+        return this.state.devices.sensors.map((row, i) =>
             <TableRow key={i}>
               <TableRowColumn>{statusDisplay(row.status)}</TableRowColumn>
               <TableRowColumn>{row.manufacturer + ' ' + row.model}</TableRowColumn>
               <TableRowColumn>{row.facility.name}</TableRowColumn>
               <TableRowColumn>{row.facility.district}</TableRowColumn>
               <TableRowColumn>{this.precisionRound(row.holdover, 0)}</TableRowColumn>
-              <TableRowColumn>{timeLabel}</TableRowColumn>
+              <TableRowColumn>{ (row.temperature && row.temperature.timestamp) ? moment(row.temperature.timestamp + "Z").fromNow() : "-" }</TableRowColumn>
               <TableRowColumn>{tempuratureShape(Math.round(row.temperature.value))}</TableRowColumn>
             </TableRow>
-          )
-        })
-        return tableRows;
+        )
       }
     }
   }
