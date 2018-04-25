@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {Tabs, Tab} from 'material-ui/Tabs';
 //import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
+import moment from 'moment-timezone';
 import {
   Table,
   TableBody,
@@ -11,8 +12,8 @@ import {
   TableRowColumn,
 } from 'material-ui/Table';
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
-// Font
-import 'typeface-roboto';
+import DeviceDetail from './DeviceDetail';
+import 'typeface-roboto'; //Font
 
 const styles = {
   headline: {
@@ -127,147 +128,24 @@ const styles = {
   },
   middlePane: {
     flex: '1'
-  }
+  },
+  redPing: {
+    padding: '5px',
+    backgroundColor: 'red',
+    color: 'white',
+    maxWidth: '80px',
+    textAlign: 'center',
+    borderRadius: '4px',
+  },
+  clearPing: {
+    padding: '5px',
+    backgroundColor: 'white',
+    color: 'black',
+    maxWidth: '80px',
+    textAlign: 'center',
+    borderRadius: '4px',
+  },
 };
-
-// let deviceReport = { sensors: [
-//   {
-//     "manufacturer": "Acuma",
-//     "id" : "1",
-//     "status": "green",
-//     "model": "MetaFridge",
-//     "facility": {
-//       "name": "Singida Clinic North",
-//       "country": "Tanzania",
-//       "district": "Signda State"
-//     },
-//     "temperature": {
-//       "value": 1,
-//       "timestamp": "2017-08-21T04:32:16.342Z"
-//     }
-//   },
-//   {
-//     "manufacturer": "Next Leaf",
-//     "id" : "1",
-//     "status": "yellow",
-//     "model": "Next Leaf",
-//     "facility": {
-//       "name": "Singida Clinic North",
-//       "country": "Tanzania",
-//       "district": "Signda State"
-//     },
-//     "temperature": {
-//       "value": 2,
-//       "timestamp": "2017-08-21T04:32:16.342Z"
-//     }
-//   },
-//   {
-//     "manufacturer": "Acuma",
-//     "id" : "1",
-//     "status": "red",
-//     "model": "MetaFridge",
-//     "facility": {
-//       "name": "Singida Clinic North",
-//       "country": "Tanzania",
-//       "district": "Signda State"
-//     },
-//     "temperature": {
-//       "value": 4,
-//       "timestamp": "2017-08-21T04:32:16.342Z"
-//     }
-//   },
-//   {
-//     "manufacturer": "Next Leaf",
-//     "id" : "1",
-//     "status": "green",
-//     "model": "Next Leaf",
-//     "facility": {
-//       "name": "Singida Clinic North",
-//       "country": "Tanzania",
-//       "district": "Signda State"
-//     },
-//     "temperature": {
-//       "value": 3,
-//       "timestamp": "2017-08-21T04:32:16.342Z"
-//     }
-//   },
-//   {
-//     "manufacturer": "Acuma",
-//     "id" : "1",
-//     "status": "yellow",
-//     "model": "MetaFridge",
-//     "facility": {
-//       "name": "Singida Clinic North",
-//       "country": "Tanzania",
-//       "district": "Signda State"
-//     },
-//     "temperature": {
-//       "value": 5,
-//       "timestamp": "2017-08-21T04:32:16.342Z"
-//     }
-//   },
-//   {
-//     "manufacturer": "Next Leaf",
-//     "id" : "1",
-//     "status": "green",
-//     "model": "Next Leaf",
-//     "facility": {
-//       "name": "Singida Clinic North",
-//       "country": "Tanzania",
-//       "district": "Signda State"
-//     },
-//     "temperature": {
-//       "value": 7,
-//       "timestamp": "2017-08-21T04:32:16.342Z"
-//     }
-//   },
-//   {
-//     "manufacturer": "Acuma",
-//     "id" : "1",
-//     "status": "green",
-//     "model": "MetaFridge",
-//     "facility": {
-//       "name": "Singida Clinic North",
-//       "country": "Tanzania",
-//       "district": "Signda State"
-//     },
-//     "temperature": {
-//       "value": 8,
-//       "timestamp": "2017-08-21T04:32:16.342Z"
-//     }
-//   },
-//   {
-//     "manufacturer": "Next Leaf",
-//     "id" : "1",
-//     "status": "green",
-//     "model": "Next Leaf",
-//     "facility": {
-//       "name": "Singida Clinic North",
-//       "country": "Tanzania",
-//       "district": "Signda State"
-//     },
-//     "temperature": {
-//       "value": 9,
-//       "timestamp": "2017-08-21T04:32:16.342Z"
-//     }
-//   },
-//   {
-//     "manufacturer": "Acuma",
-//     "id" : "1",
-//     "status": "green",
-//     "model": "MetaFridge",
-//     "facility": {
-//       "name": "Singida Clinic North",
-//       "country": "Tanzania",
-//       "district": "Signda State"
-//     },
-//     "temperature": {
-//       "value": 2,
-//       "timestamp": "2017-08-21T04:32:16.342Z"
-//     }
-//   },
-// ]}
-
 
 
 const statusDisplay = (statusString) => {
@@ -307,8 +185,13 @@ export default class Moh extends Component {
     super(props, context);
     this.state = {
       devices: null,
+      isDetailOpen: false,
+      selectedDevice: null,
     }
     this.loadDevices = this.loadDevices.bind(this);
+    this.deviceRowClick = this.deviceRowClick.bind(this);
+    this.handleDetailOpen = this.handleDetailOpen.bind(this);
+    this.handleDetailClose = this.handleDetailClose.bind(this);
   }
 
   precisionRound = (number, precision) => {
@@ -316,63 +199,67 @@ export default class Moh extends Component {
     return Math.round(number * factor) / factor;
   }
 
+  timechecker48 = (rowtemp) => {
+      if (rowtemp && rowtemp.timestamp) {
+        let ping = moment(rowtemp.timestamp + "Z");
+        let now = moment(Date.now());
+        console.log("ping:", ping, " now: " , now);
+        let diff = now.diff(ping, 'days');
+        console.log("Diff", diff);
+        if ( diff >= 2 ) {
+          return true;
+        } else {
+          return false;
+        }
+     } else {
+       return false;
+     }
+  }
+
+  deviceRowClick = (selectedRows) => {
+    this.setState({isDetailOpen: true, selectedDevice: this.state.devices.sensors[selectedRows[0]]});
+  }
+
+  handleDetailOpen = () => {
+    this.setState({isDetailOpen: true});
+  };
+
+  handleDetailClose = () => {
+    this.setState({isDetailOpen: false, selectedDevice: null});
+  };
+
   tableDisplay = () => {
     if (this.state.devices === null ||
         (Object.keys(this.state.devices).length === 0
-         && this.state.devices.constructor === Object)) 
+         && this.state.devices.constructor === Object))
     {
       return <TableRow key="00nul00"><TableRowColumn>none</TableRowColumn></TableRow>
-    } 
+    }
     else {
       if (this.state.devices.sensors === null ||
           (Object.keys(this.state.devices.sensors).length === 0
-          && this.state.devices.sensors.constructor === Object)) 
+          && this.state.devices.sensors.constructor === Object))
       {
         return <TableRow key="00nul00"><TableRowColumn>none</TableRowColumn></TableRow>
-      } 
+      }
       else {
-        let tableRows = []; 
-        this.state.devices.sensors.map((row, i) => {
+        return this.state.devices.sensors.map((row, i) =>
 
-          let timeLabel;  
-          if (row.temperature && row.temperature.timestamp) {
-            let timestamp = row.temperature.timestamp; 
-            let date = timestamp.slice(0, -1).split('T')[0];
-            let time = timestamp.slice(0, -1).split('T')[1];
-            let [h,m,s] = time.split(":");
-            // round up hour if over 30 minutes
-            m = parseInt(m);
-            h = Math.round(h)
-            h += parseInt(Math.round(m/60));
-            let todaysDate = new Date().toISOString().split('T')[0];
-            let daysSinceLastPing = parseInt(todaysDate.replace(/-/g,"")) - parseInt(date.replace(/-/g,""));
-            console.log('hours:minutes:seconds ago', h,m,s);
-            console.log('todaysDate: ', typeof(todaysDate));
-            console.log('timestampDate: ', date);
-            console.log('Days since last ping: ', daysSinceLastPing);
-            if (daysSinceLastPing) {
-              timeLabel = (daysSinceLastPing === 1 ) ? `${daysSinceLastPing} day` : `${daysSinceLastPing} days`; 
-            } else if (daysSinceLastPing === 0 && h) {
-              timeLabel = (h === 1) ? `${h} hour` : `${h} hours`;
-            } else {
-              timeLabel = `${m} minutes`; 
-            }
-            console.log('Time since last ping: ', timeLabel);
-          }
-          
-          tableRows.push(
             <TableRow key={i}>
               <TableRowColumn>{statusDisplay(row.status)}</TableRowColumn>
               <TableRowColumn>{row.manufacturer + ' ' + row.model}</TableRowColumn>
               <TableRowColumn>{row.facility.name}</TableRowColumn>
               <TableRowColumn>{row.facility.district}</TableRowColumn>
               <TableRowColumn>{this.precisionRound(row.holdover, 0)}</TableRowColumn>
-              <TableRowColumn>{timeLabel}</TableRowColumn>
+              <TableRowColumn>
+                <div style={( this.timechecker48(row.temperature) ) ? styles.redPing : styles.clearPing } >
+                  { (row.temperature && row.temperature.timestamp) ? moment(row.temperature.timestamp + "Z").fromNow() : "-" }
+                </div>
+              </TableRowColumn>
               <TableRowColumn>{tempuratureShape(Math.round(row.temperature.value))}</TableRowColumn>
+              { console.log( moment(row.temperature.timestamp + "Z") ) }
             </TableRow>
-          )
-        })
-        return tableRows;
+        )
       }
     }
   }
@@ -386,7 +273,7 @@ export default class Moh extends Component {
         that.setState({devices: json});
       }
     };
-    xhttp.open("GET", "http://20.36.19.106:9000/sensor", true);
+    xhttp.open("GET", "http://20.36.19.106:9003/sensor", true);
     xhttp.setRequestHeader('Authorization','Basic Z2xvYmFsLmdvb2Q6fkYoRzNtKUtQeT8/ZHd4fg==');
     xhttp.send();
   }
@@ -402,7 +289,7 @@ export default class Moh extends Component {
         that.setState({devices: null});
       }
     };
-    xhttp.open("POST", "http://20.36.19.106:9000/demo/clear/samples", true);
+    xhttp.open("POST", "http://20.36.19.106:9003/demo/clear/samples", true);
     xhttp.setRequestHeader('Authorization','Basic Z2xvYmFsLmdvb2Q6fkYoRzNtKUtQeT8/ZHd4fg==');
     xhttp.send();
   }
@@ -423,8 +310,14 @@ export default class Moh extends Component {
                   style={{width: "50vw", marginLeft: "auto", marginRight: "auto"}}
                   inkBarStyle={{backgroundColor:"#a21a1e", height:"4px", marginTop:"-4px"}}>
               <Tab label="Devices" >
+                <DeviceDetail
+                    isOpen={this.state.isDetailOpen}
+                    handleOpen={this.handleDetailOpen}
+                    handleClose={this.handleDetailClose}
+                    device={this.state.selectedDevice}
+                />
                 <div style={styles.deviceTableHeader}>
-                  <Table>
+                  <Table onRowSelection={this.deviceRowClick}>
                     <TableHeader displaySelectAll={false} enableSelectAll={false} adjustForCheckbox={false}>
                       <TableRow>
                         <TableHeaderColumn>Status</TableHeaderColumn>
