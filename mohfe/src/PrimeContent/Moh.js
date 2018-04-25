@@ -360,7 +360,7 @@ export default class Moh extends Component {
             }
             console.log('Time since last ping: ', timeLabel);
           }
-          
+
           tableRows.push(
             <TableRow key={i}>
               <TableRowColumn>{statusDisplay(row.status)}</TableRowColumn>
