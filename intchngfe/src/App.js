@@ -49,7 +49,7 @@ export default class App extends Component {
     return (
       <MuiThemeProvider muiTheme={muiTheme}>
         <TopHead content={this.state.content} contentChange={this.handleContentChange} />
-        <PrimeContent content={this.state.content} />
+        <div style={{flex: "1"}}><PrimeContent content={this.state.content} /></div>
         <FootPane />
       </MuiThemeProvider>
     )
