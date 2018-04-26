@@ -27,3 +27,6 @@ stages:
       - docker tag global-good/report-tools:latest l11gg.azurecr.io/reporting/report-tools:latest
       - docker push l11gg.azurecr.io/reporting/report-tools:$GIT_HASH_SHORT
       - docker push l11gg.azurecr.io/reporting/report-tools:latest
+  - name: deploy!
+    script:
+      - ssh -i ~/.ssh/GG_SSH_KEY level11@20.36.19.106 ./do-deploy.sh
