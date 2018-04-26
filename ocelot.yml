@@ -3,7 +3,7 @@ buildTool: docker
 branches:
   - ALL
 stages:
-  - name: npm build
+  - name: build
     script:
       - bash npm_build.sh intchngfe
       - bash npm_build.sh mohfe
