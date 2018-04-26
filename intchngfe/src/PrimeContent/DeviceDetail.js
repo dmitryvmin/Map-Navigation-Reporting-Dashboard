@@ -50,12 +50,12 @@ export default class DeviceDetail extends Component {
             <h2>Facility: {facility}</h2>
             <p>ID: {id}</p>
             <p>Status: {status}</p>
-            <p>Brand: {brand}</p>
+            <p>Device: {brand}</p>
             <p>Country: {country}</p>
             <p>District: {district}</p>
             <p>Holdover: {holdover}</p>
             <p>Last Ping: {lastping}</p>
-            <p>Tempurature: {tempurature}</p>
+            <p>Tempurature: {tempurature}&deg;C</p>
           </div>
         </Dialog>
       </div>

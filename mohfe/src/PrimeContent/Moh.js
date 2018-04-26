@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {Tabs, Tab} from 'material-ui/Tabs';
-//import FlatButton from 'material-ui/FlatButton';
+import GGConsts from '../Constants';
 import RaisedButton from 'material-ui/RaisedButton';
 import moment from 'moment-timezone';
 import {
@@ -271,7 +271,7 @@ export default class Moh extends Component {
         that.setState({devices: json});
       }
     };
-    xhttp.open("GET", "http://20.36.19.106:9000/sensor", true);
+    xhttp.open("GET", `${GGConsts.API}:${GGConsts.REPORTING_PORT}/sensor`, true);
     xhttp.setRequestHeader('Authorization','Basic Z2xvYmFsLmdvb2Q6fkYoRzNtKUtQeT8/ZHd4fg==');
     xhttp.send();
   }
@@ -287,13 +287,14 @@ export default class Moh extends Component {
         that.setState({devices: null});
       }
     };
-    xhttp.open("POST", "http://20.36.19.106:9000/demo/clear/samples", true);
+    xhttp.open("POST", `${GGConsts.API}:${GGConsts.REPORTING_PORT}/demo/clear/samples`, true);
     xhttp.setRequestHeader('Authorization','Basic Z2xvYmFsLmdvb2Q6fkYoRzNtKUtQeT8/ZHd4fg==');
     xhttp.send();
   }
 
   componentDidMount() {
     this.loadDevices();
+    setInterval(this.loadDevices, 30000);
   }
 
   render () {
