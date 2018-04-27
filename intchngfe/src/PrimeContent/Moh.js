@@ -1,19 +1,28 @@
 import React, { Component } from 'react';
 import {Tabs, Tab} from 'material-ui/Tabs';
-import GGConsts from '../Constants';
+//import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import moment from 'moment-timezone';
-import {
-  Table,
-  TableBody,
-  TableHeader,
-  TableHeaderColumn,
-  TableRow,
-  TableRowColumn,
-} from 'material-ui/Table';
+// import {
+//   Table,
+//   TableBody,
+//   TableHeader,
+//   TableHeaderColumn,
+//   TableRow,
+//   TableRowColumn,
+// } from 'material-ui/Table';
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import DeviceDetail from './DeviceDetail';
 import 'typeface-roboto'; //Font
+import Table, {
+    TableBody,
+    TableCell,
+    TableHead,
+    TableRow,
+    TableSortLabel,
+} from 'material-ui-next/Table';
+
+import Tooltip from 'material-ui-next/Tooltip';
 
 const styles = {
   headline: {
@@ -147,6 +156,15 @@ const styles = {
   },
 };
 
+const columnData: any = [
+    { id: '', label: 'Status'},
+    { id: '', label: 'Brand/Model'},
+    { id: '', label: 'Facility'},
+    { id: '', label: 'State/District'},
+    { id: '', label: 'Holdover Days'},    
+    { id: '', label: 'Last Ping'},    
+    { id: '', label: 'Last Temp (C)'}
+]
 
 const statusDisplay = (statusString) => {
   switch (statusString) {
@@ -187,6 +205,8 @@ export default class Moh extends Component {
       devices: null,
       isDetailOpen: false,
       selectedDevice: null,
+      order: 'asc',
+      orderBy: 'messagesPerWeek'
     }
     this.loadDevices = this.loadDevices.bind(this);
     this.deviceRowClick = this.deviceRowClick.bind(this);
@@ -228,41 +248,7 @@ export default class Moh extends Component {
     this.setState({isDetailOpen: false, selectedDevice: null});
   };
 
-  tableDisplay = () => {
-    if (this.state.devices === null ||
-        (Object.keys(this.state.devices).length === 0
-         && this.state.devices.constructor === Object))
-    {
-      return <TableRow key="00nul00"><TableRowColumn>none</TableRowColumn></TableRow>
-    }
-    else {
-      if (this.state.devices.sensors === null ||
-          (Object.keys(this.state.devices.sensors).length === 0
-          && this.state.devices.sensors.constructor === Object))
-      {
-        return <TableRow key="00nul00"><TableRowColumn>none</TableRowColumn></TableRow>
-      }
-      else {
-        return this.state.devices.sensors.map((row, i) =>
-
-            <TableRow key={i}>
-              <TableRowColumn>{statusDisplay(row.status)}</TableRowColumn>
-              <TableRowColumn>{row.manufacturer + ' ' + row.model}</TableRowColumn>
-              <TableRowColumn>{row.facility.name}</TableRowColumn>
-              <TableRowColumn>{row.facility.district}</TableRowColumn>
-              <TableRowColumn>{this.precisionRound(row.holdover, 0)}</TableRowColumn>
-              <TableRowColumn>
-                <div style={( this.timechecker48(row.temperature) ) ? styles.redPing : styles.clearPing } >
-                  { (row.temperature && row.temperature.timestamp) ? moment(row.temperature.timestamp + "Z").fromNow() : "-" }
-                </div>
-              </TableRowColumn>
-              <TableRowColumn>{tempuratureShape(Math.round(row.temperature.value))}</TableRowColumn>
-              { console.log( moment(row.temperature.timestamp + "Z") ) }
-            </TableRow>
-        )
-      }
-    }
-  }
+  
 
   loadDevices() {
     var xhttp = new XMLHttpRequest();
@@ -273,7 +259,7 @@ export default class Moh extends Component {
         that.setState({devices: json});
       }
     };
-    xhttp.open("GET", `${GGConsts.API}:${GGConsts.AUCMA_PORT}/sensor`, true);
+    xhttp.open("GET", "http://20.36.19.106:9003/sensor", true);
     xhttp.setRequestHeader('Authorization','Basic Z2xvYmFsLmdvb2Q6fkYoRzNtKUtQeT8/ZHd4fg==');
     xhttp.send();
   }
@@ -289,17 +275,23 @@ export default class Moh extends Component {
         that.setState({devices: null});
       }
     };
-    xhttp.open("POST", `${GGConsts.API}:${GGConsts.AUCMA_PORT}/demo/clear/samples`, true);
+    xhttp.open("POST", "http://20.36.19.106:9003/demo/clear/samples", true);
     xhttp.setRequestHeader('Authorization','Basic Z2xvYmFsLmdvb2Q6fkYoRzNtKUtQeT8/ZHd4fg==');
     xhttp.send();
   }
 
+   createSortHandler = (property: any) => (event: any) => {
+        // this.handleRequestSort(event, property);
+    };
+
   componentDidMount() {
     this.loadDevices();
-    setInterval(this.loadDevices, 30000);
   }
 
   render () {
+    const { order, orderBy } = this.state;
+    console.log('DATA:', this.state.devices && this.state.devices.sensors);
+
     return (
       <div style={styles.middlePane}>
         <div style={styles.idBar}>
@@ -318,22 +310,70 @@ export default class Moh extends Component {
                     device={this.state.selectedDevice}
                 />
                 <div style={styles.deviceTableHeader}>
-                  <Table onRowSelection={this.deviceRowClick}>
-                    <TableHeader displaySelectAll={false} enableSelectAll={false} adjustForCheckbox={false}>
+                
+
+                 <Table>
+                  <TableHead>
                       <TableRow>
-                        <TableHeaderColumn>Status</TableHeaderColumn>
-                        <TableHeaderColumn>Brand/Model</TableHeaderColumn>
-                        <TableHeaderColumn>Facility</TableHeaderColumn>
-                        <TableHeaderColumn>State/District</TableHeaderColumn>
-                        <TableHeaderColumn>Holdover Days</TableHeaderColumn>
-                        <TableHeaderColumn>Last Ping</TableHeaderColumn>
-                        <TableHeaderColumn>Last Temp (C)</TableHeaderColumn>
+                          {columnData.map((column: any) => {
+                              return (
+                                  <TableCell key={column.label}
+                                             sortDirection={orderBy === column.id ? order : false}>
+                                      <TableSortLabel onClick={this.createSortHandler(column.id)}>{column.label}</TableSortLabel>
+                                  </TableCell>
+                              )
+                          }, this)}
                       </TableRow>
-                    </TableHeader>
-                    <TableBody displayRowCheckbox={false}>
-                      {this.tableDisplay()}
-                    </TableBody>
-                  </Table>
+                  </TableHead>
+
+                  <TableBody>
+                    {this.state.devices && this.state.devices.sensors && this.state.devices.sensors.map((d: any) => {
+
+                    let lastPing = (d.temperature && d.temperature.timestamp) ? moment(d.temperature.timestamp + "Z").fromNow() : "-";
+                    let lastTemp = tempuratureShape(Math.round(d.temperature.value));
+                    return (
+                        <TableRow key={d.label} hover>
+                            <TableCell>
+                                <Tooltip title={d.status} placement="bottom" enterDelay={300}>
+                                    <div>{statusDisplay(d.status)}</div>
+                                </Tooltip>
+                            </TableCell>
+                            <TableCell>
+                              <Tooltip title={`${d.manufacturer} ${d.model}`} placement="bottom" enterDelay={300}>
+                                <div>{`${d.manufacturer} ${d.model}`}</div>
+                              </Tooltip>
+                            </TableCell>
+                            <TableCell>
+                              <Tooltip title={d.facility.name} placement="bottom" enterDelay={300}>
+                                <div>{d.facility.name}</div>
+                              </Tooltip>
+                            </TableCell>
+                            <TableCell>
+                              <Tooltip title={d.facility.district} placement="bottom" enterDelay={300}>
+                                <div>{d.facility.district}</div>
+                              </Tooltip>
+                            </TableCell>
+                             <TableCell>
+                              <Tooltip title={this.precisionRound(d.holdover, 0)} placement="bottom" enterDelay={300}>
+                                <div>{this.precisionRound(d.holdover, 0)}</div>
+                              </Tooltip>
+                            </TableCell>
+                            <TableCell>
+                              <Tooltip title={lastPing} placement="bottom" enterDelay={300}>
+                                <div style={( this.timechecker48(d.temperature) ) ? styles.redPing : styles.clearPing }>{lastPing}</div>
+                              </Tooltip>
+                            </TableCell>
+                            <TableCell>
+                              <Tooltip title={lastTemp} placement="bottom" enterDelay={300}>
+                                <div>{lastTemp}</div>
+                              </Tooltip>
+                            </TableCell>
+                        </TableRow>
+                    )})}
+                  </TableBody>
+
+                </Table>
+
               </div>
 
               </Tab>
