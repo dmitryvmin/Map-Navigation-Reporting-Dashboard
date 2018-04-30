@@ -14,169 +14,37 @@ import {
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import DeviceDetail from './DeviceDetail';
 import 'typeface-roboto'; // Font
-
-const styles = {
-  headline: {
-    fontSize: 24,
-    paddingTop: 16,
-    marginBottom: 12,
-    fontWeight: 400,
-  },
-  idBar: {
-    backgroundColor: '#51326c',
-    width: '100%',
-    textAlign: 'center',
-    paddingTop: '14px',
-    paddingBottom: '24px',
-    lineHeight: '30px',
-    color: 'white',
-  },
-  idBarH: {
-    fontWeight: '500',
-    marginTop: '20px',
-    marginBottom: '40px',
-  },
-  wrapwrap: {
-    width: '100%',
-    margin: '0 auto',
-    marginTop: '-48px'
-  },
-  wrapTabs: {
-    width: '80vw',
-    margin: '0 auto',
-  },
-  tabMod: {
-    marginTop: '-48px',
-  },
-  deviceTableHeader: {
-    margin: "0",
-  },
-  halfCard: {
-    width: '48%',
-    margin: '24px 1%',
-    display: 'inline-block',
-  },
-  thirdCard: {
-    width: '31%',
-    margin: '24px 1%',
-    display: 'inline-block',
-  },
-  fourthCard: {
-    width: '23%',
-    margin: '24px 1%',
-    display: 'inline-block',
-  },
-  greendot: {
-    height: '20px',
-    width: '20px',
-    backgroundColor: 'green',
-    border: '1px solid #aaa',
-    borderRadius: '20px',
-  },
-  yellowdot: {
-    height: '20px',
-    width: '20px',
-    backgroundColor: 'yellow',
-    border: '1px solid #aaa',
-    borderRadius: '20px',
-  },
-  reddot: {
-    height: '20px',
-    width: '20px',
-    backgroundColor: 'red',
-    border: '1px solid #aaa',
-    borderRadius: '20px',
-  },
-  cleardot: {
-    height: '20px',
-    width: '20px',
-    backgroundColor: 'white',
-    border: '1px solid #aaa',
-    borderRadius: '20px',
-  },
-  coldtemp: {
-    padding: '5px',
-    backgroundColor: 'skyblue',
-    color: 'white',
-    maxWidth: '50px',
-    textAlign: 'center',
-    borderRadius: '4px',
-  },
-  hottemp: {
-    padding: '5px',
-    backgroundColor: 'red',
-    color: 'white',
-    maxWidth: '50px',
-    textAlign: 'center',
-    borderRadius: '4px',
-  },
-  warntemp: {
-    padding: '5px',
-    backgroundColor: 'orange',
-    color: 'white',
-    maxWidth: '50px',
-    textAlign: 'center',
-    borderRadius: '4px',
-  },
-  goodtemp: {
-    padding: '5px',
-    backgroundColor: 'white',
-    color: 'black',
-    maxWidth: '50px',
-    textAlign: 'center',
-    borderRadius: '4px',
-  },
-  middlePane: {
-    flex: '1'
-  },
-  redPing: {
-    padding: '5px',
-    backgroundColor: 'red',
-    color: 'white',
-    maxWidth: '80px',
-    textAlign: 'center',
-    borderRadius: '4px',
-  },
-  clearPing: {
-    padding: '5px',
-    backgroundColor: 'white',
-    color: 'black',
-    maxWidth: '80px',
-    textAlign: 'center',
-    borderRadius: '4px',
-  },
-};
-
+import {dstyles} from '../Constants/deviceStyle';
 
 const statusDisplay = (statusString) => {
   switch (statusString) {
     case "red":
-      return <div style={styles.reddot} />
+      return <div style={dstyles.reddot} />
     case "yellow":
-      return <div style={styles.yellowdot} />
+      return <div style={dstyles.yellowdot} />
     case "green":
-      return <div style={styles.greendot} />
+      return <div style={dstyles.greendot} />
     default:
-      return <div style={styles.cleardot} />
+      return <div style={dstyles.cleardot} />
   }
 }
 
 const tempuratureShape = (temperature) => {
   const tempNum = parseFloat(temperature);
   if ( tempNum < 2.0 ) {
-    return <div style={styles.coldtemp}>{temperature}&deg;</div>;
+    return <div style={dstyles.coldtemp}>{temperature}&deg;</div>;
   }
   else if (tempNum > 8.0 ) {
-    return <div style={styles.hottemp}>{temperature}&deg;</div>;
+    return <div style={dstyles.hottemp}>{temperature}&deg;</div>;
   }
   else if (tempNum > 6.0 && tempNum <= 8.0 ) {
-    return <div style={styles.warntemp}>{temperature}&deg;</div>;
+    return <div style={dstyles.warntemp}>{temperature}&deg;</div>;
   }
   else if (tempNum >= 2.0 && tempNum < 4.0 ) {
-    return <div style={styles.warntemp}>{temperature}&deg;</div>;
+    return <div style={dstyles.warntemp}>{temperature}&deg;</div>;
   }
   else {
-    return <div style={styles.goodtemp}>{temperature}&deg;</div>;
+    return <div style={dstyles.goodtemp}>{temperature}&deg;</div>;
   }
 }
 
@@ -195,6 +63,9 @@ export default class Moh extends Component {
   }
 
   precisionRound = (number, precision) => {
+    if (isNaN(number)) {
+      return '-';
+    }
     var factor = Math.pow(10, precision);
     return Math.round(number * factor) / factor;
   }
@@ -245,17 +116,17 @@ export default class Moh extends Component {
       else {
         return this.state.devices.sensors.map((row, i) =>
             <TableRow key={i}>
-              <TableRowColumn>{statusDisplay(row.status)}</TableRowColumn>
-              <TableRowColumn>{row.manufacturer + ' ' + row.model}</TableRowColumn>
+              <TableRowColumn style={dstyles.statusColumn}>{statusDisplay(row.status)}</TableRowColumn>
+              <TableRowColumn style={dstyles.deviceColumn}>{row.manufacturer + ' ' + row.model}</TableRowColumn>
               <TableRowColumn>{row.facility.name}</TableRowColumn>
-              <TableRowColumn>{row.facility.district}</TableRowColumn>
-              <TableRowColumn>{this.precisionRound(row.holdover, 0)}</TableRowColumn>
-              <TableRowColumn>
-                <div style={( this.timechecker48(row.temperature) ) ? styles.redPing : styles.clearPing } >
+              <TableRowColumn style={dstyles.localeColumn}>{row.facility.district}</TableRowColumn>
+              <TableRowColumn style={dstyles.holdoverColumn}>{this.precisionRound(row.holdover, 0)}</TableRowColumn>
+              <TableRowColumn style={dstyles.lastpingColumn}>
+                <div style={( this.timechecker48(row.temperature) ) ? dstyles.redPing : dstyles.clearPing } >
                   { (row.temperature && row.temperature.timestamp) ? moment(row.temperature.timestamp + "Z").fromNow() : "-" }
                 </div>
               </TableRowColumn>
-              <TableRowColumn>{tempuratureShape(Math.round(row.temperature.value))}</TableRowColumn>
+              <TableRowColumn style={dstyles.holdoverColumn}>{tempuratureShape(Math.round(row.temperature.value))}</TableRowColumn>
             </TableRow>
         )
       }
@@ -299,12 +170,12 @@ export default class Moh extends Component {
 
   render () {
     return (
-      <div style={styles.middlePane}>
-        <div style={styles.idBar}>
-          <h1 style={styles.idBarH}>Kenya Moh {this.props.content}</h1>
+      <div style={dstyles.middlePane}>
+        <div style={dstyles.idBar}>
+          <h1 style={dstyles.idBarH}>Kenya Moh {this.props.content}</h1>
         </div>
-        <div style={styles.wrapwrap}>
-          <div style={styles.wrapTabs} >
+        <div style={dstyles.wrapwrap}>
+          <div style={dstyles.wrapTabs} >
             <Tabs tabItemContainerStyle={{backgroundColor:"#51326C"}}
                   style={{width: "50vw", marginLeft: "auto", marginRight: "auto"}}
                   inkBarStyle={{backgroundColor:"#B897D5", height:"4px", marginTop:"-4px"}}>
@@ -315,17 +186,17 @@ export default class Moh extends Component {
                     handleClose={this.handleDetailClose}
                     device={this.state.selectedDevice}
                 />
-                <div style={styles.deviceTableHeader}>
+                <div style={dstyles.deviceTableHeader}>
                   <Table onRowSelection={this.deviceRowClick}>
                     <TableHeader displaySelectAll={false} enableSelectAll={false} adjustForCheckbox={false}>
                       <TableRow>
-                        <TableHeaderColumn>Status</TableHeaderColumn>
-                        <TableHeaderColumn>Brand/Model</TableHeaderColumn>
+                        <TableHeaderColumn style={dstyles.statusColumn}>Status</TableHeaderColumn>
+                        <TableHeaderColumn style={dstyles.deviceColumn}>Brand/Model</TableHeaderColumn>
                         <TableHeaderColumn>Facility</TableHeaderColumn>
-                        <TableHeaderColumn>State/District</TableHeaderColumn>
-                        <TableHeaderColumn>Holdover Days</TableHeaderColumn>
-                        <TableHeaderColumn>Last Ping</TableHeaderColumn>
-                        <TableHeaderColumn>Last Temp (C)</TableHeaderColumn>
+                        <TableHeaderColumn style={dstyles.localeColumn}>State/District</TableHeaderColumn>
+                        <TableHeaderColumn style={dstyles.holdoverColumn}>Holdover<br/>Days</TableHeaderColumn>
+                        <TableHeaderColumn style={dstyles.lastpingColumn}>Last<br/>Ping</TableHeaderColumn>
+                        <TableHeaderColumn style={dstyles.holdoverColumn}>Last<br/>Temp (C)</TableHeaderColumn>
                       </TableRow>
                     </TableHeader>
                     <TableBody displayRowCheckbox={false}>
@@ -344,8 +215,8 @@ export default class Moh extends Component {
                 label="Locations"
               >
                 <div>
-                  <h2 style={styles.headline}>Locations</h2>
-                  <Card style={styles.fourthCard} >
+                  <h2 style={dstyles.headline}>Locations</h2>
+                  <Card style={dstyles.fourthCard} >
                     <CardHeader
                       title="Sample"
                       subtitle="For future use"
@@ -361,7 +232,7 @@ export default class Moh extends Component {
                       Aliquam dui mauris, mattis quis lacus id, pellentesque lobortis odio.
                     </CardText>
                   </Card>
-                  <Card style={styles.fourthCard} >
+                  <Card style={dstyles.fourthCard} >
                     <CardHeader
                       title="Sample"
                       subtitle="For future use"
@@ -377,7 +248,7 @@ export default class Moh extends Component {
                       Aliquam dui mauris, mattis quis lacus id, pellentesque lobortis odio.
                     </CardText>
                   </Card>
-                  <Card style={styles.fourthCard} >
+                  <Card style={dstyles.fourthCard} >
                     <CardHeader
                       title="Sample"
                       subtitle="For future use"
@@ -393,7 +264,7 @@ export default class Moh extends Component {
                       Aliquam dui mauris, mattis quis lacus id, pellentesque lobortis odio.
                     </CardText>
                   </Card>
-                  <Card style={styles.fourthCard} >
+                  <Card style={dstyles.fourthCard} >
                     <CardHeader
                       title="Sample"
                       subtitle="For future use"
