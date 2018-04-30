@@ -280,9 +280,24 @@ export default class Moh extends Component {
     xhttp.send();
   }
 
-   createSortHandler = (property: any) => (event: any) => {
-        // this.handleRequestSort(event, property);
-    };
+
+  handleRequestSort = (event: any, property: any) => {
+      const orderBy = property;
+      let order = 'desc';
+
+      if (this.state.orderBy === property && this.state.order === 'desc') {
+          order = 'asc';
+      }
+      const sensors =
+          order === 'desc'
+              ? this.state.devices.sensors.sort((a: any, b: any) => (b[orderBy] < a[orderBy] ? -1 : 1))
+              : this.state.devices.sensors.sort((a: any, b: any) => (a[orderBy] < b[orderBy] ? -1 : 1));
+      this.setState({ order, orderBy });
+  };
+
+  createSortHandler = (property: any) => (event: any) => {
+      this.handleRequestSort(event, property);
+  };
 
   componentDidMount() {
     this.loadDevices();
@@ -290,8 +305,6 @@ export default class Moh extends Component {
 
   render () {
     const { order, orderBy } = this.state;
-    console.log('DATA:', this.state.devices && this.state.devices.sensors);
-
     return (
       <div style={styles.middlePane}>
         <div style={styles.idBar}>
@@ -311,15 +324,18 @@ export default class Moh extends Component {
                 />
                 <div style={styles.deviceTableHeader}>
                 
-
-                 <Table>
+                 <Table style={{backgroundColor: 'white', marginTop: '15px'}}>
                   <TableHead>
                       <TableRow>
-                          {columnData.map((column: any) => {
+                          {columnData.map((column: any) => {  
+
+                          console.log('column', column.label);                
                               return (
                                   <TableCell key={column.label}
-                                             sortDirection={orderBy === column.id ? order : false}>
-                                      <TableSortLabel onClick={this.createSortHandler(column.id)}>{column.label}</TableSortLabel>
+                                             onClick={(column.label === 'Brand/Model') ? this.createSortHandler(column.label) : null}
+                                             sortDirection={orderBy === column.label ? order : false}>
+                                      <TableSortLabel active={orderBy === column.label}
+                                                      direction={order}>{column.label}</TableSortLabel>
                                   </TableCell>
                               )
                           }, this)}
@@ -334,37 +350,37 @@ export default class Moh extends Component {
                     return (
                         <TableRow key={d.label} hover>
                             <TableCell>
-                                <Tooltip title={d.status} placement="bottom" enterDelay={300}>
+                                <Tooltip title={d.status} placement="bottom-start" enterDelay={300}>
                                     <div>{statusDisplay(d.status)}</div>
                                 </Tooltip>
                             </TableCell>
                             <TableCell>
-                              <Tooltip title={`${d.manufacturer} ${d.model}`} placement="bottom" enterDelay={300}>
+                              <Tooltip title={`${d.manufacturer} ${d.model}`} placement="bottom-start" enterDelay={300}>
                                 <div>{`${d.manufacturer} ${d.model}`}</div>
                               </Tooltip>
                             </TableCell>
                             <TableCell>
-                              <Tooltip title={d.facility.name} placement="bottom" enterDelay={300}>
+                              <Tooltip title={d.facility.name} placement="bottom-start" enterDelay={300}>
                                 <div>{d.facility.name}</div>
                               </Tooltip>
                             </TableCell>
                             <TableCell>
-                              <Tooltip title={d.facility.district} placement="bottom" enterDelay={300}>
+                              <Tooltip title={d.facility.district} placement="bottom-start" enterDelay={300}>
                                 <div>{d.facility.district}</div>
                               </Tooltip>
                             </TableCell>
                              <TableCell>
-                              <Tooltip title={this.precisionRound(d.holdover, 0)} placement="bottom" enterDelay={300}>
+                              <Tooltip title={this.precisionRound(d.holdover, 0)} placement="bottom-start" enterDelay={300}>
                                 <div>{this.precisionRound(d.holdover, 0)}</div>
                               </Tooltip>
                             </TableCell>
                             <TableCell>
-                              <Tooltip title={lastPing} placement="bottom" enterDelay={300}>
+                              <Tooltip title={lastPing} placement="bottom-start" enterDelay={300}>
                                 <div style={( this.timechecker48(d.temperature) ) ? styles.redPing : styles.clearPing }>{lastPing}</div>
                               </Tooltip>
                             </TableCell>
                             <TableCell>
-                              <Tooltip title={lastTemp} placement="bottom" enterDelay={300}>
+                              <Tooltip title={lastTemp} placement="bottom-start" enterDelay={300}>
                                 <div>{lastTemp}</div>
                               </Tooltip>
                             </TableCell>
