@@ -301,6 +301,7 @@ export default class Moh extends Component {
 
   componentDidMount() {
     this.loadDevices();
+    setInterval(this.loadDevices, 30000);
   }
 
   render () {
@@ -348,7 +349,7 @@ export default class Moh extends Component {
                     let lastPing = (d.temperature && d.temperature.timestamp) ? moment(d.temperature.timestamp + "Z").fromNow() : "-";
                     let lastTemp = tempuratureShape(Math.round(d.temperature.value));
                     return (
-                        <TableRow key={d.label} hover>
+                        <TableRow key={d.label} hover onClick={this.deviceRowClick}>
                             <TableCell>
                                 <Tooltip title={d.status} placement="bottom-start" enterDelay={300}>
                                     <div>{statusDisplay(d.status)}</div>
