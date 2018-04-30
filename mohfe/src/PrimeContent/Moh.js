@@ -219,7 +219,7 @@ export default class Moh extends Component {
                 />
                 <div style={dstyles.deviceTableHeader}>
 
-                 <Table style={{backgroundColor: 'white', marginTop: '15px', tableLayout: 'fixed'}}>
+                 <Table style={{backgroundColor: 'white', marginTop: '15px', tableLayout: 'fixed', minWidth: '1400', width: 'auto'}}>
                   <TableHead>
                       <TableRow>
                           {columnData.map((column: any) => {

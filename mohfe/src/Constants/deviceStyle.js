@@ -136,32 +136,35 @@ export const dstyles = {
   statusColumn: {
     width: '5%',
     textAlign: 'center',
-    padding: '0',
+    padding: '0 10px',
     paddingLeft: '10px'
   },
   facilityColumn: {
     width: '25%',
-    padding: '0'
+    padding: '0 10px',
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis'
   },
   deviceColumn: {
     width: '15%',
-    padding: '0',
+    padding: '0 10px',
     paddingLeft: '15px'
   },
   localeColumn: {
     width: '15%',
-    padding: '0'
+    padding: '0 10px'
   },
   holdoverColumn: {
     width: '15%',
-    padding: '0'
+    padding: '0 10px'
   },
   lastpingColumn: {
     width: '15%',
-    padding: '0'
+    padding: '0 10px'
   },
   tempColumn: {
     width: '10%',
-    padding: '0'
+    padding: '0 10px'
   }
 };
