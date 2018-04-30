@@ -210,7 +210,7 @@ export default class Moh extends Component {
         <div style={dstyles.wrapwrap}>
           <div style={dstyles.wrapTabs} >
             <Tabs tabItemContainerStyle={{backgroundColor:"#51326C"}}
-                  style={{width: "50vw", marginLeft: "auto", marginRight: "auto"}}
+                  style={{width: "80vw", marginLeft: "auto", marginRight: "auto"}}
                   inkBarStyle={{backgroundColor:"#B897D5", height:"4px", marginTop:"-4px"}}>
               <Tab label="Devices" >
                 <DeviceDetail

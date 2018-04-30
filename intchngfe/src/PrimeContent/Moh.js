@@ -14,9 +14,7 @@ import Table,  {
     TableRow,
     TableSortLabel,
 } from 'material-ui-next/Table';
-
 import Tooltip from 'material-ui-next/Tooltip';
-
 import {dstyles} from '../Constants/deviceStyle';
 
 const columnData: any = [
@@ -28,8 +26,6 @@ const columnData: any = [
     { id: '', label: 'Last Ping'},
     { id: '', label: 'Last Temp (C)'}
 ]
-
-
 
 const statusDisplay = (statusString) => {
   switch (statusString) {
@@ -104,8 +100,8 @@ export default class Moh extends Component {
      }
   }
 
-  deviceRowClick = (selectedRows) => {
-    this.setState({isDetailOpen: true, selectedDevice: this.state.devices.sensors[selectedRows[0]]});
+ deviceRowClick = (device) => {
+    this.setState({isDetailOpen: true, selectedDevice: device });
   }
 
   handleDetailOpen = () => {
@@ -214,8 +210,8 @@ export default class Moh extends Component {
         </div>
         <div style={dstyles.wrapwrap}>
           <div style={dstyles.wrapTabs} >
-            <Tabs tabItemContainerStyle={{backgroundColor:"#e32427"}}
-                  style={{width: "50vw", marginLeft: "auto", marginRight: "auto"}}
+              <Tabs tabItemContainerStyle={{backgroundColor:"#e32427"}}
+                  style={{width: "80vw", marginLeft: "auto", marginRight: "auto"}}
                   inkBarStyle={{backgroundColor:"#a21a1e", height:"4px", marginTop:"-4px"}}>
               <Tab label="Devices" >
                 <DeviceDetail
@@ -226,80 +222,91 @@ export default class Moh extends Component {
                 />
                 <div style={dstyles.deviceTableHeader}>
 
-                 <Table style={{backgroundColor: 'white', marginTop: '15px'}}>
-                  <TableHead>
+                 <Table style={{backgroundColor: 'white', marginTop: '15px', tableLayout: 'fixed', minWidth: '1400', width: 'auto'}}>
+                       <TableHead>
                       <TableRow>
                           {columnData.map((column: any) => {
+                            let colstyle;
+                            switch(column.label) {
+                              case 'Status':
+                                colstyle = dstyles.statusColumn;
+                                break;
+                              case 'Brand/Model':
+                                colstyle = dstyles.deviceColumn;
+                                break;  
+                              case 'Facility':
+                                colstyle = dstyles.facilityColumn;
+                                break;  
+                              case 'State/District':
+                                colstyle = dstyles.localeColumn;
+                                break;  
+                              case 'Holdover Days':
+                                colstyle = dstyles.holdoverColumn;
+                                break;  
+                              case 'Last Ping':
+                                colstyle = dstyles.lastpingColumn;
+                                break;  
+                              case 'Last Temp (C)':
+                                colstyle = dstyles.tempColumn;
+                                break;
+                            } 
 
-                          console.log('column', column.label);
-                              return (
-                                  <TableCell key={column.label}
-                                             onClick={(column.label === 'Brand/Model') ? this.createSortHandler(column.label) : null}
-                                             sortDirection={orderBy === column.label ? order : false}>
-                                      <TableSortLabel active={orderBy === column.label}
-                                                      direction={order}>{column.label}</TableSortLabel>
-                                  </TableCell>
-                              )
+                            return (
+                                <TableCell key={column.label}
+                                           style={colstyle}
+                                           onClick={(column.label === 'Brand/Model') ? this.createSortHandler(column.label) : null}
+                                           sortDirection={orderBy === column.label ? order : false}>
+                                    <TableSortLabel active={orderBy === column.label}
+                                                    direction={order}>{column.label}</TableSortLabel>
+                                </TableCell>
+                            )
                           }, this)}
-{/*=======
-                <div style={dstyles.deviceTableHeader}>
-                  <Table onRowSelection={this.deviceRowClick}>
-                    <TableHeader displaySelectAll={false} enableSelectAll={false} adjustForCheckbox={false}>
-                      <TableRow>
-                        <TableHeaderColumn style={dstyles.statusColumn}>Status</TableHeaderColumn>
-                        <TableHeaderColumn style={dstyles.deviceColumn}>Brand/Model</TableHeaderColumn>
-                        <TableHeaderColumn>Facility</TableHeaderColumn>
-                        <TableHeaderColumn style={dstyles.localeColumn}>State/District</TableHeaderColumn>
-                        <TableHeaderColumn style={dstyles.holdoverColumn}>Holdover<br/>Days</TableHeaderColumn>
-                        <TableHeaderColumn style={dstyles.lastpingColumn}>Last<br/>Ping</TableHeaderColumn>
-                        <TableHeaderColumn style={dstyles.holdoverColumn}>Last<br/>Temp (C)</TableHeaderColumn>
->>>>>>> Stashed changes*/}
                       </TableRow>
                   </TableHead>
 
                   <TableBody>
                     {this.state.devices && this.state.devices.sensors && this.state.devices.sensors.map((d: any) => {
-
-                    let lastPing = (d.temperature && d.temperature.timestamp) ? moment(d.temperature.timestamp + "Z").fromNow() : "-";
-                    let lastTemp = tempuratureShape(Math.round(d.temperature.value));
-                    return (
-                        <TableRow key={d.label} hover onClick={this.deviceRowClick}>
-                            <TableCell>
-                                <Tooltip title={d.status} placement="bottom-start" enterDelay={300}>
-                                    <div>{statusDisplay(d.status)}</div>
+                      let lastPing = (d.temperature && d.temperature.timestamp) ? moment(d.temperature.timestamp + "Z").fromNow() : "-";
+                      let lastTemp = tempuratureShape(Math.round(d.temperature.value));
+                      const _onClick = () => {
+                        this.deviceRowClick(d);
+                      }
+                      return (
+                           <TableRow key={d.label} hover onClick={_onClick}>
+                              <TableCell style={dstyles.statusColumn}>
+                                  <Tooltip title={d.status} placement="bottom-start" enterDelay={300}>{statusDisplay(d.status)}</Tooltip>
+                              </TableCell>
+                              <TableCell style={dstyles.deviceColumn}>
+                                <Tooltip title={`${d.manufacturer} ${d.model}`} placement="bottom-start" enterDelay={300}>
+                                  <div>{`${d.manufacturer} ${d.model}`}</div>
                                 </Tooltip>
-                            </TableCell>
-                            <TableCell>
-                              <Tooltip title={`${d.manufacturer} ${d.model}`} placement="bottom-start" enterDelay={300}>
-                                <div>{`${d.manufacturer} ${d.model}`}</div>
-                              </Tooltip>
-                            </TableCell>
-                            <TableCell>
-                              <Tooltip title={d.facility.name} placement="bottom-start" enterDelay={300}>
-                                <div>{d.facility.name}</div>
-                              </Tooltip>
-                            </TableCell>
-                            <TableCell>
-                              <Tooltip title={d.facility.district} placement="bottom-start" enterDelay={300}>
-                                <div>{d.facility.district}</div>
-                              </Tooltip>
-                            </TableCell>
-                             <TableCell>
-                              <Tooltip title={this.precisionRound(d.holdover, 0)} placement="bottom-start" enterDelay={300}>
-                                <div>{this.precisionRound(d.holdover, 0)}</div>
-                              </Tooltip>
-                            </TableCell>
-                            <TableCell>
-                              <Tooltip title={lastPing} placement="bottom-start" enterDelay={300}>
-                                <div style={( this.timechecker48(d.temperature) ) ? dstyles.redPing : dstyles.clearPing }>{lastPing}</div>
-                              </Tooltip>
-                            </TableCell>
-                            <TableCell>
-                              <Tooltip title={lastTemp} placement="bottom-start" enterDelay={300}>
-                                <div>{lastTemp}</div>
-                              </Tooltip>
-                            </TableCell>
-                        </TableRow>
+                              </TableCell>
+                              <TableCell style={dstyles.facilityColumn}>
+                                <Tooltip title={d.facility.name} placement="bottom-start" enterDelay={300}>
+                                  <div>{d.facility.name}</div>
+                                </Tooltip>
+                              </TableCell>
+                              <TableCell style={dstyles.localeColumn}>
+                                <Tooltip title={d.facility.district} placement="bottom-start" enterDelay={300}>
+                                  <div>{d.facility.district}</div>
+                                </Tooltip>
+                              </TableCell>
+                               <TableCell style={dstyles.holdoverColumn}>
+                                <Tooltip title={this.precisionRound(d.holdover, 0)} placement="bottom-start" enterDelay={300}>
+                                  <div>{this.precisionRound(d.holdover, 0)}</div>
+                                </Tooltip>
+                              </TableCell>
+                              <TableCell style={dstyles.lastpingColumn}>
+                                <Tooltip title={lastPing} placement="bottom-start" enterDelay={300}>
+                                  <div style={( this.timechecker48(d.temperature) ) ? dstyles.redPing : dstyles.clearPing }>{lastPing}</div>
+                                </Tooltip>
+                              </TableCell>
+                              <TableCell style={dstyles.tempColumn}>
+                                <Tooltip title={lastTemp} placement="bottom-start" enterDelay={300}>
+                                  <div>{lastTemp}</div>
+                                </Tooltip>
+                              </TableCell>
+                          </TableRow>
                     )})}
                   </TableBody>
 
@@ -308,11 +315,7 @@ export default class Moh extends Component {
               </div>
 
               </Tab>
-              {/*<Tab label="Reports" >
-                <div>
-
-                </div>
-              </Tab>*/}
+      
               <Tab
                 label="Locations"
               >
