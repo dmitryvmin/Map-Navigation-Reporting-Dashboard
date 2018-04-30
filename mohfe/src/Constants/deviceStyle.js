@@ -33,6 +33,8 @@ export const dstyles = {
   },
   deviceTableHeader: {
     margin: "0",
+    width: "100%",
+    overflowX: "auto"
   },
   halfCard: {
     width: '48%',
@@ -57,32 +59,28 @@ export const dstyles = {
     width: '20px',
     backgroundColor: 'green',
     border: '1px solid #aaa',
-    borderRadius: '20px',
-    margin: '0 auto',
+    borderRadius: '20px'
   },
   yellowdot: {
     height: '20px',
     width: '20px',
     backgroundColor: 'yellow',
     border: '1px solid #aaa',
-    borderRadius: '20px',
-    margin: '0 auto',
+    borderRadius: '20px'
   },
   reddot: {
     height: '20px',
     width: '20px',
     backgroundColor: 'red',
     border: '1px solid #aaa',
-    borderRadius: '20px',
-    margin: '0 auto',
+    borderRadius: '20px'
   },
   cleardot: {
     height: '20px',
     width: '20px',
     backgroundColor: 'white',
     border: '1px solid #aaa',
-    borderRadius: '20px',
-    margin: '0 auto',
+    borderRadius: '20px'
   },
   coldtemp: {
     padding: '5px',
@@ -136,30 +134,34 @@ export const dstyles = {
     borderRadius: '4px',
   },
   statusColumn: {
-    width: '50px',
+    width: '5%',
     textAlign: 'center',
-    paddingLeft: '2px',
-    paddingRight: '2px',
+    padding: '0',
+    paddingLeft: '10px'
+  },
+  facilityColumn: {
+    width: '25%',
+    padding: '0'
   },
   deviceColumn: {
-    width: '150px',
-    paddingLeft: '2px',
-    paddingRight: '2px',
+    width: '15%',
+    padding: '0',
+    paddingLeft: '15px'
   },
   localeColumn: {
-    width: '150px',
-    paddingLeft: '2px',
-    paddingRight: '2px',
+    width: '15%',
+    padding: '0'
   },
   holdoverColumn: {
-    width: '50px',
-    paddingLeft: '2px',
-    paddingRight: '2px',
+    width: '15%',
+    padding: '0'
   },
   lastpingColumn: {
-      width: '80px',
-      paddingLeft: '2px',
-      paddingRight: '2px',
-      textAlign: 'center',
+    width: '15%',
+    padding: '0'
   },
+  tempColumn: {
+    width: '10%',
+    padding: '0'
+  }
 };

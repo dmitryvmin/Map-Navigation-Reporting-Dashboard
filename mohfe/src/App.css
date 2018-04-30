@@ -22,3 +22,7 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+.MuiTableCell-root-8 {
+  padding: 0 !important;
+}
