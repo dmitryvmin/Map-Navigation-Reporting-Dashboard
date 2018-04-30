@@ -100,8 +100,8 @@ export default class Moh extends Component {
      }
   }
 
-  deviceRowClick = (selectedRows) => {
-    this.setState({isDetailOpen: true, selectedDevice: this.state.devices.sensors[selectedRows[0]]});
+  deviceRowClick = (device) => {
+    this.setState({isDetailOpen: true, selectedDevice: device });
   }
 
   handleDetailOpen = () => {
@@ -183,11 +183,13 @@ export default class Moh extends Component {
       if (this.state.orderBy === property && this.state.order === 'desc') {
           order = 'asc';
       }
+      console.log('Sorting: ', this.state.devices.sensors);
       const sensors =
           order === 'desc'
               ? this.state.devices.sensors.sort((a: any, b: any) => (b[orderBy] < a[orderBy] ? -1 : 1))
               : this.state.devices.sensors.sort((a: any, b: any) => (a[orderBy] < b[orderBy] ? -1 : 1));
       this.setState({ order, orderBy });
+
   };
 
   createSortHandler = (property: any) => (event: any) => {
@@ -265,9 +267,11 @@ export default class Moh extends Component {
                     {this.state.devices && this.state.devices.sensors && this.state.devices.sensors.map((d: any, i: any) => {
                       let lastPing = (d.temperature && d.temperature.timestamp) ? moment(d.temperature.timestamp + "Z").fromNow() : "-";
                       let lastTemp = tempuratureShape(Math.round(d.temperature.value));
-
+                      const _onClick = () => {
+                        this.deviceRowClick(d);
+                      }
                       return (
-                          <TableRow key={d.label} hover onClick={this.deviceRowClick}>
+                          <TableRow key={d.label} hover onClick={_onClick}>
                               <TableCell style={dstyles.statusColumn}>
                                   <Tooltip title={d.status} placement="bottom-start" enterDelay={300}>{statusDisplay(d.status)}</Tooltip>
                               </TableCell>
