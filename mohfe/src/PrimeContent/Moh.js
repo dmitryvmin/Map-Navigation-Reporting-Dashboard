@@ -84,6 +84,7 @@ export default class Moh extends Component {
   }
 
   timechecker48 = (rowtemp) => {
+      console.log('rowtemp: ', rowtemp);
       if (rowtemp && rowtemp.timestamp) {
         let ping = moment(rowtemp.timestamp + "Z");
         let now = moment(Date.now());
@@ -183,7 +184,7 @@ export default class Moh extends Component {
       if (this.state.orderBy === property && this.state.order === 'desc') {
           order = 'asc';
       }
-      console.log('Sorting: ', this.state.devices.sensors);
+      // console.log('Sorting: ', this.state.devices.sensors);
       const sensors =
           order === 'desc'
               ? this.state.devices.sensors.sort((a: any, b: any) => (b[orderBy] < a[orderBy] ? -1 : 1))
