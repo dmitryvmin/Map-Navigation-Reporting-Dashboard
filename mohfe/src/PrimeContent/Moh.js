@@ -7,6 +7,7 @@ import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import DeviceDetail from './DeviceDetail';
 import 'typeface-roboto'; // Font
 import {dstyles} from '../Constants/deviceStyle';
+import Alert from './../Alert';
 
 import Table,  {
     TableBody,
@@ -204,6 +205,8 @@ export default class Moh extends Component {
   render () {
     const { order, orderBy } = this.state;
     return (
+      <div>
+        <Alert />
         <div style={dstyles.middlePane}>
         <div style={dstyles.idBar}>
           <h1 style={dstyles.idBarH}>Kenya Moh</h1>
@@ -392,6 +395,7 @@ export default class Moh extends Component {
             </Tabs>
           </div>
         </div>
+      </div>
       </div>
       )
     }
