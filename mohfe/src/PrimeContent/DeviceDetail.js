@@ -6,6 +6,22 @@ import moment from 'moment-timezone';
 import 'typeface-roboto'; // Font
 import {dstyles} from '../Constants/deviceStyle';
 
+const statusDisplay = (statusString) => {
+  switch (statusString) {
+    case "red":
+      return <div style={dstyles.reddot} />
+    case "yellow":
+      return <div style={dstyles.yellowdot} />
+    case "green":
+      return <div style={dstyles.greendot} />
+    default:
+      return <div style={dstyles.cleardot} />
+  }
+}
+
+const modalHeader = (statusString, facility) => {
+  return <div style={{backgroundColor: '#878787'}}>{statusDisplay(statusString)} <div style={dstyles.inlineBlock}>{facility}</div></div>
+}
 /**
  * Dialog content can be scrollable.
  */
@@ -31,7 +47,7 @@ export default class DeviceDetail extends Component {
     const facility = device ? device.facility.name : "-";
     const id = device ? device.id : "-";
     const status = device ? device.status : "-";
-    const brand = device ? device.manufacturer + ' ' + device.model : "-";
+    //const brand = device ? device.manufacturer + ' ' + device.model : "-";
     const manufacturer = device ? device.manufacturer : "-";
     const manufacture_date = device ? device.manufacture_date : "-";
     const model = device ? device.model : "-";
@@ -41,7 +57,7 @@ export default class DeviceDetail extends Component {
     const lastping = device ? moment(device.temperature.timestamp).format('MMMM Do, h:mm:ss a') : "-";
     const tempurature = device ? this.precisionRound(device.temperature.value, 2) : "?";
     const city = device ? device.facility.city : "-";
-    const region = device ? device.facility.region : "-";
+    //const region = device ? device.facility.region : "-";
     const contact_name = (device && device.contact) ? device.contact.name : "-";
     const contact_email = (device && device.contact) ? device.contact.email : "-";
     const contact_phone = (device && device.contact) ? device.contact.phone : "-";
@@ -64,16 +80,18 @@ export default class DeviceDetail extends Component {
       <div>
 
         <Dialog
-          title={facility}
+          title={modalHeader(status, facility)}
           actions={actions}
           modal={false}
           open={this.props.isOpen}
           onRequestClose={this.props.handleClose}
+          style={dstyles.ggModal}
+          overlayStyle={dstyles.ggOverlayBg}
           autoScrollBodyContent={true}
-          titleStyle={{backgroundColor: status, color: 'white'}}
+          titleStyle={{backgroundColor: '#9a9a9a', color: 'white'}}
         >
           <div style={dstyles.modalBlock}>
-            <p>{(errors) ? JSON.stringify(errors) : ''}</p>
+            {(errors) ? <p>{JSON.stringify(errors)}</p> : ''}
             <br/>
             <div style={dstyles.thirdCard}>Last Tempurature Reading<br/>{tempurature}&deg; C</div>
             <div style={dstyles.thirdCard}>Last Ping<br/>{lastping}</div>

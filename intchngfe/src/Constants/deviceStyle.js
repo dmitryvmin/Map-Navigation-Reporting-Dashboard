@@ -59,6 +59,7 @@ export const dstyles = {
     width: '20px',
     backgroundColor: 'green',
     border: '1px solid #aaa',
+    display: 'inline-block',
     borderRadius: '20px'
   },
   yellowdot: {
@@ -66,6 +67,7 @@ export const dstyles = {
     width: '20px',
     backgroundColor: 'yellow',
     border: '1px solid #aaa',
+    display: 'inline-block',
     borderRadius: '20px'
   },
   reddot: {
@@ -73,6 +75,7 @@ export const dstyles = {
     width: '20px',
     backgroundColor: 'red',
     border: '1px solid #aaa',
+    display: 'inline-block',
     borderRadius: '20px'
   },
   cleardot: {
@@ -170,4 +173,14 @@ export const dstyles = {
   modalBlock: {
     color: '#494949',
   },
+  ggOverlayBg: {
+    backgroundColor: 'rgba(0,0,0,0.8)',
+  },
+  ggModal: {
+    top: '-70px',
+    paddingTop: '0px',
+  },
+  inlineBlock: {
+    display: 'inline-block',
+  }
 };

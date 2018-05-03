@@ -17,16 +17,6 @@ import Table,  {
 import Tooltip from 'material-ui-next/Tooltip';
 import {dstyles} from '../Constants/deviceStyle';
 
-const columnData: any = [
-    { id: '', label: 'Status'},
-    { id: '', label: 'Brand/Model'},
-    { id: '', label: 'Facility'},
-    { id: '', label: 'State/District'},
-    { id: '', label: 'Holdover Days'},
-    { id: '', label: 'Last Ping'},
-    { id: '', label: 'Last Temp (C)'}
-]
-
 const statusDisplay = (statusString) => {
   switch (statusString) {
     case "red":
@@ -39,6 +29,16 @@ const statusDisplay = (statusString) => {
       return <div style={dstyles.cleardot} />
   }
 }
+
+const columnData: any = [
+    { id: '', label: 'Status'},
+    { id: '', label: 'Brand/Model'},
+    { id: '', label: 'Facility'},
+    { id: '', label: 'State/District'},
+    { id: '', label: 'Holdover Days'},
+    { id: '', label: 'Last Ping'},
+    { id: '', label: 'Last Temp (C)'}
+]
 
 const tempuratureShape = (temperature) => {
   const tempNum = parseFloat(temperature);
@@ -233,23 +233,25 @@ export default class Moh extends Component {
                                 break;
                               case 'Brand/Model':
                                 colstyle = dstyles.deviceColumn;
-                                break;  
+                                break;
                               case 'Facility':
                                 colstyle = dstyles.facilityColumn;
-                                break;  
+                                break;
                               case 'State/District':
                                 colstyle = dstyles.localeColumn;
-                                break;  
+                                break;
                               case 'Holdover Days':
                                 colstyle = dstyles.holdoverColumn;
-                                break;  
+                                break;
                               case 'Last Ping':
                                 colstyle = dstyles.lastpingColumn;
-                                break;  
+                                break;
                               case 'Last Temp (C)':
                                 colstyle = dstyles.tempColumn;
                                 break;
-                            } 
+                              default:
+                                break;
+                            }
 
                             return (
                                 <TableCell key={column.label}
@@ -315,7 +317,7 @@ export default class Moh extends Component {
               </div>
 
               </Tab>
-      
+
               <Tab
                 label="Locations"
               >

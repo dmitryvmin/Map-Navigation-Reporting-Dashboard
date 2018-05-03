@@ -236,23 +236,25 @@ export default class Moh extends Component {
                                 break;
                               case 'Brand/Model':
                                 colstyle = dstyles.deviceColumn;
-                                break;  
+                                break;
                               case 'Facility':
                                 colstyle = dstyles.facilityColumn;
-                                break;  
+                                break;
                               case 'State/District':
                                 colstyle = dstyles.localeColumn;
-                                break;  
+                                break;
                               case 'Holdover Days':
                                 colstyle = dstyles.holdoverColumn;
-                                break;  
+                                break;
                               case 'Last Ping':
                                 colstyle = dstyles.lastpingColumn;
-                                break;  
+                                break;
                               case 'Last Temp (C)':
                                 colstyle = dstyles.tempColumn;
                                 break;
-                            } 
+                              default:
+                                break;
+                            }
 
                             return (
                                 <TableCell key={column.label}
@@ -318,7 +320,7 @@ export default class Moh extends Component {
               </div>
 
               </Tab>
-      
+
               <Tab
                 label="Locations"
               >
