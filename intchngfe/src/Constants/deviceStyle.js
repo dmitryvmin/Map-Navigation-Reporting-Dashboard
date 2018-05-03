@@ -166,5 +166,8 @@ export const dstyles = {
   tempColumn: {
     width: '10%',
     padding: '0 10px'
-  }
+  },
+  modalBlock: {
+    color: '#494949',
+  },
 };

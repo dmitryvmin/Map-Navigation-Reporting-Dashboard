@@ -71,7 +71,7 @@ export default class DeviceDetail extends Component {
           autoScrollBodyContent={true}
           titleStyle={{backgroundColor: status, color: 'white'}}
         >
-          <div>
+          <div style={dstyles.modalBlock}>
             <p>{(errors) ? JSON.stringify(errors) : ''}</p>
             <br/>
             <div style={dstyles.thirdCard}>Last Tempurature Reading<br/>{tempurature}&deg; C</div>
