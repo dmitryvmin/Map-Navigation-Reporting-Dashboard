@@ -17,7 +17,7 @@ export default class DeviceDetail extends Component {
     var factor = Math.pow(10, precision);
     return Math.round(number * factor) / factor;
   }
-  
+
   render() {
     const actions = [
       <FlatButton
@@ -81,7 +81,6 @@ export default class DeviceDetail extends Component {
             <h3>Device Information</h3>
             <Divider />
             <div style={dstyles.thirdCard}>Serial Number<br/>{id}</div>
-            <div style={dstyles.thirdCard}>Status<br/>{status}</div>
             <div style={dstyles.thirdCard}>Manufacturer<br/>{manufacturer}</div>
             <div style={dstyles.thirdCard}>Model<br/>{model}</div>
             <div style={dstyles.thirdCard}>Manufactured Date<br/>{manufacture_date}</div>
