@@ -7,7 +7,6 @@ import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import DeviceDetail from './DeviceDetail';
 import 'typeface-roboto'; //Font
 import Alert from './../Alert';
-
 import Table,  {
     TableBody,
     TableCell,
@@ -17,6 +16,9 @@ import Table,  {
 } from 'material-ui-next/Table';
 import Tooltip from 'material-ui-next/Tooltip';
 import {dstyles} from '../Constants/deviceStyle';
+import 'react-tippy/dist/tippy.css'
+
+import { Tooltip as Tippy } from 'react-tippy';
 
 const statusDisplay = (statusString) => {
   switch (statusString) {
@@ -294,7 +296,24 @@ export default class Moh extends Component {
                       return (
                            <TableRow key={i} hover onClick={_onClick}>
                               <TableCell style={dstyles.statusColumn}>
-                                  <Tooltip title={d.status} placement="bottom-start" enterDelay={300}>{statusDisplay(d.status)}</Tooltip>
+                                  <Tippy title="Welcome to React" 
+                                         position="top" 
+                                         interactive
+                                         trigger="mouseenter" 
+                                         theme="light"
+                                         distance="20"
+                                         arrow="true"
+                                         html={(
+                                          <div>
+                                            <div style={{display: "flex", justifyContent: "space-between"}}>
+                                              <span style={{color: "#8A0011", fontSize: "18px"}}>Alarm</span>
+                                              <a href=""><img src="/img/link.png"/></a>
+                                            </div>
+                                            <span>Alert message goes here</span> 
+                                          </div>
+                                         )}>
+                                    {statusDisplay(d.status)}
+                                  </Tippy>
                               </TableCell>
                               <TableCell style={dstyles.deviceColumn}>
                                 <Tooltip title={d.brand} placement="bottom-start" enterDelay={300}>

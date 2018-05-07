@@ -14,3 +14,12 @@ body {
 .MuiTableCell-root-8 {
   padding: 0;
 }
+
+.tippy-tooltip {
+	background-color: white;
+	border-radius: 10px;
+	border: 1px solid #D0021B;
+}
+.tippy-tooltip-content {
+	/*background-color: white; */
+}
