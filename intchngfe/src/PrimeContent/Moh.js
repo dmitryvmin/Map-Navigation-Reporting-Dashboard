@@ -6,6 +6,7 @@ import moment from 'moment-timezone';
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import DeviceDetail from './DeviceDetail';
 import 'typeface-roboto'; //Font
+import Alert from './../Alert';
 
 import Table,  {
     TableBody,
@@ -204,6 +205,8 @@ export default class Moh extends Component {
   render () {
     const { order, orderBy } = this.state;
     return (
+      <div>
+         <Alert />
       <div style={dstyles.middlePane}>
         <div style={dstyles.idBar}>
           <h1 style={dstyles.idBarH}>Aucma Reporting Tool</h1>
@@ -392,6 +395,7 @@ export default class Moh extends Component {
             </Tabs>
           </div>
         </div>
+      </div>
       </div>
       )
     }
