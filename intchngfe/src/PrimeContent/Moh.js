@@ -32,13 +32,13 @@ const statusDisplay = (statusString) => {
 }
 
 const columnData: any = [
-    { id: '', label: 'Status'},
-    { id: '', label: 'Brand/Model'},
-    { id: '', label: 'Facility'},
-    { id: '', label: 'State/District'},
-    { id: '', label: 'Holdover Days'},
-    { id: '', label: 'Last Ping'},
-    { id: '', label: 'Last Temp (C)'}
+    { id: 'status', label: 'Status'},
+    { id: 'brand', label: 'Brand/Model'},
+    { id: 'facility', label: 'Facility'},
+    { id: 'district', label: 'State/District'},
+    { id: 'holdover', label: 'Holdover Days'},
+    { id: 'lastping', label: 'Last Ping'},
+    { id: 'lasttemp', label: 'Last Temp (C)'}
 ]
 
 const tempuratureShape = (temperature) => {
@@ -68,7 +68,8 @@ export default class Moh extends Component {
       isDetailOpen: false,
       selectedDevice: null,
       order: 'asc',
-      orderBy: 'messagesPerWeek'
+      orderBy: 'messagesPerWeek',
+      device_info: this.loadDevices()
     }
     this.loadDevices = this.loadDevices.bind(this);
     this.deviceRowClick = this.deviceRowClick.bind(this);
@@ -88,9 +89,9 @@ export default class Moh extends Component {
       if (rowtemp && rowtemp.timestamp) {
         let ping = moment(rowtemp.timestamp + "Z");
         let now = moment(Date.now());
-        console.log("ping:", ping, " now: " , now);
+        // console.log("ping:", ping, " now: " , now);
         let diff = now.diff(ping, 'days');
-        console.log("Diff", diff);
+        // console.log("Diff", diff);
         if ( diff >= 2 ) {
           return true;
         } else {
@@ -154,7 +155,7 @@ export default class Moh extends Component {
     xhttp.onreadystatechange = function() {
       if (this.readyState === 4 && this.status === 200) {
         let json = JSON.parse(this.responseText);
-        that.setState({devices: json});
+        that.mapPropsToTableColumns(json);
       }
     };
     xhttp.open("GET", "http://20.36.19.106:9003/sensor", true);
@@ -170,14 +171,13 @@ export default class Moh extends Component {
     xhttp.onreadystatechange = function() {
       if (this.readyState === 4 && this.status === 200) {
         console.log("Looks like it cleared the data on back-end");
-        that.setState({devices: null});
+        // that.setState({devices: null});
       }
     };
     xhttp.open("POST", "http://20.36.19.106:9003/demo/clear/samples", true);
     xhttp.setRequestHeader('Authorization','Basic Z2xvYmFsLmdvb2Q6fkYoRzNtKUtQeT8/ZHd4fg==');
     xhttp.send();
   }
-
 
   handleRequestSort = (event: any, property: any) => {
       const orderBy = property;
@@ -193,6 +193,62 @@ export default class Moh extends Component {
       this.setState({ order, orderBy });
   };
 
+  handleRequestSort = (event: any, property: any) => {
+        const orderBy: any = property;
+        let order: any = 'desc';
+
+        if (this.state.orderBy === property && this.state.order === 'desc') {
+            order = 'asc';
+        }
+
+        const device_info: any =
+            order === 'desc'
+                ? this.state.device_info.sort((a: any, b: any) => (b[orderBy] < a[orderBy] ? -1 : 1))
+                : this.state.device_info.sort((a: any, b: any) => (a[orderBy] < b[orderBy] ? -1 : 1));
+
+        this.setState({ device_info, order, orderBy });
+    };
+
+    mapPropsToTableColumns = (json) => {
+      let device_info: any = [];
+      json && json.sensors && json.sensors.map((d: any) => {
+      console.log('### d ###', d);
+        let obj: any = {}
+
+        // Sensor Info
+        obj.sensor = d;
+
+        // Status
+        obj.status = d.status;
+
+        // Brand/Model
+        obj.brand = `${d.manufacturer} - ${d.model}`;
+
+        // Facility
+        obj.facility = d.facility.name;  
+
+        // State/District 
+        obj.district = d.facility.district;
+
+        // Holdover Days
+        obj.holdover = this.precisionRound(d.holdover, 0);
+
+        // Last Ping
+        obj.lastping = (d.temperature && d.temperature.timestamp) ? moment(d.temperature.timestamp + "Z").fromNow() : "-";
+
+        // Last Ping Style
+        obj.lastpingstyle = this.timechecker48(d.temperature) ? dstyles.redPing : dstyles.clearPing;
+
+        // Last Temp
+        obj.lasttemp = tempuratureShape(Math.round(d.temperature.value));
+
+        device_info.push(obj);
+     
+      });
+      console.log('### mapPropsToTableColumns ###', device_info);
+      this.setState({ device_info });
+    }
+
   createSortHandler = (property: any) => (event: any) => {
       this.handleRequestSort(event, property);
   };
@@ -203,7 +259,7 @@ export default class Moh extends Component {
   }
 
   render () {
-    const { order, orderBy } = this.state;
+    const { order, orderBy, device_info } = this.state;
     return (
       <div>
          <Alert />
@@ -217,98 +273,92 @@ export default class Moh extends Component {
                   style={{width: "80vw", marginLeft: "auto", marginRight: "auto"}}
                   inkBarStyle={{backgroundColor:"#a21a1e", height:"4px", marginTop:"-4px"}}>
               <Tab label="Devices" >
-                <DeviceDetail
-                    isOpen={this.state.isDetailOpen}
-                    handleOpen={this.handleDetailOpen}
-                    handleClose={this.handleDetailClose}
-                    device={this.state.selectedDevice}
-                />
+                <DeviceDetail isOpen={this.state.isDetailOpen}
+                              handleOpen={this.handleDetailOpen}
+                              handleClose={this.handleDetailClose}
+                              device={this.state.selectedDevice} />
                 <div style={dstyles.deviceTableHeader}>
 
                  <Table style={{backgroundColor: 'white', marginTop: '15px', tableLayout: 'fixed', minWidth: '1400', width: 'auto'}}>
-                       <TableHead>
-                      <TableRow>
-                          {columnData.map((column: any) => {
-                            let colstyle;
-                            switch(column.label) {
-                              case 'Status':
-                                colstyle = dstyles.statusColumn;
-                                break;
-                              case 'Brand/Model':
-                                colstyle = dstyles.deviceColumn;
-                                break;
-                              case 'Facility':
-                                colstyle = dstyles.facilityColumn;
-                                break;
-                              case 'State/District':
-                                colstyle = dstyles.localeColumn;
-                                break;
-                              case 'Holdover Days':
-                                colstyle = dstyles.holdoverColumn;
-                                break;
-                              case 'Last Ping':
-                                colstyle = dstyles.lastpingColumn;
-                                break;
-                              case 'Last Temp (C)':
-                                colstyle = dstyles.tempColumn;
-                                break;
-                              default:
-                                break;
-                            }
+                   <TableHead>
+                    <TableRow>
+                        {columnData.map((column: any) => {
+                          let colstyle;
+                          switch(column.label) {
+                            case 'Status':
+                              colstyle = dstyles.statusColumn;
+                              break;
+                            case 'Brand/Model':
+                              colstyle = dstyles.deviceColumn;
+                              break;
+                            case 'Facility':
+                              colstyle = dstyles.facilityColumn;
+                              break;
+                            case 'State/District':
+                              colstyle = dstyles.localeColumn;
+                              break;
+                            case 'Holdover Days':
+                              colstyle = dstyles.holdoverColumn;
+                              break;
+                            case 'Last Ping':
+                              colstyle = dstyles.lastpingColumn;
+                              break;
+                            case 'Last Temp (C)':
+                              colstyle = dstyles.tempColumn;
+                              break;
+                            default:
+                              break;
+                          }
 
-                            return (
-                                <TableCell key={column.label}
-                                           style={colstyle}
-                                           onClick={(column.label === 'Brand/Model') ? this.createSortHandler(column.label) : null}
-                                           sortDirection={orderBy === column.label ? order : false}>
-                                    <TableSortLabel active={orderBy === column.label}
-                                                    direction={order}>{column.label}</TableSortLabel>
-                                </TableCell>
-                            )
-                          }, this)}
-                      </TableRow>
+                          return (
+                              <TableCell key={column.id}
+                                         style={colstyle}
+                                         sortDirection={orderBy === column.id ? order : false}>
+                                  <TableSortLabel onClick={this.createSortHandler(column.id)}
+                                                  active={orderBy === column.id}
+                                                  direction={order}>{column.label}</TableSortLabel>
+                              </TableCell>
+                          )
+                        }, this)}
+                    </TableRow>
                   </TableHead>
 
                   <TableBody>
-                    {this.state.devices && this.state.devices.sensors && this.state.devices.sensors.map((d: any) => {
-                      let lastPing = (d.temperature && d.temperature.timestamp) ? moment(d.temperature.timestamp + "Z").fromNow() : "-";
-                      let lastTemp = tempuratureShape(Math.round(d.temperature.value));
-                      const _onClick = () => {
-                        this.deviceRowClick(d);
-                      }
+                    {device_info && device_info.map((d: any, i: any) => {
+                      const _onClick = () => { this.deviceRowClick(d.sensor) }
                       return (
-                           <TableRow key={d.label} hover onClick={_onClick}>
+                           <TableRow key={i} hover onClick={_onClick}>
                               <TableCell style={dstyles.statusColumn}>
                                   <Tooltip title={d.status} placement="bottom-start" enterDelay={300}>{statusDisplay(d.status)}</Tooltip>
                               </TableCell>
                               <TableCell style={dstyles.deviceColumn}>
-                                <Tooltip title={`${d.manufacturer} ${d.model}`} placement="bottom-start" enterDelay={300}>
-                                  <div>{`${d.manufacturer} ${d.model}`}</div>
+                                <Tooltip title={d.brand} placement="bottom-start" enterDelay={300}>
+                                  <div>{d.brand}</div>
                                 </Tooltip>
                               </TableCell>
                               <TableCell style={dstyles.facilityColumn}>
-                                <Tooltip title={d.facility.name} placement="bottom-start" enterDelay={300}>
-                                  <div>{d.facility.name}</div>
+                                <Tooltip title={d.facility} placement="bottom-start" enterDelay={300}>
+                                  <div>{d.facility}</div>
                                 </Tooltip>
                               </TableCell>
                               <TableCell style={dstyles.localeColumn}>
-                                <Tooltip title={d.facility.district} placement="bottom-start" enterDelay={300}>
-                                  <div>{d.facility.district}</div>
+                                <Tooltip title={d.district} placement="bottom-start" enterDelay={300}>
+                                  <div>{d.district}</div>
                                 </Tooltip>
                               </TableCell>
                                <TableCell style={dstyles.holdoverColumn}>
-                                <Tooltip title={this.precisionRound(d.holdover, 0)} placement="bottom-start" enterDelay={300}>
-                                  <div>{this.precisionRound(d.holdover, 0)}</div>
+                                <Tooltip title={d.holdover} placement="bottom-start" enterDelay={300}>
+                                  <div>{d.holdover}</div>
                                 </Tooltip>
                               </TableCell>
                               <TableCell style={dstyles.lastpingColumn}>
-                                <Tooltip title={lastPing} placement="bottom-start" enterDelay={300}>
-                                  <div style={( this.timechecker48(d.temperature) ) ? dstyles.redPing : dstyles.clearPing }>{lastPing}</div>
+                                <Tooltip title={d.lastping} placement="bottom-start" enterDelay={300}>
+                                  <div style={d.lastpingstyle}>{d.lastping}</div>
                                 </Tooltip>
                               </TableCell>
                               <TableCell style={dstyles.tempColumn}>
-                                <Tooltip title={lastTemp} placement="bottom-start" enterDelay={300}>
-                                  <div>{lastTemp}</div>
+                                <Tooltip title={d.lasttemp} placement="bottom-start" enterDelay={300}>
+                                  <div>{d.lasttemp}</div>
                                 </Tooltip>
                               </TableCell>
                           </TableRow>
