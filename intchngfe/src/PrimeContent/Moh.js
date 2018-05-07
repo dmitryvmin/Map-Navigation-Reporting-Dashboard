@@ -17,7 +17,6 @@ import Table,  {
 import Tooltip from 'material-ui-next/Tooltip';
 import {dstyles} from '../Constants/deviceStyle';
 import 'react-tippy/dist/tippy.css'
-
 import { Tooltip as Tippy } from 'react-tippy';
 
 const statusDisplay = (statusString) => {
