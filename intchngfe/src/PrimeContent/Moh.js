@@ -114,41 +114,6 @@ export default class Moh extends Component {
     this.setState({isDetailOpen: false, selectedDevice: null});
   };
 
-  // tableDisplay = () => {
-  //   if (this.state.devices === null ||
-  //       (Object.keys(this.state.devices).length === 0
-  //        && this.state.devices.constructor === Object))
-  //   {
-  //     return <TableRow key="00nul00"><TableRowColumn>none</TableRowColumn></TableRow>
-  //   }
-  //   else {
-  //     if (this.state.devices.sensors === null ||
-  //         (Object.keys(this.state.devices.sensors).length === 0
-  //         && this.state.devices.sensors.constructor === Object))
-  //     {
-  //       return <TableRow key="00nul00"><TableRowColumn>none</TableRowColumn></TableRow>
-  //     }
-  //     else {
-  //       return this.state.devices.sensors.map((row, i) =>
-  //
-  //           <TableRow key={i}>
-  //             <TableRowColumn style={dstyles.statusColumn}>{statusDisplay(row.status)}</TableRowColumn>
-  //             <TableRowColumn style={dstyles.deviceColumn}>{row.manufacturer + ' ' + row.model}</TableRowColumn>
-  //             <TableRowColumn>{row.facility.name}</TableRowColumn>
-  //             <TableRowColumn style={dstyles.localeColumn}>{row.facility.district}</TableRowColumn>
-  //             <TableRowColumn style={dstyles.holdoverColumn}>{this.precisionRound(row.holdover, 0)}</TableRowColumn>
-  //             <TableRowColumn style={dstyles.lastpingColumn}>
-  //               <div style={( this.timechecker48(row.temperature) ) ? dstyles.redPing : dstyles.clearPing } >
-  //                 { (row.temperature && row.temperature.timestamp) ? moment(row.temperature.timestamp + "Z").fromNow() : "-" }
-  //               </div>
-  //             </TableRowColumn>
-  //             <TableRowColumn style={dstyles.holdoverColumn}>{tempuratureShape(Math.round(row.temperature.value))}</TableRowColumn>
-  //           </TableRow>
-  //       )
-  //     }
-  //   }
-  // }
-
   loadDevices() {
     var xhttp = new XMLHttpRequest();
     var that = this;
@@ -171,7 +136,7 @@ export default class Moh extends Component {
     xhttp.onreadystatechange = function() {
       if (this.readyState === 4 && this.status === 200) {
         console.log("Looks like it cleared the data on back-end");
-        // that.setState({devices: null});
+        that.setState({device_info: null});
       }
     };
     xhttp.open("POST", "http://20.36.19.106:9003/demo/clear/samples", true);
