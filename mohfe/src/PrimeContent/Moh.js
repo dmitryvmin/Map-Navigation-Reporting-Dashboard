@@ -156,6 +156,7 @@ export default class Moh extends Component {
           order === 'desc'
               ? this.state.devices.sensors.sort((a: any, b: any) => (b[orderBy] < a[orderBy] ? -1 : 1))
               : this.state.devices.sensors.sort((a: any, b: any) => (a[orderBy] < b[orderBy] ? -1 : 1));
+
       this.setState({ order, orderBy });
   };
 
@@ -191,9 +192,9 @@ export default class Moh extends Component {
         obj.brand = `${d.manufacturer} - ${d.model}`;
 
         // Facility
-        obj.facility = d.facility.name;  
+        obj.facility = d.facility.name;
 
-        // State/District 
+        // State/District
         obj.district = d.facility.district;
 
         // Holdover Days
@@ -209,7 +210,7 @@ export default class Moh extends Component {
         obj.lasttemp = tempuratureShape(Math.round(d.temperature.value));
 
         device_info.push(obj);
-     
+
       });
       console.log('### mapPropsToTableColumns ###', device_info);
       this.setState({ device_info });
@@ -295,10 +296,10 @@ export default class Moh extends Component {
                       return (
                            <TableRow key={i} hover onClick={_onClick}>
                               <TableCell style={dstyles.statusColumn}>
-                                  <Tippy title="Welcome to React" 
-                                         position="top" 
+                                  <Tippy title="Welcome to React"
+                                         position="top"
                                          interactive
-                                         trigger="mouseenter" 
+                                         trigger="mouseenter"
                                          theme="light"
                                          distance="20"
                                          arrow="true"
@@ -308,7 +309,7 @@ export default class Moh extends Component {
                                               <span style={{color: "#8A0011", fontSize: "18px"}}>Alarm</span>
                                               <a href=""><img src="/img/link.png"/></a>
                                             </div>
-                                            <span>Alert message goes here</span> 
+                                            <span>Alert message goes here</span>
                                           </div>
                                          )}>
                                     {statusDisplay(d.status)}

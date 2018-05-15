@@ -183,5 +183,9 @@ export const dstyles = {
   },
   inlineBlock: {
     display: 'inline-block',
+  },
+  detailTitleHead: {
+    color: '#898989',
+    fontSize: 12
   }
 };

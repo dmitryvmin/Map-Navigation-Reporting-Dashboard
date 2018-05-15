@@ -152,10 +152,10 @@ export default class Moh extends Component {
       if (this.state.orderBy === property && this.state.order === 'desc') {
           order = 'asc';
       }
-      const sensors =
-          order === 'desc'
-              ? this.state.devices.sensors.sort((a: any, b: any) => (b[orderBy] < a[orderBy] ? -1 : 1))
-              : this.state.devices.sensors.sort((a: any, b: any) => (a[orderBy] < b[orderBy] ? -1 : 1));
+      // const sensors =
+      //     order === 'desc'
+      //         ? this.state.devices.sensors.sort((a: any, b: any) => (b[orderBy] < a[orderBy] ? -1 : 1))
+      //         : this.state.devices.sensors.sort((a: any, b: any) => (a[orderBy] < b[orderBy] ? -1 : 1));
       this.setState({ order, orderBy });
   };
 

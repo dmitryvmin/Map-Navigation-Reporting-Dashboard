@@ -20,7 +20,7 @@ const statusDisplay = (statusString) => {
 }
 
 const modalHeader = (statusString, facility) => {
-  return <div style={{backgroundColor: '#878787'}}>{statusDisplay(statusString)} <div style={dstyles.inlineBlock}>{facility}</div></div>
+  return <div style={{backgroundColor: '#878787'}}>{statusDisplay(statusString)} &nbsp; <div style={dstyles.inlineBlock}>{facility}</div></div>
 }
 /**
  * Dialog content can be scrollable.
@@ -52,12 +52,14 @@ export default class DeviceDetail extends Component {
     const manufacture_date = device ? device.manufacture_date : "-";
     const model = device ? device.model : "-";
     const country = device ? device.facility.country : "-";
-    const district = device ? device.facility.district : "-";
+    //const district = device ? device.facility.district : "-";
     const holdover = device ? this.precisionRound(device.holdover, 1) : "?";
     const lastping = device ? moment(device.temperature.timestamp).format('MMMM Do, h:mm:ss a') : "-";
+    const lastPingAgo = device ? moment(device.temperature.timestamp + "Z").fromNow() : "-";
     const tempurature = device ? this.precisionRound(device.temperature.value, 2) : "?";
-    const city = device ? device.facility.city : "-";
-    //const region = device ? device.facility.region : "-";
+    let city = device ? device.facility.city : "";
+    if ( city === null || city === "undefined" || city === undefined ) { city = " "; }
+    const state_district = device ? `${city} ${device.facility.district}` : "-";
     const contact_name = (device && device.contact) ? device.contact.name : "-";
     const contact_email = (device && device.contact) ? device.contact.email : "-";
     const contact_phone = (device && device.contact) ? device.contact.phone : "-";
@@ -80,7 +82,7 @@ export default class DeviceDetail extends Component {
       <div>
 
         <Dialog
-          title={modalHeader(status, facility)}
+          title={modalHeader(status, manufacturer + " " + model)}
           actions={actions}
           modal={false}
           open={this.props.isOpen}
@@ -93,26 +95,26 @@ export default class DeviceDetail extends Component {
           <div style={dstyles.modalBlock}>
             {(errors) ? <p>{JSON.stringify(errors)}</p> : ''}
             <br/>
-            <div style={dstyles.thirdCard}>Last Tempurature Reading<br/>{tempurature}&deg; C</div>
-            <div style={dstyles.thirdCard}>Last Ping<br/>{lastping}</div>
-            <div style={dstyles.thirdCard}>Holdover days<br/>{holdover}</div>
+            <div style={dstyles.thirdCard}><span style={dstyles.detailTitleHead}>Last Tempurature Reading</span><br/>{tempurature}&deg; C</div>
+            <div style={dstyles.thirdCard}><span style={dstyles.detailTitleHead}>Last Ping</span><br/>{lastping}<br/><em>({lastPingAgo})</em></div>
+            <div style={dstyles.thirdCard}><span style={dstyles.detailTitleHead}>Holdover days</span><br/>{holdover}</div>
             <br/>
             <h3>Device Information</h3>
             <Divider />
-            <div style={dstyles.thirdCard}>Serial Number<br/>{id}</div>
-            <div style={dstyles.thirdCard}>Manufacturer<br/>{manufacturer}</div>
-            <div style={dstyles.thirdCard}>Model<br/>{model}</div>
-            <div style={dstyles.thirdCard}>Manufactured Date<br/>{manufacture_date}</div>
+            <div style={dstyles.thirdCard}><span style={dstyles.detailTitleHead}>Serial Number</span><br/>{id}</div>
+            <div style={dstyles.thirdCard}><span style={dstyles.detailTitleHead}>Manufacturer</span><br/>{manufacturer}</div>
+            <div style={dstyles.thirdCard}><span style={dstyles.detailTitleHead}>Model</span><br/>{model}</div>
+            <div style={dstyles.thirdCard}><span style={dstyles.detailTitleHead}>Manufactured Date</span><br/>{manufacture_date}</div>
             <br/>
             <h3>Location &amp; Contact Information</h3>
             <Divider />
-            <div style={dstyles.thirdCard}>Country<br/>{country}</div>
-            <div style={dstyles.thirdCard}>City<br/>{city}</div>
-            <div style={dstyles.thirdCard}>District<br/>{district}</div>
+            <div style={dstyles.thirdCard}><span style={dstyles.detailTitleHead}>Facility</span><br/>{facility}</div>
+            <div style={dstyles.thirdCard}><span style={dstyles.detailTitleHead}>Country</span><br/>{country}</div>
+            <div style={dstyles.thirdCard}><span style={dstyles.detailTitleHead}>State/District</span><br/>{state_district}</div>
 
-            <div style={dstyles.thirdCard}>Facility Contact<br/>{contact_name}</div>
-            <div style={dstyles.thirdCard}>Contact Phone<br/>{contact_phone}</div>
-            <div style={dstyles.thirdCard}>Email<br/>{contact_email}</div>
+            <div style={dstyles.thirdCard}><span style={dstyles.detailTitleHead}>Facility Contact</span><br/>{contact_name}</div>
+            <div style={dstyles.thirdCard}><span style={dstyles.detailTitleHead}>Contact Phone</span><br/>{contact_phone}</div>
+            <div style={dstyles.thirdCard}><span style={dstyles.detailTitleHead}>Email</span><br/>{contact_email}</div>
           </div>
         </Dialog>
       </div>
