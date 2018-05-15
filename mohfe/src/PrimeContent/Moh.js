@@ -231,7 +231,7 @@ export default class Moh extends Component {
          <Alert />
       <div style={dstyles.middlePane}>
         <div style={dstyles.idBar}>
-          <h1 style={dstyles.idBarH}>Aucma Reporting Tool</h1>
+          <h1 style={dstyles.idBarH}>Kenya MoH</h1>
         </div>
         <div style={dstyles.wrapwrap}>
           <div style={dstyles.wrapTabs} >
