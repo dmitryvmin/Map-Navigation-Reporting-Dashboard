@@ -36,7 +36,7 @@ const columnData: any = [
     { id: 'status', label: 'Status'},
     { id: 'brand', label: 'Brand/Model'},
     { id: 'facility', label: 'Facility'},
-    { id: 'district', label: 'State/District'},
+    // { id: 'district', label: 'State/District'},
     { id: 'holdover', label: 'Holdover Days'},
     { id: 'lastping', label: 'Last Ping'},
     { id: 'lasttemp', label: 'Last Temp (C)'}
@@ -322,11 +322,6 @@ export default class Moh extends Component {
                               <TableCell style={dstyles.facilityColumn}>
                                 <Tooltip title={d.facility} placement="bottom-start" enterDelay={300}>
                                   <div>{d.facility}</div>
-                                </Tooltip>
-                              </TableCell>
-                              <TableCell style={dstyles.localeColumn}>
-                                <Tooltip title={d.district} placement="bottom-start" enterDelay={300}>
-                                  <div>{d.district}</div>
                                 </Tooltip>
                               </TableCell>
                                <TableCell style={dstyles.holdoverColumn}>
