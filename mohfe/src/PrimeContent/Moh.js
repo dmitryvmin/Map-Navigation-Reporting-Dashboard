@@ -124,7 +124,7 @@ export default class Moh extends Component {
         that.mapPropsToTableColumns(json);
       }
     };
-    xhttp.open("GET", "http://20.36.19.106:9003/sensor", true);
+    xhttp.open("GET", "http://20.36.19.106:9000/sensor", true);
     xhttp.setRequestHeader('Authorization','Basic Z2xvYmFsLmdvb2Q6fkYoRzNtKUtQeT8/ZHd4fg==');
     xhttp.send();
   }
@@ -176,9 +176,9 @@ export default class Moh extends Component {
     };
 
     mapPropsToTableColumns = (json) => {
+      console.log('json', json);
       let device_info: any = [];
       json && json.sensors && json.sensors.map((d: any) => {
-      console.log('### d ###', d);
         let obj: any = {}
 
         // Sensor Info
