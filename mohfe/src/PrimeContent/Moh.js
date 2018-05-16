@@ -34,12 +34,12 @@ const statusDisplay = (statusString) => {
 
 const columnData: any = [
     { id: 'status', label: 'Status'},
+    { id: 'lasttemp', label: 'Last Temp (C)'},
+    { id: 'holdover', label: 'Holdover Days'},
     { id: 'brand', label: 'Brand/Model'},
     { id: 'facility', label: 'Facility'},
     // { id: 'district', label: 'State/District'},
-    { id: 'holdover', label: 'Holdover Days'},
     { id: 'lastping', label: 'Last Ping'},
-    { id: 'lasttemp', label: 'Last Temp (C)'}
 ]
 
 const tempuratureShape = (temperature) => {
@@ -255,6 +255,12 @@ export default class Moh extends Component {
                             case 'Status':
                               colstyle = dstyles.statusColumn;
                               break;
+                            case 'Last Temp (C)':
+                              colstyle = dstyles.tempColumn;
+                              break;
+                            case 'Holdover Days':
+                              colstyle = dstyles.holdoverColumn;
+                              break;
                             case 'Brand/Model':
                               colstyle = dstyles.deviceColumn;
                               break;
@@ -264,14 +270,8 @@ export default class Moh extends Component {
                             case 'State/District':
                               colstyle = dstyles.localeColumn;
                               break;
-                            case 'Holdover Days':
-                              colstyle = dstyles.holdoverColumn;
-                              break;
                             case 'Last Ping':
                               colstyle = dstyles.lastpingColumn;
-                              break;
-                            case 'Last Temp (C)':
-                              colstyle = dstyles.tempColumn;
                               break;
                             default:
                               break;
@@ -315,6 +315,16 @@ export default class Moh extends Component {
                                     {statusDisplay(d.status)}
                                   </Tippy>
                               </TableCell>
+                              <TableCell style={dstyles.tempColumn}>
+                                <Tooltip title={d.lasttemp} placement="bottom-start" enterDelay={300}>
+                                  <div>{d.lasttemp}</div>
+                                </Tooltip>
+                              </TableCell>
+                              <TableCell style={dstyles.holdoverColumn}>
+                                <Tooltip title={d.holdover} placement="bottom-start" enterDelay={300}>
+                                 <div>{d.holdover}</div>
+                                </Tooltip>
+                              </TableCell>
                               <TableCell style={dstyles.deviceColumn}>
                                 <Tooltip title={d.brand} placement="bottom-start" enterDelay={300}>
                                   <div>{d.brand}</div>
@@ -325,21 +335,13 @@ export default class Moh extends Component {
                                   <div>{d.facility}</div>
                                 </Tooltip>
                               </TableCell>
-                               <TableCell style={dstyles.holdoverColumn}>
-                                <Tooltip title={d.holdover} placement="bottom-start" enterDelay={300}>
-                                  <div>{d.holdover}</div>
-                                </Tooltip>
-                              </TableCell>
+
                               <TableCell style={dstyles.lastpingColumn}>
                                 <Tooltip title={d.lastping} placement="bottom-start" enterDelay={300}>
                                   <div style={d.lastpingstyle}>{d.lastping}</div>
                                 </Tooltip>
                               </TableCell>
-                              <TableCell style={dstyles.tempColumn}>
-                                <Tooltip title={d.lasttemp} placement="bottom-start" enterDelay={300}>
-                                  <div>{d.lasttemp}</div>
-                                </Tooltip>
-                              </TableCell>
+
                           </TableRow>
                     )})}
                   </TableBody>

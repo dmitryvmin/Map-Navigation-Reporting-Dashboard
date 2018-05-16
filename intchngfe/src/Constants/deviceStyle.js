@@ -159,16 +159,16 @@ export const dstyles = {
     padding: '0 10px'
   },
   holdoverColumn: {
-    width: '15%',
-    padding: '0 10px'
+    width: '8%',
+    padding: '0 5px'
   },
   lastpingColumn: {
-    width: '15%',
+    width: '10%',
     padding: '0 10px'
   },
   tempColumn: {
     width: '10%',
-    padding: '0 10px'
+    padding: '0 5px'
   },
   modalBlock: {
     color: '#494949',
