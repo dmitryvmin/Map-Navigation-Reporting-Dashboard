@@ -186,6 +186,6 @@ export const dstyles = {
   },
   detailTitleHead: {
     color: '#898989',
-    fontSize: 12
+    fontSize: 14
   }
 };
