@@ -55,28 +55,31 @@ export const dstyles = {
     verticalAlign: 'top',
   },
   greendot: {
-    height: '20px',
-    width: '20px',
+    height: '24px',
+    width: '24px',
     backgroundColor: 'green',
     border: '1px solid #aaa',
     display: 'inline-block',
-    borderRadius: '20px'
+    borderRadius: '24px',
+    verticalAlign: 'middle',
   },
   yellowdot: {
-    height: '20px',
-    width: '20px',
+    height: '24px',
+    width: '24px',
     backgroundColor: 'yellow',
     border: '1px solid #aaa',
     display: 'inline-block',
-    borderRadius: '20px'
+    borderRadius: '24px',
+    verticalAlign: 'middle',
   },
   reddot: {
-    height: '20px',
-    width: '20px',
+    height: '24px',
+    width: '24px',
     backgroundColor: 'red',
     border: '1px solid #aaa',
     display: 'inline-block',
-    borderRadius: '20px'
+    borderRadius: '24px',
+    verticalAlign: 'middle',
   },
   cleardot: {
     height: '20px',
@@ -84,7 +87,8 @@ export const dstyles = {
     backgroundColor: 'white',
     border: '1px solid #aaa',
     display: 'inline-block',
-    borderRadius: '20px'
+    borderRadius: '20px',
+    verticalAlign: 'middle',
   },
   coldtemp: {
     padding: '5px',
@@ -141,7 +145,6 @@ export const dstyles = {
     width: '5%',
     textAlign: 'center',
     padding: '0 10px',
-    paddingLeft: '10px'
   },
   facilityColumn: {
     width: '25%',
