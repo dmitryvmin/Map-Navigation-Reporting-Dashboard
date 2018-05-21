@@ -178,7 +178,7 @@ export const dstyles = {
   },
   lastpingColumnHead: {
     width: '10%',
-    padding: '0 10px',
+    padding: '0 20px 0 0',
     textAlign: 'center'
   },
   lastpingColumn: {

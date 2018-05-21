@@ -336,7 +336,7 @@ export default class Moh extends Component {
 
                               <TableCell style={dstyles.lastpingColumn}>
                                 <Tooltip title={d.lastping} placement="bottom-start" enterDelay={300}>
-                                  <div style={{textAlign: 'center'}}>{d.lastping}</div>
+                                  <div style={d.lastpingstyle}>{d.lastping}</div>
                                 </Tooltip>
                               </TableCell>
 
