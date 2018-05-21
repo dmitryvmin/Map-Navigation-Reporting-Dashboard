@@ -145,6 +145,11 @@ export const dstyles = {
     textAlign: 'center',
     padding: '0 10px',
   },
+   statusColumnHead: {
+    width: '5%',
+    textAlign: 'right',
+    padding: '0 10px',
+  },
   facilityColumn: {
     width: '25%',
     padding: '0 10px',
@@ -161,13 +166,25 @@ export const dstyles = {
     width: '15%',
     padding: '0 10px'
   },
+  holdoverColumnHead: {
+    width: '8%',
+    padding: '0 5px',
+    textAlign: 'right'
+  },
   holdoverColumn: {
     width: '8%',
-    padding: '0 5px'
+    padding: '0 5px',
+    textAlign: 'center'
+  },
+  lastpingColumnHead: {
+    width: '10%',
+    padding: '0 10px',
+    textAlign: 'center'
   },
   lastpingColumn: {
     width: '10%',
-    padding: '0 10px'
+    padding: '0 10px',
+    textAlign: 'right'
   },
   tempColumn: {
     width: '10%',
