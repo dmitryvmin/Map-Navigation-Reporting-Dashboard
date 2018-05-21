@@ -6,7 +6,7 @@ export const dstyles = {
     fontWeight: 400,
   },
   idBar: {
-    backgroundColor: '#51326c',
+    backgroundColor: '#e32427',
     width: '100%',
     textAlign: 'center',
     paddingTop: '14px',
@@ -82,12 +82,11 @@ export const dstyles = {
     verticalAlign: 'middle',
   },
   cleardot: {
-    height: '20px',
-    width: '20px',
+    height: '24px',
+    width: '24px',
     backgroundColor: 'white',
     border: '1px solid #aaa',
-    display: 'inline-block',
-    borderRadius: '20px',
+    borderRadius: '24px',
     verticalAlign: 'middle',
   },
   coldtemp: {
@@ -146,6 +145,11 @@ export const dstyles = {
     textAlign: 'center',
     padding: '0 10px',
   },
+   statusColumnHead: {
+    width: '5%',
+    textAlign: 'right',
+    padding: '0 10px',
+  },
   facilityColumn: {
     width: '25%',
     padding: '0 10px',
@@ -162,17 +166,29 @@ export const dstyles = {
     width: '15%',
     padding: '0 10px'
   },
+  holdoverColumnHead: {
+    width: '8%',
+    padding: '0 5px',
+    textAlign: 'right'
+  },
   holdoverColumn: {
     width: '8%',
-    padding: '0 5px'
+    padding: '0 5px',
+    textAlign: 'center'
+  },
+  lastpingColumnHead: {
+    width: '10%',
+    padding: '0 10px',
+    textAlign: 'center'
   },
   lastpingColumn: {
     width: '10%',
-    padding: '0 10px'
+    padding: '0 10px',
+    textAlign: 'right'
   },
   tempColumn: {
     width: '10%',
-    padding: '0 5px',
+    padding: '0 5px'
   },
   modalBlock: {
     color: '#494949',

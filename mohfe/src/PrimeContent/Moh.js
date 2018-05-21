@@ -253,7 +253,7 @@ export default class Moh extends Component {
                           let colstyle;
                           switch(column.label) {
                             case 'Status':
-                              colstyle = dstyles.statusColumn;
+                              colstyle = dstyles.statusColumnHead;
                               break;
                             case 'Last Temp (C)':
                               colstyle = dstyles.tempColumn;
@@ -271,7 +271,7 @@ export default class Moh extends Component {
                               colstyle = dstyles.localeColumn;
                               break;
                             case 'Last Ping':
-                              colstyle = dstyles.lastpingColumn;
+                              colstyle = dstyles.lastpingColumnHead;
                               break;
                             default:
                               break;
@@ -338,7 +338,7 @@ export default class Moh extends Component {
 
                               <TableCell style={dstyles.lastpingColumn}>
                                 <Tooltip title={d.lastping} placement="bottom-start" enterDelay={300}>
-                                  <div style={d.lastpingstyle}>{d.lastping}</div>
+                                  <div style={{textAlign: 'center'}}>{d.lastping}</div>
                                 </Tooltip>
                               </TableCell>
 
