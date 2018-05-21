@@ -259,7 +259,7 @@ export default class Moh extends Component {
                               colstyle = dstyles.tempColumn;
                               break;
                             case 'Holdover Days':
-                              colstyle = dstyles.holdoverColumn;
+                              colstyle = dstyles.holdoverColumnHead;
                               break;
                             case 'Brand/Model':
                               colstyle = dstyles.deviceColumn;
@@ -338,7 +338,7 @@ export default class Moh extends Component {
 
                               <TableCell style={dstyles.lastpingColumn}>
                                 <Tooltip title={d.lastping} placement="bottom-start" enterDelay={300}>
-                                  <div style={{textAlign: 'center'}}>{d.lastping}</div>
+                                  <div style={d.lastpingstyle}>{d.lastping}</div>
                                 </Tooltip>
                               </TableCell>
 

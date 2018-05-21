@@ -6,7 +6,7 @@ export const dstyles = {
     fontWeight: 400,
   },
   idBar: {
-    backgroundColor: '#e32427',
+    backgroundColor: '#51326c',
     width: '100%',
     textAlign: 'center',
     paddingTop: '14px',
@@ -168,7 +168,7 @@ export const dstyles = {
   },
   holdoverColumnHead: {
     width: '8%',
-    padding: '0 5px',
+    padding: '0 5px 0 15px',
     textAlign: 'right'
   },
   holdoverColumn: {
@@ -178,7 +178,7 @@ export const dstyles = {
   },
   lastpingColumnHead: {
     width: '10%',
-    padding: '0 10px',
+    padding: '0 20px 0 0',
     textAlign: 'center'
   },
   lastpingColumn: {
