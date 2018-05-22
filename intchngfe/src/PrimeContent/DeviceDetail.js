@@ -40,6 +40,7 @@ export default class DeviceDetail extends Component {
       <FlatButton
         label="Close"
         primary={true}
+        style={{color: 'white', backgroundColor: '#7cd33b'}}
         onClick={this.props.handleClose}
       />,
     ];

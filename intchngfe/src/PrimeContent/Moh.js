@@ -200,6 +200,8 @@ export default class Moh extends Component {
 
         // Last Ping
         obj.lastping = (d.temperature && d.temperature.timestamp) ? moment(d.temperature.timestamp + "Z").fromNow() : "-";
+        console.log('LAST PING: ', (d.temperature && d.temperature.timestamp));
+        console.log('NOW: ', moment());
 
         // Last Ping Style
         obj.lastpingstyle = this.timechecker48(d.temperature) ? dstyles.redPing : dstyles.clearPing;
