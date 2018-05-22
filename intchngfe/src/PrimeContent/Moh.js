@@ -124,7 +124,7 @@ export default class Moh extends Component {
         that.mapPropsToTableColumns(json);
       }
     };
-    xhttp.open("GET", "http://20.36.19.106:9000/sensor", true);
+    xhttp.open("GET", "http://20.36.19.106:9003/sensor", true);
     xhttp.setRequestHeader('Authorization','Basic Z2xvYmFsLmdvb2Q6fkYoRzNtKUtQeT8/ZHd4fg==');
     xhttp.send();
   }
@@ -201,7 +201,7 @@ export default class Moh extends Component {
         // Last Ping
         obj.lastping = (d.temperature && d.temperature.timestamp) ? moment(d.temperature.timestamp + "Z").fromNow() : "-";
         console.log('LAST PING: ', (d.temperature && d.temperature.timestamp));
-        console.log('NOW: ', moment());
+        // console.log('NOW: ', moment.tz.guess());
 
         // Last Ping Style
         obj.lastpingstyle = this.timechecker48(d.temperature) ? dstyles.redPing : dstyles.clearPing;
