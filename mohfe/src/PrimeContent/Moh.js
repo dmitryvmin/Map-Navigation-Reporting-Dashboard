@@ -32,6 +32,20 @@ const statusDisplay = (statusString) => {
   }
 }
 
+const statusBg = (statusString) => {
+  console.log('statusBg', statusString);
+  switch (statusString) {
+    case "red":
+      return {backgroundColor: 'rgba(255, 0, 0, .1)'}
+    case "yellow":
+      return {backgroundColor: 'rgba(255, 165, 0, .1)'}
+    case "green":
+      return {backgroundColor: 'rgba(13, 127, 0, 0.1)'}
+    default:
+      return {}
+  }
+}
+
 const columnData: any = [
     { id: 'status', label: 'Status'},
     { id: 'lasttemp', label: 'Last Temp (C)'},
@@ -256,7 +270,7 @@ export default class Moh extends Component {
                               colstyle = dstyles.statusColumnHead;
                               break;
                             case 'Last Temp (C)':
-                              colstyle = dstyles.tempColumn;
+                              colstyle = dstyles.tempColumnHead;
                               break;
                             case 'Holdover Days':
                               colstyle = dstyles.holdoverColumnHead;
@@ -294,7 +308,7 @@ export default class Moh extends Component {
                     {device_info && device_info.map((d: any, i: any) => {
                       const _onClick = () => { this.deviceRowClick(d.sensor) }
                       return (
-                           <TableRow key={i} hover onClick={_onClick}>
+                           <TableRow key={i} hover onClick={_onClick} style={statusBg(d.status)}>
                               <TableCell style={dstyles.statusColumn}>
                                   <Tippy title="Welcome to React"
                                          position="top"
