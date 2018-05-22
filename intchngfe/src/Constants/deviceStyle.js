@@ -96,7 +96,8 @@ export const dstyles = {
     maxWidth: '50px',
     textAlign: 'center',
     borderRadius: '4px',
-    margin: "auto"
+    margin: "0 0 0 auto",
+    marginRight: '30px'
   },
   hottemp: {
     padding: '5px',
@@ -105,7 +106,8 @@ export const dstyles = {
     maxWidth: '50px',
     textAlign: 'center',
     borderRadius: '4px',
-    margin: "auto"
+    margin: "0 0 0 auto",
+    marginRight: '30px'
   },
   warntemp: {
     padding: '5px',
@@ -114,7 +116,8 @@ export const dstyles = {
     maxWidth: '50px',
     textAlign: 'center',
     borderRadius: '4px',
-    margin: "auto"
+    margin: "0 0 0 auto",
+    marginRight: '30px'
   },
   goodtemp: {
     padding: '5px',
@@ -123,7 +126,8 @@ export const dstyles = {
     maxWidth: '50px',
     textAlign: 'center',
     borderRadius: '4px',
-    margin: "auto"
+    margin: "0 0 0 auto",
+    marginRight: '30px'
   },
   middlePane: {
     flex: '1'
@@ -149,7 +153,7 @@ export const dstyles = {
     textAlign: 'center',
     padding: '0 10px',
   },
-   statusColumnHead: {
+  statusColumnHead: {
     width: '5%',
     textAlign: 'right',
     padding: '0 10px',
@@ -172,18 +176,17 @@ export const dstyles = {
   },
   holdoverColumnHead: {
     width: '8%',
-    padding: '0 5px',
-    textAlign: 'right'
+    padding: '0 5px 0 25px',
+    textAlign: 'center'
   },
   holdoverColumn: {
-    width: '8%',
+    width: '10%',
     padding: '0 5px',
     textAlign: 'center'
   },
   lastpingColumnHead: {
     width: '10%',
-    padding: '0 20px 0 0',
-    textAlign: 'center'
+    textAlign: 'left'
   },
   lastpingColumn: {
     width: '10%',
@@ -192,7 +195,8 @@ export const dstyles = {
   },
   tempColumn: {
     width: '10%',
-    textAlign: 'right'
+    textAlign: 'right',
+    padding: '0'
   },
   modalBlock: {
     color: '#494949',
