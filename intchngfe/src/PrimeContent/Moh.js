@@ -32,6 +32,20 @@ const statusDisplay = (statusString) => {
   }
 }
 
+const statusBg = (statusString) => {
+  console.log('statusBg', statusString);
+  switch (statusString) {
+    case "red":
+      return {backgroundColor: 'rgba(255, 0, 0, .1)'}
+    case "yellow":
+      return {backgroundColor: 'rgba(255, 165, 0, .1)'}
+    case "green":
+      return {backgroundColor: 'rgba(13, 127, 0, 0.1)'}
+    default:
+      return {}
+  }
+}
+
 const columnData: any = [
     { id: 'status', label: 'Status'},
     { id: 'lasttemp', label: 'Last Temp (C)'},
@@ -103,9 +117,9 @@ export default class Moh extends Component {
      }
   }
 
- deviceRowClick = (device) => {
+  deviceRowClick = (device) => {
     this.setState({isDetailOpen: true, selectedDevice: device });
-  }
+  };
 
   handleDetailOpen = () => {
     this.setState({isDetailOpen: true});
@@ -199,9 +213,17 @@ export default class Moh extends Component {
         obj.holdover = this.precisionRound(d.holdover, 0);
 
         // Last Ping
-        obj.lastping = (d.temperature && d.temperature.timestamp) ? moment(d.temperature.timestamp + "Z").fromNow() : "-";
-        console.log('LAST PING: ', (d.temperature && d.temperature.timestamp));
-        // console.log('NOW: ', moment.tz.guess());
+        obj.lastping = (d.temperature && d.temperature.timestamp) ? moment(moment.utc(d.temperature.timestamp)).fromNow() : "-";
+
+        // var usertimezone = moment.tz.guess();
+        // var value = moment.utc(d.temperature.timestamp);
+        // var formatDate = moment.tz(value, usertimezone);
+        // var momentDate = formatDate.fromNow();
+        // var stamp = moment.utc(d.temperature.timestamp);
+        // var now =  moment().utc();
+        // console.log('DIFF: ', now.diff(stamp, 'hours'));
+        // console.log('FROM NOW: ', momentDate);
+        console.log('TIMESTAMP: ', moment(d.temperature.timestamp+'Z'));
 
         // Last Ping Style
         obj.lastpingstyle = this.timechecker48(d.temperature) ? dstyles.redPing : dstyles.clearPing;
@@ -256,7 +278,7 @@ export default class Moh extends Component {
                               colstyle = dstyles.statusColumnHead;
                               break;
                             case 'Last Temp (C)':
-                              colstyle = dstyles.tempColumn;
+                              colstyle = dstyles.tempColumnHead;
                               break;
                             case 'Holdover Days':
                               colstyle = dstyles.holdoverColumnHead;
@@ -294,7 +316,7 @@ export default class Moh extends Component {
                     {device_info && device_info.map((d: any, i: any) => {
                       const _onClick = () => { this.deviceRowClick(d.sensor) }
                       return (
-                           <TableRow key={i} hover onClick={_onClick}>
+                           <TableRow key={i} hover onClick={_onClick} style={statusBg(d.status)}>
                               <TableCell style={dstyles.statusColumn}>
                                   <Tippy title="Welcome to React"
                                          position="top"

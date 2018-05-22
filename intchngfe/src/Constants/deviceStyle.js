@@ -177,7 +177,9 @@ export const dstyles = {
   holdoverColumnHead: {
     width: '8%',
     padding: '0 5px 0 25px',
-    textAlign: 'center'
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: '0.85rem'
   },
   holdoverColumn: {
     width: '10%',
@@ -192,6 +194,13 @@ export const dstyles = {
     width: '10%',
     padding: '0 10px',
     textAlign: 'right'
+  },
+  tempColumnHead: {
+    width: '10%',
+    textAlign: 'right',
+    padding: '0',
+    fontWeight: 'bold',
+    fontSize: '0.85rem'
   },
   tempColumn: {
     width: '10%',
