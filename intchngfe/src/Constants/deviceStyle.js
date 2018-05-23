@@ -96,8 +96,7 @@ export const dstyles = {
     maxWidth: '50px',
     textAlign: 'center',
     borderRadius: '4px',
-    margin: "0 0 0 auto",
-    marginRight: '30px'
+    margin: "0 0 0 auto"
   },
   hottemp: {
     padding: '5px',
@@ -106,8 +105,7 @@ export const dstyles = {
     maxWidth: '50px',
     textAlign: 'center',
     borderRadius: '4px',
-    margin: "0 0 0 auto",
-    marginRight: '30px'
+    margin: "0 0 0 auto"
   },
   warntemp: {
     padding: '5px',
@@ -116,8 +114,7 @@ export const dstyles = {
     maxWidth: '50px',
     textAlign: 'center',
     borderRadius: '4px',
-    margin: "0 0 0 auto",
-    marginRight: '30px'
+    margin: "0 0 0 auto"
   },
   goodtemp: {
     padding: '5px',
@@ -126,8 +123,7 @@ export const dstyles = {
     maxWidth: '50px',
     textAlign: 'center',
     borderRadius: '4px',
-    margin: "0 0 0 auto",
-    marginRight: '30px'
+    margin: "0 0 0 auto"
   },
   middlePane: {
     flex: '1'
@@ -204,8 +200,8 @@ export const dstyles = {
   },
   tempColumn: {
     width: '10%',
-    textAlign: 'right',
-    padding: '0'
+    textAlign: 'center',
+    padding: '0 40px 0 0'
   },
   modalBlock: {
     color: '#494949',

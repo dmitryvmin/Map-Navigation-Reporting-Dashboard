@@ -338,12 +338,12 @@ export default class Moh extends Component {
                                   </Tippy>
                               </TableCell>
                               <TableCell style={dstyles.tempColumn}>
-                                <Tooltip title={d.lasttemp} placement="bottom-start" enterDelay={300}>
+                                <Tooltip title={d.lasttemp} placement="bottom-end" enterDelay={300}>
                                   <div>{d.lasttemp}</div>
                                 </Tooltip>
                               </TableCell>
                               <TableCell style={dstyles.holdoverColumn}>
-                               <Tooltip title={d.holdover} placement="bottom-start" enterDelay={300}>
+                               <Tooltip title={d.holdover} placement="bottom-middle" enterDelay={300}>
                                  <div>{d.holdover}</div>
                                </Tooltip>
                              </TableCell>
