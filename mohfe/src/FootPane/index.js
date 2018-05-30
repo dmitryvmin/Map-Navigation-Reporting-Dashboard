@@ -17,6 +17,7 @@ const styles = {
     width: '80vw',
     margin: '0 auto',
     paddingTop: '24px',
+    marginTop: '40px',
     display: 'flex',
     justifyContent: 'space-between',
   },
