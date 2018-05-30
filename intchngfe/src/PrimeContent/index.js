@@ -23,7 +23,6 @@ export default class PrimeContent extends Component {
     return (
       <div>
         { this.ContentArea(this.props.content) }
-        <div style={{height:"250px"}}/>
       </div>
       )
     }
