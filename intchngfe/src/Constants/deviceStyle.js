@@ -200,8 +200,7 @@ export const dstyles = {
   },
   tempColumn: {
     width: '10%',
-    textAlign: 'center',
-    padding: '0 40px 0 0'
+    textAlign: 'right'
   },
   modalBlock: {
     color: '#494949',

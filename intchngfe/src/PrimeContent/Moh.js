@@ -36,11 +36,11 @@ const statusBg = (statusString) => {
   console.log('statusBg', statusString);
   switch (statusString) {
     case "red":
-      return {backgroundColor: 'rgba(255, 0, 0, .1)'}
+      return {border: '2px solid #e42527'}
     case "yellow":
-      return {backgroundColor: 'rgba(255, 165, 0, .1)'}
+      return {}
     case "green":
-      return {backgroundColor: 'rgba(13, 127, 0, 0.1)'}
+      return {}
     default:
       return {}
   }
@@ -48,8 +48,8 @@ const statusBg = (statusString) => {
 
 const columnData: any = [
     { id: 'status', label: 'Status'},
-    { id: 'lasttemp', label: 'Last Temp (C)'},
     { id: 'holdover', label: 'Holdover Days'},
+    { id: 'lasttemp', label: 'Last Temp (C)'},
     { id: 'brand', label: 'Brand/Model'},
     { id: 'facility', label: 'Facility'},
     // { id: 'district', label: 'State/District'},
@@ -83,7 +83,7 @@ export default class Moh extends Component {
       isDetailOpen: false,
       selectedDevice: null,
       order: 'asc',
-      orderBy: 'messagesPerWeek',
+      orderBy: null,
       device_info: this.loadDevices()
     }
     this.loadDevices = this.loadDevices.bind(this);
@@ -159,27 +159,15 @@ export default class Moh extends Component {
     xhttp.send();
   }
 
-  handleRequestSort = (event: any, property: any) => {
-      const orderBy = property;
-      let order = 'desc';
-
-      if (this.state.orderBy === property && this.state.order === 'desc') {
-          order = 'asc';
-      }
-      // const sensors =
-      //     order === 'desc'
-      //         ? this.state.devices.sensors.sort((a: any, b: any) => (b[orderBy] < a[orderBy] ? -1 : 1))
-      //         : this.state.devices.sensors.sort((a: any, b: any) => (a[orderBy] < b[orderBy] ? -1 : 1));
-      this.setState({ order, orderBy });
-  };
-
-  handleRequestSort = (event: any, property: any) => {
+  handleRequestSort = (property: any, sort: any) => {
         const orderBy: any = property;
         let order: any = 'desc';
 
         if (this.state.orderBy === property && this.state.order === 'desc') {
             order = 'asc';
         }
+
+        if (sort) order = sort;
 
         const device_info: any =
             order === 'desc'
@@ -229,17 +217,28 @@ export default class Moh extends Component {
         obj.lastpingstyle = this.timechecker48(d.temperature) ? dstyles.redPing : dstyles.clearPing;
 
         // Last Temp
-        obj.lasttemp = tempuratureShape(Math.round(d.temperature.value));
+        obj.lasttemp = `${Math.round(parseFloat(d.temperature.value))}°`;
+        // obj.lasttemp = tempuratureShape(Math.round(d.temperature.value));
 
         device_info.push(obj);
 
       });
-      console.log('### mapPropsToTableColumns ###', device_info);
-      this.setState({ device_info });
+
+      this.setState((prevState: any) => { 
+        return {device_info}
+        }, () => {
+
+          if (!this.state.orderBy) {
+            this.handleRequestSort('status', 'desc');
+          } else {
+            this.handleRequestSort(this.state.orderBy, this.state.order);
+          }
+        }
+      );
     }
 
   createSortHandler = (property: any) => (event: any) => {
-      this.handleRequestSort(event, property);
+    this.handleRequestSort(property);
   };
 
   componentDidMount() {
@@ -337,16 +336,16 @@ export default class Moh extends Component {
                                     {statusDisplay(d.status)}
                                   </Tippy>
                               </TableCell>
-                              <TableCell style={dstyles.tempColumn}>
+                              <TableCell style={dstyles.holdoverColumn}>
+                               <Tooltip title={d.holdover} placement="bottom" enterDelay={300}>
+                                 <div>{d.holdover}</div>
+                               </Tooltip>
+                             </TableCell>
+                             <TableCell style={dstyles.tempColumn}>
                                 <Tooltip title={d.lasttemp} placement="bottom-end" enterDelay={300}>
                                   <div>{d.lasttemp}</div>
                                 </Tooltip>
                               </TableCell>
-                              <TableCell style={dstyles.holdoverColumn}>
-                               <Tooltip title={d.holdover} placement="bottom-middle" enterDelay={300}>
-                                 <div>{d.holdover}</div>
-                               </Tooltip>
-                             </TableCell>
                               <TableCell style={dstyles.deviceColumn}>
                                 <Tooltip title={d.brand} placement="bottom-start" enterDelay={300}>
                                   <div>{d.brand}</div>
