@@ -11,13 +11,13 @@ const styles = {
     bottom: 0,
     left: 0,
     padding: '2em 0',
+    marginTop: '40px',
     marginTop: '20px'
   },
   ggfooter: {
     width: '80vw',
     margin: '0 auto',
     paddingTop: '24px',
-    marginTop: '40px',
     display: 'flex',
     justifyContent: 'space-between',
   },
