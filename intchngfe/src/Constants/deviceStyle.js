@@ -193,14 +193,14 @@ export const dstyles = {
   },
   tempColumnHead: {
     width: '10%',
-    textAlign: 'right',
+    textAlign: 'center',
     padding: '0',
     fontWeight: 'bold',
     fontSize: '0.85rem'
   },
   tempColumn: {
     width: '10%',
-    textAlign: 'right'
+    textAlign: 'center'
   },
   modalBlock: {
     color: '#494949',
