@@ -159,7 +159,7 @@ export default class Moh extends Component {
     xhttp.send();
   }
 
-  handleRequestSort = (property: any, sort: any) => {
+   handleRequestSort = (property: any, sort: any) => {
         const orderBy: any = property;
         let order: any = 'desc';
 
@@ -169,10 +169,22 @@ export default class Moh extends Component {
 
         if (sort) order = sort;
 
-        const device_info: any =
+        let device_info: any;
+
+        if (property !== 'lasttemp' || property !== 'holdover') {
+          device_info =
             order === 'desc'
                 ? this.state.device_info.sort((a: any, b: any) => (b[orderBy] < a[orderBy] ? -1 : 1))
                 : this.state.device_info.sort((a: any, b: any) => (a[orderBy] < b[orderBy] ? -1 : 1));
+        } else {
+          device_info =
+            order === 'desc'
+                ? this.state.device_info.sort((a: any, b: any) => a[orderBy] - b[orderBy])
+                : this.state.device_info.sort((a: any, b: any) => b[orderBy] - a[orderBy]);
+        }
+
+        console.log('ORDER_BY', orderBy);        
+        console.log('DEVICE_INFO', device_info);
 
         this.setState({ device_info, order, orderBy });
     };
@@ -217,7 +229,7 @@ export default class Moh extends Component {
         obj.lastpingstyle = this.timechecker48(d.temperature) ? dstyles.redPing : dstyles.clearPing;
 
         // Last Temp
-        obj.lasttemp = `${Math.round(parseFloat(d.temperature.value))}°`;
+        obj.lasttemp = parseInt(`${Math.round(parseFloat(d.temperature.value))}`);
         // obj.lasttemp = tempuratureShape(Math.round(d.temperature.value));
 
         device_info.push(obj);
@@ -343,7 +355,7 @@ export default class Moh extends Component {
                              </TableCell>
                              <TableCell style={dstyles.tempColumn}>
                                 <Tooltip title={d.lasttemp} placement="bottom-end" enterDelay={300}>
-                                  <div>{d.lasttemp}</div>
+                                  <div>{d.lasttemp}°</div>
                                 </Tooltip>
                               </TableCell>
                               <TableCell style={dstyles.deviceColumn}>
