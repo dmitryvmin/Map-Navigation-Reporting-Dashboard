@@ -366,9 +366,11 @@ export default class Moh extends Component {
 
   render () {
     const { order, orderBy, device_info } = this.state;
+    const alertBar = (this.state.errors && this.state.errors.length) ? <Alert errors={this.state.errors}/> : null; 
+
     return (
       <div>
-          <Alert errors={this.state.errors}/>
+          {alertBar}
       <div style={dstyles.middlePane}>
         <div style={dstyles.idBar}>
           <h1 style={dstyles.idBarH}>Kenya MoH</h1>
