@@ -35,6 +35,10 @@ export default class Alert extends React.Component<any, any> {
             return null;
         }
 
+        const { errors } = this.props; 
+
+        console.log('TEST: ', errors);
+
         const actions = [
             <FlatButton label="Cancel"
                         primary={true}
@@ -42,7 +46,6 @@ export default class Alert extends React.Component<any, any> {
             />,
             <FlatButton label="Submit"
                         primary={true}
-                        keyboardFocused={true}
                         onClick={this.handleClose}
             />
         ];
@@ -55,7 +58,7 @@ export default class Alert extends React.Component<any, any> {
                             color={"red"}
                             backgroundColor={"white"}
                             size={30}>
-                            3
+                           {Object.keys(errors).length}
                         </Avatar>
                         <span style={{color:'white', marginLeft:'10px'}}>Devices have errors</span>
                     </div>
@@ -67,14 +70,12 @@ export default class Alert extends React.Component<any, any> {
                             <Close color={"white"}
                                    onClick={this.handleClick} />
                         </IconButton>
-                        <Dialog title="3 Devices reporting errors"
+                        <Dialog title={`${Object.keys(errors).length} Devices reporting errors`}
                                 actions={actions}
                                 modal={false}
                                 open={this.state.dialogOpen}
                                 onRequestClose={this.handleClose}>
-                            <a>View Device 1 Error Info..</a><br /><br />
-                            <a>View Device 2 Error Info..</a><br /><br />
-                            <a>View Device 3 Error Info..</a><br /><br />
+                            {Object.keys(errors).map((e: any) => <div>{errors[e]}</div>)}
                         </Dialog>
                     </div>
                     <div style={{clear: 'both'}}></div>

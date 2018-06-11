@@ -187,9 +187,7 @@ export const dstyles = {
     textAlign: 'left'
   },
   lastpingColumn: {
-    width: '10%',
-    padding: '0 10px',
-    textAlign: 'right'
+    width: '10%'
   },
   tempColumnHead: {
     width: '10%',
