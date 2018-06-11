@@ -19,6 +19,52 @@ import {dstyles} from '../Constants/deviceStyle';
 import 'react-tippy/dist/tippy.css'
 import { Tooltip as Tippy } from 'react-tippy';
 
+const alretJSON = {
+      "CTBH":5.01,
+      "EACP":0.03,
+      "EALN":0.00,
+      "ECDBAT":8.18,
+      "ECHBAT":79,
+      "EHZLN":0.00,
+      "EOCLN":1,
+      "ERROR":[  
+         {  
+            "ID":"440B",
+            "INFO":"n: 29, Ce: 173.3, Ne: 0.0, Ms: 0.0, Ml: 2226"
+         },
+         {  
+            "ID":"440A",
+            "INFO":"Cs: 0.0, Cl: 0.000, N: 174.058121, Us: 0.000000, Ul: 0.000000"
+         }
+      ],
+      "ESCLN":0,
+      "EVCP":2.03,
+      "EVDBAT":3.92,
+      "EVLN":5.83,
+      "EWCP":0.06,
+      "EWHLN":0.00,
+      "EWLN":-0.01,
+      "FRIDGEID":2882429806056571124,
+      "HAMDAQ":89.61,
+      "SCPX":0,
+      "SDX":0,
+      "SFNS":1,
+      "SFNX":0,
+      "SLNX":0,
+      "SVTX":0,
+      "TAMDAQ":24.29,
+      "TCDOUT":24.31,
+      "TCPDISCTL":25.25,
+      "TEVIN":1.19,
+      "TICBKCTL":0.62,
+      "TICMCTL":0.25,
+      "TRBCM":1.00,
+      "TRBEBOT":3.62,
+      "TRBETOP":3.56,
+      "TVCBOT":4.94,
+      "TVCTOPCTL":4.81,
+      "measuredDtm":"2018-05-27T00:13:38+00:00"
+}
 const statusDisplay = (statusString) => {
   switch (statusString) {
     case "red":
@@ -33,10 +79,10 @@ const statusDisplay = (statusString) => {
 }
 
 const statusBg = (statusString) => {
-  console.log('statusBg', statusString);
+  // console.log('statusBg', statusString);
   switch (statusString) {
     case "red":
-      return {border: '2px solid #e42527'}
+      return {border: '2px solid #e42527'};
     case "yellow":
       return {}
     case "green":
@@ -53,7 +99,7 @@ const columnData: any = [
     { id: 'brand', label: 'Brand/Model'},
     { id: 'facility', label: 'Facility'},
     // { id: 'district', label: 'State/District'},
-    { id: 'lastping', label: 'Last Ping'},
+    { id: 'lastping', label: 'Last Ping (hours)'},
 ]
 
 const tempuratureShape = (temperature) => {
@@ -84,7 +130,8 @@ export default class Moh extends Component {
       selectedDevice: null,
       order: 'asc',
       orderBy: null,
-      device_info: this.loadDevices()
+      device_info: this.loadDevices(),
+      errors: []  
     }
     this.loadDevices = this.loadDevices.bind(this);
     this.deviceRowClick = this.deviceRowClick.bind(this);
@@ -115,6 +162,58 @@ export default class Moh extends Component {
      } else {
        return false;
      }
+  }
+
+  getLastPingHours = (sensor: any) => {
+    let timestamp = (sensor.temperature && sensor.temperature.timestamp) ? sensor.temperature.timestamp : null; 
+
+    if (timestamp) {
+      let now = moment();
+      let before = moment.utc(timestamp);
+      let diff = Math.abs(before.diff(now, 'hours'));
+      // timestamp = moment(moment.utc(sensor.temperature.timestamp)).fromNow(true);
+
+      return diff; 
+    } else {
+      return null; 
+    }
+  }
+
+  getLastPing = (sensor: any) => {
+    let getLastPingHours = this.getLastPingHours(sensor);
+
+    if (getLastPingHours && getLastPingHours <= 26) {
+      let time: any = getLastPingHours === 1 ? 'hour' : 'hours'; 
+      return `${getLastPingHours} ${time} ago`;
+    } else if (getLastPingHours && getLastPingHours > 26) {
+
+      let days: any = Math.floor(getLastPingHours / 24); 
+      let count: any = (days === 1) ? 'day' : 'days';
+      let hours: any = Math.round(getLastPingHours - (days * 24));
+
+      return `${days} ${count}, ${hours && hours} ago`;;
+    } else {
+      console.warn('getLastPing - no timestamp. sensor: ', sensor);
+      return '-';
+    }
+  }
+
+  checkStatus = (sensor: any) => {
+    // return 'red' if sensor has not reported in 26 hours otherwise return sensor.status
+    let lastping = this.getLastPingHours(sensor);
+
+    if (lastping > 26) {
+      let error = `Error with sensor ${sensor.id}`;
+      let sesorErrorPresent = false; 
+
+      this.state.errors && Object.keys(this.state.errors).map((e: any) => {
+        if (sensor.id === e) sesorErrorPresent = true;
+      });
+      if (!sesorErrorPresent) this.setState({ errors: {...this.state.errors, [sensor.id]: error } });
+      return 'red';
+    } else  {
+      return sensor.status; 
+    }
   }
 
   deviceRowClick = (device) => {
@@ -182,10 +281,6 @@ export default class Moh extends Component {
                 ? this.state.device_info.sort((a: any, b: any) => a[orderBy] - b[orderBy])
                 : this.state.device_info.sort((a: any, b: any) => b[orderBy] - a[orderBy]);
         }
-
-        console.log('ORDER_BY', orderBy);        
-        console.log('DEVICE_INFO', device_info);
-
         this.setState({ device_info, order, orderBy });
     };
 
@@ -198,7 +293,7 @@ export default class Moh extends Component {
         obj.sensor = d;
 
         // Status
-        obj.status = d.status;
+        obj.status = this.checkStatus(d);
 
         // Brand/Model
         obj.brand = `${d.manufacturer} - ${d.model}`;
@@ -213,17 +308,7 @@ export default class Moh extends Component {
         obj.holdover = this.precisionRound(d.holdover, 0);
 
         // Last Ping
-        obj.lastping = (d.temperature && d.temperature.timestamp) ? moment(moment.utc(d.temperature.timestamp)).fromNow() : "-";
-
-        // var usertimezone = moment.tz.guess();
-        // var value = moment.utc(d.temperature.timestamp);
-        // var formatDate = moment.tz(value, usertimezone);
-        // var momentDate = formatDate.fromNow();
-        // var stamp = moment.utc(d.temperature.timestamp);
-        // var now =  moment().utc();
-        // console.log('DIFF: ', now.diff(stamp, 'hours'));
-        // console.log('FROM NOW: ', momentDate);
-        console.log('TIMESTAMP: ', moment(d.temperature.timestamp+'Z'));
+        obj.lastping = this.getLastPing(d);
 
         // Last Ping Style
         obj.lastpingstyle = this.timechecker48(d.temperature) ? dstyles.redPing : dstyles.clearPing;
@@ -235,6 +320,21 @@ export default class Moh extends Component {
         device_info.push(obj);
 
       });
+
+      // Adding test sensor
+      // let testSensor = { temperature: {timestamp: '2018-05-06T00:23:53', value: 10.0}, status: 'red', sensor: 'TEST sensor', id: 1230000000 }
+      // let testObj = {
+      //   sensor: testSensor.sensor,
+      //   status: this.checkStatus(testSensor),
+      //   brand: 'TEST manufacturer',
+      //   facility: 'TEST facility',
+      //   district: 'TEST district',
+      //   holdover: 12.34,
+      //   lastping: this.getLastPing(testSensor),
+      //   lastpingstyle: this.timechecker48(testSensor) ? dstyles.redPing : dstyles.clearPing,
+      //   lasttemp: parseInt(`${Math.round(parseFloat(testSensor))}`)
+      // }
+      // device_info.push(testObj);
 
       this.setState((prevState: any) => { 
         return {device_info}
@@ -260,9 +360,12 @@ export default class Moh extends Component {
 
   render () {
     const { order, orderBy, device_info } = this.state;
+
+    // console.log('RENDER', this.state); 
+
     return (
       <div>
-         <Alert />
+         <Alert errors={this.state.errors}/>
       <div style={dstyles.middlePane}>
         <div style={dstyles.idBar}>
           <h1 style={dstyles.idBarH}>Aucma Reporting Tool</h1>
@@ -371,7 +474,7 @@ export default class Moh extends Component {
 
                               <TableCell style={dstyles.lastpingColumn}>
                                 <Tooltip title={d.lastping} placement="bottom-start" enterDelay={300}>
-                                  <div style={d.lastpingstyle}>{d.lastping}</div>
+                                  <div>{d.lastping}</div>
                                 </Tooltip>
                               </TableCell>
 

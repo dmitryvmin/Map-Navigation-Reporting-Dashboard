@@ -9,7 +9,7 @@ const styles = {
     backgroundColor: 'white',
     // position: 'fixed',
     bottom: 0,
-       marginTop: '40px',
+    marginTop: '40px',
     left: 0,
     padding: '2em 0',
   },
