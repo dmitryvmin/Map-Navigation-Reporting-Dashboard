@@ -189,10 +189,11 @@ export default class Moh extends Component {
     } else if (getLastPingHours && getLastPingHours > 26) {
 
       let days: any = Math.floor(getLastPingHours / 24); 
-      let count: any = (days === 1) ? 'day' : 'days';
+      let daycount: any = (days === 1) ? 'day' : 'days';
       let hours: any = Math.round(getLastPingHours - (days * 24));
+      let hourscount: any = (hours === 1) ? 'hour' : 'hours';
 
-      return `${days} ${count}, ${hours && hours} ago`;;
+      return `${days} ${daycount}, ${hours && hours} ${hourscount} ago`;
     } else {
       console.warn('getLastPing - no timestamp. sensor: ', sensor);
       return '-';

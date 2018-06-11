@@ -188,10 +188,11 @@ export default class Moh extends Component {
     } else if (getLastPingHours && getLastPingHours > 26) {
 
       let days: any = Math.floor(getLastPingHours / 24); 
-      let count: any = (days === 1) ? 'day' : 'days';
+      let daycount: any = (days === 1) ? 'day' : 'days';
       let hours: any = Math.round(getLastPingHours - (days * 24));
+      let hourscount: any = (hours === 1) ? 'hour' : 'hours';
 
-      return `${days} ${count}, ${hours && hours} ago`;;
+      return `${days} ${daycount}, ${hours && hours} ${hourscount} ago`;
     } else {
       console.warn('getLastPing - no timestamp. sensor: ', sensor);
       return '-';
@@ -360,12 +361,11 @@ export default class Moh extends Component {
 
   render () {
     const { order, orderBy, device_info } = this.state;
-
-    // console.log('RENDER', this.state); 
+    const alertBar = (this.state.errors && this.state.errors.length) ? <Alert errors={this.state.errors}/> : null; 
 
     return (
       <div>
-         <Alert errors={this.state.errors}/>
+        {alertBar}
       <div style={dstyles.middlePane}>
         <div style={dstyles.idBar}>
           <h1 style={dstyles.idBarH}>Aucma Reporting Tool</h1>
