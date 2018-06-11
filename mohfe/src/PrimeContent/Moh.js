@@ -366,7 +366,7 @@ export default class Moh extends Component {
 
   render () {
     const { order, orderBy, device_info } = this.state;
-    const alertBar = (this.state.errors && this.state.errors.length) ? <Alert errors={this.state.errors}/> : null; 
+    const alertBar = (this.state.errors && Object.keys(this.state.errors).length) ? <Alert errors={this.state.errors}/> : null; 
 
     return (
       <div>
