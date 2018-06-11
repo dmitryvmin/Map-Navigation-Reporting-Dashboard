@@ -7,6 +7,9 @@ import 'typeface-roboto'; // Font
 import {dstyles} from '../Constants/deviceStyle';
 
 const statusDisplay = (statusString) => {
+
+  console.warn('## STATUSDISPLAY ##', statusString);
+
   switch (statusString) {
     case "red":
       return <div style={dstyles.reddot} />
@@ -36,6 +39,9 @@ export default class DeviceDetail extends Component {
   }
 
   render() {
+    if(!this.props.device) {
+          return null;
+      }
     const actions = [
       <FlatButton
         label="Close"
@@ -44,7 +50,8 @@ export default class DeviceDetail extends Component {
         onClick={this.props.handleClose}
       />,
     ];
-    const device = this.props.device;
+    console.warn('### DEVICE PROPS: ', this.props);
+    const device = this.props.device.sensor;
     const facility = device ? device.facility.name : "-";
     const id = device ? device.id : "-";
     const status = device ? device.status : "-";
@@ -54,10 +61,9 @@ export default class DeviceDetail extends Component {
     const model = device ? device.model : "-";
     const country = device ? device.facility.country : "-";
     //const district = device ? device.facility.district : "-";
-    const holdover = device ? this.precisionRound(device.holdover, 1) : "?";
-    const lastping = device ? moment(device.temperature.timestamp).format('MMMM Do, h:mm:ss a') : "-";
-    const lastPingAgo = device ? moment(device.temperature.timestamp + "Z").fromNow() : "-";
-    const tempurature = device ? this.precisionRound(device.temperature.value, 2) : "?";
+    const holdover = this.props.device.holdover;
+    const lastping = this.props.device.lastping;
+    const tempurature = (device && device.temperature) ? this.precisionRound(device.temperature.value, 2) : "?";
     let city = device ? device.facility.city : "";
     if ( city === null || city === "undefined" || city === undefined ) { city = " "; }
     const state_district = device ? `${city} ${device.facility.district}` : "-";
@@ -83,7 +89,7 @@ export default class DeviceDetail extends Component {
       <div>
 
         <Dialog
-          title={modalHeader(status, manufacturer + " " + model)}
+          title={modalHeader(this.props.device.status, manufacturer + " " + model)}
           actions={actions}
           modal={false}
           open={this.props.isOpen}
@@ -97,7 +103,7 @@ export default class DeviceDetail extends Component {
             {(errors) ? <p>{JSON.stringify(errors)}</p> : ''}
             <br/>
             <div style={dstyles.thirdCard}><span style={dstyles.detailTitleHead}>Last Tempurature Reading</span><br/>{tempurature}&deg; C</div>
-            <div style={dstyles.thirdCard}><span style={dstyles.detailTitleHead}>Last Ping</span><br/>{lastping}<br/><em>({lastPingAgo})</em></div>
+            <div style={dstyles.thirdCard}><span style={dstyles.detailTitleHead}>Last Ping</span><br/>{lastping}<br/></div>
             <div style={dstyles.thirdCard}><span style={dstyles.detailTitleHead}>Holdover days</span><br/>{holdover}</div>
             <br/>
             <h3>Device Information</h3>
