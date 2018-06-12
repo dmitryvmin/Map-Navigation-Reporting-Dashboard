@@ -239,10 +239,13 @@ export default class Moh extends Component {
     xhttp.onreadystatechange = function() {
       if (this.readyState === 4 && this.status === 200) {
         let json = JSON.parse(this.responseText);
+
+        console.warn('loadDevices', json);
+
         that.mapPropsToTableColumns(json);
       }
     };
-    xhttp.open("GET", "http://20.36.19.106:9000/sensor", true);
+    xhttp.open("GET", "http://20.36.19.106:9002/sensor/state", true);
     xhttp.setRequestHeader('Authorization','Basic Z2xvYmFsLmdvb2Q6fkYoRzNtKUtQeT8/ZHd4fg==');
     xhttp.send();
   }
@@ -254,11 +257,11 @@ export default class Moh extends Component {
     var that = this;
     xhttp.onreadystatechange = function() {
       if (this.readyState === 4 && this.status === 200) {
-        console.log("Looks like it cleared the data on back-end");
+        // console.log("Looks like it cleared the data on back-end");
         that.setState({device_info: null});
       }
     };
-    xhttp.open("POST", "http://20.36.19.106:9003/demo/clear/samples", true);
+    xhttp.open("POST", "http://20.36.19.106:9002/demo/clear/samples", true);
     xhttp.setRequestHeader('Authorization','Basic Z2xvYmFsLmdvb2Q6fkYoRzNtKUtQeT8/ZHd4fg==');
     xhttp.send();
   }
