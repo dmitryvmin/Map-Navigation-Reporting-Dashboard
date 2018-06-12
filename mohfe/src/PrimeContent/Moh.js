@@ -440,7 +440,8 @@ export default class Moh extends Component {
                       return (
                            <TableRow key={i} hover onClick={_onClick} style={statusBg(d.status)}>
                              <TableCell style={dstyles.statusColumn}>
-                                  <Tippy title="Welcome to React"
+                                {(d.status === 'red') ? 
+                                      <Tippy title="Welcome to React"
                                          position="top"
                                          interactive
                                          trigger="mouseenter"
@@ -457,7 +458,9 @@ export default class Moh extends Component {
                                           </div>
                                          )}>
                                     {statusDisplay(d.status)}
-                                  </Tippy>
+                                  </Tippy> : 
+                                  statusDisplay(d.status)
+                                }
                               </TableCell>
                               <TableCell style={dstyles.holdoverColumn}>
                                 <Tooltip title={d.holdover} placement="bottom" enterDelay={300}>
