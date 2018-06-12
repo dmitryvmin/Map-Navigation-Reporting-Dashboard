@@ -428,7 +428,7 @@ export default class Moh extends Component {
 
                   <TableBody>
                     {device_info && device_info.map((d: any, i: any) => {
-                      const _onClick = () => { this.deviceRowClick(d.sensor) }
+                      const _onClick = () => { this.deviceRowClick(d) }
                       return (
                            <TableRow key={i} hover onClick={_onClick} style={statusBg(d.status)}>
                               <TableCell style={dstyles.statusColumn}>
