@@ -245,7 +245,7 @@ export default class Moh extends Component {
         that.mapPropsToTableColumns(json);
       }
     };
-    xhttp.open("GET", "http://20.36.19.106:9002/sensor/state", true);
+    xhttp.open("GET", "http://20.36.19.106:9000/sensor/state", true);
     xhttp.setRequestHeader('Authorization','Basic Z2xvYmFsLmdvb2Q6fkYoRzNtKUtQeT8/ZHd4fg==');
     xhttp.send();
   }
@@ -261,7 +261,7 @@ export default class Moh extends Component {
         that.setState({device_info: null});
       }
     };
-    xhttp.open("POST", "http://20.36.19.106:9002/demo/clear/samples", true);
+    xhttp.open("POST", "http://20.36.19.106:9000/demo/clear/samples", true);
     xhttp.setRequestHeader('Authorization','Basic Z2xvYmFsLmdvb2Q6fkYoRzNtKUtQeT8/ZHd4fg==');
     xhttp.send();
   }
