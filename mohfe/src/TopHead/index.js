@@ -113,7 +113,7 @@ export default class TopHead extends Component {
               style={styles.avatarFlag}
               alt="flag icon"
             />
-            {this.state.moh} MOH Reporting Tool
+            Example MOH Reporting Tool
           </div>
            <div style={styles.topNavArea}>
             {/*<FlatButton label="People" style={styles.topNavButton} onClick={(e) => this.testclick(e, "people")} />
