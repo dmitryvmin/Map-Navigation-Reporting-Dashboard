@@ -379,7 +379,7 @@ export default class Moh extends Component {
           {alertBar}
       <div style={dstyles.middlePane}>
         <div style={dstyles.idBar}>
-          <h1 style={dstyles.idBarH}>Kenya MoH</h1>
+          <h1 style={dstyles.idBarH}>Example MoH</h1>
         </div>
         <div style={dstyles.wrapwrap}>
           <div style={dstyles.wrapTabs} >
