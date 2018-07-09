@@ -24,6 +24,7 @@ const styles = {
     margin: '12px',
     lineHeight: '64px',
     verticalAlign: 'middle',
+    objectFit: 'cover'
   },
   avatarUser: {
     margin: '12px',
@@ -108,7 +109,7 @@ export default class TopHead extends Component {
         <header style={styles.topHeader}>
           <div style={styles.titleArea} >
             <Avatar
-              src="/img/flag4.png"
+              src="/img/flag.jpg"
               size={60}
               style={styles.avatarFlag}
               alt="flag icon"

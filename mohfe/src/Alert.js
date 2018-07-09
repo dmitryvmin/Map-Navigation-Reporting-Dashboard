@@ -34,11 +34,7 @@ export default class Alert extends React.Component<any, any> {
         if(!this.state.showAlert) {
             return null;
         }
-
         const { errors } = this.props; 
-
-        console.log('TEST: ', errors);
-
         const actions = [
             <FlatButton label="Cancel"
                         primary={true}
@@ -75,7 +71,7 @@ export default class Alert extends React.Component<any, any> {
                                 modal={false}
                                 open={this.state.dialogOpen}
                                 onRequestClose={this.handleClose}>
-                            {Object.keys(errors).map((e: any) => <div>{errors[e]}</div>)}
+                            {Object.keys(errors).map((e: any, i: any) => <p key={`alert-${i}`} style={{color: '#9e9e9e'}}>Sensor #{e} - {errors[e]}</p>)}
                         </Dialog>
                     </div>
                     <div style={{clear: 'both'}}></div>

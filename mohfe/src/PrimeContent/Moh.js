@@ -4,6 +4,7 @@ import {Tabs, Tab} from 'material-ui/Tabs';
 import RaisedButton from 'material-ui/RaisedButton';
 import moment from 'moment-timezone';
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
+import Chip from 'material-ui/Chip';
 import DeviceDetail from './DeviceDetail';
 import 'typeface-roboto'; //Font
 import Alert from './../Alert';
@@ -18,6 +19,11 @@ import Tooltip from 'material-ui-next/Tooltip';
 import {dstyles} from '../Constants/deviceStyle';
 import 'react-tippy/dist/tippy.css'
 import { Tooltip as Tippy } from 'react-tippy';
+import ReactSpeedometer from "react-d3-speedometer";
+import HorizontalGauge from 'react-horizontal-gauge';
+import Gauge from 'react-svg-gauge';
+import { LineChart, Line } from 'recharts';
+import { Sparklines, SparklinesLine, SparklinesSpots, SparklinesReferenceLine } from 'react-sparklines';
 
 const alretJSON = {
       "CTBH":5.01,
@@ -205,16 +211,31 @@ export default class Moh extends Component {
     let lastping = this.getLastPingHours(sensor);
 
     if (lastping > 26) {
-      let error = `Error with sensor ${sensor.id}`;
-      let sesorErrorPresent = false; 
-
-      this.state.errors && Object.keys(this.state.errors).map((e: any) => {
-        if (sensor.id === e) sesorErrorPresent = true;
-      });
-      if (!sesorErrorPresent) this.setState({ errors: {...this.state.errors, [sensor.id]: error } });
       return 'red';
     } else  {
       return sensor.status; 
+    }
+  }
+
+  getErrors = (sensor: any) => {
+    let lastping = this.getLastPingHours(sensor);
+
+    // TODO: sensor object should return errors...
+
+    if (lastping > 26) {
+      let error = `over 26 hours since any data has been received`;
+      let sensorErrorPresent = false; 
+
+      // this.state.errors && Object.keys(this.state.errors).map((e: any) => {
+      //   if (sensor.id === e) sensorErrorPresent = true;
+      // });
+      // if (!sensorErrorPresent) this.setState({ errors: {...this.state.errors, [sensor.id]: error } });
+      this.setState({ errors: {...this.state.errors, [sensor.id]: error } });
+
+      return error; 
+
+    } else  {
+      return null;
     }
   }
 
@@ -276,29 +297,34 @@ export default class Moh extends Component {
 
         if (sort) order = sort;
 
-        let device_info: any;
+        let device_info_copy = Object.values(this.state.device_info); 
+        let sorted_device_info: any;
 
         if (property !== 'lasttemp' || property !== 'holdover') {
-          device_info =
+          sorted_device_info =
             order === 'desc'
-                ? this.state.device_info.sort((a: any, b: any) => (b[orderBy] < a[orderBy] ? -1 : 1))
-                : this.state.device_info.sort((a: any, b: any) => (a[orderBy] < b[orderBy] ? -1 : 1));
+                ? device_info_copy.sort((a: any, b: any) => (b[orderBy] < a[orderBy] ? -1 : 1))
+                : device_info_copy.sort((a: any, b: any) => (a[orderBy] < b[orderBy] ? -1 : 1));
         } else {
-          device_info =
+          sorted_device_info =
             order === 'desc'
-                ? this.state.device_info.sort((a: any, b: any) => a[orderBy] - b[orderBy])
-                : this.state.device_info.sort((a: any, b: any) => b[orderBy] - a[orderBy]);
+                ? device_info_copy.sort((a: any, b: any) => a[orderBy] - b[orderBy])
+                : device_info_copy.sort((a: any, b: any) => b[orderBy] - a[orderBy]);
         }
 
-        // console.log('ORDER_BY', orderBy);        
-        // console.log('DEVICE_INFO', device_info);
+        let sorted_device_info_obj = sorted_device_info.reduce((acc, curr) => {
+          acc[curr.sensor.id] = curr;
+          return acc; 
+        }, {});
 
-        this.setState({ device_info, order, orderBy });
+        console.log('SORT', sorted_device_info_obj);        
+
+        this.setState({ device_info: sorted_device_info_obj, order, orderBy });
     };
 
     mapPropsToTableColumns = (json) => {
       // console.log('json', json);
-      let device_info: any = [];
+      let device_info: any = {};
       json && json.sensors && json.sensors.map((d: any) => {
         let obj: any = {}
 
@@ -307,6 +333,9 @@ export default class Moh extends Component {
 
         // Status
         obj.status = this.checkStatus(d);
+
+        // Errors
+        obj.errors = this.getErrors(d);
 
         // Brand/Model
         obj.brand = `${d.manufacturer} - ${d.model}`;
@@ -318,7 +347,7 @@ export default class Moh extends Component {
         obj.district = d.facility.district;
 
         // Holdover Days
-        obj.holdover = this.precisionRound(d.holdover, 0);
+        obj.holdover = (this.state.device_info && this.state.device_info[d.id] && this.state.device_info[d.id].holdover) ? [...this.state.device_info[d.id].holdover, this.precisionRound(d.holdover, 0)] : [this.precisionRound(d.holdover, 0)]; 
 
        // Last Ping
         obj.lastping = this.getLastPing(d);
@@ -329,7 +358,7 @@ export default class Moh extends Component {
         // Last Temp
         obj.lasttemp = parseInt(`${Math.round(parseFloat(d.temperature.value))}`);
 
-        device_info.push(obj);
+        device_info[d.id] = obj;
 
       });
 
@@ -352,9 +381,9 @@ export default class Moh extends Component {
         return {device_info}
         }, () => {
 
-          if (!this.state.orderBy) {
+          if (!this.state.orderBy && this.state.device_info) {
             this.handleRequestSort('status', 'desc');
-          } else {
+          } else if (this.state.orderBy && this.state.device_info) {
             this.handleRequestSort(this.state.orderBy, this.state.order);
           }
         }
@@ -367,12 +396,14 @@ export default class Moh extends Component {
 
   componentDidMount() {
     this.loadDevices();
-    setInterval(this.loadDevices, 30000);
+    setInterval(this.loadDevices, 15000);
   }
 
   render () {
     const { order, orderBy, device_info } = this.state;
     const alertBar = (this.state.errors && Object.keys(this.state.errors).length) ? <Alert errors={this.state.errors}/> : null; 
+
+    console.log('STATE', this.state);
 
     return (
       <div>
@@ -383,10 +414,10 @@ export default class Moh extends Component {
         </div>
         <div style={dstyles.wrapwrap}>
           <div style={dstyles.wrapTabs} >
-            <Tabs tabItemContainerStyle={{backgroundColor:"#51326C"}}
+       {/*     <Tabs tabItemContainerStyle={{backgroundColor:"#51326C"}}
                     style={{width: "80vw", marginLeft: "auto", marginRight: "auto"}}
                     inkBarStyle={{backgroundColor:"#B897D5", height:"4px", marginTop:"-4px"}}>
-              <Tab label="Devices" >
+              <Tab label="Devices" >*/}
                 <DeviceDetail isOpen={this.state.isDetailOpen}
                               handleOpen={this.handleDetailOpen}
                               handleClose={this.handleDetailClose}
@@ -438,26 +469,27 @@ export default class Moh extends Component {
                   </TableHead>
 
                   <TableBody>
-                    {device_info && device_info.map((d: any, i: any) => {
-                      const _onClick = () => { this.deviceRowClick(d) }
+                    {device_info && Object.values(device_info).map((d: any, i: any) => {
+                      const _onClick = () => { this.deviceRowClick(d) };
+                      var color;
+                      if ( d.holdover[0] >= 7 ) {
+                          color = 'green';
+                        } else if ( d.holdover[0] >= 3 ) {
+                          color = 'orange';
+                        } else if ( d.holdover[0] >= 0 ) {
+                          color = 'red';
+                        }
                       return (
                            <TableRow key={i} hover onClick={_onClick} style={statusBg(d.status)}>
                              <TableCell style={dstyles.statusColumn}>
                                 {(d.status === 'red') ? 
-                                      <Tippy title="Welcome to React"
-                                         position="top"
-                                         interactive
-                                         trigger="mouseenter"
-                                         theme="light"
-                                         distance="20"
-                                         arrow="true"
-                                         html={(
+                                      <Tippy position="top" interactive trigger="mouseenter" theme="light" distance="20" arrow="true" html={(
                                           <div>
                                             <div style={{display: "flex", justifyContent: "space-between"}}>
                                               <span style={{color: "#8A0011", fontSize: "18px"}}>Alarm</span>
-                                              <a href=""><img src="/img/link.png"/></a>
+                                              {/*<a href=""><img src="/img/link.png"/></a>*/}
                                             </div>
-                                            <span>Alert message goes here</span>
+                                            <span>{d.errors}</span>
                                           </div>
                                          )}>
                                     {statusDisplay(d.status)}
@@ -466,13 +498,45 @@ export default class Moh extends Component {
                                 }
                               </TableCell>
                               <TableCell style={dstyles.holdoverColumn}>
-                                <Tooltip title={d.holdover} placement="bottom" enterDelay={300}>
-                                 <div>{d.holdover}</div>
+                                <Tooltip title={d.holdover[0]} placement="bottom" enterDelay={300}>
+                                  <div>
+                                  {d.holdover[0]}
+                                 {/*<div style={{position:'relative', marginLeft: '15px'}}>*/}
+                                 {/*<div style={{float: 'left', marginTop: '5px'}}>{d.holdover[0]}</div>*/}
+                                 {/*<div style={{position:'absolute', left: 0, right: 0, top: '3px', margin: '0 auto', width: '15px', transform: 'translateX(-15px)'}}><Chip style={{backgroundColor: 'rgba(255,255,255,0.5)', color: '#000000de'}}>{d.holdover[0]}</Chip></div>*/}
+                                  {/*<Sparklines data={d.holdover} limit={10} width={80} height={20} margin={5} style={{position: 'absolute', left: '15px', top: '-5px'}}>*/}
+                                   {/*<SparklinesLine color={color} style={{ fill: "none" }} />*/}
+                                   {/*<SparklinesSpots />*/}
+                                   {/*<SparklinesReferenceLine type="mean" />*/}
+                                  {/*</Sparklines>*/}
+                                
+                                {/*  <LineChart width={150} height={50} data={d.holdover}>
+                                    <Line type='monotone' stroke='#8884d8' strokeWidth={2} />
+                                  </LineChart>*/}
+                                 
+                                 </div>
                                 </Tooltip>
                               </TableCell>
                               <TableCell style={dstyles.tempColumn}>
-                                <Tooltip title={d.lasttemp} placement="bottom-end" enterDelay={300}>
-                                  <div>{d.lasttemp}°</div>
+                                <Tooltip title={d.lasttemp} placement="bottom-center" enterDelay={300}>
+                                  {/*<div>{d.lasttemp}</div>*/}
+                                  <div style={{width: "120px", height: "65px", position: 'relative'}}>
+                                  <ReactSpeedometer
+                                    ringWidth={10}
+                                    fluidWidth
+                                    maxValue={10}
+                                    needleTransitionDuration={4000}
+                                    needleTransition="easeElastic"
+                                    value={d.lasttemp}
+                                    currentValueText="${value}"
+                                    needleColor="rgba(1,1,1,0.33)"
+                                    segments={4}
+                                    startColor="rgba(255,255,255,0)"
+                                    endColor="rgba(255,255,255,0)"
+                                    textColor="rgba(1,1,1,0.33)"
+                                  />
+                                  <div style={dstyles.gauge}>{d.lasttemp}</div>
+                                  </div>
                                 </Tooltip>
                               </TableCell>
                               <TableCell style={dstyles.deviceColumn}>
@@ -500,7 +564,7 @@ export default class Moh extends Component {
 
               </div>
 
-              </Tab>
+{/*              </Tab>
 
               <Tab
                 label="Locations"
@@ -575,7 +639,7 @@ export default class Moh extends Component {
                   </Card>
                 </div>
               </Tab>
-            </Tabs>
+            </Tabs>*/}
           </div>
         </div>
       </div>
