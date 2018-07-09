@@ -18,6 +18,7 @@ import Tooltip from 'material-ui-next/Tooltip';
 import {dstyles} from '../Constants/deviceStyle';
 import 'react-tippy/dist/tippy.css'
 import { Tooltip as Tippy } from 'react-tippy';
+import ReactSpeedometer from "react-d3-speedometer";
 
 const alretJSON = {
       "CTBH":5.01,
@@ -199,21 +200,36 @@ export default class Moh extends Component {
     }
   }
 
-  checkStatus = (sensor: any) => {
+ checkStatus = (sensor: any) => {
     // return 'red' if sensor has not reported in 26 hours otherwise return sensor.status
     let lastping = this.getLastPingHours(sensor);
 
     if (lastping > 26) {
-      let error = `Error with sensor ${sensor.id}`;
-      let sesorErrorPresent = false; 
-
-      this.state.errors && Object.keys(this.state.errors).map((e: any) => {
-        if (sensor.id === e) sesorErrorPresent = true;
-      });
-      if (!sesorErrorPresent) this.setState({ errors: {...this.state.errors, [sensor.id]: error } });
       return 'red';
     } else  {
       return sensor.status; 
+    }
+  }
+
+  getErrors = (sensor: any) => {
+    let lastping = this.getLastPingHours(sensor);
+
+    // TODO: sensor object should return errors...
+
+    if (lastping > 26) {
+      let error = `over 26 hours since any data has been received`;
+      let sensorErrorPresent = false; 
+
+      // this.state.errors && Object.keys(this.state.errors).map((e: any) => {
+      //   if (sensor.id === e) sensorErrorPresent = true;
+      // });
+      // if (!sensorErrorPresent) this.setState({ errors: {...this.state.errors, [sensor.id]: error } });
+      this.setState({ errors: {...this.state.errors, [sensor.id]: error } });
+      
+      return error; 
+
+    } else  {
+      return null;
     }
   }
 
@@ -296,6 +312,9 @@ export default class Moh extends Component {
         // Status
         obj.status = this.checkStatus(d);
 
+        // Errors
+        obj.errors = this.getErrors(d);
+
         // Brand/Model
         obj.brand = `${d.manufacturer} - ${d.model}`;
 
@@ -372,10 +391,10 @@ export default class Moh extends Component {
         </div>
         <div style={dstyles.wrapwrap}>
           <div style={dstyles.wrapTabs} >
-              <Tabs tabItemContainerStyle={{backgroundColor:"#e32427"}}
+              {/*<Tabs tabItemContainerStyle={{backgroundColor:"#e32427"}}
                   style={{width: "80vw", marginLeft: "auto", marginRight: "auto"}}
                   inkBarStyle={{backgroundColor:"#a21a1e", height:"4px", marginTop:"-4px"}}>
-              <Tab label="Devices" >
+              <Tab label="Devices" >*/}
                 <DeviceDetail isOpen={this.state.isDetailOpen}
                               handleOpen={this.handleDetailOpen}
                               handleClose={this.handleDetailClose}
@@ -428,7 +447,9 @@ export default class Moh extends Component {
 
                   <TableBody>
                     {device_info && device_info.map((d: any, i: any) => {
-                      const _onClick = () => { this.deviceRowClick(d) }
+                      const _onClick = () => { this.deviceRowClick(d) };
+                      const error = this.state.errors[d.sensor.id]; 
+
                       return (
                            <TableRow key={i} hover onClick={_onClick} style={statusBg(d.status)}>
                               <TableCell style={dstyles.statusColumn}>
@@ -444,9 +465,9 @@ export default class Moh extends Component {
                                           <div>
                                             <div style={{display: "flex", justifyContent: "space-between"}}>
                                               <span style={{color: "#8A0011", fontSize: "18px"}}>Alarm</span>
-                                              <a href=""><img src="/img/link.png"/></a>
+                                              {/*<a href=""><img src="/img/link.png"/></a>*/}
                                             </div>
-                                            <span>Alert message goes here</span>
+                                            <span>{error}</span>
                                           </div>
                                          )}>
                                     {statusDisplay(d.status)}
@@ -461,7 +482,24 @@ export default class Moh extends Component {
                              </TableCell>
                              <TableCell style={dstyles.tempColumn}>
                                 <Tooltip title={d.lasttemp} placement="bottom-end" enterDelay={300}>
-                                  <div>{d.lasttemp}°</div>
+                                  {/*<div>{d.lasttemp}°</div>*/}
+                                    <div style={{width: "120px", height: "65px", position: 'relative'}}>
+                                  <ReactSpeedometer
+                                    ringWidth={10}
+                                    fluidWidth
+                                    maxValue={10}
+                                    needleTransitionDuration={4000}
+                                    needleTransition="easeElastic"
+                                    value={d.lasttemp}
+                                    currentValueText="${value}"
+                                    needleColor="rgba(1,1,1,0.33)"
+                                    segments={4}
+                                    startColor="rgba(255,255,255,0)"
+                                    endColor="rgba(255,255,255,0)"
+                                    textColor="rgba(1,1,1,0.33)"
+                                  />
+                                  <div style={dstyles.gauge}>{d.lasttemp}</div>
+                                  </div>
                                 </Tooltip>
                               </TableCell>
                               <TableCell style={dstyles.deviceColumn}>
@@ -490,8 +528,8 @@ export default class Moh extends Component {
 
               </div>
 
-              </Tab>
-
+              {/*</Tab>*/}
+{/*
               <Tab
                 label="Locations"
               >
@@ -563,9 +601,9 @@ export default class Moh extends Component {
                       <RaisedButton label="RESET DATA" secondary={true} onClick={(e) => this.resetdata(e)} />
                     </CardText>
                   </Card>
-                </div>
-              </Tab>
-            </Tabs>
+                </div>*/}
+          {/*    </Tab>
+            </Tabs>*/}
           </div>
         </div>
       </div>

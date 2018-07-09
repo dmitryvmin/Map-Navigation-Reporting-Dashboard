@@ -20,3 +20,26 @@ body {
 	border-radius: 10px;
 	border: 1px solid #D0021B;
 }
+
+.label text {
+	/*display: none;*/
+  color: rgba(0, 0, 0, 0.87); 
+  font-size: 0.6rem !important;
+  font-weight: normal !important;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+}
+.current-value {
+  display: none; 
+}
+.speedometer .arc .speedo-segment:nth-child(2), .speedometer .arc .speedo-segment:nth-child(3) {
+	fill: #DCEDC8;
+	/*fill: #AEEA00;*/
+}
+.speedometer .arc .speedo-segment:nth-child(1) {
+	fill: #B3E5FC;
+}
+
+.speedometer .arc .speedo-segment:nth-child(4) {
+	fill: #FFCCBC;
+	/*fill: #DD2C00;*/
+}

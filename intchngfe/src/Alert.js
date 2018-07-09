@@ -34,11 +34,7 @@ export default class Alert extends React.Component<any, any> {
         if(!this.state.showAlert) {
             return null;
         }
-
         const { errors } = this.props; 
-
-        console.log('TEST: ', errors);
-
         const actions = [
             <FlatButton label="Cancel"
                         primary={true}
@@ -58,7 +54,7 @@ export default class Alert extends React.Component<any, any> {
                             color={"red"}
                             backgroundColor={"white"}
                             size={30}>
-                           {errors.length}
+                           {Object.keys(errors).length}
                         </Avatar>
                         <span style={{color:'white', marginLeft:'10px'}}>Devices have errors</span>
                     </div>
@@ -70,12 +66,12 @@ export default class Alert extends React.Component<any, any> {
                             <Close color={"white"}
                                    onClick={this.handleClick} />
                         </IconButton>
-                        <Dialog title={`${errors.length} Devices reporting errors`}
+                        <Dialog title={`${Object.keys(errors).length} Devices reporting errors`}
                                 actions={actions}
                                 modal={false}
                                 open={this.state.dialogOpen}
                                 onRequestClose={this.handleClose}>
-                            
+                            {Object.keys(errors).map((e: any, i: any) => <p key={`alert-${i}`} style={{color: '#9e9e9e'}}>{errors[e]}</p>)}
                         </Dialog>
                     </div>
                     <div style={{clear: 'both'}}></div>

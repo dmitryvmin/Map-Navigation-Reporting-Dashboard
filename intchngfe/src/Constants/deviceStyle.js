@@ -17,19 +17,19 @@ export const dstyles = {
   idBarH: {
     fontWeight: '500',
     marginTop: '20px',
-    marginBottom: '40px',
+    // marginBottom: '40px',
   },
   wrapwrap: {
     width: '100%',
     margin: '0 auto',
-    marginTop: '-48px'
+    // marginTop: '-48px'
   },
   wrapTabs: {
     width: '80vw',
     margin: '0 auto',
   },
   tabMod: {
-    marginTop: '-48px',
+    // marginTop: '-48px',
   },
   deviceTableHeader: {
     margin: "0",
@@ -198,7 +198,8 @@ export const dstyles = {
   },
   tempColumn: {
     width: '10%',
-    textAlign: 'center'
+    textAlign: 'center',
+    padding: '4px 24px 4px 24px'
   },
   modalBlock: {
     color: '#494949',
@@ -216,5 +217,18 @@ export const dstyles = {
   detailTitleHead: {
     color: '#898989',
     fontSize: 14
+  },
+  gauge: {
+    position: 'absolute',
+    textAlign: 'center',
+    width: '20px',
+    marginTop: '-20px',
+    // fontWeight: 'bold',
+    fontSize: '0.8125rem',
+    color: 'rgba(1,1,1,1)',
+    backgroundColor: 'white',
+    left: '49px',
+    borderRadius: '10px',
+    padding: '2px'
   }
 };
