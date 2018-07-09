@@ -385,6 +385,7 @@ export default class Moh extends Component {
     return (
       <div>
         {alertBar}
+        <div onClick={this.resetdata} style={{position:'absolute', top: 0, left: 0, width: '370px', height: '90px'}}></div>
       <div style={dstyles.middlePane}>
         <div style={dstyles.idBar}>
           <h1 style={dstyles.idBarH}>Aucma Reporting Tool</h1>
