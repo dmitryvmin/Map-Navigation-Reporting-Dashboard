@@ -87,7 +87,7 @@ export default class TopHead extends Component {
     super(props, context);
     // Default text
     this.state = {
-      moh: 'Kenya',
+      moh: 'Kenya'
     }
   }
 
@@ -97,17 +97,10 @@ export default class TopHead extends Component {
     this.props.contentChange(content);
   }
 
-  resetdata(e) {
-    e.preventDefault();
-    console.log("resetting data and clearing UI");
-    //this.props.contentChange(content);
-    //  /demo/clear/samples
-  }
-
   render () {
     return (
         <header style={styles.topHeader}>
-          <div style={styles.titleArea} >
+          <div onClick={this.resetdata} style={styles.titleArea} >
             <Avatar
               src="/img/flag.jpg"
               size={60}

@@ -273,7 +273,7 @@ export default class Moh extends Component {
 
   resetdata(e) {
     e.preventDefault();
-    // console.log("resetting data and clearing UI");
+    console.log("resetting data and clearing UI");
     var xhttp = new XMLHttpRequest();
     var that = this;
     xhttp.onreadystatechange = function() {
@@ -403,11 +403,12 @@ export default class Moh extends Component {
     const { order, orderBy, device_info } = this.state;
     const alertBar = (this.state.errors && Object.keys(this.state.errors).length) ? <Alert errors={this.state.errors}/> : null; 
 
-    console.log('STATE', this.state);
+    console.log('PROPS',this.props ,'STATE', this.state);
 
     return (
       <div>
           {alertBar}
+        <div onClick={this.resetdata} style={{position:'absolute', top: 0, left: 0, width: '370px', height: '90px'}}></div>
       <div style={dstyles.middlePane}>
         <div style={dstyles.idBar}>
           <h1 style={dstyles.idBarH}>Example MoH</h1>
