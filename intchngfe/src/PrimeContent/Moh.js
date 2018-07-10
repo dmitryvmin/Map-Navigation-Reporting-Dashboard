@@ -217,7 +217,7 @@ export default class Moh extends Component {
     // TODO: sensor object should return errors...
 
     if (lastping > 26) {
-      let error = `over 26 hours since any data has been received`;
+      let error = `Over 26 hours since any data has been received`;
       let sensorErrorPresent = false; 
 
       // this.state.errors && Object.keys(this.state.errors).map((e: any) => {

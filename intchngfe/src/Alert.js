@@ -71,7 +71,7 @@ export default class Alert extends React.Component<any, any> {
                                 modal={false}
                                 open={this.state.dialogOpen}
                                 onRequestClose={this.handleClose}>
-                            {Object.keys(errors).map((e: any, i: any) => <p key={`alert-${i}`} style={{color: '#9e9e9e'}}>{errors[e]}</p>)}
+                            {Object.keys(errors).map((e: any, i: any) => <p key={`alert-${i}`} style={{color: '#9e9e9e'}}>Sensor #{e} - {errors[e]}</p>)}
                         </Dialog>
                     </div>
                     <div style={{clear: 'both'}}></div>
