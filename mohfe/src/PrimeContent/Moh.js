@@ -19,11 +19,11 @@ import Tooltip from 'material-ui-next/Tooltip';
 import {dstyles} from '../Constants/deviceStyle';
 import 'react-tippy/dist/tippy.css'
 import { Tooltip as Tippy } from 'react-tippy';
-import ReactSpeedometer from "react-d3-speedometer";
 import HorizontalGauge from 'react-horizontal-gauge';
 import Gauge from 'react-svg-gauge';
 import { LineChart, Line } from 'recharts';
 import { Sparklines, SparklinesLine, SparklinesSpots, SparklinesReferenceLine } from 'react-sparklines';
+import ProgressBar from "virtual-progress-bar";
 
 const alretJSON = {
       "CTBH":5.01,
@@ -33,12 +33,12 @@ const alretJSON = {
       "ECHBAT":79,
       "EHZLN":0.00,
       "EOCLN":1,
-      "ERROR":[  
-         {  
+      "ERROR":[
+         {
             "ID":"440B",
             "INFO":"n: 29, Ce: 173.3, Ne: 0.0, Ms: 0.0, Ml: 2226"
          },
-         {  
+         {
             "ID":"440A",
             "INFO":"Cs: 0.0, Cl: 0.000, N: 174.058121, Us: 0.000000, Ul: 0.000000"
          }
@@ -138,7 +138,7 @@ export default class Moh extends Component {
       order: 'asc',
       orderBy: null,
       device_info: this.loadDevices(),
-      errors: []  
+      errors: []
     }
     this.loadDevices = this.loadDevices.bind(this);
     this.deviceRowClick = this.deviceRowClick.bind(this);
@@ -172,7 +172,7 @@ export default class Moh extends Component {
   }
 
    getLastPingHours = (sensor: any) => {
-    let timestamp = (sensor.temperature && sensor.temperature.timestamp) ? sensor.temperature.timestamp : null; 
+    let timestamp = (sensor.temperature && sensor.temperature.timestamp) ? sensor.temperature.timestamp : null;
 
     if (timestamp) {
       let now = moment();
@@ -180,9 +180,9 @@ export default class Moh extends Component {
       let diff = Math.abs(before.diff(now, 'hours'));
       // timestamp = moment(moment.utc(sensor.temperature.timestamp)).fromNow(true);
 
-      return diff; 
+      return diff;
     } else {
-      return null; 
+      return null;
     }
   }
 
@@ -190,11 +190,11 @@ export default class Moh extends Component {
     let getLastPingHours = this.getLastPingHours(sensor);
 
     if (getLastPingHours && getLastPingHours <= 26) {
-      let time: any = getLastPingHours === 1 ? 'hour' : 'hours'; 
+      let time: any = getLastPingHours === 1 ? 'hour' : 'hours';
       return `${getLastPingHours} ${time} ago`;
     } else if (getLastPingHours && getLastPingHours > 26) {
 
-      let days: any = Math.floor(getLastPingHours / 24); 
+      let days: any = Math.floor(getLastPingHours / 24);
       let daycount: any = (days === 1) ? 'day' : 'days';
       let hours: any = Math.round(getLastPingHours - (days * 24));
       let hourscount: any = (hours === 1) ? 'hour' : 'hours';
@@ -213,7 +213,7 @@ export default class Moh extends Component {
     if (lastping > 26) {
       return 'red';
     } else  {
-      return sensor.status; 
+      return sensor.status;
     }
   }
 
@@ -224,7 +224,7 @@ export default class Moh extends Component {
 
     if (lastping > 26) {
       let error = `Over 26 hours since any data has been received`;
-      let sensorErrorPresent = false; 
+      let sensorErrorPresent = false;
 
       // this.state.errors && Object.keys(this.state.errors).map((e: any) => {
       //   if (sensor.id === e) sensorErrorPresent = true;
@@ -232,7 +232,7 @@ export default class Moh extends Component {
       // if (!sensorErrorPresent) this.setState({ errors: {...this.state.errors, [sensor.id]: error } });
       this.setState({ errors: {...this.state.errors, [sensor.id]: error } });
 
-      return error; 
+      return error;
 
     } else  {
       return null;
@@ -297,7 +297,7 @@ export default class Moh extends Component {
 
         if (sort) order = sort;
 
-        let device_info_copy = Object.values(this.state.device_info); 
+        let device_info_copy = Object.values(this.state.device_info);
         let sorted_device_info: any;
 
         if (property !== 'lasttemp' || property !== 'holdover') {
@@ -314,10 +314,10 @@ export default class Moh extends Component {
 
         let sorted_device_info_obj = sorted_device_info.reduce((acc, curr) => {
           acc[curr.sensor.id] = curr;
-          return acc; 
+          return acc;
         }, {});
 
-        console.log('SORT', sorted_device_info_obj);        
+        console.log('SORT', sorted_device_info_obj);
 
         this.setState({ device_info: sorted_device_info_obj, order, orderBy });
     };
@@ -347,7 +347,7 @@ export default class Moh extends Component {
         obj.district = d.facility.district;
 
         // Holdover Days
-        obj.holdover = (this.state.device_info && this.state.device_info[d.id] && this.state.device_info[d.id].holdover) ? [...this.state.device_info[d.id].holdover, this.precisionRound(d.holdover, 0)] : [this.precisionRound(d.holdover, 0)]; 
+        obj.holdover = (this.state.device_info && this.state.device_info[d.id] && this.state.device_info[d.id].holdover) ? [...this.state.device_info[d.id].holdover, this.precisionRound(d.holdover, 0)] : [this.precisionRound(d.holdover, 0)];
 
        // Last Ping
         obj.lastping = this.getLastPing(d);
@@ -376,8 +376,8 @@ export default class Moh extends Component {
       //   lasttemp: parseInt(`${Math.round(parseFloat(testSensor))}`)
       // }
       // device_info.push(testObj);
-      
-      this.setState((prevState: any) => { 
+
+      this.setState((prevState: any) => {
         return {device_info}
         }, () => {
 
@@ -401,7 +401,7 @@ export default class Moh extends Component {
 
   render () {
     const { order, orderBy, device_info } = this.state;
-    const alertBar = (this.state.errors && Object.keys(this.state.errors).length) ? <Alert errors={this.state.errors}/> : null; 
+    const alertBar = (this.state.errors && Object.keys(this.state.errors).length) ? <Alert errors={this.state.errors}/> : null;
 
     console.log('PROPS',this.props ,'STATE', this.state);
 
@@ -483,7 +483,7 @@ export default class Moh extends Component {
                       return (
                            <TableRow key={i} hover onClick={_onClick} style={statusBg(d.status)}>
                              <TableCell style={dstyles.statusColumn}>
-                                {(d.status === 'red') ? 
+                                {(d.status === 'red') ?
                                       <Tippy position="top" interactive trigger="mouseenter" theme="light" distance="20" arrow="true" html={(
                                           <div>
                                             <div style={{display: "flex", justifyContent: "space-between"}}>
@@ -494,7 +494,7 @@ export default class Moh extends Component {
                                           </div>
                                          )}>
                                     {statusDisplay(d.status)}
-                                  </Tippy> : 
+                                  </Tippy> :
                                   statusDisplay(d.status)
                                 }
                               </TableCell>
@@ -510,34 +510,29 @@ export default class Moh extends Component {
                                    {/*<SparklinesSpots />*/}
                                    {/*<SparklinesReferenceLine type="mean" />*/}
                                   {/*</Sparklines>*/}
-                                
+
                                 {/*  <LineChart width={150} height={50} data={d.holdover}>
                                     <Line type='monotone' stroke='#8884d8' strokeWidth={2} />
                                   </LineChart>*/}
-                                 
+
                                  </div>
                                 </Tooltip>
                               </TableCell>
                               <TableCell style={dstyles.tempColumn}>
                                 <Tooltip title={d.lasttemp} placement="bottom-center" enterDelay={300}>
-                                  {/*<div>{d.lasttemp}</div>*/}
-                                  <div style={{width: "120px", height: "65px", position: 'relative'}}>
-                                  <ReactSpeedometer
-                                    ringWidth={10}
-                                    fluidWidth
-                                    maxValue={10}
-                                    needleTransitionDuration={4000}
-                                    needleTransition="easeElastic"
-                                    value={d.lasttemp}
-                                    currentValueText="${value}"
-                                    needleColor="rgba(1,1,1,0.33)"
-                                    segments={4}
-                                    startColor="rgba(255,255,255,0)"
-                                    endColor="rgba(255,255,255,0)"
-                                    textColor="rgba(1,1,1,0.33)"
-                                  />
-                                  <div style={dstyles.gauge}>{d.lasttemp}</div>
-                                  </div>
+                                  <div style={{ display: "flex", flexFlow: "row nowrap", justifyContent: "center", alignItems: "center"}}>
+                                    <div style={{width: "16px", marginLeft: "-16px", height: "64px", position: 'relative'}}>
+                                      {
+                                        ProgressBar.render(React.createElement, {
+                                              containerColor: "#ededed",
+                                              direction: "column",
+                                              meterColor: d.lasttemp < 2 || d.lasttemp > 8 ? "red" : "green",
+                                              percent: (Math.min(Math.max(d.lasttemp, 0), 10) / 10.0) * 100
+                                            })
+                                      }
+                                    </div>
+                                    <div style={{ marginLeft: "8px" }}>{d.lasttemp}&deg;</div>
+                                </div>
                                 </Tooltip>
                               </TableCell>
                               <TableCell style={dstyles.deviceColumn}>

@@ -221,13 +221,12 @@ export const dstyles = {
   gauge: {
     position: 'absolute',
     textAlign: 'center',
-    width: '20px',
-    marginTop: '-20px',
+    width: '16px',
+    verticalAlign: 'middle',
     // fontWeight: 'bold',
     fontSize: '0.8125rem',
     color: 'rgba(1,1,1,1)',
-    backgroundColor: 'white',
-    left: '49px',
+    left: '16px',
     borderRadius: '10px',
     padding: '2px'
   }
