@@ -102,7 +102,7 @@ export default class DeviceDetail extends Component {
           <div style={dstyles.modalBlock}>
             {(errors) ? <p>{JSON.stringify(errors)}</p> : ''}
             <br/>
-            <div style={dstyles.thirdCard}><span style={dstyles.detailTitleHead}>Last Tempurature Reading</span><br/>{tempurature}&deg; C</div>
+            <div style={dstyles.thirdCard}><span style={dstyles.detailTitleHead}>Last Temperature Reading</span><br/>{tempurature}&deg; C</div>
             <div style={dstyles.thirdCard}><span style={dstyles.detailTitleHead}>Last Ping</span><br/>{lastping}<br/></div>
             <div style={dstyles.thirdCard}><span style={dstyles.detailTitleHead}>Holdover days</span><br/>{holdover}</div>
             <br/>
