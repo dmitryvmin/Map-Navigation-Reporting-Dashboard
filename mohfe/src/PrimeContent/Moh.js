@@ -218,6 +218,7 @@ export default class Moh extends Component {
     } else if (holdover = 0) {
       return 'red';
     } else if (temperature < 2 || temperature > 8) {
+      return 'red';
     } else {
       return sensor.status;
     }
@@ -483,14 +484,7 @@ export default class Moh extends Component {
                   <TableBody>
                     {device_info && Object.values(device_info).map((d: any, i: any) => {
                       const _onClick = () => { this.deviceRowClick(d) };
-                      var color;
-                      if ( d.holdover[0] >= 7 ) {
-                          color = 'green';
-                        } else if ( d.holdover[0] >= 3 ) {
-                          color = 'orange';
-                        } else if ( d.holdover[0] >= 0 ) {
-                          color = 'red';
-                        }
+                    
                       return (
                            <TableRow key={i} hover onClick={_onClick} style={statusBg(d.status)}>
                              <TableCell style={dstyles.statusColumn}>
