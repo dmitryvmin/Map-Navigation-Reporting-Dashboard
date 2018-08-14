@@ -19,8 +19,8 @@ import Tooltip from 'material-ui-next/Tooltip';
 import {dstyles} from '../Constants/deviceStyle';
 import 'react-tippy/dist/tippy.css'
 import { Tooltip as Tippy } from 'react-tippy';
-import HorizontalGauge from 'react-horizontal-gauge';
-import Gauge from 'react-svg-gauge';
+// import HorizontalGauge from 'react-horizontal-gauge';
+// import Gauge from 'react-svg-gauge';
 import { LineChart, Line } from 'recharts';
 import { Sparklines, SparklinesLine, SparklinesSpots, SparklinesReferenceLine } from 'react-sparklines';
 import ProgressBar from "virtual-progress-bar";
@@ -209,10 +209,16 @@ export default class Moh extends Component {
   checkStatus = (sensor: any) => {
     // return 'red' if sensor has not reported in 26 hours otherwise return sensor.status
     let lastping = this.getLastPingHours(sensor);
-
+    let holdover = this.precisionRound(sensor.holdover, 0);
+    let temperature = Math.round(sensor.temperature.value); 
     if (lastping > 26) {
       return 'red';
-    } else  {
+    } else if (holdover < 2) {
+      return 'yellow';
+    } else if (holdover = 0) {
+      return 'red';
+    } else if (temperature < 2 || temperature > 8) {
+    } else {
       return sensor.status;
     }
   }
@@ -272,7 +278,7 @@ export default class Moh extends Component {
   }
 
   resetdata(e) {
-    e.preventDefault();
+    e && e.preventDefault();
     console.log("resetting data and clearing UI");
     var xhttp = new XMLHttpRequest();
     var that = this;
@@ -399,6 +405,12 @@ export default class Moh extends Component {
     setInterval(this.loadDevices, 15000);
   }
 
+   componentWillReceiveProps( nextProps ) {
+    if (nextProps.reset) {
+      this.resetdata();
+    }
+  }
+
   render () {
     const { order, orderBy, device_info } = this.state;
     const alertBar = (this.state.errors && Object.keys(this.state.errors).length) ? <Alert errors={this.state.errors}/> : null;
@@ -408,7 +420,6 @@ export default class Moh extends Component {
     return (
       <div>
           {alertBar}
-        <div onClick={this.resetdata} style={{position:'absolute', top: 0, left: 0, width: '370px', height: '90px'}}></div>
       <div style={dstyles.middlePane}>
         <div style={dstyles.idBar}>
           <h1 style={dstyles.idBarH}>Example MoH</h1>

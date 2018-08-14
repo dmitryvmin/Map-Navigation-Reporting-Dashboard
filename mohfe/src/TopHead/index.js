@@ -100,7 +100,7 @@ export default class TopHead extends Component {
   render () {
     return (
         <header style={styles.topHeader}>
-          <div onClick={this.resetdata} style={styles.titleArea} >
+          <div style={styles.titleArea} >
             <Avatar
               src="/img/flag.jpg"
               size={60}
@@ -129,7 +129,7 @@ export default class TopHead extends Component {
               <MenuItem primaryText="Change User" onClick={(e) => this.testclick(e, "changeuser")} />
               <MenuItem primaryText="Settings" onClick={(e) => this.testclick(e, "settings")} />
               <MenuItem primaryText="Reset Data" onClick={(e) => this.resetdata(e)} />
-              <MenuItem primaryText="Sign out" onClick={(e) => this.testclick(e, "signout")} />
+              <MenuItem primaryText="Sign out" onClick={(e) => this.props.authenticate(false)} />
             </IconMenu>
           </div>
         </header>

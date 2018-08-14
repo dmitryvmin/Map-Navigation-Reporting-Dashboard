@@ -20,6 +20,7 @@ const styles = {
     paddingTop: '24px',
     display: 'flex',
     justifyContent: 'space-between',
+    alignItems: 'center'
   },
   footerHeader: {
     marginTop: 0,
@@ -40,7 +41,7 @@ export default class FootPane extends Component {
     return (
       <div style={styles.footerwrap} >
         <footer style={styles.ggfooter} >
-          <div><img src="/img/gg-logo.png" alt="Global Good"/></div>
+          <div onClick={this.props.reset}><img onClick={this.resetdata}  src="/img/gg-logo.png" alt="Global Good"/></div>
           <div>
             &copy; 2018 globalgood All Rights Reserved.
           </div>

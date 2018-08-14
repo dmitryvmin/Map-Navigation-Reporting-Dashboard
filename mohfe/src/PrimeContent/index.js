@@ -11,7 +11,7 @@ export default class PrimeContent extends Component {
   ContentArea(state) {
       switch(state) {
           case 'dashboard':
-              return <Moh />;
+              return <Moh reset={this.props.reset}/>;
           case 'people':
               return <People />;
           default:

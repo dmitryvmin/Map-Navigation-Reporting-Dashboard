@@ -61,7 +61,7 @@ export default class DeviceDetail extends Component {
     const model = device ? device.model : "-";
     const country = device ? device.facility.country : "-";
     //const district = device ? device.facility.district : "-";
-    const holdover = this.props.device.holdover;
+    const holdover = (this.props.device.holdover.constructor === Array) ? this.props.device.holdover[0] : this.props.device.holdover;
     const lastping = this.props.device.lastping;
     const tempurature = (device && device.temperature) ? this.precisionRound(device.temperature.value, 2) : "?";
     let city = device ? device.facility.city : "";
@@ -102,7 +102,7 @@ export default class DeviceDetail extends Component {
           <div style={dstyles.modalBlock}>
             {(errors) ? <p>{JSON.stringify(errors)}</p> : ''}
             <br/>
-            <div style={dstyles.thirdCard}><span style={dstyles.detailTitleHead}>Last Temperature Reading</span><br/>{tempurature}&deg; C</div>
+            <div style={dstyles.thirdCard}><span style={dstyles.detailTitleHead}>Last Temperature Reading (safe range: 2 - 8)</span><br/>{tempurature}&deg; C <span style={{color: '#898989', marginLeft: '1.5em', fontSize: '0.7em'}}>( safe zone: 2 - 8° )</span></div>
             <div style={dstyles.thirdCard}><span style={dstyles.detailTitleHead}>Last Ping</span><br/>{lastping}<br/></div>
             <div style={dstyles.thirdCard}><span style={dstyles.detailTitleHead}>Holdover days</span><br/>{holdover}</div>
             <br/>
