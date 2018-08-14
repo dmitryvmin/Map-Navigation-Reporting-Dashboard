@@ -212,6 +212,7 @@ export default class Moh extends Component {
     } else if (holdover = 0) {
       return 'red';
     } else if (temperature < 2 || temperature > 8) {
+      return 'red';
     } else {
       return sensor.status;
     }
@@ -261,6 +262,7 @@ export default class Moh extends Component {
       }
     };
     xhttp.open("GET", "http://20.36.19.106:9003/sensor/state", true);
+
     xhttp.setRequestHeader('Authorization','Basic Z2xvYmFsLmdvb2Q6fkYoRzNtKUtQeT8/ZHd4fg==');
     xhttp.send();
   }
