@@ -102,7 +102,7 @@ export default class DeviceDetail extends Component {
           <div style={dstyles.modalBlock}>
             {(errors) ? <p>{JSON.stringify(errors)}</p> : ''}
             <br/>
-            <div style={dstyles.thirdCard}><span style={dstyles.detailTitleHead}>Last Temperature Reading (safe range: 2 - 8)</span><br/>{tempurature}&deg; C <span style={{color: '#898989', marginLeft: '1.5em', fontSize: '0.7em'}}>( safe zone: 2 - 8° )</span></div>
+            <div style={dstyles.thirdCard}><span style={dstyles.detailTitleHead}>Last Temperature Reading</span><br/>{tempurature}&deg; C <span style={{color: '#898989', marginLeft: '1.5em', fontSize: '0.7em'}}>( safe zone: 2 - 8° )</span></div>
             <div style={dstyles.thirdCard}><span style={dstyles.detailTitleHead}>Last Ping</span><br/>{lastping}<br/></div>
             <div style={dstyles.thirdCard}><span style={dstyles.detailTitleHead}>Holdover days</span><br/>{holdover}</div>
             <br/>
