@@ -133,7 +133,7 @@ export default class TopHead extends Component {
               <MenuItem primaryText="Change User" onClick={(e) => this.testclick(e, "changeuser")} />
               <MenuItem primaryText="Settings" onClick={(e) => this.testclick(e, "settings")} />
               <MenuItem primaryText="Help" onClick={(e) => this.testclick(e, "help")} />
-              <MenuItem primaryText="Sign out" onClick={(e) => this.testclick(e, "signout")} />
+              <MenuItem primaryText="Sign out" onClick={(e) => this.props.authenticate(false)} />
             </IconMenu>
           </div>
         </header>

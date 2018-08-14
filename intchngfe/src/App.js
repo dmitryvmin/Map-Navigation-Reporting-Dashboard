@@ -9,9 +9,11 @@ import TopHead from './TopHead';
 import FootPane from './FootPane';
 import PrimeContent from './PrimeContent';
 import 'typeface-roboto' // Font
-
+import Login from './Login';
+import GGConsts from './Constants';
 // Click handler
-import injectTapEventPlugin from 'react-tap-event-plugin'
+import injectTapEventPlugin from 'react-tap-event-plugin';
+// import Auth from './Auth';
 injectTapEventPlugin()
 
 // Theme
@@ -31,11 +33,40 @@ const muiTheme = getMuiTheme({
   }
 })
 
+export const Auth = {
+  authenticate(username, password,cb) {
+    const creds: any = `${username}:${password}`;
+    const header: any = {
+        'Accept': 'application/json',
+        'Authorization': 'Basic ' + btoa(creds)
+    };
+    fetch(`${GGConsts.API}:${GGConsts.ADMIN_PORT}/account`, { headers: new Headers (header)})
+        .then(function(response) {
+      
+      if (response.status === 200) {
+        setTimeout(() => {cb(true)}, 100)
+      } else {
+        console.warn('Wrong login creds ', creds);
+      }
+
+    }).catch(function(err) {
+      console.warn('Auth error', err)
+    });
+  },
+
+  signout(cb) {
+    this.isAuthenticated = false
+    setTimeout(cb, 100)
+  }
+}
+
 export default class App extends Component {
   constructor (props, context) {
     super(props, context);
     this.state = {
-      content: "dashboard"
+      content: "dashboard",
+      authenticated: false,
+      resetData: false
     }
 
     this.handleContentChange = this.handleContentChange.bind(this);
@@ -45,12 +76,27 @@ export default class App extends Component {
     this.setState({content: contentChange});
   }
 
+  authenticate = (bool) => {
+    this.setState({authenticated: bool})
+  }
+
+  reset = () => {
+    console.log('reset');
+    this.setState({ resetData: true }, () => this.setState({ resetData: false }));
+  }
+
+
   render () {
     return (
       <MuiThemeProvider muiTheme={muiTheme}>
-        <TopHead content={this.state.content} contentChange={this.handleContentChange} />
-        <div style={{flex: "1"}}><PrimeContent content={this.state.content} /></div>
-        <FootPane />
+
+        {this.state.authenticated 
+        ? <React.Fragment>
+            <TopHead content={this.state.content} authenticate={this.authenticate} contentChange={this.handleContentChange} />
+            <div style={{flex: "1"}}><PrimeContent reset={this.state.resetData} content={this.state.content} /></div>
+            <FootPane reset={this.reset} />
+          </React.Fragment>
+        : <Login authenticate={this.authenticate}/> }
       </MuiThemeProvider>
     )
   }
