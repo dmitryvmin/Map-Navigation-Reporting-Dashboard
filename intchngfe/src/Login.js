@@ -35,6 +35,12 @@ export default class Login extends React.Component {
     });
   };
 
+  keyPress = (e) => {
+      if(e.keyCode == 13) {
+        Auth.authenticate(this.state.username, this.state.password, this.authCallback());
+      }
+   }
+
   render() {
     // const { from } = this.props.location.state || { from: { pathname: '/' } }
     // const { redirectToReferrer } = this.state
@@ -54,6 +60,7 @@ export default class Login extends React.Component {
 					style={{margin: '10px'}}
 					value={this.state.username}
 					onChange={this.handleChange('username')}
+          onKeyDown={this.keyPress}
 					margin="normal"/>
 				<TextField
 					id="password"
@@ -64,6 +71,7 @@ export default class Login extends React.Component {
 					autoComplete="current-password"
 					value={this.state.password}
 					onChange={this.handleChange('password')}
+          onKeyDown={this.keyPress}
 					margin="normal" />
 			</form>
 			<button style={{backgroundColor: '#7cd33b',padding: '8px 16px', margin: '0 auto', display: 'inherit', marginTop: '20px', color: 'white'}} onClick={this.login}>Log in</button>
