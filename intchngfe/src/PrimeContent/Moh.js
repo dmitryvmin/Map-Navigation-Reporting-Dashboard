@@ -20,6 +20,48 @@ import 'react-tippy/dist/tippy.css'
 import { Tooltip as Tippy } from 'react-tippy';
 import ProgressBar from "virtual-progress-bar";
 
+// MFOX MF2 Web Service Responses and Error Codes
+// Responses under control of the web service are customized, and return additional content in the body as text.
+// The body contains:
+// 1) A four character code in hex (without preceding Ox).
+// 2) A colon.
+// 3) An optional text message.
+
+// 200 - OK
+// Additionally returns the number of objects inserted:
+// 0000:Insert OK 10/10 (ok/total)
+
+// 500 - Internal Server Error
+// Additionaly return various messages in the body, evaluated in the following order:
+
+// FFFF:Decompression Error
+// FFFE:Corrupted FridgeID Parameter (corrupted fridgeid written to comment)
+// FFFD:Corrupted DateTime Parameter (corrupted dtm written to comment)
+// FFFC:No JSON in Body - the request was sent but no content was contained in the body.
+// FFFB:Bad Hash
+// FFFA:Raw JSON Insert Failed (used for mfox-in-a-box, probably not enabled for cloud service)
+// FFF9:Date Parameter Outside Range
+// FFF8:JSON to Object Conversion Failed
+// FFF7:Insert Failed (ok/all) 9/10
+// FFF6:Entity Framerwork Error
+// FFF5:Insert Failure Details ( message sent to insert error log only, not returned to client)
+
+// Error Detected in SensorData input Stored Procedure
+// Some errors are dected in the database stored procedures. These are logged to database, and are not returned in HTTP Response
+// FFEF:Bad Date in SensorData Object
+// FFEE:-274 Sensor Error (errored sensors in comment)
+
+// Not currently implemented, possible future:
+// FridgeID not registered  (currently fridges don't need to be pre-registered in the database for the data to be imported.
+
+// 400 - Bad Request
+// This response is under direct control of the web server are returned using standard values under control of IIS.
+// The mostly likely scenario for a 400 is that the headers are not constructed properly.
+
+//  404 - Not Found
+// Mostly likely an incorrect web service address was used.
+
+
 const alretJSON = {
       "CTBH":5.01,
       "EACP":0.03,
