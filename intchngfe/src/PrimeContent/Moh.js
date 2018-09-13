@@ -225,10 +225,10 @@ export default class Moh extends Component {
   getLastPing = (sensor: any) => {
     let getLastPingHours = this.getLastPingHours(sensor);
 
-    if (getLastPingHours && getLastPingHours <= 26) {
+    if (getLastPingHours !== null && getLastPingHours <= 26) {
       let time: any = getLastPingHours === 1 ? 'hour' : 'hours';
       return `${getLastPingHours} ${time} ago`;
-    } else if (getLastPingHours && getLastPingHours > 26) {
+    } else if (getLastPingHours !== null && getLastPingHours > 26) {
 
       let days: any = Math.floor(getLastPingHours / 24);
       let daycount: any = (days === 1) ? 'day' : 'days';
