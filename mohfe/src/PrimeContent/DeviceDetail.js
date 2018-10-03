@@ -1,130 +1,323 @@
 import React, { Component } from 'react';
-import Dialog from 'material-ui/Dialog';
-import Divider from 'material-ui/Divider';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+// import withMobileDialog from '@material-ui/core/withMobileDialog';
 import FlatButton from 'material-ui/FlatButton';
 import moment from 'moment-timezone';
-import 'typeface-roboto'; // Font
-import {dstyles} from '../Constants/deviceStyle';
+import 'typeface-roboto';
+import { dstyles } from '../Constants/deviceStyle';
+import { withStyles } from '@material-ui/core/styles';
+import GGConsts from '../Constants/index.js';
+import styled from 'styled-components';
+import PropTypes from 'prop-types';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Grid from '@material-ui/core/Grid';
+import AppBar from '@material-ui/core/AppBar';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import { Document, Page } from 'react-pdf';
+import SimpleAreaChart from './../Table/rechart.js';
+
+const precisionRound = (number, precision) => {
+  if (isNaN(number)) {
+    return '-';
+  }
+  var factor = Math.pow(10, precision);
+  return Math.round(number * factor) / factor;
+}
 
 const statusDisplay = (statusString) => {
-
-  console.warn('## STATUSDISPLAY ##', statusString);
-
   switch (statusString) {
     case "red":
-      return <div style={dstyles.reddot} />
+      return <Dot style={{backgroundColor: 'red'}} />
     case "yellow":
-      return <div style={dstyles.yellowdot} />
+      return <Dot style={{backgroundColor: 'yellow'}} />
     case "green":
-      return <div style={dstyles.greendot} />
+      return <Dot style={{backgroundColor: 'green'}} />
     default:
-      return <div style={dstyles.cleardot} />
+      return <Dot style={{backgroundColor: 'none'}}/>
   }
 }
 
-const modalHeader = (statusString, facility) => {
-  return <div style={{backgroundColor: '#878787'}}>{statusDisplay(statusString)} &nbsp; <div style={dstyles.inlineBlock}>{facility}</div></div>
-}
-/**
- * Dialog content can be scrollable.
- */
-export default class DeviceDetail extends Component {
+const modalHeader = (statusString, facility) => (
+  <ModalHeader>
+    {statusDisplay(statusString)} &nbsp; 
+    <HeaderTitle>{facility}</HeaderTitle>
+  </ModalHeader>
+)
 
-  precisionRound = (number, precision) => {
-    if (isNaN(number)) {
-      return '-';
-    }
-    var factor = Math.pow(10, precision);
-    return Math.round(number * factor) / factor;
+function TabContainer(props) {
+  return (
+    <Typography component="div" 
+                style={styles.tabContainer}>
+      {props.children}
+    </Typography>
+  );
+}
+
+class DeviceDetail extends Component {
+  state = {
+    value: 0,
+    numPages: null,
+    pageNumber: 1
+  }
+
+  handleChange = (event, value) => {
+    this.setState({ value });
+  };
+
+  onDocumentLoad = ({ numPages }) => {
+    this.setState({ numPages });
   }
 
   render() {
-    if(!this.props.device) {
+    if (!this.props.device) {
           return null;
       }
-    const actions = [
-      <FlatButton
-        label="Close"
-        primary={true}
-        style={{color: 'white', backgroundColor: '#7cd33b'}}
-        onClick={this.props.handleClose}
-      />,
-    ];
-    console.warn('### DEVICE PROPS: ', this.props);
-    const device = this.props.device.sensor;
-    const facility = device ? device.facility.name : "-";
-    const id = device ? device.id : "-";
-    const status = device ? device.status : "-";
-    //const brand = device ? device.manufacturer + ' ' + device.model : "-";
-    const manufacturer = device ? device.manufacturer : "-";
-    const manufacture_date = device ? device.manufacture_date : "-";
-    const model = device ? device.model : "-";
-    const country = device ? device.facility.country : "-";
-    //const district = device ? device.facility.district : "-";
-    const holdover = (this.props.device.holdover.constructor === Array) ? this.props.device.holdover[0] : this.props.device.holdover;
-    const lastping = this.props.device.lastping;
-    const tempurature = (device && device.temperature) ? this.precisionRound(device.temperature.value, 2) : "?";
-    let city = device ? device.facility.city : "";
-    if ( city === null || city === "undefined" || city === undefined ) { city = " "; }
-    const state_district = device ? `${city} ${device.facility.district}` : "-";
-    const contact_name = (device && device.contact) ? device.contact.name : "-";
-    const contact_email = (device && device.contact) ? device.contact.email : "-";
-    const contact_phone = (device && device.contact) ? device.contact.phone : "-";
-    let errors = null;
-    if ( device && device.errors ) {
-      errors = device.errors;
-    }
-    // Cliff's expectation of what errors looks like...
 
-   //  "errors": [
-   //     {
-   //         "level": 2,
-   //         "source": "the fridge",
-   //         "id": "error-00103",
-   //         "info": "The fridge is made of bacon"
-   //     }
-   // ]
+    const { value,
+            pageNumber, 
+            numPages } = this.state;
+
+    let { classes, 
+          fullScreen, 
+          device: 
+          { brand = '-', 
+            errors = '-',
+            id = '-', 
+            lastping = '-', 
+            lastpingstyle = '-', 
+            lasttemp = '-',
+            device = '-', 
+            status = '-',
+            sensor: {
+              holdover = '-',
+              manufacturer = '-',
+              model = '-',
+              temperature: {
+                timestamp,
+                value: temperature_value = '-'
+              } = {},
+              contact: {
+                email = '-',
+                name = '-',
+                phone = '-'
+              } = {},
+              facility: {
+                city = '-',
+                country = '-',
+                district = '-',
+                name: facility_name = '-',
+                region = '-'
+              } = {},
+            } = {},
+          } = {} 
+        } = this.props;
+
+    console.warn('@@', status);
+    console.warn('@@', this.props);
+
+    temperature_value = precisionRound(temperature_value, 2) || '-';
+    holdover = holdover.constructor === Array ? holdover[0] : precisionRound(holdover, 2);
 
     return (
-      <div>
 
-        <Dialog
-          title={modalHeader(this.props.device.status, manufacturer + " " + model)}
-          actions={actions}
-          modal={false}
-          open={this.props.isOpen}
-          onRequestClose={this.props.handleClose}
-          style={dstyles.ggModal}
-          overlayStyle={dstyles.ggOverlayBg}
-          autoScrollBodyContent={true}
-          titleStyle={{backgroundColor: '#9a9a9a', color: 'white'}}
-        >
-          <div style={dstyles.modalBlock}>
-            {(errors) ? <p>{JSON.stringify(errors)}</p> : ''}
-            <br/>
-            <div style={dstyles.thirdCard}><span style={dstyles.detailTitleHead}>Last Temperature Reading</span><br/>{tempurature}&deg; C <span style={{color: '#898989', marginLeft: '1.5em', fontSize: '0.7em'}}>( safe zone: 2 - 8° )</span></div>
-            <div style={dstyles.thirdCard}><span style={dstyles.detailTitleHead}>Last Ping</span><br/>{lastping}<br/></div>
-            <div style={dstyles.thirdCard}><span style={dstyles.detailTitleHead}>Holdover days</span><br/>{holdover}</div>
-            <br/>
-            <h3>Device Information</h3>
-            <Divider />
-            <div style={dstyles.thirdCard}><span style={dstyles.detailTitleHead}>Serial Number</span><br/>{id}</div>
-            <div style={dstyles.thirdCard}><span style={dstyles.detailTitleHead}>Manufacturer</span><br/>{manufacturer}</div>
-            <div style={dstyles.thirdCard}><span style={dstyles.detailTitleHead}>Model</span><br/>{model}</div>
-            <div style={dstyles.thirdCard}><span style={dstyles.detailTitleHead}>Manufactured Date</span><br/>{manufacture_date}</div>
-            <br/>
-            <h3>Location &amp; Contact Information</h3>
-            <Divider />
-            <div style={dstyles.thirdCard}><span style={dstyles.detailTitleHead}>Facility</span><br/>{facility}</div>
-            <div style={dstyles.thirdCard}><span style={dstyles.detailTitleHead}>Country</span><br/>{country}</div>
-            <div style={dstyles.thirdCard}><span style={dstyles.detailTitleHead}>State/District</span><br/>{state_district}</div>
+        <Dialog fullScreen={fullScreen}
+                open={this.props.isOpen}
+                onClose={this.props.handleClose}
+                PaperProps={{ style: styles.dialogContainer }}
+                aria-labelledby="responsive-dialog-title">
 
-            <div style={dstyles.thirdCard}><span style={dstyles.detailTitleHead}>Facility Contact</span><br/>{contact_name}</div>
-            <div style={dstyles.thirdCard}><span style={dstyles.detailTitleHead}>Contact Phone</span><br/>{contact_phone}</div>
-            <div style={dstyles.thirdCard}><span style={dstyles.detailTitleHead}>Email</span><br/>{contact_email}</div>
-          </div>
+          <DialogTitle id="responsive-dialog-title"
+                       disableTypography={true}
+                       style={styles.modalTitle} >
+            {modalHeader(status, `${manufacturer}  - ${model}`)}
+          </DialogTitle>
+          <DialogContentStyled>
+            
+            {(errors && (status !== 'green')) && <ErrorDiv color={status}>{JSON.stringify(errors)}</ErrorDiv>}
+
+            <AppBar position="static"
+                    color="inherit"
+                    style={styles.alert}>
+              <Tabs value={value} 
+                    style={styles.tabs}
+                    indicatorColor="primary"
+                    classes={{
+                      indicator: classes.indicator
+                    }}
+                    onChange={this.handleChange}>
+                <Tab label="Device Info" />
+                <Tab label="Location & Contact Info"/>
+                <Tab label="Data"/>
+                <Tab label="Analytics"/>
+              </Tabs>
+            </AppBar>
+
+            {value === 0 && <TabContainer>
+
+              <Grid container spacing={24}>
+                <Grid item xs={4}>  
+                  <h4>Last Temperature Reading</h4>
+                    {temperature_value}&deg; C 
+                    <Note>( safe zone: 2 - 8° )</Note>
+                </Grid>
+                <Grid item xs={4}>  
+                  <h4>Last Ping</h4>
+                  {lastping}
+                </Grid>
+                <Grid item xs={4}>  
+                  <h4>Holdover Days</h4>
+                  {holdover}
+                </Grid>
+              </Grid>
+
+              <Grid container spacing={24}>
+                <Grid item xs={4}>
+                  <h4>Serial Number</h4>
+                  {id}
+                </Grid>
+                <Grid item xs={4}>
+                  <h4>Manufacturer</h4>{manufacturer}
+                  {manufacturer}
+                </Grid>
+                <Grid item xs={4}>
+                  <h4>Model</h4>{model}
+                  {model}
+                </Grid>
+                <Grid item xs={4}>
+                  <h4>Manufactured Date</h4>
+                  {'-'}
+                </Grid>
+              </Grid>
+            </TabContainer>}
+
+            {value === 1 && <TabContainer> 
+              <Grid container spacing={24}>
+                <Grid item xs={4}>
+                  <h4>Facility</h4>
+                  {facility_name}
+                </Grid>
+                <Grid item xs={4}>
+                  <h4>Country</h4>
+                  {country}
+                </Grid>
+                <Grid item xs={4}>
+                  <h4>State/District</h4>
+                  {district}
+                </Grid>
+                <Grid item xs={4}>
+                  <h4>Region</h4>
+                  {region}
+                </Grid>
+                <Grid item xs={4}>
+                  <h4>Facility Contact</h4>
+                  {name}
+                </Grid>
+                <Grid item xs={4}>
+                  <h4>Contact Phone</h4>
+                  {phone}
+                </Grid>
+                <Grid item xs={4}>
+                  <h4>Email</h4>
+                  {email}
+                </Grid>
+              </Grid>
+            </TabContainer>}
+
+            {value === 2 && <TabContainer> 
+              <Grid container spacing={24}>
+                <Document file="./fridgeTag.pdf"
+                onLoadSuccess={this.onDocumentLoad}>
+                <Page pageNumber={pageNumber} />
+                <button onClick={() => this.setState(prevState => ({ pageNumber: prevState.pageNumber - 1 }))}>Previous page</button>
+                <button onClick={() => this.setState(prevState => ({ pageNumber: prevState.pageNumber + 1 }))}>Next page</button>
+              </Document>
+              </Grid>
+            </TabContainer>} 
+
+            {value === 3 && <TabContainer> 
+              <Grid container spacing={24}>
+                <SimpleAreaChart />
+              </Grid>
+            </TabContainer>}
+
+          </DialogContentStyled>
+
+          {/*<DialogActions>
+            <Button onClick={this.handleClose} color="primary" autoFocus>
+              Close
+            </Button>
+          </DialogActions>*/}
+
         </Dialog>
-      </div>
     );
   }
 }
+
+const styles = {
+  dialogContainer: {
+    minWidth: '70vw',
+    minHeight: '80vh'
+  },
+  modalTitle: {
+    padding: '0',
+    backgroundColor: GGConsts.THEME_COLOR
+  },
+  alert: {
+    boxShadow: 'none'
+  },
+  tabContainer: {
+    padding: '0',
+    margin: '0 2em',
+    height: '150px'
+  },
+  tabs: {
+    margin: '1em 0'
+  },
+  indicator: {
+    backgroundColor: GGConsts.THEME_COLOR
+  }
+}
+
+const ErrorDiv = styled.div`
+  background-color: ${props => props.color};
+  color: white;
+  padding: 0.5em 2em;
+  font-weight: 200;
+`;
+const ModalHeader = styled.div`
+  display: flex;
+`;
+const Note = styled.span`
+  color: #898989;
+  margin-left: 1.5em;
+`;
+const Dot = styled.div`
+  width: 24px; 
+  height: 24px; 
+  border-style: solid;
+  border-color: #aaa;
+  border-width: 1px;
+  border-radius: 50%; 
+  align-self: center;
+  margin: 1em;
+`;
+const HeaderTitle = styled.div`
+  color: white; 
+  align-self: center;
+  font-size: 1.25em;
+`;
+const DialogContentStyled = styled(DialogContent)`
+  padding: 0 !important;
+`;
+
+DeviceDetail.propTypes = {
+  fullScreen: PropTypes.bool.isRequired,
+};
+
+export default withStyles(styles)(DeviceDetail);

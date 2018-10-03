@@ -6,7 +6,7 @@ import * as React from 'react';
 //   Redirect,
 //   withRouter
 // } from 'react-router-dom';
-import { Auth } from './App';
+import Auth from './Auth';
 import TextField from 'material-ui-next/TextField';
 import Button from 'material-ui-next/Button';
 import Card from 'material-ui-next/Card';

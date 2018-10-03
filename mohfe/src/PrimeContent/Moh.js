@@ -403,7 +403,7 @@ export default class Moh extends Component {
 
   componentDidMount() {
     this.loadDevices();
-    setInterval(this.loadDevices, 15000);
+    setInterval(this.loadDevices, 60000);
   }
 
    componentWillReceiveProps( nextProps ) {

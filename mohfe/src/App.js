@@ -1,9 +1,4 @@
 import React, { Component } from 'react'
-
-import { cyan500, cyan700,
-grey100, grey300, grey400, grey500,
-white, } from 'material-ui/styles/colors'
-import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import TopHead from './TopHead';
 import FootPane from './FootPane';
@@ -11,56 +6,36 @@ import PrimeContent from './PrimeContent';
 import 'typeface-roboto' // Font
 import Login from './Login';
 import GGConsts from './Constants';
+import LiveTable from './Table/LiveTable.js';
+import Alert from './Alert';
+import styled from 'styled-components';
+import AppContext from './Services/Context';
+import { Provider } from 'react-redux';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
+import loggerMiddleware from 'redux-logger';
+import thunk from 'redux-thunk';
+import rootReducer from './Services/store';
+import liveTableCols from './Table/LiveTableCols';
+import manualTableCols from './Table/ManualTableCols';
+import Card from '@material-ui/core/Card';
+// import store from './Services/store';
+import injectTapEventPlugin from 'react-tap-event-plugin';
 
-// Click handler
-import injectTapEventPlugin from 'react-tap-event-plugin'
 injectTapEventPlugin()
 
-// Theme
-const muiTheme = getMuiTheme({
-  palette: {
-    primary1Color: "#5c9aab",
-    primary2Color: cyan700,
-    primary3Color: grey400,
-    accent1Color: '#7ccf46',
-    accent2Color: grey100,
-    accent3Color: grey500,
-    textColor: grey500,
-    alternateTextColor: white,
-    canvasColor: white,
-    borderColor: grey300,
-    pickerHeaderColor: cyan500,
-  }
-})
+const middlewares = [thunk];
 
-export const Auth = {
-  authenticate(username, password,cb) {
-    const creds: any = `${username}:${password}`;
-    const header: any = {
-        'Accept': 'application/json',
-        'Authorization': 'Basic ' + btoa(creds)
-    };
-    fetch(`${GGConsts.API}:${GGConsts.ADMIN_PORT}/account`, { headers: new Headers (header)})
-        .then(function(response) {
-      
-      if (response.status === 200) {
-        setTimeout(() => {cb(true)}, 100)
-      } else {
-        console.warn('Wrong login creds ', creds);
-      }
+if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
+  middlewares.push(loggerMiddleware)
+}  
 
-    }).catch(function(err) {
-      console.warn('Auth error', err)
-    });
-  },
+const store = createStore(
+  rootReducer,
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
+  applyMiddleware(...middlewares)
+);
 
-  signout(cb) {
-    this.isAuthenticated = false
-    setTimeout(cb, 100)
-  }
-}
-
-export default class App extends Component {
+class App extends Component {
   constructor (props, context) {
     super(props, context);
     this.state = {
@@ -83,19 +58,55 @@ export default class App extends Component {
     console.log('reset');
     this.setState({ resetData: true }, () => this.setState({ resetData: false }));
   }
-
   render () {
     return (
-      <MuiThemeProvider muiTheme={muiTheme}>
-
-        {this.state.authenticated 
-        ? <React.Fragment>
-            <TopHead content={this.state.content} authenticate={this.authenticate} contentChange={this.handleContentChange} />
-            <div style={{flex: "1"}}><PrimeContent reset={this.state.resetData} content={this.state.content} /></div>
-            <FootPane reset={this.reset} />
-          </React.Fragment>
-        : <Login authenticate={this.authenticate}/> }
-      </MuiThemeProvider>
+      <Provider store={store}>
+       <MuiThemeProvider muiTheme={GGConsts.MUI_THEME}>
+          <TopHead content={this.state.content} authenticate={this.authenticate} contentChange={this.handleContentChange} />
+          <StickyFooterWrapper>
+            <Alert />
+            <MiddlePane>
+              <IdBar>
+                <IdBarHeader>Example MoH</IdBarHeader>
+              </IdBar>
+              <Card style={{width: '80vw', margin: '1em auto'}}>
+                <h3 style={{marginLeft: '1em'}}>Uploaded Data</h3>
+                <LiveTable table='manual' 
+                           columns={manualTableCols} />
+              </Card>
+              <Card style={{width: '80vw', margin: '1em auto'}}>
+                <h3 style={{marginLeft: '1em'}}>Live Data</h3>
+                <LiveTable table='live' 
+                           columns={liveTableCols} />
+              </Card>
+            </MiddlePane>
+          </StickyFooterWrapper>
+          <FootPane reset={this.reset} />
+        </MuiThemeProvider>
+      </Provider>
     )
   }
 }
+
+const StickyFooterWrapper = styled.div`
+  flex: 1;
+`;
+const MiddlePane = styled.div`
+  flex: 1;
+`;
+const IdBar = styled.div`
+  background-color: #51326c;
+  width: 100%;
+  text-align: center;
+  padding-top: 14px;
+  padding-bottom: 24px;
+  line-height: 30px;
+  color: white;
+`;
+const IdBarHeader = styled.h1`
+  font-weight: 500;
+  margin-top: 20px;
+`;
+
+export default App; 
+

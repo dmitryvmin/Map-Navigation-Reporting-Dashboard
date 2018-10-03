@@ -16,20 +16,15 @@ export const dstyles = {
   },
   idBarH: {
     fontWeight: '500',
-    marginTop: '20px',
-    // marginBottom: '40px',
+    marginTop: '20px'
   },
   wrapwrap: {
     width: '100%',
     margin: '0 auto',
-    // marginTop: '-48px'
   },
   wrapTabs: {
     width: '80vw',
     margin: '0 auto',
-  },
-  tabMod: {
-    // marginTop: '-48px',
   },
   deviceTableHeader: {
     margin: "0",
@@ -145,71 +140,37 @@ export const dstyles = {
     borderRadius: '4px',
   },
   statusColumn: {
-    width: '5%',
+    width: '10%',
     textAlign: 'center',
-    padding: '0 10px',
   },
-   statusColumnHead: {
-    width: '5%',
-    textAlign: 'right',
-    padding: '0 10px',
+  holdoverColumn: {
+    width: '20%',
+    textAlign: 'center'
+  },
+  tempColumn: {
+    width: '20%',
+    textAlign: 'center',
+  },
+  deviceColumn: {
+    width: '20%',
   },
   facilityColumn: {
-    width: '25%',
-    padding: '0 10px',
+    width: '10%',
     overflow: 'hidden',
     whiteSpace: 'nowrap',
     textOverflow: 'ellipsis'
   },
-  deviceColumn: {
-    width: '15%',
-    padding: '0 10px',
-    paddingLeft: '15px'
-  },
-  localeColumn: {
-    width: '15%',
-    padding: '0 10px'
-  },
-  holdoverColumnHead: {
-    width: '8%',
-    padding: '0 5px 0 25px',
-    textAlign: 'center',
-    fontWeight: 'bold',
-    fontSize: '0.85rem'
-  },
-  holdoverColumn: {
-    width: '10%',
-    padding: '0 5px',
-    textAlign: 'center'
-  },
-  lastpingColumnHead: {
-    width: '10%',
-    textAlign: 'left'
-  },
   lastpingColumn: {
-    width: '10%'
-  },
-  tempColumnHead: {
-    width: '10%',
-    textAlign: 'center',
-    padding: '0',
-    fontWeight: 'bold',
-    fontSize: '0.85rem'
-  },
-  tempColumn: {
-    width: '10%',
-    textAlign: 'center',
-    padding: '4px 24px 4px 24px'
+    width: '20%'
   },
   modalBlock: {
     color: '#494949',
   },
   ggOverlayBg: {
-    backgroundColor: 'rgba(0,0,0,0.8)',
+    backgroundColor: 'rgba(0,0,0,0.8)'
   },
   ggModal: {
-    top: '-70px',
-    paddingTop: '0px',
+    padding: '0px !important',
   },
   inlineBlock: {
     display: 'inline-block',
@@ -217,18 +178,5 @@ export const dstyles = {
   detailTitleHead: {
     color: '#898989',
     fontSize: 14
-  },
-  gauge: {
-    position: 'absolute',
-    textAlign: 'center',
-    width: '20px',
-    marginTop: '-20px',
-    // fontWeight: 'bold',
-    fontSize: '0.8125rem',
-    color: 'rgba(1,1,1,1)',
-    backgroundColor: 'white',
-    left: '49px',
-    borderRadius: '10px',
-    padding: '2px'
   }
 };

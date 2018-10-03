@@ -4,9 +4,10 @@ import FlatButton from 'material-ui/FlatButton';
 import Close from 'material-ui/svg-icons/navigation/close';
 import IconButton from 'material-ui/IconButton';
 import Dialog from 'material-ui/Dialog';
+import AppContext from './Services/Context';
+import { connect } from "react-redux";
 
-
-export default class Alert extends React.Component<any, any> {
+class Alert extends React.Component<any, any> {
     constructor(props: any) {
         super(props);
         this.state = {
@@ -35,6 +36,9 @@ export default class Alert extends React.Component<any, any> {
             return null;
         }
         const { errors } = this.props; 
+        const errorKeys = (errors && Object.keys(errors)) || null;
+        const errorsNum = errorKeys ? errorKeys.length : null; 
+
         const actions = [
             <FlatButton label="Cancel"
                         primary={true}
@@ -54,7 +58,7 @@ export default class Alert extends React.Component<any, any> {
                             color={"red"}
                             backgroundColor={"white"}
                             size={30}>
-                           {Object.keys(errors).length}
+                           {errorsNum}
                         </Avatar>
                         <span style={{color:'white', marginLeft:'10px'}}>Devices have errors</span>
                     </div>
@@ -66,12 +70,12 @@ export default class Alert extends React.Component<any, any> {
                             <Close color={"white"}
                                    onClick={this.handleClick} />
                         </IconButton>
-                        <Dialog title={`${Object.keys(errors).length} Devices reporting errors`}
+                        <Dialog title={`${errorsNum} Devices reporting errors`}
                                 actions={actions}
                                 modal={false}
                                 open={this.state.dialogOpen}
                                 onRequestClose={this.handleClose}>
-                            {Object.keys(errors).map((e: any, i: any) => <p key={`alert-${i}`} style={{color: '#9e9e9e'}}>Sensor #{e} - {errors[e]}</p>)}
+                            {errorKeys && errorKeys.map((e: any, i: any) => <p key={`alert-${i}`} style={{color: '#9e9e9e'}}>Sensor #{e} - {errors[e]}</p>)}
                         </Dialog>
                     </div>
                     <div style={{clear: 'both'}}></div>
@@ -80,3 +84,9 @@ export default class Alert extends React.Component<any, any> {
         );
     }
 }
+
+const mapStateToProps = state => ({
+  errors: state.errors
+});
+
+export default connect(mapStateToProps)(Alert);
