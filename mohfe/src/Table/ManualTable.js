@@ -106,41 +106,6 @@ const mockData = [
       }
     },
     uploaddate: 'October 4, 2018'
-  },
-    {
-    brand: "Aucma - Mains",
-    district: "District S",
-    errors: "",
-    facility: "Facility A",
-    holdover: [0],
-    id: "2919100717866156140",
-    lastping: "3 days, 11 hours ago",
-    lasttemp: 7,
-    status: 'green',
-    sensor: {
-      contact: {
-        email: 'some.body123@gmail.com',
-        name: 'John Doe',
-        phone: '+1231231234' 
-      },
-      facility: {
-        city: 'City 3',
-        country: 'Country T',
-        district: 'District E',
-        name: 'Facility O',
-        region: 'Region K'
-      },
-      holdover: '12.233434',
-      id: '29191007234366156140',
-      manufacturer: 'Other',
-      model: 'Mains',
-      status: 'green',
-      temperature: {
-        timestamp: '2018-09-05T23:24:22.66Z',
-        value: 7.3
-      }
-    },
-    uploaddate: 'October 1, 2018'
   }
 ]
 

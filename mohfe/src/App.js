@@ -56,7 +56,6 @@ class App extends Component {
   }
 
   reset = () => {
-    console.log('reset');
     this.setState({ resetData: true }, () => this.setState({ resetData: false }));
   }
   render () {

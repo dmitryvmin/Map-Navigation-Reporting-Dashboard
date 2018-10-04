@@ -150,7 +150,7 @@ class DeviceDetail extends Component {
                     onChange={this.handleChange}>
                 <Tab label="Device Info" />
                 <Tab label="Location & Contact Info"/>
-                <Tab label="Data"/>
+                <Tab label="Raw Data"/>
                 <Tab label="Analytics"/>
               </Tabs>
             </AppBar>
@@ -245,11 +245,11 @@ class DeviceDetail extends Component {
 
           </DialogContentStyled>
 
-          {/*<DialogActions>
-            <Button onClick={this.handleClose} color="primary" autoFocus>
+          <DialogActions>
+            <Button onClick={this.props.handleClose} color="primary" autoFocus>
               Close
             </Button>
-          </DialogActions>*/}
+          </DialogActions>
 
         </Dialog>
     );

@@ -22,7 +22,7 @@ const LiveTableRow = props => {
 	              key={d.id}
               	  selected={isSelected}
   				  aria-checked={isSelected}>
-	      <TableCell style={dstyles.statusColumn}>
+	      <TableCell style={styles.cell}>
 	        {(d.status === 'red') 
 	         ? <Tippy position="top" 
 	                  interactive 
@@ -42,14 +42,14 @@ const LiveTableRow = props => {
 	            </Tippy> 
 	         : statusDisplay(d.status)}
 	      </TableCell>
-	      <TableCell style={dstyles.holdoverColumn}>
+	      <TableCell style={styles.cell}>
 	        <Tooltip title={d.holdover[0]} placement="bottom" enterDelay={300}>
 	          <div>
 	          {d.holdover[0]}
 	         </div>
 	        </Tooltip>
 	      </TableCell>
-	      <TableCell style={dstyles.tempColumn}>
+	      <TableCell style={styles.cell}>
 	        <Tooltip title={d.lasttemp} placement="bottom-center" enterDelay={300}>
 	          <div className="progressBar">
 	            <div>
@@ -65,23 +65,29 @@ const LiveTableRow = props => {
 	        </div>
 	        </Tooltip>
 	      </TableCell>
-	      <TableCell style={dstyles.deviceColumn}>
+	      <TableCell style={styles.cell}>
 	        <Tooltip title={d.brand} placement="bottom-start" enterDelay={300}>
 	          <div>{d.brand}</div>
 	        </Tooltip>
 	      </TableCell>
-	      <TableCell style={dstyles.facilityColumn}>
+	      <TableCell style={styles.cell}>
 	        <Tooltip title={d.facility} placement="bottom-start" enterDelay={300}>
 	          <div>{d.facility}</div>
 	        </Tooltip>
 	      </TableCell>
-	      <TableCell style={dstyles.lastpingColumn}>
+	      <TableCell style={styles.cell}>
 	        <Tooltip title={d.lastping} placement="bottom-start" enterDelay={300}>
 	          <div>{d.lastping}</div>
 	        </Tooltip>
 	      </TableCell>
 	    </TableRow>
     )
+}
+
+const styles = {
+	cell: {
+		textAlign: 'center'
+	}
 }
 
 export default LiveTableRow; 

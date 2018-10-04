@@ -20,6 +20,7 @@ class EnhancedTableHead extends React.Component {
           {tableCols.map(col => {
             return (
               <TableCell key={col.id}
+                         style={styles.cell}
                          numeric={col.numeric}
                          padding={col.disablePadding ? 'none' : 'default'}
                          sortDirection={orderBy === col.id ? order : false}>
@@ -38,6 +39,12 @@ class EnhancedTableHead extends React.Component {
         </TableRow>
       </TableHead>
     );
+  }
+}
+
+const styles = {
+  cell: {
+    textAlign: 'center'
   }
 }
 
