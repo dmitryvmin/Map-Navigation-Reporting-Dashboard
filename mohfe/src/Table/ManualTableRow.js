@@ -43,6 +43,11 @@ const ManualTableRow = props => {
 	            </Tippy> 
 	         : statusDisplay(d.status)}
 	      </TableCell>
+	      <TableCell style={dstyles.lastpingColumn}>
+	        <Tooltip title={d.uploaddate} placement="bottom-start" enterDelay={300}>
+	          <div>{d.uploaddate}</div>
+	        </Tooltip>
+	      </TableCell>
 	      <TableCell style={dstyles.tempColumn}>
 	        <Tooltip title={d.lasttemp} placement="bottom-center" enterDelay={300}>
 	          <div className="progressBar">

@@ -58,13 +58,6 @@ body {
 .MuiTableRow-root-89 {
 	height: 55px;
 }
-.MuiTableRow-root-89 th {
-    text-align: center !important;
-}
-
-.MuiTableCell-root-122 {
-    text-align: center !important;
-}
 
 [class^="MuiTableRow-"]:hover {
 	background-color: rgba(0, 0, 0, 0.02) !important;
@@ -74,7 +67,7 @@ body {
 	margin-top: 2em !important;
 }
 
-.MuiTableCell-root-128 {
+[class^="MuiTableCell-"] {
 	text-align: center !important;
 }
 

@@ -36,119 +36,126 @@ import { checkStatus,
          tempuratureShape, 
          timechecker48 } from './table-display-helpers';
 
+const mockData = [
+  {
+    brand: "Other - Mains",
+    district: "District C",
+    errors: "",
+    facility: "Facility F",
+    holdover: [0],
+    id: "2919100717866156140",
+    lastping: "12 days, 3 hours ago",
+    lasttemp: 4,
+    status: 'green',
+    sensor: {
+      contact: {
+        email: 'some.body123@gmail.com',
+        name: 'John Doe',
+        phone: '+1231231234' 
+      },
+      facility: {
+        city: 'City 3',
+        country: 'Country T',
+        district: 'District E',
+        name: 'Facility O',
+        region: 'Region K'
+      },
+      holdover: '12.233434',
+      id: '2919100717866156140',
+      manufacturer: 'Other',
+      model: 'Mains',
+      status: 'green',
+      temperature: {
+        timestamp: '2018-09-05T23:24:22.66Z',
+        value: 4.5
+      }
+    },
+    uploaddate: 'October 3, 2018'
+  },
+    {
+    brand: "Aucma - Mains",
+    district: "District E",
+    errors: "",
+    facility: "Facility O",
+    holdover: [0],
+    id: "2919100717866156140",
+    lastping: "4 days, 6 hours ago",
+    lasttemp: 9,
+    status: 'red',
+    sensor: {
+      contact: {
+        email: 'some.body123@gmail.com',
+        name: 'John Doe',
+        phone: '+1231231234' 
+      },
+      facility: {
+        city: 'City 3',
+        country: 'Country T',
+        district: 'District E',
+        name: 'Facility O',
+        region: 'Region K'
+      },
+      holdover: '12.233434',
+      id: '29191007234366156140',
+      manufacturer: 'Other',
+      model: 'Mains',
+      status: 'red',
+      temperature: {
+        timestamp: '2018-09-05T23:24:22.66Z',
+        value: 4.5
+      }
+    },
+    uploaddate: 'October 4, 2018'
+  },
+    {
+    brand: "Aucma - Mains",
+    district: "District S",
+    errors: "",
+    facility: "Facility A",
+    holdover: [0],
+    id: "2919100717866156140",
+    lastping: "3 days, 11 hours ago",
+    lasttemp: 7,
+    status: 'green',
+    sensor: {
+      contact: {
+        email: 'some.body123@gmail.com',
+        name: 'John Doe',
+        phone: '+1231231234' 
+      },
+      facility: {
+        city: 'City 3',
+        country: 'Country T',
+        district: 'District E',
+        name: 'Facility O',
+        region: 'Region K'
+      },
+      holdover: '12.233434',
+      id: '29191007234366156140',
+      manufacturer: 'Other',
+      model: 'Mains',
+      status: 'green',
+      temperature: {
+        timestamp: '2018-09-05T23:24:22.66Z',
+        value: 7.3
+      }
+    },
+    uploaddate: 'October 1, 2018'
+  }
+]
+
 class LiveTable extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       order: 'asc',
       orderBy: 'calories',
-      data: [],
+      data: mockData,
       errors: [],
       page: 0,
       rowsPerPage: 10,
       isDetailOpen: false,
       selectedDevice: null
-    }
-
-    this.intervalId = null; 
-  }
-
-  async componentDidMount() {
-    this.loadData();
-    if ( !this.state.selectedDevice ) {
-      this.intervalId = setInterval( this.loadData, 10000 );  
-    }
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.intervalId);
-    this.selectedDevice = null;
-  }
-
-  loadData = async () => {
-    try {
-      const sensors = await loadDevices();
-
-      if (sensors != null && sensors != "undefined") {
-
-        const data = this.mapPropsToTableColumns(sensors);
-        this.props.storeErrors(this.state.errors);
-        console.log('@@@', data);
-        this.setState({ data });
-      }
-    } catch (err) {
-      console.warn("@componentDidMount error: ", err);
-    }
-  }
-
-  mapPropsToTableColumns = (data) => {
-    let device_info: any = [];
-
-    data.forEach((d: any) => {
-      let obj: any = {}
-
-      obj.id = d.id; 
-      obj.sensor = d;
-      obj.status = checkStatus(d);
-      obj.errors = this.getErrors(d);
-      obj.brand = `${d.manufacturer} - ${d.model}`;
-      obj.facility = d.facility.name;
-      obj.district = d.facility.district;
-      obj.holdover = (this.state.device_info && this.state.device_info[d.id] && this.state.device_info[d.id].holdover) 
-                   ? [...this.state.device_info[d.id].holdover, precisionRound(d.holdover, 0)] 
-                   : [precisionRound(d.holdover, 0)];
-
-      obj.lastping = this.getLastPing(d);
-      obj.lastpingstyle = timechecker48(d.temperature) ? dstyles.redPing : dstyles.clearPing;
-      obj.lasttemp = parseInt(`${Math.round(parseFloat(d.temperature.value))}`);
-
-      device_info.push(obj);
-
-    });
-
-    return device_info;
-  }
-
-  getLastPing = (sensor: any) => {
-    let lastping = getLastPingHours(sensor);
-
-    if (lastping !== null && lastping <= 26) {
-      let time: any = ( lastping === 1 ) ? 'hour' : 'hours';
-
-      return `${lastping} ${time} ago`;
-
-    } else if (lastping !== null && lastping > 26) {
-      let days: any = Math.floor(lastping / 24);
-      let daycount: any = (days === 1) ? 'day' : 'days';
-      let hours: any = Math.round(lastping - (days * 24));
-      let hourscount: any = (hours === 1) ? 'hour' : 'hours';
-
-      return `${days} ${daycount}, ${hours && hours} ${hourscount} ago`;
-
-    } else {
-      console.warn('getLastPing - no timestamp. sensor: ', sensor);
-      return '-';
-    }
-  }
-
-  getErrors = (sensor: any) => {
-    let lastping = getLastPingHours(sensor);
-
-    // TODO: sensor object should return errors...
-    if (lastping > 26) {
-      let error = `Over 26 hours since any data has been received`;
-      let sensorErrorPresent = false;
-
-      // this.state.errors && Object.keys(this.state.errors).map((e: any) => {
-      //   if (sensor.id === e) sensorErrorPresent = true;
-      // });
-      // if (!sensorErrorPresent) this.setState({ errors: {...this.state.errors, [sensor.id]: error } });
-      this.setState({ errors: {...this.state.errors, [sensor.id]: error } });
-
-      return error;
-
-    } else  {
-      return null;
     }
   }
 
@@ -162,28 +169,6 @@ class LiveTable extends React.Component {
 
     this.setState({ order, orderBy });
   };
-
-
-  // handleClick = (event, id) => {
-  //   const { selected } = this.state;
-  //   const selectedIndex = selected.indexOf(id);
-  //   let newSelected = [];
-
-  //   if (selectedIndex === -1) {
-  //     newSelected = newSelected.concat(selected, id);
-  //   } else if (selectedIndex === 0) {
-  //     newSelected = newSelected.concat(selected.slice(1));
-  //   } else if (selectedIndex === selected.length - 1) {
-  //     newSelected = newSelected.concat(selected.slice(0, -1));
-  //   } else if (selectedIndex > 0) {
-  //     newSelected = newSelected.concat(
-  //       selected.slice(0, selectedIndex),
-  //       selected.slice(selectedIndex + 1),
-  //     );
-  //   }
-
-  //   this.setState({ selected: newSelected });
-  // };
 
   handleRowClick = (event, device) => {
     console.log(event, device);
@@ -252,27 +237,11 @@ class LiveTable extends React.Component {
                     : <ManualTableRow d={d} isSelected={isSelected} handleRowClick={this.handleRowClick} />
                   )
                 })}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 49 * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
+           
             </TableBody>
           </Table>}
         </TableWrapper>
-        <TablePagination component="div"
-                         rowsPerPageOptions={[10,20,50]}
-                         count={data.length}
-                         rowsPerPage={rowsPerPage}
-                         page={page}
-                         backIconButtonProps={{
-                           'aria-label': 'Previous Page',
-                         }}
-                         nextIconButtonProps={{
-                           'aria-label': 'Next Page',
-                         }}
-                         onChangePage={this.handleChangePage}
-                         onChangeRowsPerPage={this.handleChangeRowsPerPage}/>
+  
       </Container>
     );
   }

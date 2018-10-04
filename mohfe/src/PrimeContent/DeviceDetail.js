@@ -118,9 +118,6 @@ class DeviceDetail extends Component {
           } = {} 
         } = this.props;
 
-    console.warn('@@', status);
-    console.warn('@@', this.props);
-
     temperature_value = precisionRound(temperature_value, 2) || '-';
     holdover = holdover.constructor === Array ? holdover[0] : precisionRound(holdover, 2);
 

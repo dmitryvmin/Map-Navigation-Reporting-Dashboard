@@ -7,6 +7,7 @@ import 'typeface-roboto' // Font
 import Login from './Login';
 import GGConsts from './Constants';
 import LiveTable from './Table/LiveTable.js';
+import ManualTable from './Table/ManualTable.js';
 import Alert from './Alert';
 import styled from 'styled-components';
 import AppContext from './Services/Context';
@@ -70,12 +71,12 @@ class App extends Component {
                 <IdBarHeader>Example MoH</IdBarHeader>
               </IdBar>
               <Card style={{width: '80vw', margin: '1em auto'}}>
-                <h3 style={{marginLeft: '1em'}}>Uploaded Data</h3>
-                <LiveTable table='manual' 
+                <Header>Uploaded Frigde Tag Data</Header>
+                <ManualTable table='manual' 
                            columns={manualTableCols} />
               </Card>
               <Card style={{width: '80vw', margin: '1em auto'}}>
-                <h3 style={{marginLeft: '1em'}}>Live Data</h3>
+                <Header>Live Fridge Tag Data</Header>
                 <LiveTable table='live' 
                            columns={liveTableCols} />
               </Card>
@@ -90,6 +91,10 @@ class App extends Component {
 
 const StickyFooterWrapper = styled.div`
   flex: 1;
+`;
+const Header = styled.h3`
+  margin: 1em;
+  font-weight: 500;
 `;
 const MiddlePane = styled.div`
   flex: 1;
