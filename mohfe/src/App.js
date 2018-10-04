@@ -70,7 +70,7 @@ class App extends Component {
                 <IdBarHeader>Example MoH</IdBarHeader>
               </IdBar>
               <Card style={{width: '80vw', margin: '1em auto'}}>
-                <Header>Uploaded Frigde Tag Data</Header>
+                <Header>Uploaded Fridge Tag Data</Header>
                 <ManualTable table='manual' 
                            columns={manualTableCols} />
               </Card>
