@@ -39,7 +39,7 @@ const SimpleAreaChart = () => (
         <YAxis width={20} />
         <Tooltip/>
         <Line type="monotone" dataKey="pv" stroke="#8884d8" dot={<CustomizedDot />}/>
-        <Brush />
+        {/*<Brush />*/}
       </LineChart>
     </ResponsiveContainer>
   </div>
