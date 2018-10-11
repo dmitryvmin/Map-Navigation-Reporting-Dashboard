@@ -70,7 +70,8 @@ const mockData = [
         value: 4.5
       }
     },
-    uploaddate: 'October 3, 2018'
+    errorcount: 4,
+    uploaddate: '3 - 10 - 2018'
   },
     {
     brand: "Aucma - Mains",
@@ -105,7 +106,8 @@ const mockData = [
         value: 4.5
       }
     },
-    uploaddate: 'October 4, 2018'
+    errorcount: 22,
+    uploaddate: '8 - 10 - 2018'
   }
 ]
 
@@ -114,7 +116,7 @@ class LiveTable extends React.Component {
     super(props);
     this.state = {
       order: 'asc',
-      orderBy: 'calories',
+      orderBy: 'status',
       data: mockData,
       errors: [],
       page: 0,

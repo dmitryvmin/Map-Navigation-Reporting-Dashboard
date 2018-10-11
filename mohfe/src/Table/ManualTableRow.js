@@ -43,9 +43,9 @@ const ManualTableRow = props => {
 	            </Tippy> 
 	         : statusDisplay(d.status)}
 	      </TableCell>
-	      <TableCell style={styles.cell}>
-	        <Tooltip title={d.uploaddate} placement="bottom-start" enterDelay={300}>
-	          <div>{d.uploaddate}</div>
+          <TableCell style={styles.cell}>
+	        <Tooltip title={d.errorcount} placement="bottom-start" enterDelay={300}>
+	          <div>{d.errorcount}</div>
 	        </Tooltip>
 	      </TableCell>
 	      <TableCell style={styles.cell}>
@@ -78,6 +78,11 @@ const ManualTableRow = props => {
 	        <Tooltip title={d.lastping} placement="bottom-start" enterDelay={300}>
 	          <div>{d.lastping}</div>
 	        </Tooltip>
+	      </TableCell>
+          <TableCell style={styles.cell}>
+            <Tooltip title={d.uploaddate} placement="bottom-start" enterDelay={300}>
+              <div>{d.uploaddate}</div>
+            </Tooltip>
 	      </TableCell>
 	    </TableRow>
     )

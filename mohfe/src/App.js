@@ -58,6 +58,7 @@ class App extends Component {
   reset = () => {
     this.setState({ resetData: true }, () => this.setState({ resetData: false }));
   }
+
   render () {
     return (
       <Provider store={store}>
@@ -70,12 +71,12 @@ class App extends Component {
                 <IdBarHeader>Example MoH</IdBarHeader>
               </IdBar>
               <Card style={{width: '80vw', margin: '1em auto'}}>
-                <Header>Uploaded Fridge Tag Data</Header>
+                <Header>Uploaded Devices</Header>
                 <ManualTable table='manual' 
                            columns={manualTableCols} />
               </Card>
               <Card style={{width: '80vw', margin: '1em auto'}}>
-                <Header>Live Fridge Tag Data</Header>
+                <Header>Connected Devices</Header>
                 <LiveTable table='live' 
                            columns={liveTableCols} />
               </Card>

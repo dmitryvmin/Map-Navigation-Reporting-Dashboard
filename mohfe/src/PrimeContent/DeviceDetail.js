@@ -21,6 +21,16 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import { Document, Page } from 'react-pdf';
 import SimpleAreaChart from './../Table/rechart.js';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import InputLabel from '@material-ui/core/InputLabel';
+import Input from '@material-ui/core/Input';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import Divider from '@material-ui/core/Divider';
 
 const precisionRound = (number, precision) => {
   if (isNaN(number)) {
@@ -59,11 +69,22 @@ function TabContainer(props) {
   );
 }
 
+const RawData = ({ file, onDocumentLoad}) => (
+  <Document file={file}
+            onLoadSuccess={onDocumentLoad}>
+    <Page pageNumber={1} />
+    {/*<button onClick={() => this.setState(prevState => ({ pageNumber: prevState.pageNumber - 1 }))}>Previous page</button>*/}
+    {/*<button onClick={() => this.setState(prevState => ({ pageNumber: prevState.pageNumber + 1 }))}>Next page</button>*/}
+  </Document>
+)
+
+
 class DeviceDetail extends Component {
   state = {
     value: 0,
     numPages: null,
-    pageNumber: 1
+    pageNumber: 1,
+    selectedReport: './fridgeTag.pdf'
   }
 
   handleChange = (event, value) => {
@@ -72,6 +93,10 @@ class DeviceDetail extends Component {
 
   onDocumentLoad = ({ numPages }) => {
     this.setState({ numPages });
+  }
+
+  selectReport = event => {
+    this.setState({ selectedReport: event.target.value })
   }
 
   render() {
@@ -121,6 +146,8 @@ class DeviceDetail extends Component {
     temperature_value = precisionRound(temperature_value, 2) || '-';
     holdover = holdover.constructor === Array ? holdover[0] : precisionRound(holdover, 2);
 
+    const { selectedReport } = this.state;
+
     return (
 
         <Dialog fullScreen={fullScreen}
@@ -151,7 +178,7 @@ class DeviceDetail extends Component {
                 <Tab label="Device Info" />
                 <Tab label="Location & Contact Info"/>
                 <Tab label="Raw Data"/>
-                <Tab label="Analytics"/>
+                <Tab label="Device History"/>
               </Tabs>
             </AppBar>
 
@@ -227,19 +254,38 @@ class DeviceDetail extends Component {
             </TabContainer>}
 
             {value === 2 && <TabContainer> 
+              <Grid container 
+                    spacing={24} 
+                    alignItems="center">
+                <h4 style={styles.header}>Report: </h4>
+                <FormControl className={classes.formControl}>
+                  <Select value={selectedReport} 
+                          onChange={this.selectReport}
+                          input={<Input name="age" id="age-helper" />}>
+                    <MenuItem value={'./fridgeTag.pdf'}>2018 - 10 - 2</MenuItem>
+                    <MenuItem value={'./reportb.pdf'}>2018 - 9 - 24</MenuItem>
+                    <MenuItem value={'./reportc.pdf'}>2018 - 9 - 3</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
               <Grid container spacing={24}>
-                <Document file="./fridgeTag.pdf"
-                onLoadSuccess={this.onDocumentLoad}>
-                <Page pageNumber={pageNumber} />
-                <button onClick={() => this.setState(prevState => ({ pageNumber: prevState.pageNumber - 1 }))}>Previous page</button>
-                <button onClick={() => this.setState(prevState => ({ pageNumber: prevState.pageNumber + 1 }))}>Next page</button>
-              </Document>
+                <RawData onDocumentLoad={this.onDocumentLoad} file={selectedReport}/>
               </Grid>
             </TabContainer>} 
 
-            {value === 3 && <TabContainer> 
-              <Grid container spacing={24}>
-                <SimpleAreaChart />
+            {value === 3 && <TabContainer>
+              <SimpleAreaChart />
+              <Grid>
+                <List component="nav">
+                  <ListItem button>
+                    <Dot style={{ backgroundColor: 'red' }} />
+                    <ListItemText primary="10 - 9 - 2018 : Error a" />
+                  </ListItem>
+                  <ListItem button>
+                    <Dot style={{ backgroundColor: 'red' }} />
+                    <ListItemText primary="10 - 7 -2018 :  Error b" />
+                  </ListItem>
+                </List>
               </Grid>
             </TabContainer>}
 
@@ -278,6 +324,10 @@ const styles = {
   },
   indicator: {
     backgroundColor: GGConsts.THEME_COLOR
+  },
+  header: {
+    marginLeft: '2em',
+    marginRight: '1em'
   }
 }
 
