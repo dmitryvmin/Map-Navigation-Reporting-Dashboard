@@ -6,10 +6,10 @@ import * as React from 'react';
 //   Redirect,
 //   withRouter
 // } from 'react-router-dom';
-import { Auth } from './App';
 import TextField from 'material-ui-next/TextField';
 import Button from 'material-ui-next/Button';
 import Card from 'material-ui-next/Card';
+import Auth from 'Auth';
 
 export default class Login extends React.Component {
   constructor (props, context) {

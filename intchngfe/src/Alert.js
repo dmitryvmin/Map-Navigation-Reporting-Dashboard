@@ -5,8 +5,7 @@ import Close from 'material-ui/svg-icons/navigation/close';
 import IconButton from 'material-ui/IconButton';
 import Dialog from 'material-ui/Dialog';
 
-
-export default class Alert extends React.Component<any, any> {
+class Alert extends React.Component<any, any> {
     constructor(props: any) {
         super(props);
         this.state = {
@@ -80,3 +79,5 @@ export default class Alert extends React.Component<any, any> {
         );
     }
 }
+
+export default Alert;

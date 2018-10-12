@@ -1,6 +1,6 @@
 import GGConsts from './Constants';
 
-let Auth = {
+class Auth = {
   isAuthenticated: false,
 
   authenticate(username, password,cb) {

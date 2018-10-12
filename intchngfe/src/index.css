@@ -1,7 +1,7 @@
 body {
-  margin: 0;
-  padding: 0;
-  font-family: sans-serif;
+	margin: 0;
+	padding: 0;
+	font-family: sans-serif;
 }
 
 
@@ -28,23 +28,11 @@ body {
 
 .label text {
 	/*display: none;*/
-  color: rgba(0, 0, 0, 0.87); 
-  font-size: 0.6rem !important;
-  font-weight: normal !important;
-  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+	color: rgba(0, 0, 0, 0.87); 
+	font-size: 0.6rem !important;
+	font-weight: normal !important;
+	font-family: "Roboto", "Helvetica", "Arial", sans-serif;
 }
 .current-value {
-  display: none; 
-}
-.speedometer .arc .speedo-segment:nth-child(2), .speedometer .arc .speedo-segment:nth-child(3) {
-	fill: #DCEDC8;
-	/*fill: #AEEA00;*/
-}
-.speedometer .arc .speedo-segment:nth-child(1) {
-	fill: #B3E5FC;
-}
-
-.speedometer .arc .speedo-segment:nth-child(4) {
-	fill: #FFCCBC;
-	/*fill: #DD2C00;*/
+	display: none; 
 }
