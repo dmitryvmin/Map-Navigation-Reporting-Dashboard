@@ -283,7 +283,7 @@ class DeviceDetail extends Component {
                   </ListItem>
                   <ListItem button>
                     <Dot style={{ backgroundColor: 'red' }} />
-                    <ListItemText primary="10 - 7 -2018 :  Error b" />
+                    <ListItemText primary="10 - 7 -2018 :  Error c" />
                   </ListItem>
                 </List>
               </Grid>
