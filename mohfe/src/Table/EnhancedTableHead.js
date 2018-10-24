@@ -12,7 +12,12 @@ class EnhancedTableHead extends React.Component {
   };
 
   render() {
-    const { onSelectAllClick, order, orderBy, numSelected, rowCount, tableCols } = this.props;
+    const { onSelectAllClick,
+            order,
+            orderBy,
+            numSelected,
+            rowCount,
+            tableCols } = this.props;
 
     return (
       <TableHead>

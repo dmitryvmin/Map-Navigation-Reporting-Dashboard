@@ -21,6 +21,8 @@ import manualTableCols from './Table/ManualTableCols';
 import Card from '@material-ui/core/Card';
 // import store from './Services/store';
 import injectTapEventPlugin from 'react-tap-event-plugin';
+import SettingsInputHdmi from '@material-ui/icons/SettingsInputHdmi';
+import SettingsRemote from '@material-ui/icons/SettingsRemote';
 
 injectTapEventPlugin()
 
@@ -71,12 +73,12 @@ class App extends Component {
                 <IdBarHeader>Example MoH</IdBarHeader>
               </IdBar>
               <Card style={{width: '80vw', margin: '1em auto'}}>
-                <Header>Uploaded Devices</Header>
+                <Header style={{display: 'flex', alignItems: 'center'}}><SettingsInputHdmi style={{marginRight: '0.5em'}} />Uploaded Devices</Header>
                 <ManualTable table='manual' 
                            columns={manualTableCols} />
               </Card>
               <Card style={{width: '80vw', margin: '1em auto'}}>
-                <Header>Connected Devices</Header>
+                <Header style={{display: 'flex', alignItems: 'center'}}><SettingsRemote style={{marginRight: '0.5em'}} />Connected Devices</Header>
                 <LiveTable table='live' 
                            columns={liveTableCols} />
               </Card>

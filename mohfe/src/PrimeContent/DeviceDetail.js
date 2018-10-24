@@ -111,7 +111,8 @@ class DeviceDetail extends Component {
     let { classes, 
           fullScreen, 
           device: 
-          { brand = '-', 
+          { brand = '-',
+            type = '-',
             errors = '-',
             id = '-', 
             lastping = '-', 
@@ -145,6 +146,7 @@ class DeviceDetail extends Component {
 
     temperature_value = precisionRound(temperature_value, 2) || '-';
     holdover = holdover.constructor === Array ? holdover[0] : precisionRound(holdover, 2);
+    const uploaded = type === 'uploaded' ? true : false;
 
     const { selectedReport } = this.state;
 
@@ -177,30 +179,27 @@ class DeviceDetail extends Component {
                     onChange={this.handleChange}>
                 <Tab label="Device Info" />
                 <Tab label="Location & Contact Info"/>
-                <Tab label="Raw Data"/>
-                <Tab label="Device History"/>
+                {uploaded && <Tab label="Reports" />}
+                <Tab label="History"/>
               </Tabs>
             </AppBar>
 
             {value === 0 && <TabContainer>
 
               <Grid container spacing={24}>
-                <Grid item xs={4}>  
+                {!uploaded && <Grid item xs={4}>
                   <h4>Last Temperature Reading</h4>
                     {temperature_value}&deg; C 
                     <Note>( safe zone: 2 - 8° )</Note>
-                </Grid>
+                </Grid>}
                 <Grid item xs={4}>  
                   <h4>Last Ping</h4>
                   {lastping}
                 </Grid>
-                <Grid item xs={4}>  
+                {!uploaded && <Grid item xs={4}>
                   <h4>Holdover Days</h4>
                   {holdover}
-                </Grid>
-              </Grid>
-
-              <Grid container spacing={24}>
+                </Grid>}
                 <Grid item xs={4}>
                   <h4>Serial Number</h4>
                   {id}
@@ -253,7 +252,7 @@ class DeviceDetail extends Component {
               </Grid>
             </TabContainer>}
 
-            {value === 2 && <TabContainer> 
+            {uploaded && value === 2 && <TabContainer>
               <Grid container 
                     spacing={24} 
                     alignItems="center">
@@ -275,18 +274,6 @@ class DeviceDetail extends Component {
 
             {value === 3 && <TabContainer>
               <SimpleAreaChart />
-              <Grid>
-                <List component="nav">
-                  <ListItem button>
-                    <Dot style={{ backgroundColor: 'red' }} />
-                    <ListItemText primary="10 - 9 - 2018 : Error a" />
-                  </ListItem>
-                  <ListItem button>
-                    <Dot style={{ backgroundColor: 'red' }} />
-                    <ListItemText primary="10 - 7 -2018 :  Error d" />
-                  </ListItem>
-                </List>
-              </Grid>
             </TabContainer>}
 
           </DialogContentStyled>

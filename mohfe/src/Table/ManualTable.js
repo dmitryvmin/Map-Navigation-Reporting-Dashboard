@@ -38,6 +38,7 @@ import { checkStatus,
 
 const mockData = [
   {
+    type: 'uploaded',
     brand: "Other - Mains",
     district: "District C",
     errors: "",
@@ -45,7 +46,7 @@ const mockData = [
     holdover: [0],
     id: "2919100717866156140",
     lastping: "12 days, 3 hours ago",
-    lasttemp: 4,
+    lasttemp: [4,1,3,1,5,2,6,4,4,4,5,6,6,9,8,4,4,5,5,4,6,7,7,8,8,9,4,3,5,4],
     status: 'green',
     sensor: {
       contact: {
@@ -73,7 +74,8 @@ const mockData = [
     errorcount: 4,
     uploaddate: '3 - 10 - 2018'
   },
-    {
+  {
+    type: 'uploaded',
     brand: "Aucma - Mains",
     district: "District E",
     errors: "",
@@ -81,7 +83,7 @@ const mockData = [
     holdover: [0],
     id: "2919100717866156140",
     lastping: "4 days, 6 hours ago",
-    lasttemp: 9,
+    lasttemp: [0,4,5,0,4,6,7,8,1,2,0,1,0,1,0,0,1,0,1,0,0,5,0,6,9,8,8,9,4,4],
     status: 'red',
     sensor: {
       contact: {

@@ -86,4 +86,13 @@ body {
 	background-color: #51326c;
 }
 
+.recharts-surface {
+	overflow: visible;
+}
 
+.recharts-layer.recharts-brush > rect {
+	stroke: none;
+}
+.recharts-text.recharts-label {
+	font-weight: 500;
+}

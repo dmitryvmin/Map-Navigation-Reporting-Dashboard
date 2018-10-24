@@ -1,58 +1,221 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import * as Recharts from 'recharts';
-const { Brush, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } = Recharts;
-const data = [
-      {name: '7', uv: 4000, pv: 4, amt: 2400},
-      {name: '6', uv: 3000, pv: 5, amt: 2210},
-      {name: '5', uv: 2000, pv: 1, amt: 2290},
-      {name: '4', uv: 2780, pv: 4, amt: 2000},
-      {name: '3', uv: 1890, pv: 6, amt: 2181},
-      {name: '2', uv: 2390, pv: 10, amt: 2500},
-      {name: '1', uv: 3490, pv: 5, amt: 2100},
-];
+import Grid from '@material-ui/core/Grid';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import styled from 'styled-components';
+import data from './fakeData.js';
+import Divider from '@material-ui/core/Divider';
+import Chip from '@material-ui/core/Chip';
 
-class CustomizedDot extends Component{
-  render () {
-    const {cx, cy, stroke, payload, value} = this.props;
+const { Area,
+    AreaChart,
+    Brush,
+    ResponsiveContainer,
+    LineChart,
+    Line,
+    XAxis,
+    Label,
+    YAxis,
+    CartesianGrid,
+    ReferenceArea,
+    Tooltip } = Recharts;
 
+const reports = [
+    {
+        from: 179,
+        to: 149
+    },   {
+        from: 149,
+        to: 119
+    },   {
+        from: 119,
+        to: 89
+    },
+    {
+        from: 89,
+        to: 59
+    },
+    {
+        from: 59,
+        to: 29
+    },
+    {
+        from: 29,
+        to: 0
+    }
+    ];
+
+const CustomizedDot = ({cx, cy, stroke, payload, value, r}) => {
     if (value < 2 || value > 8) {
       return (
         <svg x={cx - 15} y={cy - 15} width={150} height={150} fill="red" viewBox="0 0 1024 1024">
-          <path d="M 100, 100
-                   m -75, 0
-                   a 75,75 0 1,0 150,0
-                   a 75,75 0 1,0 -150,0" />
+          <path d={`M 100, 100
+                   m -${r}, 0
+                   a ${r},${r} 0 1,0 ${r * 2},0
+                   a ${r},${r} 0 1,0 -${r * 2},0`} />
         </svg>
       );
     } else {
-      return null; 
+      return null;
     }
-  }
 }
 
-const SimpleAreaChart = () => (
-  <div style={styles.container}>
-    <ResponsiveContainer width="100%" height="100%">
-      <LineChart data={data} margin={{ top: 0, right: 0, left: 0, bottom: 10 }}>
-        <CartesianGrid strokeDasharray="3 3"/>
-        <XAxis dataKey="name"/>
-        <YAxis width={20} />
-        <Tooltip/>
-        <Line type="monotone" dataKey="pv" stroke="#8884d8" dot={<CustomizedDot />}/>
-        {/*<Brush />*/}
-      </LineChart>
-    </ResponsiveContainer>
-  </div>
-)
+class BrushLabel extends Component {
+    render () {
+        const {x, y, fill, value} = this.props;
+        return <text
+            x={x}
+            y={y}
+            dy={-4}
+            fontSize='16'
+            textAnchor="middle">{value}</text>
+    }
+}
+
+class SimpleAreaChart extends Component {
+    state = {
+        from: 30,
+        to: 1,
+        offsetTop: 0
+    }
+
+    handleBrushChange = ({ startIndex, endIndex }) => {
+        // this.setState({
+        //     from: startIndex,
+        //     to: endIndex
+        // });
+        console.warn('@@scroll', startIndex, endIndex);
+        // const myDomNode = ReactDOM.findDOMNode(this.myRef.scroll);
+        this.setState({ offsetTop: startIndex });
+        // myDomNode.offsetTop
+    }
+
+    onMouseEnterHandler = (index) => {
+        console.log('@@', index);
+    }
+
+    render() {
+        const domainFrom = parseInt(data[this.state.from].name);
+        const domainTo = parseInt(data[this.state.to].name);
+
+        return (
+            <div>
+                <div style={styles.container}>
+                    <div style={{marginRight: 10}}>
+                        <div style={{backgroundColor: 'red', width: 4, height: 35}}></div>
+                        <div style={{backgroundColor: 'green', width: 4, height: 90}}></div>
+                        <div style={{backgroundColor: 'red', width: 4, height: 35}}></div>
+                    </div>
+                    <ResponsiveContainer width="100%"
+                                         height="100%">
+                        <LineChart data={data}
+                                   margin={{top: 0, right: 0, left: 0, bottom: 0}}>
+                            <CartesianGrid strokeDasharray="3 3"/>
+                            <XAxis dataKey="name"/>
+                            <YAxis width={20}/>
+                            <Tooltip payload={[{name: '3', temperature: 6}]}
+                                     active={true}/>
+                            <Line type="monotone"
+                                  dataKey="temperature"
+                                  stroke="#8884d8"
+                                  dot={<CustomizedDot r={25} />}/>
+                            <Brush startIndex={domainFrom}
+                                   endIndex={domainTo}
+                                   y={220}
+                                   onChange={this.handleBrushChange}
+                                >
+                                <LineChart >
+                                    {reports && reports.map((report, i, arr) =>
+                                        <ReferenceArea x1={report.from}
+                                                       x2={report.to}
+                                                       fill={(i%2 === 0) ? '#fff' : '#efefef'}>
+                                            <Label value={`Report ${arr.length - i + 4} - 1 - 18`}
+                                                   offset={10}
+                                                   position="bottom" />
+                                        </ReferenceArea>
+                                    )}
+                                    <YAxis hide
+                                           domain={['auto', 'auto']}/>
+                                    {/*<XAxis dataKey="name"/>*/}
+                                    <Line dataKey="temperature"
+                                          stroke="#8884d8"
+                                          dot={<CustomizedDot r={12} />}/>
+                                </LineChart>
+                            </Brush>
+                        </LineChart>
+                    </ResponsiveContainer>
+                </div>
+
+                <div style={{height: '500px', overflowY: 'scroll', marginTop: '5em'}}>
+                    {/*<h3 style={{marginLeft: '2em', marginTop: '3em'}}>Error History</h3>*/}
+
+                    <Grid ref={(scroll) => { this.scroll = scroll }} style={{offsetTop: this.state.offsetTop}}>
+                        <List component="nav">
+                            {data && data.map((d, i, arr) => {
+                                let reportTitle = null;
+                                let listItem = null;
+
+                                if (i === 1) reportTitle = 'Report 10 - 1 - 18';
+                                if (i === 31) reportTitle = 'Report 9 - 1 - 18';
+                                if (i === 61) reportTitle = 'Report 8 - 1 - 18';
+                                if (i === 91) reportTitle = 'Report 7 - 1 - 18';
+                                if (i === 121) reportTitle = 'Report 6 - 1 - 18';
+                                if (i === 151) reportTitle = 'Report 5 - 1 - 18';
+
+                                if (d.temperature < 2 || d.temperature > 8) {
+                                    listItem = (
+                                        <ListItem button
+                                                  key={`list-item-${i}`}
+                                                  onMouseEnter={this.onMouseEnterHandler}>
+                                            <Dot style={{backgroundColor: 'red'}}/>
+                                            <span>{`Error ${i} : device temperature ${d.temperature} °C`}</span>
+                                            {/*<ListItemText primary={`Error ${i}`}/>*/}
+                                        </ListItem>
+                                    )
+                                }
+
+                                return (
+                                    <React.Fragment>
+                                        {reportTitle &&
+                                        <React.Fragment>
+                                            <h4 style={{marginLeft: '2em'}}>{reportTitle}</h4>
+                                            <Divider light />
+                                        </React.Fragment>}
+                                        {listItem && listItem}
+                                    </React.Fragment>
+                                )
+                            })}
+                        </List>
+                    </Grid>
+                </div>
+            </div>
+        )
+    }
+}
 
 const styles = {
   container: {
     boxSizing: 'border-box',
     height: '250px', 
     width: '100%', 
-    marginTop: '2em',
-    padding: '10px'
+    marginTop: '1em',
+    padding: '10px',
+    display: 'flex',
+    flexDirection: 'row'
   }
 }
+const Dot = styled.div`
+  width: 24px; 
+  height: 24px; 
+  border-style: solid;
+  border-color: #aaa;
+  border-width: 1px;
+  border-radius: 50%; 
+  align-self: center;
+  margin: 1em;
+`;
 
 export default SimpleAreaChart; 
