@@ -26,25 +26,31 @@ const { Area,
 const reports = [
     {
         from: 179,
-        to: 149
+        to: 149,
+        month: 'October'
     },   {
         from: 149,
-        to: 119
+        to: 119,
+        month: 'September'
     },   {
         from: 119,
-        to: 89
+        to: 89,
+        month: 'August'
     },
     {
         from: 89,
-        to: 59
+        to: 59,
+        month: 'July'
     },
     {
         from: 59,
-        to: 29
+        to: 29,
+        month: 'June'
     },
     {
         from: 29,
-        to: 0
+        to: 0,
+        month: 'May'
     }
     ];
 
@@ -104,18 +110,21 @@ class SimpleAreaChart extends Component {
         return (
             <div>
                 <div style={styles.container}>
-                    <div style={{marginRight: 10}}>
-                        <div style={{backgroundColor: 'red', width: 4, height: 35}}></div>
-                        <div style={{backgroundColor: 'green', width: 4, height: 90}}></div>
-                        <div style={{backgroundColor: 'red', width: 4, height: 35}}></div>
-                    </div>
+                    {/*<div style={{marginRight: 10}}>*/}
+                        {/*<div style={{backgroundColor: 'red', width: 4, height: 50}}></div>*/}
+                        {/*<div style={{backgroundColor: 'green', width: 4, height: 85}}></div>*/}
+                        {/*<div style={{backgroundColor: 'red', width: 4, height: 25}}></div>*/}
+                    {/*</div>*/}
                     <ResponsiveContainer width="100%"
                                          height="100%">
                         <LineChart data={data}
                                    margin={{top: 0, right: 0, left: 0, bottom: 0}}>
                             <CartesianGrid strokeDasharray="3 3"/>
-                            <XAxis dataKey="name"/>
-                            <YAxis width={20}/>
+                            <XAxis dataKey="name">
+                                <Label value="Days Ago" offset={-10} position="insideBottom" />
+                            </XAxis>
+                            <YAxis width={70}
+                                   label={{ value: "Temperature C°", angle: -90, position: "insideMiddleLeft" }}/>
                             <Tooltip payload={[{name: '3', temperature: 6}]}
                                      active={true}/>
                             <Line type="monotone"
@@ -132,7 +141,7 @@ class SimpleAreaChart extends Component {
                                         <ReferenceArea x1={report.from}
                                                        x2={report.to}
                                                        fill={(i%2 === 0) ? '#fff' : '#efefef'}>
-                                            <Label value={`Report ${arr.length - i + 4} - 1 - 18`}
+                                            <Label value={`${report.month} Report`}
                                                    offset={10}
                                                    position="bottom" />
                                         </ReferenceArea>
@@ -149,7 +158,7 @@ class SimpleAreaChart extends Component {
                     </ResponsiveContainer>
                 </div>
 
-                <div style={{height: '500px', overflowY: 'scroll', marginTop: '5em'}}>
+                <div style={{height: '45vh', overflowY: 'scroll', marginTop: '5em'}}>
                     {/*<h3 style={{marginLeft: '2em', marginTop: '3em'}}>Error History</h3>*/}
 
                     <Grid ref={(scroll) => { this.scroll = scroll }} style={{offsetTop: this.state.offsetTop}}>
@@ -158,12 +167,12 @@ class SimpleAreaChart extends Component {
                                 let reportTitle = null;
                                 let listItem = null;
 
-                                if (i === 1) reportTitle = 'Report 10 - 1 - 18';
-                                if (i === 31) reportTitle = 'Report 9 - 1 - 18';
-                                if (i === 61) reportTitle = 'Report 8 - 1 - 18';
-                                if (i === 91) reportTitle = 'Report 7 - 1 - 18';
-                                if (i === 121) reportTitle = 'Report 6 - 1 - 18';
-                                if (i === 151) reportTitle = 'Report 5 - 1 - 18';
+                                if (i === 1) reportTitle = 'October Report';
+                                if (i === 31) reportTitle = 'September Report';
+                                if (i === 61) reportTitle = 'August Report';
+                                if (i === 91) reportTitle = 'July Report';
+                                if (i === 121) reportTitle = 'June Report';
+                                if (i === 151) reportTitle = 'May Report';
 
                                 if (d.temperature < 2 || d.temperature > 8) {
                                     listItem = (
@@ -203,8 +212,8 @@ const styles = {
     width: '100%', 
     marginTop: '1em',
     padding: '10px',
-    display: 'flex',
-    flexDirection: 'row'
+    // display: 'flex',
+    // flexDirection: 'row'
   }
 }
 const Dot = styled.div`

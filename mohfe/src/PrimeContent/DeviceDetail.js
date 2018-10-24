@@ -292,7 +292,7 @@ class DeviceDetail extends Component {
 const styles = {
   dialogContainer: {
     minWidth: '70vw',
-    minHeight: '80vh'
+    minHeight: '85vh'
   },
   modalTitle: {
     padding: '0',
