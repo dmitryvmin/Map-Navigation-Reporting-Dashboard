@@ -16,102 +16,98 @@ import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import GGConsts from '../Constants';
 import EnhancedTableHead from './EnhancedTableHead';
-import loadDevices from './../Services/API';
+// import loadDevices from './../Services/API';
 import DeviceDetail from './../PrimeContent/DeviceDetail';
 import AppContext from './../Services/Context';
 import { connect } from "react-redux";
 import { storeErrors } from "./../Services/store";
 import LiveTableRow from './LiveTableRow';
 import ManualTableRow from './ManualTableRow';
+import axios from 'axios';
+import Moment from 'moment';
+import { extendMoment } from 'moment-range';
 
 import { desc, 
          stableSort, 
          getSorting } from './table-sort-helpers';
 
-import { checkStatus,
-         getLastPingHours,
-         precisionRound, 
-         statusDisplay, 
-         statusBg, 
-         tempuratureShape, 
-         timechecker48 } from './table-display-helpers';
+const moment = extendMoment(Moment);
 
-const mockData = [
-  {
-    type: 'uploaded',
-    brand: "Other - Mains",
-    district: "District C",
-    errors: "",
-    facility: "Facility F",
-    holdover: [0],
-    id: "2919100717866156140",
-    lastping: "12 days, 3 hours ago",
-    lasttemp: [4,1,3,1,5,2,6,4,4,4,5,6,6,9,8,4,4,5,5,4,6,7,7,8,8,9,4,3,5,4],
-    status: 'green',
-    sensor: {
-      contact: {
-        email: 'some.body123@gmail.com',
-        name: 'John Doe',
-        phone: '+1231231234' 
-      },
-      facility: {
-        city: 'City 3',
-        country: 'Country T',
-        district: 'District E',
-        name: 'Facility O',
-        region: 'Region K'
-      },
-      holdover: '12.233434',
-      id: '2919100717866156140',
-      manufacturer: 'Other',
-      model: 'Mains',
-      status: 'green',
-      temperature: {
-        timestamp: '2018-09-05T23:24:22.66Z',
-        value: 4.5
-      }
-    },
-    errorcount: 4,
-    uploaddate: '3 - 10 - 2018'
-  },
-  {
-    type: 'uploaded',
-    brand: "Aucma - Mains",
-    district: "District E",
-    errors: "",
-    facility: "Facility O",
-    holdover: [0],
-    id: "2919100717866156140",
-    lastping: "4 days, 6 hours ago",
-    lasttemp: [0,4,5,0,4,6,7,8,1,2,0,1,0,1,0,0,1,0,1,0,0,5,0,6,9,8,8,9,4,4],
-    status: 'red',
-    sensor: {
-      contact: {
-        email: 'some.body123@gmail.com',
-        name: 'John Doe',
-        phone: '+1231231234' 
-      },
-      facility: {
-        city: 'City 3',
-        country: 'Country T',
-        district: 'District E',
-        name: 'Facility O',
-        region: 'Region K'
-      },
-      holdover: '12.233434',
-      id: '29191007234366156140',
-      manufacturer: 'Other',
-      model: 'Mains',
-      status: 'red',
-      temperature: {
-        timestamp: '2018-09-05T23:24:22.66Z',
-        value: 4.5
-      }
-    },
-    errorcount: 22,
-    uploaddate: '8 - 10 - 2018'
-  }
-]
+
+// TODO: move loadDevices to Redux store
+
+const config = {
+    headers: { 'Authorization': `Basic ${GGConsts.HEADER_AUTH}` }
+}
+
+const loadDevices = async( uri ) => {
+    try {
+
+        let data = await axios.get(uri, config);
+
+        if (data) {
+            console.warn('$$$$ DATA $$$$', data);
+            return data;
+        } else {
+            console.warn("@loadDevices sensor data incomplete: ", data);
+        }
+
+    } catch (err) {
+        console.warn("@loadDevices error: ", err);
+    }
+}
+
+const formatData = async() => {
+  const uri = `${GGConsts.API}:${GGConsts.UPLOADED_DEVICES}/sensor/state/uploaded`;
+
+  const result = await loadDevices(uri);
+  const data = result && result.data && result.data.states;
+
+  if (data) {
+
+      const formattedData = data.map(device => {
+
+        // let range = moment.range(device.sample['began-at'], device.sample['ended-at']);
+
+        device = {
+            type: device.sample.uploaded,
+            brand: device.sensor.manufacturer,
+            id: '- id -',
+            district: '- district -',
+            errors: "",
+            facility: "Facility O",
+            holdover: [0],
+            id: device.sample['sensor-id'],
+            lastping: "4 days, 6 hours ago",
+            lasttemp: [0, 4, 5, 0, 4, 6, 7, 8, 1, 2, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 5, 0, 6, 9, 8, 8, 9, 4, 4],
+            status: 'red',
+            sensor: {
+                contact: {
+                    email: ' - ',
+                    name: ' - ',
+                    phone: ' - '
+                },
+                facility: {
+                    city: ' - ',
+                    country: ' - ',
+                    district: ' - ',
+                    name: ' - ',
+                    region: ' - '
+                }
+            },
+            errorcount: 22,
+            alarms: device.alarms,
+            meta: device.meta,
+            uploaddate: '8 - 10 - 2018'
+        }
+
+        return device;
+      });
+
+      return formattedData;
+
+    }
+}
 
 class LiveTable extends React.Component {
   constructor(props) {
@@ -119,13 +115,18 @@ class LiveTable extends React.Component {
     this.state = {
       order: 'asc',
       orderBy: 'status',
-      data: mockData,
+      data: null,
       errors: [],
       page: 0,
       rowsPerPage: 10,
       isDetailOpen: false,
       selectedDevice: null
     }
+  }
+
+  async componentDidMount() {
+    let data = await formatData();
+    this.setState({ data });
   }
 
   handleRequestSort = (event, property) => {
@@ -139,9 +140,13 @@ class LiveTable extends React.Component {
     this.setState({ order, orderBy });
   };
 
-  handleRowClick = (event, device) => {
-    console.log(event, device);
-    this.setState({isDetailOpen: true, selectedDevice: device });
+  handleRowClick = async(event, device) => {
+
+    const yearAgo = moment.utc().subtract(1, 'year').format();
+    const uri = `${GGConsts.API}:${GGConsts.UPLOADED_DEVICES}/sensor/${device.id}/sample?start=${yearAgo}`;
+    const data = await loadDevices(uri);
+
+    this.setState({isDetailOpen: true, selectedDevice: { sensorSampleData: data.data, sensorStateData: device } });
   }
 
   handleDetailOpen = () => {
@@ -165,6 +170,10 @@ class LiveTable extends React.Component {
   }
 
   render() {
+    if (!this.state.data) {
+      return null;
+    }
+
     const { classes, 
             columns,
             table } = this.props;
@@ -180,12 +189,13 @@ class LiveTable extends React.Component {
 
     return (
       <Container>
-        <DeviceDetail isOpen={this.state.isDetailOpen}
-                      handleOpen={this.handleDetailOpen}
-                      handleClose={this.handleDetailClose}
-                      device={this.state.selectedDevice} />
+        {this.state.isDetailOpen && <DeviceDetail isOpen={this.state.isDetailOpen}
+                  handleOpen={this.handleDetailOpen}
+                  handleClose={this.handleDetailClose}
+                  device={this.state.selectedDevice} />}
+
         <TableWrapper>
-          {(!this.state.data.length)
+          {(!data)
           ?<div>Loading...</div>
           :<Table className="table" aria-labelledby="tableTitle">
             <EnhancedTableHead columns={columns}
@@ -205,8 +215,8 @@ class LiveTable extends React.Component {
                     ? <LiveTableRow d={d} isSelected={isSelected} handleRowClick={this.handleRowClick} />
                     : <ManualTableRow d={d} isSelected={isSelected} handleRowClick={this.handleRowClick} />
                   )
-                })}
-           
+                })
+              }
             </TableBody>
           </Table>}
         </TableWrapper>

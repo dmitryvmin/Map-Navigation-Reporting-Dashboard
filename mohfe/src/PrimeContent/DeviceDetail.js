@@ -6,7 +6,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 // import withMobileDialog from '@material-ui/core/withMobileDialog';
 import FlatButton from 'material-ui/FlatButton';
-import moment from 'moment-timezone';
+// import moment from 'moment-timezone';
 import 'typeface-roboto';
 import { dstyles } from '../Constants/deviceStyle';
 import { withStyles } from '@material-ui/core/styles';
@@ -31,6 +31,11 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
+import axios from 'axios';
+
+import Moment from 'moment';
+import { extendMoment } from 'moment-range';
+const moment = extendMoment(Moment);
 
 const precisionRound = (number, precision) => {
   if (isNaN(number)) {
@@ -78,14 +83,79 @@ const RawData = ({ file, onDocumentLoad}) => (
   </Document>
 )
 
+// TODO: move loadDevices to Redux store
+const config = {
+    headers: { 'Authorization': `Basic ${GGConsts.HEADER_AUTH}` }
+}
+
+const loadDevices = async( uri ) => {
+    try {
+
+        let data = await axios.get(uri, config);
+
+        if (data) {
+            console.warn('$$$$ DATA $$$$', data);
+            return data;
+        } else {
+            console.warn("@loadDevices sensor data incomplete: ", data);
+        }
+
+    } catch (err) {
+        console.warn("@loadDevices error: ", err);
+    }
+}
 
 class DeviceDetail extends Component {
   state = {
     value: 0,
     numPages: null,
     pageNumber: 1,
-    selectedReport: './fridgeTag.pdf'
+    reports: null,
+    selectedReport: null,
+    pdf: null
   }
+
+  async componentWillMount() {
+    if ( this.props.device ) {
+      const reports = this.loadPDFs(this.props);
+      const selectedReport = reports[0];
+      const pdf = await this.loadReport(selectedReport.id);
+
+      this.setState({ reports, selectedReport, pdf });
+    }
+  }
+
+  loadReport = async (id) => {
+      const uri = `${GGConsts.API}:${GGConsts.UPLOADED_DEVICES}/media/digest/${id}`;
+      const pdf = await loadDevices(uri);
+      return pdf.data;
+  }
+
+  loadPDFs = () => {
+
+      let reports = [];
+
+      this.props.device.sensorStateData.meta.map(report => {
+
+          let name = moment.utc(report['ended-at']).format("MM-DD-YYYY");
+
+          reports.push({
+              name,
+              id: report.digest
+          });
+
+      });
+
+      return reports;
+  }
+
+  selectReport = async(event) => {
+
+        const report = event.target.value;
+        const pdf = await this.loadReport(report.id);
+
+        this.setState({ selectedReport: event.target.value, pdf })
+    }
 
   handleChange = (event, value) => {
     this.setState({ value });
@@ -95,9 +165,6 @@ class DeviceDetail extends Component {
     this.setState({ numPages });
   }
 
-  selectReport = event => {
-    this.setState({ selectedReport: event.target.value })
-  }
 
   render() {
     if (!this.props.device) {
@@ -106,19 +173,20 @@ class DeviceDetail extends Component {
 
     const { value,
             pageNumber, 
-            numPages } = this.state;
+            numPages,
+            reports,
+            selectedReport,
+            pdf } = this.state;
 
     let { classes, 
-          fullScreen, 
-          device: 
-          { brand = '-',
-            type = '-',
+          fullScreen,
+          device: {
+            type = 'uploaded',
             errors = '-',
-            id = '-', 
-            lastping = '-', 
-            lastpingstyle = '-', 
+            lastping = '-',
+            lastpingstyle = '-',
             lasttemp = '-',
-            device = '-', 
+            device = '-',
             status = '-',
             sensor: {
               holdover = '-',
@@ -141,14 +209,27 @@ class DeviceDetail extends Component {
                 region = '-'
               } = {},
             } = {},
-          } = {} 
+            sensorSampleData = {},
+            sensorStateData: {
+                brand = '-',
+                id = '-',
+                alarms = [],
+            },
+          } = {}
         } = this.props;
 
     temperature_value = precisionRound(temperature_value, 2) || '-';
     holdover = holdover.constructor === Array ? holdover[0] : precisionRound(holdover, 2);
     const uploaded = type === 'uploaded' ? true : false;
 
-    const { selectedReport } = this.state;
+    let pdfDoc = null;
+    if (pdf) {
+        if (pdf.meta.encoded === true) {
+            pdfDoc = <RawData onDocumentLoad={this.onDocumentLoad} file={`data:application/pdf;base64,${pdf.data}`} />
+        } else {
+            pdfDoc = <pre>Not Encoded: {pdf.data}</pre>;
+        }
+    }
 
     return (
 
@@ -165,7 +246,7 @@ class DeviceDetail extends Component {
           </DialogTitle>
           <DialogContentStyled>
             
-            {(errors && (status !== 'green')) && <ErrorDiv color={status}>{JSON.stringify(errors)}</ErrorDiv>}
+            {/*{(errors && (status !== 'green')) && <ErrorDiv color={status}>{JSON.stringify(errors)}</ErrorDiv>}*/}
 
             <AppBar position="static"
                     color="inherit"
@@ -206,7 +287,7 @@ class DeviceDetail extends Component {
                 </Grid>
                 <Grid item xs={4}>
                   <h4>Manufacturer</h4>{manufacturer}
-                  {manufacturer}
+                  {brand}
                 </Grid>
                 <Grid item xs={4}>
                   <h4>Model</h4>{model}
@@ -261,20 +342,24 @@ class DeviceDetail extends Component {
                   <Select value={selectedReport} 
                           onChange={this.selectReport}
                           input={<Input name="age" id="age-helper" />}>
-                    <MenuItem value={'./fridgeTag.pdf'}>2018 - 10 - 2</MenuItem>
-                    <MenuItem value={'./reportb.pdf'}>2018 - 9 - 24</MenuItem>
-                    <MenuItem value={'./reportc.pdf'}>2018 - 9 - 3</MenuItem>
+
+                    {reports && reports.map(report => <MenuItem value={report}>{`Report - ${report.name}`}</MenuItem>)}
+
                   </Select>
                 </FormControl>
               </Grid>
               <Grid container spacing={24}>
-                <RawData onDocumentLoad={this.onDocumentLoad} file={selectedReport}/>
+                {/*<TabContainer>*/}
+                  {pdfDoc}
+                {/*</TabContainer>*/}
               </Grid>
             </TabContainer>} 
 
-            {value === 3 && <TabContainer>
-              <SimpleAreaChart />
-            </TabContainer>}
+            {value === 3 &&
+
+              <SimpleAreaChart sensorSampleData={sensorSampleData} sensorStateData={alarms} />
+            // </TabContainer>
+            }
 
           </DialogContentStyled>
 
@@ -348,6 +433,7 @@ const HeaderTitle = styled.div`
 `;
 const DialogContentStyled = styled(DialogContent)`
   padding: 0 !important;
+  // overflow: hidden !important;
 `;
 
 DeviceDetail.propTypes = {

@@ -1,14 +1,15 @@
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import { cyan500, 
+import { cyan500,
          cyan700,
-         grey100, 
-         grey300, 
-         grey400, 
+         grey100,
+         grey300,
+         grey400,
          grey500,
          white } from 'material-ui/styles/colors';
 
 // ## Interchange Admin ##
-const GG_CREDS = 'global.good:~F(G3m)KPy??dwx~';
+const GG_CREDS = 'demo:Change is good!';
+// const GG_CREDS = 'global.good:~F(G3m)KPy??dwx~';
 const API_HEADER = {
     'Accept': 'application/json',
     'Authorization': 'Basic ' + btoa(GG_CREDS)
@@ -18,6 +19,7 @@ const HEADER_AUTH = 'Z2xvYmFsLmdvb2Q6fkYoRzNtKUtQeT8/ZHd4fg==';
 const REPORTING_PORT = '9000';
 const AUCMA_PORT = '9003';
 const ADMIN_PORT = '8099';
+const UPLOADED_DEVICES = '8780';
 const OWNER_ID = '5896a5c1-a931-4595-8205-8e7635ca4469';
 const MUI_THEME = getMuiTheme({
   palette: {
@@ -63,5 +65,8 @@ export default class GGConsts {
   }
   static get THEME_COLOR() {
     return THEME_COLOR; 
-  }  
+  }
+  static get UPLOADED_DEVICES() {
+    return UPLOADED_DEVICES;
+  }
 }

@@ -12,20 +12,6 @@ import { Tooltip as Tippy } from 'react-tippy';
 import ProgressBar from "virtual-progress-bar";
 import styled from 'styled-components';
 
-const Box = styled.div`
-	min-width: 5px;
-	min-height: 5px;
-	border: solid 1px white;
-	background-color: ${props => props.color}; 
-	flex: 0 1 calc(100%/30);
-`;
-const BoxesContainer = styled.div`
-	display: flex;
-	background-color: #ededed;
-    padding: 5px;
-    border-radius: 5px;
-`;
-
 const squaresSparkline = arr => {
 	const squares = [];
 	arr.map((temp, i) => {
@@ -119,5 +105,19 @@ const styles = {
 		textAlign: 'center'
 	}
 }
+
+const Box = styled.div`
+	min-width: 5px;
+	min-height: 5px;
+	border: solid 1px white;
+	background-color: ${props => props.color}; 
+	flex: 0 1 calc(100%/30);
+`;
+const BoxesContainer = styled.div`
+	display: flex;
+	background-color: #ededed;
+    padding: 5px;
+    border-radius: 5px;
+`;
 
 export default ManualTableRow; 

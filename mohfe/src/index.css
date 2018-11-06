@@ -63,9 +63,9 @@ body {
 	background-color: rgba(0, 0, 0, 0.02) !important;
 }
 
-[class^="MuiGrid-item-"] {
-	margin-top: 2em !important;
-}
+/*[class^="MuiGrid-item-"] {*/
+	/*margin-top: 2em !important;*/
+/*}*/
 
 .progressBar {
 	display: flex; 
