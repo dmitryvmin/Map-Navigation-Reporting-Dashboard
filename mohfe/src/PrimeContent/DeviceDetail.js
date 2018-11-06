@@ -22,19 +22,13 @@ import Button from '@material-ui/core/Button';
 import { Document, Page } from 'react-pdf';
 import SimpleAreaChart from './../Table/rechart.js';
 import MenuItem from '@material-ui/core/MenuItem';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-import InputLabel from '@material-ui/core/InputLabel';
 import Input from '@material-ui/core/Input';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import Divider from '@material-ui/core/Divider';
 import axios from 'axios';
-
 import Moment from 'moment';
 import { extendMoment } from 'moment-range';
+
 const moment = extendMoment(Moment);
 
 const precisionRound = (number, precision) => {
@@ -83,18 +77,17 @@ const RawData = ({ file, onDocumentLoad}) => (
   </Document>
 )
 
-// TODO: move loadDevices to Redux store
+// TODO: move loadAsync to Redux store
 const config = {
     headers: { 'Authorization': `Basic ${GGConsts.HEADER_AUTH}` }
 }
 
-const loadDevices = async( uri ) => {
+const loadAsync = async( uri ) => {
     try {
 
         let data = await axios.get(uri, config);
 
         if (data) {
-            console.warn('$$$$ DATA $$$$', data);
             return data;
         } else {
             console.warn("@loadDevices sensor data incomplete: ", data);
@@ -117,7 +110,7 @@ class DeviceDetail extends Component {
 
   async componentWillMount() {
     if ( this.props.device ) {
-      const reports = this.loadPDFs(this.props);
+      const reports = await this.loadPDFs(this.props);
       const selectedReport = reports[0];
       const pdf = await this.loadReport(selectedReport.id);
 
@@ -127,24 +120,26 @@ class DeviceDetail extends Component {
 
   loadReport = async (id) => {
       const uri = `${GGConsts.API}:${GGConsts.UPLOADED_DEVICES}/media/digest/${id}`;
-      const pdf = await loadDevices(uri);
+      const pdf = await loadAsync(uri);
       return pdf.data;
   }
 
-  loadPDFs = () => {
+  loadPDFs = async() => {
 
       let reports = [];
 
-      this.props.device.sensorStateData.meta.map(report => {
+      await Promise.all(this.props.device.meta.map(async(report) => {
 
-          let name = moment.utc(report['ended-at']).format("MM-DD-YYYY");
+          const name = moment.utc(report['ended-at']).format("MM-DD-YYYY");
+          const uri = `${GGConsts.API}:${GGConsts.UPLOADED_DEVICES}/media/sensor/${this.props.device.id}?&type=application/pdf`;
+          const digest = await loadAsync(uri);
 
           reports.push({
               name,
-              id: report.digest
+              id: digest.data.meta[0].digest
           });
 
-      });
+      }));
 
       return reports;
   }
@@ -178,49 +173,46 @@ class DeviceDetail extends Component {
             selectedReport,
             pdf } = this.state;
 
-    let { classes, 
-          fullScreen,
-          device: {
-            type = 'uploaded',
-            errors = '-',
-            lastping = '-',
-            lastpingstyle = '-',
-            lasttemp = '-',
-            device = '-',
-            sensor: {
-              holdover = '-',
-              manufacturer = '-',
-              model = '-',
-              temperature: {
-                timestamp,
-                value: temperature_value = '-'
-              } = {},
-              contact: {
-                email = '-',
-                name = '-',
-                phone = '-'
-              } = {},
-              facility: {
-                city = '-',
-                country = '-',
-                district = '-',
-                name: facility_name = '-',
-                region = '-'
-              } = {},
-            } = {},
-            sensorSampleData = {},
-            sensorStateData: {
+        let { classes,
+            fullScreen,
+            device: {
                 brand = '-',
                 id = '-',
                 alarms = [],
                 status = '-',
-            },
-          } = {}
+                uploaded = '-',
+                errors = '-',
+                lastping = '-',
+                lastpingstyle = '-',
+                lasttemp = '-',
+                device = '-',
+                sensors = [],
+                    sensor: {
+                        holdover = '-',
+                        manufacturer = '-',
+                        model = '-',
+                        temperature: {
+                        timestamp,
+                        value: temperature_value = '-'
+                    } = {},
+                    contact: {
+                        email = '-',
+                        name = '-',
+                        phone = '-'
+                    } = {},
+                    facility: {
+                        city = '-',
+                        country = '-',
+                        district = '-',
+                        name: facility_name = '-',
+                        region = '-'
+                    } = {},
+                } = {},
+            } = {}
         } = this.props;
 
     temperature_value = precisionRound(temperature_value, 2) || '-';
     holdover = holdover.constructor === Array ? holdover[0] : precisionRound(holdover, 2);
-    const uploaded = type === 'uploaded' ? true : false;
 
     let pdfDoc = null;
     if (pdf) {
@@ -355,9 +347,9 @@ class DeviceDetail extends Component {
               </Grid>
             </TabContainer>} 
 
-            {value === 3 &&
+            {uploaded && value === 3 &&
 
-              <SimpleAreaChart sensorSampleData={sensorSampleData} sensorStateData={alarms} />
+              <SimpleAreaChart device={this.props.device} />
             // </TabContainer>
             }
 

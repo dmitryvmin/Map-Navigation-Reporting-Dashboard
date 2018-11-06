@@ -82,25 +82,26 @@ class LiveTable extends React.Component {
   }
 
   mapPropsToTableColumns = (data) => {
-    let device_info: any = [];
+    const device_info = [];
 
-    data.forEach((d: any) => {
-      let obj: any = {}
+    data.forEach(d => {
+      const obj = {
+        id : d.id,
+        sensor : d,
+        status : checkStatus(d),
+        errors : this.getErrors(d),
+        brand : `${d.manufacturer} - ${d.model}`,
+        facility : d.facility.name,
+        district : d.facility.district,
+        holdover : (this.state.device_info && this.state.device_info[d.id] && this.state.device_info[d.id].holdover)
+            ? [...this.state.device_info[d.id].holdover, precisionRound(d.holdover, 0)]
+            : [precisionRound(d.holdover, 0)],
 
-      obj.id = d.id; 
-      obj.sensor = d;
-      obj.status = checkStatus(d);
-      obj.errors = this.getErrors(d);
-      obj.brand = `${d.manufacturer} - ${d.model}`;
-      obj.facility = d.facility.name;
-      obj.district = d.facility.district;
-      obj.holdover = (this.state.device_info && this.state.device_info[d.id] && this.state.device_info[d.id].holdover) 
-                   ? [...this.state.device_info[d.id].holdover, precisionRound(d.holdover, 0)] 
-                   : [precisionRound(d.holdover, 0)];
-
-      obj.lastping = this.getLastPing(d);
-      obj.lastpingstyle = timechecker48(d.temperature) ? dstyles.redPing : dstyles.clearPing;
-      obj.lasttemp = parseInt(`${Math.round(parseFloat(d.temperature.value))}`);
+        lastping : this.getLastPing(d),
+        lastpingstyle : timechecker48(d.temperature) ? dstyles.redPing : dstyles.clearPing,
+        lasttemp : parseInt(`${Math.round(parseFloat(d.temperature.value))}`),
+        uploaded: false
+      }
 
       device_info.push(obj);
 

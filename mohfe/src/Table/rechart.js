@@ -6,7 +6,6 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import styled from 'styled-components';
-import data from './fakeData.js';
 import Divider from '@material-ui/core/Divider';
 import Chip from '@material-ui/core/Chip';
 import axios from 'axios';
@@ -28,37 +27,6 @@ const { Area,
     CartesianGrid,
     ReferenceArea,
     Tooltip } = Recharts;
-
-const reports = [
-    {
-        from: 179,
-        to: 149,
-        month: 'October'
-    },   {
-        from: 149,
-        to: 119,
-        month: 'September'
-    },   {
-        from: 119,
-        to: 89,
-        month: 'August'
-    },
-    {
-        from: 89,
-        to: 59,
-        month: 'July'
-    },
-    {
-        from: 59,
-        to: 29,
-        month: 'June'
-    },
-    {
-        from: 29,
-        to: 0,
-        month: 'May'
-    }
-    ];
 
 
 // TODO: Hook up Redux and move appropriate component folders
@@ -155,16 +123,8 @@ class SimpleAreaChart extends Component {
     }
 
     render() {
-
-        const { sensorSampleData, sensorStateData } = this.props;
-
-        // const domainFrom = parseInt(data[this.state.from].name);
-        // const domainTo = parseInt(data[this.state.to].name);
-
-        // const domainFrom = moment.utc().format('YYYYMMDD');
-        // const domainTo = moment.utc().subtract(30, 'day').format('YYYYMMDD');
-
-        const domainFrom = sensorSampleData.data.samples.length - 30;
+        const { sensors, alarms } = this.props.device;
+        const domainFrom = sensors.samples.length - 30;
 
         return (
             <div>
@@ -174,8 +134,8 @@ class SimpleAreaChart extends Component {
                         {/*<div style={{backgroundColor: 'green', width: 4, height: 85}}></div>*/}
                         {/*<div style={{backgroundColor: 'red', width: 4, height: 25}}></div>*/}
                     {/*</div>*/}
-                    {sensorSampleData && <ResponsiveContainer width="100%" height="100%">
-                        <LineChart data={sensorSampleData.data.samples}
+                    {sensors && <ResponsiveContainer width="100%" height="100%">
+                        <LineChart data={sensors.samples}
                                    margin={{top: 0, right: 0, left: 0, bottom: 0}}>
                             <CartesianGrid strokeDasharray="3 3"/>
                             <XAxis dataKey="ended-at" tick={<CustomizedXTick/>} >
@@ -183,8 +143,7 @@ class SimpleAreaChart extends Component {
                             </XAxis>
                             <YAxis width={70}
                                    label={{ value: "Temperature C°", angle: -90, position: "insideMiddleLeft" }}/>
-                            {/*<Tooltip payload={[{name: '3', temperature: 6}]}*/}
-                                     {/*active={true}/>*/}
+                            <Tooltip active={true}/>
                             <Line type="monotone"
                                   dataKey="mean-value"
                                   stroke="#8884d8"
@@ -225,7 +184,7 @@ class SimpleAreaChart extends Component {
                 {/*<div style={{height: '45vh', overflowY: 'scroll', marginTop: '5em'}}>*/}
                     {/*<h3 style={{marginLeft: '2em', marginTop: '3em'}}>Error History</h3>*/}
 
-                    <Grid ref={(scroll) => { this.scroll = scroll }} style={{offsetTop: this.state.offsetTop}}>
+                    <Grid ref={(scroll) => { this.scroll = scroll }} style={{marginTop: '2em', offsetTop: this.state.offsetTop}}>
                         <List component="nav">
 
                             <React.Fragment>
@@ -234,13 +193,16 @@ class SimpleAreaChart extends Component {
                                     {/*<h4 style={{marginLeft: '2em'}}>{reportTitle}</h4>*/}
                                     {/*<Divider light />*/}
                                 {/*</React.Fragment>}*/}
-                                {sensorStateData && sensorStateData.map((alarm, index) => (
+                                {alarms && alarms.map((alarm, index) => (
                                         <ListItem button
                                                   key={`list-item-${alarm['group-id']}-${index}`}
                                                   onMouseEnter={this.onMouseEnterHandler}>
                                             <Dot style={{backgroundColor: 'red'}}/>
-                                            <p>{`Error Level ${alarm.level} - ${alarm.code}`}</p>
-                                            <p>{`${alarm.info}`}</p>
+                                            <div>
+                                                <p>{`${moment(alarm['ended-at']).format('YYYY:MM:DD')}`}</p>
+                                                <p>{`Error Level ${alarm.level} - ${alarm.code}`}</p>
+                                                <p>{`${alarm.info}`}</p>
+                                            </div>
                                             {/*<ListItemText primary={`Error ${i}`}/>*/}
                                         </ListItem>
                                     )

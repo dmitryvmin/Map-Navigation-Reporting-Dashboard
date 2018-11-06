@@ -46,7 +46,6 @@ const loadDevices = async( uri ) => {
         let data = await axios.get(uri, config);
 
         if (data) {
-            console.warn('$$$$ DATA $$$$', data);
             return data;
         } else {
             console.warn("@loadDevices sensor data incomplete: ", data);
@@ -69,12 +68,18 @@ const formatData = async() => {
 
   if (data) {
 
-      const formattedData = data.map(device => {
+      const formattedData = await Promise.all(data.map( async(device) => {
 
-        // let range = moment.range(device.sample['began-at'], device.sample['ended-at']);
+        const yearAgo = moment.utc().subtract(1, 'year').format();
+        const uri = `${GGConsts.API}:${GGConsts.UPLOADED_DEVICES}/sensor/${device.sensor.manufacturer}:${device.sensor.id}/sample?start=${yearAgo}`;
+        const sensors = await loadDevices(uri);
+
+        const getLTDSnapshot = sensors.data.samples.slice(-30).reduce((a, c) => {
+                a.push(c['mean-value']);
+                return a;
+        }, []);
 
         device = {
-            type: device.sample.uploaded,
             brand: device.sensor.manufacturer,
             id: '- id -',
             district: '- district -',
@@ -83,8 +88,9 @@ const formatData = async() => {
             holdover: [0],
             id: device.sample['sensor-id'],
             lastping: "4 days, 6 hours ago",
-            lasttemp: [0, 4, 5, 0, 4, 6, 7, 8, 1, 2, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 5, 0, 6, 9, 8, 8, 9, 4, 4],
+            lasttemp: getLTDSnapshot,
             status: device.status,
+            uploaded: device.sample['uploaded'],
             sensor: {
                 contact: {
                     email: ' - ',
@@ -99,17 +105,18 @@ const formatData = async() => {
                     region: ' - '
                 }
             },
+            sensors: sensors.data,
             errorcount: 22,
             alarms: device.alarms,
             meta: device.meta,
-            uploaddate: '8 - 10 - 2018'
+            uploaddate: ' - '
         }
 
         return device;
-      });
+
+      }));
 
       return formattedData;
-
     }
 }
 
@@ -145,16 +152,7 @@ class LiveTable extends React.Component {
   };
 
   handleRowClick = async(event, device) => {
-
-    const yearAgo = moment.utc().subtract(1, 'year').format();
-    const uri = `${GGConsts.API}:${GGConsts.UPLOADED_DEVICES}/sensor/${device.id}/sample?start=${yearAgo}`;
-    const sensors = await loadDevices(uri);
-
-    // sensors && sensors.data.samples.forEach(day => {
-    //   day['ended-at'] = moment(day['ended-at']).format('YYYYMMDD');
-    // });
-
-    this.setState({isDetailOpen: true, selectedDevice: { sensorSampleData: sensors, sensorStateData: device } });
+    this.setState({isDetailOpen: true, selectedDevice: device });
   }
 
   handleDetailOpen = () => {
