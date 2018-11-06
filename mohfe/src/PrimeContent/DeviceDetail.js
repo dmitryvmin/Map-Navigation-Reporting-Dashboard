@@ -187,7 +187,6 @@ class DeviceDetail extends Component {
             lastpingstyle = '-',
             lasttemp = '-',
             device = '-',
-            status = '-',
             sensor: {
               holdover = '-',
               manufacturer = '-',
@@ -214,6 +213,7 @@ class DeviceDetail extends Component {
                 brand = '-',
                 id = '-',
                 alarms = [],
+                status = '-',
             },
           } = {}
         } = this.props;
@@ -227,7 +227,7 @@ class DeviceDetail extends Component {
         if (pdf.meta.encoded === true) {
             pdfDoc = <RawData onDocumentLoad={this.onDocumentLoad} file={`data:application/pdf;base64,${pdf.data}`} />
         } else {
-            pdfDoc = <pre>Not Encoded: {pdf.data}</pre>;
+            pdfDoc = <pre>{pdf.data}</pre>;
         }
     }
 
@@ -242,7 +242,7 @@ class DeviceDetail extends Component {
           <DialogTitle id="responsive-dialog-title"
                        disableTypography={true}
                        style={styles.modalTitle} >
-            {modalHeader(status, `${manufacturer}  - ${model}`)}
+            {modalHeader(status, `${brand}  - ${id}`)}
           </DialogTitle>
           <DialogContentStyled>
             

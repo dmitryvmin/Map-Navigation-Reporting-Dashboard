@@ -80,7 +80,7 @@ const formatData = async() => {
             id: device.sample['sensor-id'],
             lastping: "4 days, 6 hours ago",
             lasttemp: [0, 4, 5, 0, 4, 6, 7, 8, 1, 2, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 5, 0, 6, 9, 8, 8, 9, 4, 4],
-            status: 'red',
+            status: device.status,
             sensor: {
                 contact: {
                     email: ' - ',
@@ -144,9 +144,13 @@ class LiveTable extends React.Component {
 
     const yearAgo = moment.utc().subtract(1, 'year').format();
     const uri = `${GGConsts.API}:${GGConsts.UPLOADED_DEVICES}/sensor/${device.id}/sample?start=${yearAgo}`;
-    const data = await loadDevices(uri);
+    const sensors = await loadDevices(uri);
 
-    this.setState({isDetailOpen: true, selectedDevice: { sensorSampleData: data.data, sensorStateData: device } });
+    // sensors && sensors.data.samples.forEach(day => {
+    //   day['ended-at'] = moment(day['ended-at']).format('YYYYMMDD');
+    // });
+
+    this.setState({isDetailOpen: true, selectedDevice: { sensorSampleData: sensors, sensorStateData: device } });
   }
 
   handleDetailOpen = () => {

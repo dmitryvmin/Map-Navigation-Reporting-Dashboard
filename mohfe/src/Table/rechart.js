@@ -156,10 +156,15 @@ class SimpleAreaChart extends Component {
 
     render() {
 
-        const domainFrom = parseInt(data[this.state.from].name);
-        const domainTo = parseInt(data[this.state.to].name);
+        const { sensorSampleData, sensorStateData } = this.props;
 
-        let { sensorSampleData, sensorStateData } = this.props;
+        // const domainFrom = parseInt(data[this.state.from].name);
+        // const domainTo = parseInt(data[this.state.to].name);
+
+        // const domainFrom = moment.utc().format('YYYYMMDD');
+        // const domainTo = moment.utc().subtract(30, 'day').format('YYYYMMDD');
+
+        const domainFrom = sensorSampleData.data.samples.length - 30;
 
         return (
             <div>
@@ -170,7 +175,7 @@ class SimpleAreaChart extends Component {
                         {/*<div style={{backgroundColor: 'red', width: 4, height: 25}}></div>*/}
                     {/*</div>*/}
                     {sensorSampleData && <ResponsiveContainer width="100%" height="100%">
-                        <LineChart data={sensorSampleData.samples}
+                        <LineChart data={sensorSampleData.data.samples}
                                    margin={{top: 0, right: 0, left: 0, bottom: 0}}>
                             <CartesianGrid strokeDasharray="3 3"/>
                             <XAxis dataKey="ended-at" tick={<CustomizedXTick/>} >
@@ -185,11 +190,13 @@ class SimpleAreaChart extends Component {
                                   stroke="#8884d8"
                                   dot={<CustomizedDot r={25} />}/>
 
-                            {/*<Brush startIndex={domainFrom}*/}
+                            {/*<Brush y={220}*/}
+                                   {/*startIndex={domainFrom}*/}
                                    {/*endIndex={domainTo}*/}
-                                   {/*y={220}*/}
                                    {/*onChange={this.handleBrushChange}>*/}
-                            <Brush onChange={this.handleBrushChange}>
+                            <Brush y={220}
+                                   startIndex={domainFrom}
+                                   onChange={this.handleBrushChange}>
                                 <LineChart >
                                     {/*{reports && reports.map((report, i, arr) =>*/}
                                         {/*<ReferenceArea x1={report.from}*/}
@@ -202,7 +209,8 @@ class SimpleAreaChart extends Component {
                                     {/*)}*/}
                                     <YAxis hide
                                            domain={['auto', 'auto']}/>
-                                    <XAxis dataKey="name"/>
+                                    {/*<XAxis dataKey="ended-at"/>*/}
+
                                     <Line dataKey="mean-value"
                                           stroke="#8884d8"
                                           dot={<CustomizedDot r={12} />}/>
