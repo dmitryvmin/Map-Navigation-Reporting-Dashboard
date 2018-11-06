@@ -13,6 +13,7 @@ import ProgressBar from "virtual-progress-bar";
 import styled from 'styled-components';
 
 const squaresSparkline = arr => {
+
 	const squares = [];
 	arr.map((temp, i) => {
 		let color;
@@ -69,8 +70,8 @@ const ManualTableRow = props => {
 	         {/*: statusDisplay(d.status)}*/}
 	      {/*</TableCell>*/}
           <TableCell style={styles.cell}>
-	        <Tooltip title={d.errorcount} placement="bottom-start" enterDelay={300}>
-	          <div>{d.errorcount}</div>
+	        <Tooltip title={d.alarms.length} placement="bottom-start" enterDelay={300}>
+	          <div>{d.alarms.length}</div>
 	        </Tooltip>
 	      </TableCell>
 	      <TableCell style={styles.cell}>
@@ -82,14 +83,16 @@ const ManualTableRow = props => {
 	        </Tooltip>
 	      </TableCell>
 	      <TableCell style={styles.cell}>
-	        <Tooltip title={d.facility} placement="bottom-start" enterDelay={300}>
-	          <div>{d.facility}</div>
-	        </Tooltip>
+	        {/*<Tooltip title={d.facility} placement="bottom-start" enterDelay={300}>*/}
+	          {/*<div>{d.facility}</div>*/}
+	        {/*</Tooltip>*/}
+	        <div> - </div>
 	      </TableCell>
 	      <TableCell style={styles.cell}>
-	        <Tooltip title={d.lastping} placement="bottom-start" enterDelay={300}>
-	          <div>{d.lastping}</div>
-	        </Tooltip>
+		    <div> - </div>
+	        {/*<Tooltip title={d.lastping} placement="bottom-start" enterDelay={300}>*/}
+	          {/*<div>{d.lastping}</div>*/}
+	        {/*</Tooltip>*/}
 	      </TableCell>
           <TableCell style={styles.cell}>
             <Tooltip title={d.uploaddate} placement="bottom-start" enterDelay={300}>

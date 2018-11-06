@@ -63,6 +63,10 @@ const formatData = async() => {
   const result = await loadDevices(uri);
   const data = result && result.data && result.data.states;
 
+    // const yearAgo = moment.utc().subtract(1, 'year').format();
+    // const uri = `${GGConsts.API}:${GGConsts.UPLOADED_DEVICES}/sensor/${device.id}/sample?start=${yearAgo}`;
+    // const sensors = await loadDevices(uri);
+
   if (data) {
 
       const formattedData = data.map(device => {
