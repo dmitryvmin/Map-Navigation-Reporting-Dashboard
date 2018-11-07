@@ -146,7 +146,7 @@ class SimpleAreaChart extends Component {
             if (endDate - startDate > 1) {
                 var from = '';
                 var to = '';
-                var name = `${moment(report['began-at']).format('MM:DD')} - ${moment(report['ended-at']).format('MM:DD')}`;
+                var name = `${moment(report['ended-at']).format('MMM Do')} Report`;
 
                 timeline.forEach((day, i) => {
 
@@ -213,7 +213,7 @@ class SimpleAreaChart extends Component {
                                                        x2={report.to}
                                                        // isFront={true}
                                                        fill={(i%2 === 0) ? '#a0a0a0' : '#a0a0a0'}>
-                                            <Label value={`Report ${report.name}`}
+                                            <Label value={report.name}
                                                    offset={-55}
                                                    position="bottom" />
                                         </ReferenceArea>
