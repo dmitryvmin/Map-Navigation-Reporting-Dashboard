@@ -97,6 +97,20 @@ body {
 	font-size: 12px;
 	font-weight: 500;
 }
+.recharts-layer.recharts-cartesian-axis-tick {
+	font-size: 12px;
+}
 .recharts-brush-texts {
 	display: none;
+}
+.custom-tooltip {
+	background-color: white;
+	padding: 5px 10px;
+	box-shadow: 0 3px 5px #ddd;
+}
+.recharts-text.recharts-label {
+	font-weight: 600;
+}
+.recharts-rectangle.recharts-reference-area-rect {
+	fill-opacity: 0.33;
 }

@@ -19,6 +19,7 @@ const { Area,
     AreaChart,
     Brush,
     ResponsiveContainer,
+    ComposedChart,
     LineChart,
     Line,
     XAxis,
@@ -28,35 +29,8 @@ const { Area,
     ReferenceArea,
     Tooltip } = Recharts;
 
-
-// TODO: Hook up Redux and move appropriate component folders
-
-const loadDevices = async() => {
-    // const uri = `${GGConsts.API}:${GGConsts.REPORTING_PORT}/sensor/state`;
-    // const uri = 'http://20.36.19.106:8780/sensor/state/uploaded';
-    //
-    // const config = {
-    //     headers: { 'Authorization': `Basic ${GGConsts.HEADER_AUTH}` }
-    // }
-    //
-    // try {
-    //
-    //     let data = await axios.get(uri, config);
-    //
-    //     if (data && data.data && data.data.sensors) {
-    //         return data.data.sensors;
-    //     } else {
-    //         console.warn("@loadDevices sensor data incomplete: ", data);
-    //     }
-    //
-    // } catch (err) {
-    //     console.warn("@loadDevices error: ", err);
-    // }
-}
-
-
 const CustomizedDot = ({cx, cy, stroke, payload, value, r}) => {
-    if (value < 2 || value > 8) {
+    if ((value < 2 && value !== null) || (value > 8 && value !== null)) {
       return (
         <svg x={cx - 15} y={cy - 15} width={150} height={150} fill="red" viewBox="0 0 1024 1024">
           <path d={`M 100, 100
@@ -67,6 +41,23 @@ const CustomizedDot = ({cx, cy, stroke, payload, value, r}) => {
       );
     } else {
       return null;
+    }
+}
+
+class CustomTooltip extends Component {
+    render() {
+        const { active } = this.props;
+        if (active) {
+            const { payload, label } = this.props;
+            return (
+                <div className="custom-tooltip">
+                    <p className="label">{moment(label).format('MMM Do, YYYY')}</p>
+                    <p className="intro">{payload.length ? `${payload[0].dataKey} : ${Math.round(payload[0].value)} C°` : 'no uploaded data'}</p>
+                </div>
+            );
+        }
+
+        return null;
     }
 }
 
@@ -86,13 +77,38 @@ class CustomizedXTick extends Component {
     render () {
         const {x, y, stroke, payload} = this.props;
 
-        let timestamp = moment(payload.value).fromNow();
-
+        let timestamp = moment().diff(payload.value, 'days');
         return (
             <g transform={`translate(${x},${y})`}>
-                <text x={0} y={0} dy={16} textAnchor="end" fill="#666">{timestamp}</text>
+                <text x={0} y={0} dy={16} textAnchor="middle" fill="#666">{timestamp}</text>
             </g>
         );
+    }
+}
+
+class CustomizedBrushTick extends Component {
+    render () {
+        const {x, y, stroke, payload} = this.props;
+
+        let month = null;
+        if (payload.value % 30 === 0) {
+            month = payload.value / 30;
+        }
+
+        if (month) {
+            // const label = moment(payload.value).format('MMMM');
+            let now = ( parseInt(moment().format('MM')) + month ) <= 12
+                ? parseInt(moment().format('MM')) + month
+                : parseInt(moment().format('MM')) + month - 12;
+
+            return (
+                <g transform={`translate(${x},${y})`}>
+                    <text x={0} y={0} dy={10} textAnchor="end">{moment(now, 'MM').format('MMMM')}</text>
+                </g>
+            );
+        } else {
+            return null;
+        }
     }
 }
 
@@ -101,10 +117,6 @@ class SimpleAreaChart extends Component {
         from: 30,
         to: 1,
         offsetTop: 0
-    }
-
-    async componentDidMount() {
-        const uploadedDevices = loadDevices();
     }
 
     handleBrushChange = ({ startIndex, endIndex }) => {
@@ -123,8 +135,35 @@ class SimpleAreaChart extends Component {
     }
 
     render() {
-        const { sensors, alarms } = this.props.device;
-        const domainFrom = sensors.samples.length - 30;
+        const { timeline, alarms } = this.props.device;
+        const domainFrom = timeline.length - 30;
+
+        var refArea = this.props.device.meta.map(report => {
+
+            var startDate = moment(report['began-at']).format('YYYYMMDD');
+            var endDate = moment(report['ended-at']).format('YYYYMMDD');
+
+            if (endDate - startDate > 1) {
+                var from = '';
+                var to = '';
+                var name = `${moment(report['began-at']).format('MM:DD')} - ${moment(report['ended-at']).format('MM:DD')}`;
+
+                timeline.forEach((day, i) => {
+
+                    if (day['ended-at'] === startDate) {
+                        from = i;
+                    }
+                    if (day['ended-at'] === endDate) {
+                        to = i;
+                    }
+
+                });
+
+                return {from, to, name}
+            } else {
+                return false;
+            }
+        })
 
         return (
             <div>
@@ -134,49 +173,56 @@ class SimpleAreaChart extends Component {
                         {/*<div style={{backgroundColor: 'green', width: 4, height: 85}}></div>*/}
                         {/*<div style={{backgroundColor: 'red', width: 4, height: 25}}></div>*/}
                     {/*</div>*/}
-                    {sensors && <ResponsiveContainer width="100%" height="100%">
-                        <LineChart data={sensors.samples}
-                                   margin={{top: 0, right: 0, left: 0, bottom: 0}}>
-                            <CartesianGrid strokeDasharray="3 3"/>
-                            <XAxis dataKey="ended-at" tick={<CustomizedXTick/>} >
-                                {/*<Label value="Days Ago" offset={-10} position="insideBottom"/>*/}
+                    {timeline && <ResponsiveContainer width="100%" height="100%">
+                        <ComposedChart data={timeline}
+                                       margin={{top: 0, right: 0, left: 0, bottom: 0}}>
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="ended-at"
+                                   tick={<CustomizedXTick/>}>
+                                <Label value="Days Ago"
+                                       offset={-15}
+                                       position="insideBottom" />
                             </XAxis>
                             <YAxis width={70}
                                    label={{ value: "Temperature C°", angle: -90, position: "insideMiddleLeft" }}/>
-                            <Tooltip active={true}/>
+                            <Tooltip content={<CustomTooltip/>} />
                             <Line type="monotone"
                                   dataKey="mean-value"
                                   stroke="#8884d8"
-                                  dot={<CustomizedDot r={25} />}/>
+                                  dot={<CustomizedDot r={25} />} />
 
-                            {/*<Brush y={220}*/}
-                                   {/*startIndex={domainFrom}*/}
-                                   {/*endIndex={domainTo}*/}
-                                   {/*onChange={this.handleBrushChange}>*/}
-                            <Brush y={220}
+                            <Brush y={235}
                                    startIndex={domainFrom}
-                                   onChange={this.handleBrushChange}>
+                                   onChange={this.handleBrushChange}
+                                   //fill="#f8f8f8"
+                                    >
                                 <LineChart >
-                                    {/*{reports && reports.map((report, i, arr) =>*/}
-                                        {/*<ReferenceArea x1={report.from}*/}
-                                                       {/*x2={report.to}*/}
-                                                       {/*fill={(i%2 === 0) ? '#fff' : '#efefef'}>*/}
-                                            {/*<Label value={`${report.month} Report`}*/}
-                                                   {/*offset={10}*/}
-                                                   {/*position="bottom" />*/}
-                                        {/*</ReferenceArea>*/}
-                                    {/*)}*/}
                                     <YAxis hide
-                                           domain={['auto', 'auto']}/>
-                                    {/*<XAxis dataKey="ended-at"/>*/}
+                                           domain={['auto', 'auto']} />
+                                    <XAxis tick={<CustomizedBrushTick />}
+                                           height={1}
+                                           tickLine={false}
+                                           interval={0} />
 
                                     <Line dataKey="mean-value"
                                           stroke="#8884d8"
-                                          dot={<CustomizedDot r={12} />}/>
+                                          dot={<CustomizedDot r={12} />} />
+
+                                    {refArea && refArea.map((report, i, arr) =>
+                                        <ReferenceArea x1={report.from}
+                                                       x2={report.to}
+                                                       // isFront={true}
+                                                       fill={(i%2 === 0) ? '#a0a0a0' : '#a0a0a0'}>
+                                            <Label value={`Report ${report.name}`}
+                                                   offset={-55}
+                                                   position="bottom" />
+                                        </ReferenceArea>
+                                    )}
+
                                 </LineChart>
                             </Brush>
 
-                        </LineChart>
+                        </ComposedChart>
                     </ResponsiveContainer>}
                 </div>
 
@@ -184,7 +230,7 @@ class SimpleAreaChart extends Component {
                 {/*<div style={{height: '45vh', overflowY: 'scroll', marginTop: '5em'}}>*/}
                     {/*<h3 style={{marginLeft: '2em', marginTop: '3em'}}>Error History</h3>*/}
 
-                    <Grid ref={(scroll) => { this.scroll = scroll }} style={{marginTop: '2em', offsetTop: this.state.offsetTop}}>
+                    <Grid ref={(scroll) => { this.scroll = scroll }} style={{marginTop: '4em', offsetTop: this.state.offsetTop}}>
                         <List component="nav">
 
                             <React.Fragment>
@@ -199,9 +245,9 @@ class SimpleAreaChart extends Component {
                                                   onMouseEnter={this.onMouseEnterHandler}>
                                             <Dot style={{backgroundColor: 'red'}}/>
                                             <div>
-                                                <p>{`${moment(alarm['ended-at']).format('YYYY:MM:DD')}`}</p>
-                                                <p>{`Error Level ${alarm.level} - ${alarm.code}`}</p>
-                                                <p>{`${alarm.info}`}</p>
+                                                <p style={{fontSize: '12px', fontWeight: '600'}}>{`${moment(alarm['ended-at']).format('MMM Do, YYYY')}`}</p>
+                                                <p style={{fontSize: '12px'}}>{`Alarm Level ${alarm.level} - ${alarm.code}`}</p>
+                                                <p style={{fontSize: '12px'}}>{`${alarm.info}`}</p>
                                             </div>
                                             {/*<ListItemText primary={`Error ${i}`}/>*/}
                                         </ListItem>

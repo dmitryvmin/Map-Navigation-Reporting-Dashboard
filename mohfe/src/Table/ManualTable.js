@@ -26,6 +26,7 @@ import ManualTableRow from './ManualTableRow';
 import axios from 'axios';
 import Moment from 'moment';
 import { extendMoment } from 'moment-range';
+import _ from 'lodash';
 
 import { desc, 
          stableSort, 
@@ -56,9 +57,52 @@ const loadDevices = async( uri ) => {
     }
 }
 
+const createTimeline = async(device) => {
+
+    const now = moment.utc().format();
+    const then = moment.utc().subtract(1, 'year').format();
+    const range = moment.range(then, now);
+
+    for (let day of range.by('day')) {
+        day.format('MMM Do YY');
+    }
+
+    const days = Array.from(range.by('day'));
+
+    const timeline = days.map(day => {
+
+        return {
+            "sensor-id": device.id,
+            "group-id": null,
+            "ended-at": day.format('YYYYMMDD'),
+            "mean-value": null,
+            "uploaded": true
+        }
+
+    })
+
+    device.sensors.samples.forEach(sample => {
+        sample['ended-at'] = moment(sample['ended-at']).format('YYYYMMDD');
+    });
+
+    // merge sensor data onto the timeline
+    timeline.forEach((day, i) => {
+        device.sensors.samples.forEach(sample => {
+            if (sample['ended-at'] === day['ended-at']) {
+                timeline[i] = sample;
+            }
+        })
+    })
+
+    // TODO: merge alarm data onto the timeline
+
+    timeline.sort((a,b)=> b['ended-at'] - a['ended-at']).reverse();
+
+    return timeline;
+}
+
 const formatData = async() => {
   const uri = `${GGConsts.API}:${GGConsts.UPLOADED_DEVICES}/sensor/state/uploaded`;
-
   const result = await loadDevices(uri);
   const data = result && result.data && result.data.states;
 
@@ -80,10 +124,10 @@ const formatData = async() => {
         }, []);
 
         device = {
-            brand: device.sensor.manufacturer,
+            brand: 'Aucma',
+            // brand: device.sensor.manufacturer,
             id: '- id -',
             district: '- district -',
-            errors: "",
             facility: "Facility O",
             holdover: [0],
             id: device.sample['sensor-id'],
@@ -111,6 +155,10 @@ const formatData = async() => {
             meta: device.meta,
             uploaddate: ' - '
         }
+
+        const timeline = await createTimeline(device);
+
+        device.timeline = timeline;
 
         return device;
 

@@ -189,7 +189,7 @@ class DeviceDetail extends Component {
                 sensors = [],
                     sensor: {
                         holdover = '-',
-                        manufacturer = '-',
+                        manufacturer,
                         model = '-',
                         temperature: {
                         timestamp,
