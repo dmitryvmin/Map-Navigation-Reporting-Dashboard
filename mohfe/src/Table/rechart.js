@@ -17,6 +17,7 @@ const moment = extendMoment(Moment);
 
 const { Area,
     AreaChart,
+    Curve,
     Brush,
     ResponsiveContainer,
     ComposedChart,
@@ -186,7 +187,7 @@ class SimpleAreaChart extends Component {
                             <YAxis width={70}
                                    label={{ value: "Temperature C°", angle: -90, position: "insideMiddleLeft" }}/>
                             <Tooltip content={<CustomTooltip/>} />
-                            <Line type="monotone"
+                            <Line type="step"
                                   dataKey="mean-value"
                                   stroke="#8884d8"
                                   dot={<CustomizedDot r={25} />} />
@@ -206,6 +207,7 @@ class SimpleAreaChart extends Component {
 
                                     <Line dataKey="mean-value"
                                           stroke="#8884d8"
+                                          type="step"
                                           dot={<CustomizedDot r={12} />} />
 
                                     {refArea && refArea.map((report, i, arr) =>
