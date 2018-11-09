@@ -177,7 +177,6 @@ class SimpleAreaChart extends Component {
                     {timeline && <ResponsiveContainer width="100%" height="100%">
                         <ComposedChart data={timeline}
                                        margin={{top: 0, right: 0, left: 0, bottom: 0}}>
-                            <CartesianGrid strokeDasharray="3 3" />
                             <XAxis dataKey="ended-at"
                                    tick={<CustomizedXTick/>}>
                                 <Label value="Days Ago"
@@ -186,17 +185,18 @@ class SimpleAreaChart extends Component {
                             </XAxis>
                             <YAxis width={70}
                                    label={{ value: "Temperature C°", angle: -90, position: "insideMiddleLeft" }}/>
+
+                            <CartesianGrid strokeDasharray="3 3" />
                             <Tooltip content={<CustomTooltip/>} />
                             <Line type="step"
                                   dataKey="mean-value"
                                   stroke="#8884d8"
+                                  connectNulls={true}
                                   dot={<CustomizedDot r={25} />} />
 
                             <Brush y={235}
                                    startIndex={domainFrom}
-                                   onChange={this.handleBrushChange}
-                                   //fill="#f8f8f8"
-                                    >
+                                   onChange={this.handleBrushChange}>
                                 <LineChart >
                                     <YAxis hide
                                            domain={['auto', 'auto']} />
@@ -223,6 +223,10 @@ class SimpleAreaChart extends Component {
 
                                 </LineChart>
                             </Brush>
+
+                            <ReferenceArea y1={2}
+                                           y2={8}
+                                           fill="rgba(0, 128, 0, 0.2)" />
 
                         </ComposedChart>
                     </ResponsiveContainer>}
