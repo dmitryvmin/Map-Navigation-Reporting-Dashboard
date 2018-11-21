@@ -115,7 +115,7 @@ const formatData = async() => {
       const formattedData = await Promise.all(data.map( async(device) => {
 
         const yearAgo = moment.utc().subtract(1, 'year').format();
-        const uri = `${GGConsts.API}:${GGConsts.UPLOADED_DEVICES}/sensor/${device.sensor.manufacturer}:${device.sensor.id}/sample?start=${yearAgo}`;
+        const uri = `${GGConsts.API}:${GGConsts.UPLOADED_DEVICES}/sensor/${device.sensor.id}/sample?start=${yearAgo}`;
         const sensors = await loadDevices(uri);
 
         const getLTDSnapshot = sensors.data.samples.slice(-30).reduce((a, c) => {
