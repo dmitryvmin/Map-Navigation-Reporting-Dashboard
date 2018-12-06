@@ -4,22 +4,13 @@ import MAP_STYLE from './style.json';
 
 const defaultMapStyle = fromJS(MAP_STYLE);
 
-const categories = ['countries', 'states', 'ngas'];
-
-
-
-// countries style
-const country_style = 'dmitrymin.1tmjkbs7';
-
-
-
-
+const categories = ['countries', 'states'];
 
 // Layer id patterns by category
 const layerSelector = {
     countries: /countries/,
     states: /states/,
-    ngas: /ngas/,
+    // ngas: /ngas/,
 };
 
 // Layer color class by type

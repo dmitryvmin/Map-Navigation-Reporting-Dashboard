@@ -11,20 +11,16 @@ import { getCountryObjByName } from './../../Utils';
 
 // rootSaga
 export function* watcherSaga() {
-    // yield [
        yield takeLatest("API_CALL_REQUEST", workerSaga);
        yield takeLatest(GGConsts.NAV_COUNTRY_SELECTED, getGeo, GGConsts.STATES);
        yield takeLatest(GGConsts.NAV_STATE_SELECTED, getGeo, GGConsts.LGAS);
        yield takeLatest(GGConsts.NAV_LGA_SELECTED, getGeo, GGConsts.FACILITIES);
-    // ]
 }
 
 // get Geo Data
 export function* geoDataSaga() {
     yield call(getGeo, GGConsts.COUNTRIES);
     yield call(getGeo, GGConsts.STATES);
-    // yield call(getGeo, 'LGAs');
-    // yield call(getGeo, 'Facilities');
 
     // select Nigeria
     const state = yield select();
@@ -60,18 +56,13 @@ function* getGeo(type) {
 
                 const countries = state.dataReducer.COUNTRIES_MAP;
                 const countryObj = getCountryObjByName(countries, country_selected.name);
-                // TODO: use this packages instead i18nIsoCountries
                 const selected_country = countryObj.alpha2Code.toLowerCase();
 
-                // TODO: find a better API or save country data locally
-                // if (selected_country === 'ng') {
-                //     const api = 'http://locationsng-api.herokuapp.com/api/v1/states';
-                //     yield updateMap(GGConsts.STATES_MAP, api, 'data');
-                //
-                // } else {
-                    const uri = `${'https://cors-anywhere.herokuapp.com/'}https://countryrestapi.herokuapp.com/${selected_country}`;
-                    const data = yield updateMap(GGConsts.STATES_MAP, uri, 'data.states');
+                // TODO: save Nigeria states locally or find a better API
+                const uri = `${'https://cors-anywhere.herokuapp.com/'}https://countryrestapi.herokuapp.com/${selected_country}`;
+                const data = yield getMapData(GGConsts.STATES_MAP, uri, 'data.states');
 
+                // TODO: REFACTOR
                 const results = yield geocodeByAddress(country_selected.name);
                 const coordinates = yield getLatLng(_.first(results));
 
@@ -88,7 +79,6 @@ function* getGeo(type) {
                 yield put({ type: GGConsts.STATES_MAP, data });
                 yield put({ type: GGConsts.NAV_STATE_SELECTED, state_selected: {name: 'all'} });
 
-                // }
             }
 
             return;
@@ -98,16 +88,43 @@ function* getGeo(type) {
             if (state_selected.name === 'all') {
                 yield put({ type: GGConsts.NAV_LGA_SELECTED, lga_selected: {name: 'all'} });
 
+                // // TODO: REFACTOR
+                // if (country_selected.name !== 'all') {
+                //
+                //     const results = yield geocodeByAddress(country_selected.name);
+                //     const coordinates = yield getLatLng(_.first(results));
+                //
+                //     const viewport = {
+                //         longitude: Math.abs(coordinates.lng),
+                //         latitude: Math.abs(coordinates.lat),
+                //         zoom: 5
+                //     };
+                //
+                //     yield put({type: 'MAP_VIEWPORT', viewport});
+                // }
+
             } else {
 
-                // need an API to retrieve LGAs for all countries...
+                // NOTE: Eventually will need an API to retrieve LGAs for all countries, this is Nigeria specfic
                 if (country_selected.name === 'Nigeria') {
 
                     const stateFormatted = state_selected.replace(/\State+[.!?]?$/, '').trim().toLowerCase();
                     const uri = `http://locationsng-api.herokuapp.com/api/v1/states/${stateFormatted}/details`
 
-                    const data = yield updateMap(GGConsts.LGAS_MAP, uri, 'data.lgas');
+                    const data = yield getMapData(GGConsts.LGAS_MAP, uri, 'data.lgas');
                     yield put({ type: GGConsts.LGAS_MAP, data });
+
+                    // TODO: REFACTOR
+                    const results = yield geocodeByAddress(state_selected);
+                    const coordinates = yield getLatLng(_.first(results));
+
+                    const viewport = {
+                        longitude: Math.abs(coordinates.lng),
+                        latitude: Math.abs(coordinates.lat),
+                        zoom: 7
+                    };
+
+                    yield put({ type: 'MAP_VIEWPORT', viewport });
                 }
             }
 
@@ -115,18 +132,22 @@ function* getGeo(type) {
 
         case GGConsts.FACILITIES:
 
-            // if (lga_selected === 'all') {
+            if (lga_selected === 'all') {
                 const facilities = ['facility1', 'facility2', 'facility3'];
                 addAllOption(facilities);
                 yield put({ type: GGConsts.FACILITIES_MAP, data: facilities });
-            // } else {
+            } else {
                 // Reduce sensors  map to find any Facilities that fall within the selected LGA
-            // }
+
+
+
+            }
 
             return;
     }
 }
 
+// add an 'all' option to the hash for the dropdown
 const addAllOption = (data) => {
     const option = _.first(data);
 
@@ -139,11 +160,11 @@ const addAllOption = (data) => {
     return data;
 }
 
-// TODO: better to call saga put here or in getGeo caller saga?
-function* updateMap(type, resource, key) {
+// return Map for the store
+function* getMapData(type, resource, key) {
     const response = yield fetchData(resource);
     const data = _.get(response, key);
-    debugger;
+
     if (data) {
         addAllOption(data);
         return data;
@@ -153,14 +174,14 @@ function* updateMap(type, resource, key) {
     }
 }
 
-// function that makes the api request and returns a Promise for response
+// makes the api request and returns a Promise response
 function* fetchData(...args) {
     const [uri, config = ''] = args;
     const response = yield axios.get(uri, config);
     return response;
 }
 
-// worker saga: makes the api call when watcher saga sees the action
+// makes the api call when watcher saga sees the action
 function* workerSaga({uri, config, resource}) {
     try {
         const response = yield call(fetchData, uri, config);

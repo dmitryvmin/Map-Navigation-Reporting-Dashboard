@@ -1,6 +1,6 @@
 {
     "version": 8,
-    "name": "Basic",
+    "name": "RT",
     "metadata": {
         "mapbox:autocomposite": true,
         "mapbox:type": "template",
@@ -10,13 +10,13 @@
             "ios": "3.7.0"
         }
     },
-    "center": [10.059697576709937, 8.407970487503434],
-    "zoom": 5.182126929212281,
+    "center": [49.34813343318581, 5.880810233963473],
+    "zoom": 2.6680052558267966,
     "bearing": 0,
     "pitch": 0,
     "sources": {
         "composite": {
-            "url": "mapbox://dmitrymin.bdqzr4cw,dmitrymin.d5bqzgth,mapbox.mapbox-streets-v7,dmitrymin.1tmjkbs7",
+            "url": "mapbox://mapbox.mapbox-streets-v7,dmitrymin.1tmjkbs7,dmitrymin.d5bqzgth",
             "type": "vector"
         }
     },
@@ -73,7 +73,7 @@
             "source": "composite",
             "source-layer": "water",
             "filter": ["in", "$type", "LineString", "Point", "Polygon"],
-            "paint": {"fill-color": "#a0cfdf", "fill-opacity": 0.19}
+            "paint": {"fill-color": "hsl(190, 33%, 86%)", "fill-opacity": 0.19}
         },
         {
             "id": "building",
@@ -470,38 +470,11 @@
                 "text-halo-width": 1,
                 "text-halo-blur": 1
             }
-        },
-        {
-            "id": "nga-admbndl-admall-osgof-eha-6ezk7o",
-            "type": "line",
-            "source": "composite",
-            "source-layer": "nga_admbndl_admall_osgof_eha_-6ezk7o",
-            "layout": {},
-            "paint": {"line-color": "hsl(96, 22%, 81%)"}
-        },
-        {
-            "id": "ne-10m-admin-1-states-provinc-5n804v",
-            "type": "fill",
-            "source": "composite",
-            "source-layer": "ne_10m_admin_1_states_provinc-5n804v",
-            "layout": {},
-            "paint": {
-                "fill-outline-color": "hsl(0, 0%, 44%)",
-                "fill-color": "hsla(89, 0%, 25%, 0.23)"
-            }
-        },
-        {
-            "id": "ne-10m-admin-0-countries-4dnq47",
-            "type": "fill",
-            "source": "composite",
-            "source-layer": "ne_10m_admin_0_countries-4dnq47",
-            "layout": {},
-            "paint": {"fill-color": "hsla(118, 30%, 77%, 0.47)"}
         }
     ],
     "created": "2017-06-27T17:30:41.126Z",
     "id": "cj4fulpei0m0k2sqrh1pz0jvh",
-    "modified": "2018-12-04T01:04:50.580Z",
+    "modified": "2018-12-06T02:24:33.454Z",
     "owner": "dmitrymin",
     "visibility": "public",
     "draft": false

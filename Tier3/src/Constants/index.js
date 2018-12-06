@@ -40,7 +40,18 @@ export const FACILITIES = "FACILITIES";
 
 export const SENSORS_MAP = "SENSORS_MAP";
 
+// Styles
+export const SELECTED_COLOR = "#e9e9e9";
+export const SHADED_COLOR = "#d3d3d3";
+
 export default class GGConsts {
+
+  static get SELECTED_COLOR() {
+    return SELECTED_COLOR;
+  }
+  static get SHADED_COLOR() {
+    return SHADED_COLOR;
+  }
 
   static get COUNTRIES() {
     return COUNTRIES;

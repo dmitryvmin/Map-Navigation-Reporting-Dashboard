@@ -50,7 +50,7 @@ const LiveTableRow = props => {
 	        </Tooltip>
 	      </TableCell>
 	      <TableCell style={styles.cell}>
-	        <Tooltip title={d.lasttemp} placement="bottom-center" enterDelay={300}>
+	        <Tooltip title={d.lasttemp} placement="bottom" enterDelay={300}>
 	          <div className="progressBar">
 	            <div>
 	              {ProgressBar.render(React.createElement, {

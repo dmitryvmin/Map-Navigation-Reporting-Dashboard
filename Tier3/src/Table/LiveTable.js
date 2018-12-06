@@ -215,7 +215,7 @@ class LiveTable extends React.Component {
           :<Table className="table" aria-labelledby="tableTitle">
             <EnhancedTableHead columns={columns}
                                tableCols={columns}
-                               numSelected={selected && selected.length}
+                               numSelected={0}
                                order={order}
                                orderBy={orderBy}
                                onRequestSort={this.handleRequestSort}
@@ -223,12 +223,12 @@ class LiveTable extends React.Component {
             <TableBody>
               {stableSort(data, getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map(d => {
+                .map((d, i) => {
                   const isSelected = this.isSelected(d.id);
                   return(
                     (table === 'live') 
-                    ? <LiveTableRow d={d} isSelected={isSelected} handleRowClick={this.handleRowClick} />
-                    : <ManualTableRow d={d} isSelected={isSelected} handleRowClick={this.handleRowClick} />
+                    ? <LiveTableRow d={d} key={`${d}-${i}`} isSelected={isSelected} handleRowClick={this.handleRowClick} />
+                    : <ManualTableRow d={d} key={`${d}-${i}`} isSelected={isSelected} handleRowClick={this.handleRowClick} />
                   )
                 })}
               {emptyRows > 0 && (
@@ -256,10 +256,6 @@ class LiveTable extends React.Component {
     );
   }
 }
-
-LiveTable.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
 
 const Container = styled.div`
     width: 80vw;

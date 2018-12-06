@@ -428,8 +428,4 @@ const DialogContentStyled = styled(DialogContent)`
   // overflow: hidden !important;
 `;
 
-DeviceDetail.propTypes = {
-  fullScreen: PropTypes.bool.isRequired,
-};
-
 export default withStyles(styles)(DeviceDetail);

@@ -115,12 +115,12 @@ body {
 	fill-opacity: 0.33;
 }
 
-/*a.mapboxgl-ctrl-logo, .mapboxgl-ctrl.mapboxgl-ctrl-attrib {*/
-	/*display: none !important;*/
-/*}*/
-/*.mapboxgl-popup-content {*/
-	/*padding: 0 1em !important;*/
-/*}*/
-/*.mapboxgl-popup-anchor-top {*/
-	/*margin-top: 0.5em;*/
-/*}*/
+a.mapboxgl-ctrl-logo, .mapboxgl-ctrl.mapboxgl-ctrl-attrib {
+	display: none !important;
+}
+.mapboxgl-popup-content {
+	padding: 0 1em !important;
+}
+.mapboxgl-popup-anchor-top {
+	margin-top: 0.5em;
+}

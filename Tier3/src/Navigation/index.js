@@ -149,7 +149,7 @@ class Navigation extends Component {
                                 )
                             })}
                         </NativeSelect>
-                        <FormHelperText>LGAs</FormHelperText>
+                        <FormHelperText>LGA</FormHelperText>
                     </FormControl>}
 
                     {/*TIER 4*/}
@@ -166,7 +166,28 @@ class Navigation extends Component {
                                 )
                             })}
                         </NativeSelect>
-                        <FormHelperText>Facilities</FormHelperText>
+                        <FormHelperText>Facility</FormHelperText>
+                    </FormControl>}
+
+                </div>
+
+                <div>
+
+                    <h4>Metric</h4>
+
+                    {<FormControl>
+                        <NativeSelect
+                            onChange={this.handleChange('datapoint')}
+                            style={{width: '150px', marginRight: '20px'}}
+                            input={<Input name="datapoint" id="state-native-helper" />}
+                        >
+                            {['# of devices', 'error ratio'].map((d, index) => {
+                                return(
+                                    <option key={`nav-${d}-${index}`} value={d}>{d}</option>
+                                )
+                            })}
+                        </NativeSelect>
+                        <FormHelperText>Data Point</FormHelperText>
                     </FormControl>}
 
                 </div>
@@ -206,26 +227,7 @@ class Navigation extends Component {
 
                 </div>
 
-                <div>
 
-                    <h4>Data Point (y-axis)</h4>
-
-                    {<FormControl>
-                        <NativeSelect
-                            onChange={this.handleChange('datapoint')}
-                            style={{width: '150px', marginRight: '20px'}}
-                            input={<Input name="datapoint" id="state-native-helper" />}
-                        >
-                            {['# of devices', 'error ratio'].map((d, index) => {
-                                return(
-                                    <option key={`nav-${d}-${index}`} value={d}>{d}</option>
-                                )
-                            })}
-                        </NativeSelect>
-                        <FormHelperText>Data Point</FormHelperText>
-                    </FormControl>}
-
-                </div>
 
               {/*<div>*/}
                     {/*{sensors ? (*/}
