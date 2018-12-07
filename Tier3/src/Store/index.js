@@ -2,7 +2,7 @@ import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import createSagaMiddleware from 'redux-saga'
 import loggerMiddleware from 'redux-logger';
 import reducers from './Reducers/index.js';
-import { geoDataSaga, watcherSaga, sensorDataSaga } from './Sagas/sagas.js'
+import { initSaga, watcherSaga, sensorDataSaga } from './Sagas/sagas.js'
 import { persistStore, persistReducer, persistCombineReducers } from 'redux-persist';
 import storage from 'redux-persist/lib/storage' // defaults to localStorage for web and AsyncStorage for react-native
 import localforage from 'localforage';
@@ -30,9 +30,11 @@ const store = createStore(
 );
 
 // run only once - when hooking up redux-persist, check if country state has already been fetched
-sagaMiddleware.run(geoDataSaga);
+// TODO: finish hook up redux-persist
+
 sagaMiddleware.run(watcherSaga);
 sagaMiddleware.run(sensorDataSaga);
+sagaMiddleware.run(initSaga);
 
 // export const persistor = persistStore(store);
 

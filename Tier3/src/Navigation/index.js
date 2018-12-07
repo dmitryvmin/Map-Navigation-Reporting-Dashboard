@@ -20,8 +20,6 @@ const config = {
 
 const uri = `${GGConsts.API}:${GGConsts.REPORTING_PORT}/sensor/state`;
 
-const resource = 'SENSORS_MAP';
-
 
 const styles = theme => ({
     root: {
@@ -40,15 +38,13 @@ const styles = theme => ({
 class Navigation extends Component {
 
     onRequestData = () => {
-        this.props.onRequestData(uri, config, resource);
+        this.props.onRequestData(uri, config, GGConsts.SENSORS_MAP);
     }
 
     handleChange = source => event => {
         switch (source) {
             case GGConsts.NAV_COUNTRY_SELECTED:
-                const name = event.target.value;
-                const countries = this.props.countries;
-                const country_selected = getCountryObjByName(countries, name);
+                const country_selected = event.target.value;
                 this.props.selectCountry(country_selected);
                 return;
 
@@ -87,30 +83,25 @@ class Navigation extends Component {
                 lga_selected,
                 facility_selected } = this.props;
 
-        const country = country_selected || _.first(countries.name);
-        const state = state_selected || (states && _.first(states));
-        const lga = lga_selected || (lgas && _.first(lgas));
-        const facility = facility_selected || (facilities && _.first(facilities));
-
         return (
             <div style={{display: 'flex'}}>
 
                 <div className="Navigation">
 
+                    {/*TODO: Refactor Navigation, use a dropdown component*/}
                     <h4>Navigation</h4>
 
                     {/*TIER 1*/}
-                    {countries && <FormControl>
-                        {/*<InputLabel htmlFor="country-native-simple">Country</InputLabel>*/}
+                    {countries && country_selected && <FormControl>
                         <NativeSelect
-                            value={country.name}
+                            value={country_selected}
                             style={{width: '150px', marginRight: '20px'}}
                             onChange={this.handleChange(GGConsts.NAV_COUNTRY_SELECTED)}
                             input={<Input name="country" id="country-native-helper" />}
                         >
                             {countries.map((country, index) => {
                                 return(
-                                    <option key={`nav-${country}-${index}`} value={country.name}>{country.name}</option>
+                                    <option key={`nav-${country}-${index}`} value={country}>{country}</option>
                                 )
                             })}
                         </NativeSelect>
@@ -119,9 +110,9 @@ class Navigation extends Component {
 
 
                     {/*TIER 2*/}
-                    {(country_selected.name !== 'all') && states && <FormControl>
+                    {states && state_selected && <FormControl>
                         <NativeSelect
-                            value={state.name}
+                            value={state_selected}
                             style={{width: '150px', marginRight: '20px'}}
                             onChange={this.handleChange(GGConsts.NAV_STATE_SELECTED)}
                             input={<Input name="state" id="state-native-helper" />}
@@ -136,9 +127,9 @@ class Navigation extends Component {
                     </FormControl>}
 
                     {/*TIER 3*/}
-                    {(state_selected.name !== 'all') && lgas && <FormControl>
+                    {lgas && lga_selected && <FormControl>
                         <NativeSelect
-                            value={lga.name}
+                            value={lga_selected}
                             style={{width: '150px', marginRight: '20px'}}
                             onChange={this.handleChange(GGConsts.NAV_LGA_SELECTED)}
                             input={<Input name="lga" id="state-native-helper" />}
@@ -152,10 +143,10 @@ class Navigation extends Component {
                         <FormHelperText>LGA</FormHelperText>
                     </FormControl>}
 
-                    {/*TIER 4*/}
-                    {(lga_selected && lga_selected.name !== 'all') && facilities && <FormControl>
+                    {/*/!*TIER 4*!/*/}
+                    {facilities && facility_selected && <FormControl>
                         <NativeSelect
-                            value={facility}
+                            value={facility_selected}
                             style={{width: '150px', marginRight: '20px'}}
                             onChange={this.handleChange(GGConsts.NAV_FACILITY_SELECTED)}
                             input={<Input name="facility" id="state-native-helper" />}

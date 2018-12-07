@@ -3,7 +3,10 @@ import Immutable, {fromJS} from 'immutable';
 import MapGL, {Marker, Popup, NavigationControl, FlyToInterpolator} from 'react-map-gl';
 import {ScatterplotLayer} from '@deck.gl/layers';
 import Geocoder from 'react-map-gl-geocoder';
+import { getCode } from 'country-list';
+import countryCode from 'country-code';
 import { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
+import _ from 'lodash';
 
 import { createSelector } from 'reselect';
 
@@ -62,6 +65,23 @@ const LOCATIONS = [
 //     (subtotal, taxPercent) => subtotal * (taxPercent / 100)
 // )
 
+const isNavModified = (nextProps, prevState) => {
+
+    // TODO: use navigationMap to iterate over
+    const navigation = ['country_selected', 'state_selected', 'lga_selected', 'facility_selected'];
+    let modified = null;
+
+    navigation.forEach(n => {
+        if ( nextProps[n] !== prevState[n] ) {
+            modified = { [n]: nextProps[n] }
+        }
+
+    });
+
+    return modified;
+}
+
+
 class Map extends Component {
     state = {
         mapStyle: MAP_STYLE,
@@ -103,32 +123,27 @@ class Map extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState){
-        if (nextProps.country_selected !== prevState.country_selected){
-            return { country_selected: nextProps.country_selected};
-        }
-        else if (nextProps.state_selected !== prevState.state_selected){
-            return { state_selected: nextProps.state_selected};
-        }
-        else if (nextProps.lga_selected !== prevState.lga_selected){
-            return { lga_selected: nextProps.lga_selected};
-        }
-        else return null;
+        return isNavModified(nextProps, prevState);
     }
 
     static updateLocation = (type, prev, curr) => {}
 
     componentDidUpdate(prevProps) {
 
+        const modified = isNavModified(this.props, prevProps);
+        if (!modified) return;
+
         const { country_selected: prev_country, state_selected: prev_state, lga_selected: prev_lga } = prevProps;
         const { country_selected: curr_country, state_selected: curr_state, lga_selected: curr_lga } = this.props;
 
+        // TODO: refactor
+        const country_code = countryCode.find({name: curr_country}).alpha3;
 
-        if ( curr_country !== prev_country && curr_country.name !== 'all') {
-
-            const mapStyle = getUpdatedMapStyle('countries', curr_country.alpha3Code);
+        if ( curr_country !== prev_country && curr_country !== 'all') {
+            const mapStyle = getUpdatedMapStyle('countries', country_code);
             this.setState({ mapStyle });
 
-        } else if (curr_country !== prev_country && curr_country.name === 'all') {
+        } else if (curr_country !== prev_country && curr_country === 'all') {
 
             // const mapStyle = getUpdatedMapStyle('countries', 'all');
             // this.setState({ mapStyle });
@@ -142,11 +157,8 @@ class Map extends Component {
 
         } else if (curr_state !== prev_state && curr_state === 'all') {
 
-            // const mapStyle2 = getUpdatedMapStyle('states', 'all');
-            // this.setState({ mapStyle: mapStyle });
-
-            const mapStyle = getUpdatedMapStyle('countries', 'all');
-            this.setState({ mapStyle });
+            // const mapStyle = getUpdatedMapStyle('countries', 'all');
+            // this.setState({ mapStyle });
 
         }
 

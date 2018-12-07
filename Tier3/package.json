@@ -8,6 +8,8 @@
     "@turf/random": "^6.0.2",
     "axios": "^0.18.0",
     "base-64": "^0.1.0",
+    "country-code": "0.0.3",
+    "country-list": "^2.1.0",
     "countrystatesjs": "0.0.12",
     "deck.gl": "^6.3.1",
     "i18n-iso-countries": "^3.7.8",

@@ -68,7 +68,7 @@ const getUpdatedMapStyle = (type = 'countries', filter = 'all') => {
                 visibility: 'visible',
                 source: type,
                 paint: {
-                    'fill-outline-color': '#000',
+                    'fill-outline-color': GGConsts.SELECTED_COLOR,
                     'fill-color': GGConsts.SELECTED_COLOR,
                     // 'fill-opacity': 0.5
                 },
@@ -82,7 +82,7 @@ const getUpdatedMapStyle = (type = 'countries', filter = 'all') => {
                 visibility: 'visible',
                 source: type,
                 paint: {
-                    'fill-outline-color': '#000',
+                    'fill-outline-color': GGConsts.SELECTED_COLOR,
                     'fill-color': GGConsts.SHADED_COLOR,
                     // 'fill-opacity': 0.5
                 },
@@ -99,7 +99,7 @@ const getUpdatedMapStyle = (type = 'countries', filter = 'all') => {
                 visibility: 'visible',
                 source: type,
                 paint: {
-                    'fill-outline-color': '#000',
+                    'fill-outline-color': GGConsts.SELECTED_COLOR,
                     'fill-color': GGConsts.SELECTED_COLOR,
                 },
                 filter: ['all']
@@ -107,7 +107,6 @@ const getUpdatedMapStyle = (type = 'countries', filter = 'all') => {
         );
     }
 
-    // return fromJS(mapStyle);
     return mapStyle;
 
 }

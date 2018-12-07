@@ -40,11 +40,17 @@ export const FACILITIES = "FACILITIES";
 
 export const SENSORS_MAP = "SENSORS_MAP";
 
+export const MAP_VIEWPORT = "MAP_VIEWPORT";
+
 // Styles
 export const SELECTED_COLOR = "#e9e9e9";
 export const SHADED_COLOR = "#d3d3d3";
 
 export default class GGConsts {
+
+  static get MAP_VIEWPORT() {
+    return MAP_VIEWPORT;
+  }
 
   static get SELECTED_COLOR() {
     return SELECTED_COLOR;

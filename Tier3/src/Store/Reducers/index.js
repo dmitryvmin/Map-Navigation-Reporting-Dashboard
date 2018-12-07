@@ -3,8 +3,7 @@ import _ from 'lodash';
 import GGConsts from '../../Constants';
 
 
-// reducer with initial state
-// TODO: create initial state for all the reducers and move them to their own files
+// TODO: create initial state for all the reducers and move them into their own files
 const initialState = {
     fetching: false,
     data: null,
@@ -12,8 +11,10 @@ const initialState = {
 };
 
 const navigationInitState = {
-    country_selected: {name: 'all'},
-    state_selected: {name: 'all'},
+    country_selected: false,
+    state_selected: false,
+    lga_selected: false,
+    facility_selected: false,
     map_viewport: {
         // flyTo: {center: [47.6144828, -122.3286736], zoom: 10, speed: 1.5},
         width: '100%',
@@ -51,7 +52,7 @@ export function navigationReducer(state = navigationInitState, action) {
                 ...state,
                 lga_manufacturer: action.manufacturer_selected
             }
-        case 'MAP_VIEWPORT':
+        case GGConsts.MAP_VIEWPORT:
 
             return {
                 ...state,
