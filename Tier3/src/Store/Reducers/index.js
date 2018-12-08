@@ -1,10 +1,10 @@
 import { combineReducers } from "redux";
 import _ from 'lodash';
 import GGConsts from '../../Constants';
-
+import { getMapStyle } from './../../Map/map-style.js';
 
 // TODO: create initial state for all the reducers and move them into their own files
-const initialState = {
+const apiInitState = {
     fetching: false,
     data: null,
     error: null
@@ -15,6 +15,10 @@ const navigationInitState = {
     state_selected: false,
     lga_selected: false,
     facility_selected: false,
+}
+
+const mapInitState = {
+    map_style: getMapStyle(),
     map_viewport: {
         // flyTo: {center: [47.6144828, -122.3286736], zoom: 10, speed: 1.5},
         width: '100%',
@@ -22,6 +26,30 @@ const navigationInitState = {
         latitude: 9.077751,
         longitude: 8.6774567,
         zoom: 5
+    }
+}
+
+export function mapReducer(state = mapInitState, action) {
+    switch (action.type) {
+        case GGConsts.MAP_VIEWPORT:
+            return {
+                ...state,
+                map_viewport: {
+                    ...state.map_viewport,
+                    latitude: action.map_viewport.latitude,
+                    longitude: action.map_viewport.longitude,
+                    zoom: action.map_viewport.zoom,
+                    // transitionDuration: action.viewport.transitionDuration,
+                    // transitionInterpolator: action.viewport.transitionInterpolator,
+                }
+            }
+        case GGConsts.MAP_STYLE:
+            return {
+                ...state,
+                map_style: action.map_style
+            }
+        default:
+            return state;
     }
 }
 
@@ -52,26 +80,13 @@ export function navigationReducer(state = navigationInitState, action) {
                 ...state,
                 lga_manufacturer: action.manufacturer_selected
             }
-        case GGConsts.MAP_VIEWPORT:
-
-            return {
-                ...state,
-                map_viewport: {
-                    ...state.map_viewport,
-                    latitude: action.viewport.latitude,
-                    longitude: action.viewport.longitude,
-                    zoom: action.viewport.zoom,
-                    // transitionDuration: action.viewport.transitionDuration,
-                    // transitionInterpolator: action.viewport.transitionInterpolator,
-                }
-            }
         default:
             return state;
     }
 }
 
 
-export function APIreducer(state = initialState, action) {
+export function APIreducer(state = apiInitState, action) {
     switch (action.type) {
         case GGConsts.API_CALL_REQUEST:
             return { ...state,
@@ -129,6 +144,7 @@ const reducers = {
     navigationReducer,
     APIreducer,
     dataReducer,
+    mapReducer
 };
 
 export default reducers;

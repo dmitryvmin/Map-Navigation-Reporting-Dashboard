@@ -7,7 +7,8 @@ import { getCode } from 'country-list';
 import ReactMapGL, { LinearInterpolator, FlyToInterpolator } from 'react-map-gl';
 import { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 import { getCountryObjByName } from './../../Utils';
-
+import countryCode from 'country-code';
+import { getMapStyle, applyLayerFilter } from './../../Map/map-style.js';
 
 const countries_endpoint = 'https://restcountries.eu/rest/v2/all';
 const states_endpoint = `${'https://cors-anywhere.herokuapp.com/'}https://countryrestapi.herokuapp.com`; // TODO: save Nigeria states locally or find a better API
@@ -46,9 +47,9 @@ const navigationMap = [
 // rootSaga
 export function* watcherSaga() {
        yield takeLatest(GGConsts.API_CALL_REQUEST, workerSaga);
-       yield takeLatest(GGConsts.NAV_COUNTRY_SELECTED, updateNavigation);
-       yield takeLatest(GGConsts.NAV_STATE_SELECTED, updateNavigation);
-       yield takeLatest(GGConsts.NAV_LGA_SELECTED, updateNavigation);
+       yield takeLatest(GGConsts.NAV_COUNTRY_SELECTED, navUpdate);
+       yield takeLatest(GGConsts.NAV_STATE_SELECTED, navUpdate);
+       yield takeLatest(GGConsts.NAV_LGA_SELECTED, navUpdate);
 }
 
 // get Geo Data
@@ -78,41 +79,86 @@ function* setToAll(navObj) {
 
 }
 
-function* updateNavigation( action ) {
-    // get information about newNavState so we know what needs to be updates
-    const navObj = _.first(navigationMap.filter(n => n.reducer === action.type));
-    // We are only concerned with nav elements down the chain
-    const toUpdate = navigationMap.filter(n => n.index > navObj.index);
+// TODO might need to break this up
+function* navUpdate( action ) {
 
-    if (toUpdate.length) {
+    // ## The update action properties can be found in the navObj map
+    const navObj = _.first(navigationMap.filter(n => n.reducer === action.type));
+    const value = action[navObj.state];
+
+    // ## Update Navigation Drop-downs
+    // we are only concerned with nav elements down the chain
+    const navToUpdate = navigationMap.filter(n => n.index > navObj.index);
+
+    if (navToUpdate.length) {
         // if action is set to all, no need to update children
 
-        if (action[navObj.state] !== 'all' && action[navObj.state] !== false) {
+        if (value !== 'all' && value !== false) {
             // Set immediate child to `all`
-            const child = toUpdate.shift();
+            const child = navToUpdate.shift();
             yield setToAll(child);
         }
 
-        // TODO: optimize here: if child nav objects are already null, don't need to set them to null again
-        // Set rest to null
+        // Set rest to null if needed
+        const state = yield select();
         const forGenerator = function *(array) {
             for (var item of array) {
-                yield put({ type: item.reducer, [item.state]: false });
+                // if item is not null, set to null
+                if (!_.isNull(state.navigationReducer[item.state])) yield put({ type: item.reducer, [item.state]: false });
             }
         }
-        yield forGenerator(toUpdate);
+        yield forGenerator(navToUpdate);
     }
 
-    // TODO: refactor
-    if (action[navObj.state] !== 'all' && action[navObj.state] !== false) {
+    // ## Update Map position, zoom
+    if (value && value !== 'all') {
 
         const state = yield select();
-        const { country_selected, state_selected, lga_selected } = state.navigationReducer;
-        const location = `${(country_selected !== 'all') && country_selected} ${(state_selected !== 'all') && state_selected} ${(lga_selected !== 'all') && lga_selected}`;
-        console.warn('@@location', location);
-        yield centerMap(location);
+        const { country_selected,
+                state_selected,
+                lga_selected } = state.navigationReducer;
 
+        // create a location string for geocode positioning
+        const location = [country_selected, state_selected, lga_selected].filter(str => (str && str !== 'all') && str).join(', ');
+
+        console.warn('@@location', location);
+
+        yield centerMap(location);
     }
+
+    // ## Update Map style/layers
+    // Need to shade regions that are higher up the chain
+    const mapToUpdate = navigationMap.filter(n => n.index < navObj.index);
+    // get a copy of the map style
+    let map_style = getMapStyle();
+
+    // if `all` is selected - don't shade anything, otherwise shade all at this level excluding selected
+    if (value && value !== 'all') {
+        // TODO: should countries be stored as Alpha3 codes? where's the best place to convert - when fetching/storing or when rendering?
+        const filter = (action.type === GGConsts.NAV_COUNTRY_SELECTED) ? countryCode.find({name: value}).alpha3 : value;
+
+        // shade outer layers
+        if (mapToUpdate.length) {
+            const _state = yield select();
+
+            mapToUpdate.forEach(nav => {
+                // TODO: refactor - need a helper function to get the filter code. Related to the above TODO
+                let value = _state.navigationReducer[nav.state]
+                let filter = (nav.type === GGConsts.COUNTRIES) ? countryCode.find({name: value}).alpha3 : value;
+
+                map_style = applyLayerFilter(map_style, nav.type, filter);
+            });
+        }
+
+        // lastly, shade the selected nav layer
+        map_style = applyLayerFilter(map_style, navObj.type, filter);
+
+        yield put({ type: GGConsts.MAP_STYLE, map_style });
+
+    } else {
+        yield put({ type: GGConsts.MAP_STYLE, map_style });
+    }
+
 }
 
 function* centerMap(location) {
@@ -121,15 +167,17 @@ function* centerMap(location) {
     const coordinates = yield getLatLng(_.first(results));
 
     // TODO: Figure out transitionInterpolator to make map centering animate
-    const viewport = {
-        longitude: Math.abs(coordinates.lng),
-        latitude: Math.abs(coordinates.lat),
-        zoom: 5
-        // transitionDuration: 300,
-        // transitionInterpolator: new FlyToInterpolator(),
-    };
+    if (coordinates.lng && coordinates.lat) {
+        const map_viewport = {
+            longitude: Math.abs(coordinates.lng),
+            latitude: Math.abs(coordinates.lat),
+            zoom: 5
+            // transitionDuration: 300,
+            // transitionInterpolator: new FlyToInterpolator(),
+        };
 
-    yield put({ type: GGConsts.MAP_VIEWPORT, viewport });
+        yield put({ type: GGConsts.MAP_VIEWPORT, map_viewport });
+    }
 }
 
 

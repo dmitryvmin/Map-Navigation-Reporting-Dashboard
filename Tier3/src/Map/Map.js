@@ -65,27 +65,8 @@ const LOCATIONS = [
 //     (subtotal, taxPercent) => subtotal * (taxPercent / 100)
 // )
 
-const isNavModified = (nextProps, prevState) => {
-
-    // TODO: use navigationMap to iterate over
-    const navigation = ['country_selected', 'state_selected', 'lga_selected', 'facility_selected'];
-    let modified = null;
-
-    navigation.forEach(n => {
-        if ( nextProps[n] !== prevState[n] ) {
-            modified = { [n]: nextProps[n] }
-        }
-
-    });
-
-    return modified;
-}
-
-
 class Map extends Component {
     state = {
-        mapStyle: MAP_STYLE,
-        // mapStyle: getUpdatedMapStyle(),
         mapInfo: '',
         viewport: {
             width: '100%',
@@ -121,67 +102,34 @@ class Map extends Component {
             </Marker>
         );
     }
+    //
+    // static getDerivedStateFromProps(nextProps, prevState){
+    //     return nextProps;
+    // }
+    //
+    // componentDidUpdate(prevProps) {
+    //     const {country_selected: prev_country, state_selected: prev_state, lga_selected: prev_lga} = prevProps;
+    //     const {country_selected: curr_country, state_selected: curr_state, lga_selected: curr_lga} = this.props;
+    // }
 
-    static getDerivedStateFromProps(nextProps, prevState){
-        return isNavModified(nextProps, prevState);
-    }
+    handleViewportChange = _.debounce((map_viewport) => {
+        const { latitude,
+                longitude,
+                zoom } = this.props.map_viewport;
 
-    static updateLocation = (type, prev, curr) => {}
+        const { latitude: new_latitude,
+                longitude: new_longitude,
+                zoom: new_zoom } = map_viewport;
 
-    componentDidUpdate(prevProps) {
+        if ((new_latitude && new_latitude !== latitude) ||
+            (new_longitude && new_longitude !== longitude) ||
+            (new_zoom && new_zoom !== zoom)) {
 
-        const modified = isNavModified(this.props, prevProps);
-        if (!modified) return;
-
-        const { country_selected: prev_country, state_selected: prev_state, lga_selected: prev_lga } = prevProps;
-        const { country_selected: curr_country, state_selected: curr_state, lga_selected: curr_lga } = this.props;
-
-        // TODO: refactor
-        const country_code = countryCode.find({name: curr_country}).alpha3;
-
-        if ( curr_country !== prev_country && curr_country !== 'all') {
-            const mapStyle = getUpdatedMapStyle('countries', country_code);
-            this.setState({ mapStyle });
-
-        } else if (curr_country !== prev_country && curr_country === 'all') {
-
-            // const mapStyle = getUpdatedMapStyle('countries', 'all');
-            // this.setState({ mapStyle });
-
+            this.props.setMapViewport(map_viewport);
         }
+    }, 10);
 
-        if ( curr_state !== prev_state && curr_state !== 'all') {
-
-            const mapStyle = getUpdatedMapStyle('states', curr_state);
-            this.setState({ mapStyle: mapStyle });
-
-        } else if (curr_state !== prev_state && curr_state === 'all') {
-
-            // const mapStyle = getUpdatedMapStyle('countries', 'all');
-            // this.setState({ mapStyle });
-
-        }
-
-        if ( curr_lga !== prev_lga && curr_lga !== 'all') {
-
-            const mapStyle = getUpdatedMapStyle('lgas', curr_lga);
-            this.setState({ mapStyle: mapStyle });
-
-        }
-
-    }
-
-
-    handleViewportChange = (viewport) => {
-        const { latitude, longitude, zoom } = this.props.map_viewport;
-
-        if ((latitude !== viewport.latitude) || (longitude !== viewport.longitude) || (zoom !== viewport.zoom)) {
-            this.props.setMapViewport(viewport);
-        }
-
-    }
-
-    handleStyleChange = mapStyle => this.setState({mapStyle});
+    handleStyleChange = map_style => this.setState({ map_style });
 
     handleGeocoderViewportChange = (viewport) => {
         const geocoderDefaultOverrides = { transitionDuration: 1000 }
@@ -225,14 +173,15 @@ class Map extends Component {
     }
 
     render() {
-        const { mapStyle, mapInfo } = this.state;
-        const { map_viewport } = this.props;
+        const { mapInfo } = this.state;
+        const { map_viewport,
+                map_style } = this.props;
 
         return (
             <React.Fragment>
                 {this.state.viewport && <MapGL
                     mapboxApiAccessToken={MAP_TOKEN}
-                    mapStyle={mapStyle}
+                    mapStyle={map_style}
                     ref={(map) => { this.mapRef = map; }}
                     {...map_viewport}
                     onViewportChange={this.handleViewportChange}
@@ -250,7 +199,7 @@ class Map extends Component {
                     {/*onChange={this.handleStyleChange} />*/}
 
                 </MapGL>}
-                <pre>{mapInfo && mapInfo}</pre>
+                {/*<pre>{mapInfo && mapInfo}</pre>*/}
             </React.Fragment>
         );
     }
@@ -258,7 +207,8 @@ class Map extends Component {
 
 const mapStateToProps = state => {
     return {
-        map_viewport: state.navigationReducer.map_viewport,
+        map_viewport: state.mapReducer.map_viewport,
+        map_style: state.mapReducer.map_style,
         country_selected: state.navigationReducer.country_selected,
         state_selected: state.navigationReducer.state_selected,
         lga_selected: state.navigationReducer.lga_selected,
@@ -267,7 +217,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        setMapViewport: (viewport) => dispatch(setMapViewport(viewport)),
+        setMapViewport: (map_viewport) => dispatch(setMapViewport(map_viewport)),
     }
 }
 

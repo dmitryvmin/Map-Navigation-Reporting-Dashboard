@@ -1,7 +1,8 @@
+import GGConsts from './../../Constants';
 
-export const setMapViewport = (viewport) => {
+export const setMapViewport = (map_viewport) => {
     return {
-        type: 'MAP_VIEWPORT',
-        viewport,
+        type: GGConsts.MAP_VIEWPORT,
+        map_viewport,
     }
 };
