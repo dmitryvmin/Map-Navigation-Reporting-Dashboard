@@ -11,10 +11,13 @@ const apiInitState = {
 };
 
 const navigationInitState = {
-    country_selected: false,
-    state_selected: false,
-    lga_selected: false,
-    facility_selected: false,
+    nav_tier: false,
+    navigation: {
+        country_selected: 'Nigeria',
+        state_selected: 'all',
+        lga_selected: false,
+        facility_selected: false,
+    }
 }
 
 const mapInitState = {
@@ -55,31 +58,25 @@ export function mapReducer(state = mapInitState, action) {
 
 export function navigationReducer(state = navigationInitState, action) {
     switch (action.type) {
-        case GGConsts.NAV_COUNTRY_SELECTED:
+        case GGConsts.NAV_TIER:
             return {
                 ...state,
-                country_selected: action.country_selected
+                nav_tier: action.nav_tier
             }
-        case GGConsts.NAV_STATE_SELECTED:
+        case GGConsts.UPDATE_NAV:
             return {
                 ...state,
-                state_selected: action.state_selected
+                nav_update: action
             }
-        case GGConsts.NAV_LGA_SELECTED:
+        case GGConsts.NAVIGATION:
             return {
                 ...state,
-                lga_selected: action.lga_selected
+                navigation: {
+                    ...state.navigation,
+                    ...action.navState
+                }
             }
-        case GGConsts.NAV_FACILITY_SELECTED:
-            return {
-                ...state,
-                facility_selected: action.facility_selected
-            }
-        case GGConsts.NAV_MANUFACTURER_SELECTED:
-            return {
-                ...state,
-                lga_manufacturer: action.manufacturer_selected
-            }
+
         default:
             return state;
     }
@@ -119,6 +116,7 @@ export function dataReducer(state = [], action) {
             return { ...state, [GGConsts.LGAS_MAP]: action.data }
         case GGConsts.FACILITIES_MAP:
             return { ...state, [GGConsts.FACILITIES_MAP]: action.data }
+
         case GGConsts.SENSORS_MAP:
             return { ...state, [GGConsts.SENSORS_MAP]: action.data }
         default:

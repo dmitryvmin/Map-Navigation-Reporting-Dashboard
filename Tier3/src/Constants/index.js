@@ -5,15 +5,23 @@ const API_HEADER = {
     'Authorization': 'Basic ' + btoa(GG_CREDS)
 };
 
+// Theme
+const THEME_COLOR = '#51326c';
+
 // Endpoints
+// TODO: clean up the names
 const API = 'http://20.36.19.106';
 const HEADER_AUTH = 'Z2xvYmFsLmdvb2Q6fkYoRzNtKUtQeT8/ZHd4fg==';
+const OWNER_ID = '5896a5c1-a931-4595-8205-8e7635ca4469';
+
+const RT_HEADER = { headers: { 'Authorization': `Basic ${HEADER_AUTH}` }};
+
+// Ports
 const REPORTING_PORT = '9000';
 const AUCMA_PORT = '9003';
 const ADMIN_PORT = '8099';
 const UPLOADED_DEVICES = '8780';
-const OWNER_ID = '5896a5c1-a931-4595-8205-8e7635ca4469';
-const THEME_COLOR = '#51326c';
+
 
 // API Actions
 const API_CALL_REQUEST = "API_CALL_REQUEST";
@@ -22,6 +30,15 @@ const API_CALL_FAILURE = "API_CALL_FAILURE";
 const DEVICE_ERRORS = "DEVICE_ERRORS";
 
 // Reducer Actions
+export const NAV_TIER = "NAV_TIER";
+export const COUNTRY_LEVEL = "COUNTRY_LEVEL";
+export const STATE_LEVEL = "STATE_LEVEL";
+export const LGA_LEVEL = "LGA_LEVEL";
+export const FACILITY_LEVEL = "FACILITY_LEVEL";
+
+export const UPDATE_NAV = 'UPDATE_NAV';
+export const NAVIGATION = 'NAVIGATION';
+
 export const NAV_COUNTRY_SELECTED = "NAV_COUNTRY_SELECTED";
 export const NAV_STATE_SELECTED = "NAV_STATE_SELECTED";
 export const NAV_LGA_SELECTED = "NAV_LGA_SELECTED";
@@ -106,6 +123,29 @@ export default class GGConsts {
     return FACILITIES_MAP;
   }
 
+  static get NAV_TIER() {
+    return NAV_TIER;
+  }
+  static get COUNTRY_LEVEL() {
+    return COUNTRY_LEVEL;
+  }
+  static get STATE_LEVEL() {
+    return STATE_LEVEL;
+  }
+  static get LGA_LEVEL() {
+    return LGA_LEVEL;
+  }
+  static get FACILITY_LEVEL() {
+    return FACILITY_LEVEL;
+  }
+
+  static get NAVIGATION() {
+    return NAVIGATION;
+  }
+  static get UPDATE_NAV() {
+    return UPDATE_NAV;
+  }
+
   static get NAV_COUNTRY_SELECTED() {
     return NAV_COUNTRY_SELECTED;
   }
@@ -127,6 +167,9 @@ export default class GGConsts {
   }
   static get API() {
     return API;
+  }
+  static get RT_HEADER() {
+    return RT_HEADER;
   }
   static get HEADER_AUTH() {
     return HEADER_AUTH;

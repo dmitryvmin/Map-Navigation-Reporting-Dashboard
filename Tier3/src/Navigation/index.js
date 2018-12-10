@@ -42,32 +42,28 @@ class Navigation extends Component {
     }
 
     handleChange = source => event => {
+        const value = event.target.value;
+        let navUpdate;
+
         switch (source) {
             case GGConsts.NAV_COUNTRY_SELECTED:
-                const country_selected = event.target.value;
-                this.props.selectCountry(country_selected);
-                return;
+                navUpdate = {type: GGConsts.NAV_COUNTRY_SELECTED, country_selected: value};
+                break;
 
             case GGConsts.NAV_STATE_SELECTED:
-                const state_selected = event.target.value;
-                this.props.selectState(state_selected);
-                return;
+                navUpdate = {type: GGConsts.NAV_STATE_SELECTED, state_selected: value};
+                break;
 
             case GGConsts.NAV_LGA_SELECTED:
-                const lga_selected = event.target.value;
-                this.props.selectLGA(lga_selected);
-                return;
+                navUpdate = {type: GGConsts.NAV_LGA_SELECTED, lga_selected: value};
+                break;
 
             case GGConsts.NAV_FACILITY_SELECTED:
-                const facility_selected = event.target.value;
-                this.props.selectFacility(facility_selected);
-                return;
-
-            default:
-                return;
-
+                navUpdate = {type: GGConsts.NAV_FACILITY_SELECTED, facility_selected: value};
+                break;
         }
 
+        this.props.updateNav(navUpdate);
     }
 
     render() {
@@ -78,10 +74,12 @@ class Navigation extends Component {
                 states,
                 lgas,
                 facilities,
-                country_selected,
-                state_selected,
-                lga_selected,
-                facility_selected } = this.props;
+                navigation: {
+                    country_selected,
+                    state_selected,
+                    lga_selected,
+                    facility_selected
+                } = {}} = this.props;
 
         return (
             <div style={{display: 'flex'}}>
@@ -251,21 +249,14 @@ const mapStateToProps = state => {
         lgas: state.dataReducer.LGAS_MAP,
         facilities: state.dataReducer.FACILITIES_MAP,
         sensors: state.dataReducer.SENSORS_MAP,
-        country_selected: state.navigationReducer.country_selected,
-        state_selected: state.navigationReducer.state_selected,
-        lga_selected: state.navigationReducer.lga_selected,
-        facility_selected: state.navigationReducer.facility_selected
+        navigation: state.navigationReducer.navigation,
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        onRequestData: (uri, config, resource) => dispatch({ type: "API_CALL_REQUEST", uri, config, resource }),
-        selectCountry: (country_selected) => dispatch({ type: GGConsts.NAV_COUNTRY_SELECTED, country_selected }),
-        selectState: (state_selected) => dispatch({ type: GGConsts.NAV_STATE_SELECTED, state_selected }),
-        selectLGA: (lga_selected) => dispatch({ type: GGConsts.NAV_LGA_SELECTED, lga_selected }),
-        selectFacility: (facility_selected) => dispatch({ type: GGConsts.NAV_FACILITY_SELECTED, facility_selected }),
-        // selectMfc: (manufacturer_selected) => dispatch({ type: GGConsts.NAV_MANUFACTURER_SELECTED, manufacturer_selected }),
+        onRequestData: (uri, config, resource) => dispatch({ type: GGConsts.API_CALL_REQUEST, uri, config, resource }),
+        updateNav: (navState) => dispatch({ ...navState, type: GGConsts.UPDATE_NAV }),
     };
 };
 

@@ -6,3 +6,4 @@ export const setMapViewport = (map_viewport) => {
         map_viewport,
     }
 };
+

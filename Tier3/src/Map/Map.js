@@ -8,8 +8,6 @@ import countryCode from 'country-code';
 import { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 import _ from 'lodash';
 
-import { createSelector } from 'reselect';
-
 import * as i18nIsoCountries from 'i18n-iso-countries'; //https://www.npmjs.com/package/i18n-iso-countries
 
 import { setMapViewport } from './../Store/Actions';
@@ -50,20 +48,6 @@ const LOCATIONS = [
         "longitude": 8.6601}
 ];
 
-
-// const shopItemsSelector = state => state.shop.items
-// const taxPercentSelector = state => state.shop.taxPercent
-//
-// const subtotalSelector = createSelector(
-//     shopItemsSelector,
-//     items => items.reduce((acc, item) => acc + item.value, 0)
-// )
-//
-// const taxSelector = createSelector(
-//     subtotalSelector,
-//     taxPercentSelector,
-//     (subtotal, taxPercent) => subtotal * (taxPercent / 100)
-// )
 
 class Map extends Component {
     state = {
@@ -140,6 +124,10 @@ class Map extends Component {
         })
     }
 
+    _onMapClick = e => {
+        console.log('@@', e.features);
+    }
+
     _renderPopup() {
         const {popupInfo} = this.state;
 
@@ -185,6 +173,7 @@ class Map extends Component {
                     ref={(map) => { this.mapRef = map; }}
                     {...map_viewport}
                     onViewportChange={this.handleViewportChange}
+                    onClick={this._onMapClick}
                 >
                     {/*{ LOCATIONS.map(this._renderCityMarker) }*/}
 

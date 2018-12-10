@@ -69,10 +69,10 @@ export const applyLayerFilter = (map_style = MAP_STYLE, type = GGConsts.COUNTRIE
                 visibility: 'visible',
                 source: type,
                 paint: {
-                    'fill-outline-color': GGConsts.SELECTED_COLOR,
+                    'fill-outline-color': '#4e4e4e',
                     'fill-color': GGConsts.SELECTED_COLOR,
                 },
-                filter: ['all']
+                filter: ['all'],
             },
         );
 
@@ -83,7 +83,6 @@ export const applyLayerFilter = (map_style = MAP_STYLE, type = GGConsts.COUNTRIE
             map_style.layers.findIndex(layer => layer.id === type), 0,
 
             // Highlighted the selected county polygons
-            // NOTE: instead of explicitly highlighting, just leave the 'selected' area not shaded
             // {
             //     id: type,
             //     type: 'fill',
@@ -91,7 +90,7 @@ export const applyLayerFilter = (map_style = MAP_STYLE, type = GGConsts.COUNTRIE
             //     visibility: 'visible',
             //     source: type,
             //     paint: {
-            //         'fill-outline-color': GGConsts.SELECTED_COLOR,
+            //         'fill-outline-color': '#4e4e4e',
             //         'fill-color': GGConsts.SELECTED_COLOR,
             //         // 'fill-opacity': 0.5
             //     },
@@ -105,7 +104,7 @@ export const applyLayerFilter = (map_style = MAP_STYLE, type = GGConsts.COUNTRIE
                 visibility: 'visible',
                 source: type,
                 paint: {
-                    'fill-outline-color': GGConsts.SHADED_COLOR,
+                    'fill-outline-color': '#4e4e4e',
                     'fill-color': GGConsts.SHADED_COLOR,
                     // 'fill-opacity': 0.5
                 },

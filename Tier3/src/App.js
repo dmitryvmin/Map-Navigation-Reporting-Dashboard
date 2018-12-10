@@ -6,7 +6,7 @@ import PrimeContent from './PrimeContent';
 import 'typeface-roboto' // Font
 import Login from './Login';
 import GGConsts from './Constants';
-import LiveTable from './Table/LiveTable.js';
+import RTTable from './Table';
 import ManualTable from './Table/ManualTable.js';
 import Alert from './Alert';
 import styled from 'styled-components';
@@ -79,9 +79,7 @@ class App extends Component {
 
                   <Grid item xs={12} sm={6}>
                     <Paper className={classes.paper}>
-
-                      <Map />
-
+                      {/*<Map />*/}
                     </Paper>
                   </Grid>
                   <Grid item xs={12} sm={6}>
@@ -94,11 +92,10 @@ class App extends Component {
                         <Paper className={classes.paper}>
 
                           <Card style={{overflow: 'auto'}}>
-                            <Header style={{display: 'flex', alignItems: 'center'}}>
-                              <SettingsRemote style={{marginRight: '0.5em'}} />Connected Devices
-                            </Header>
-                            {/*<LiveTable table='live'*/}
-                                       {/*columns={liveTableCols} />*/}
+                            {/*<Header style={{display: 'flex', alignItems: 'center'}}>*/}
+                              {/*<SettingsRemote style={{marginRight: '0.5em'}} />Connected Devices*/}
+                            {/*</Header>*/}
+                            {/*<RTTable />*/}
                           </Card>
 
                         </Paper>
