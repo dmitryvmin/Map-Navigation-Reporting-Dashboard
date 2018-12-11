@@ -56,6 +56,7 @@ export const LGAS = "LGAS";
 export const FACILITIES = "FACILITIES";
 
 export const SENSORS_MAP = "SENSORS_MAP";
+export const GEO_MAP = "GEO_MAP";
 
 export const MAP_VIEWPORT = "MAP_VIEWPORT";
 export const MAP_STYLE = "MAP_STYLE";
@@ -108,6 +109,9 @@ export default class GGConsts {
 
   static get SENSORS_MAP() {
     return SENSORS_MAP;
+  }
+  static get GEO_MAP() {
+    return GEO_MAP;
   }
 
   static get COUNTRIES_MAP() {

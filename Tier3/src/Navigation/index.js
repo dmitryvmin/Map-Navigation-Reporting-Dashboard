@@ -43,43 +43,28 @@ class Navigation extends Component {
 
     handleChange = source => event => {
         const value = event.target.value;
-        let navUpdate;
-
-        switch (source) {
-            case GGConsts.NAV_COUNTRY_SELECTED:
-                navUpdate = {type: GGConsts.NAV_COUNTRY_SELECTED, country_selected: value};
-                break;
-
-            case GGConsts.NAV_STATE_SELECTED:
-                navUpdate = {type: GGConsts.NAV_STATE_SELECTED, state_selected: value};
-                break;
-
-            case GGConsts.NAV_LGA_SELECTED:
-                navUpdate = {type: GGConsts.NAV_LGA_SELECTED, lga_selected: value};
-                break;
-
-            case GGConsts.NAV_FACILITY_SELECTED:
-                navUpdate = {type: GGConsts.NAV_FACILITY_SELECTED, facility_selected: value};
-                break;
-        }
-
+        const navUpdate = { [source]: value };
         this.props.updateNav(navUpdate);
     }
 
     render() {
-        const { fetching,
-                sensors,
-                error,
+        const {
+            fetching,
+            sensors,
+            error,
+            geo_map: {
                 countries,
                 states,
                 lgas,
                 facilities,
-                navigation: {
-                    country_selected,
-                    state_selected,
-                    lga_selected,
-                    facility_selected
-                } = {}} = this.props;
+            } = {},
+            navigation: {
+                country_selected,
+                state_selected,
+                lga_selected,
+                facility_selected
+            } = {}
+        } = this.props;
 
         return (
             <div style={{display: 'flex'}}>
@@ -94,7 +79,7 @@ class Navigation extends Component {
                         <NativeSelect
                             value={country_selected}
                             style={{width: '150px', marginRight: '20px'}}
-                            onChange={this.handleChange(GGConsts.NAV_COUNTRY_SELECTED)}
+                            onChange={this.handleChange('country_selected')}
                             input={<Input name="country" id="country-native-helper" />}
                         >
                             {countries.map((country, index) => {
@@ -112,7 +97,7 @@ class Navigation extends Component {
                         <NativeSelect
                             value={state_selected}
                             style={{width: '150px', marginRight: '20px'}}
-                            onChange={this.handleChange(GGConsts.NAV_STATE_SELECTED)}
+                            onChange={this.handleChange('state_selected')}
                             input={<Input name="state" id="state-native-helper" />}
                         >
                             {states.map((state, index) => {
@@ -129,7 +114,7 @@ class Navigation extends Component {
                         <NativeSelect
                             value={lga_selected}
                             style={{width: '150px', marginRight: '20px'}}
-                            onChange={this.handleChange(GGConsts.NAV_LGA_SELECTED)}
+                            onChange={this.handleChange('lga_selected')}
                             input={<Input name="lga" id="state-native-helper" />}
                         >
                             {lgas.map((l,i) => {
@@ -146,7 +131,7 @@ class Navigation extends Component {
                         <NativeSelect
                             value={facility_selected}
                             style={{width: '150px', marginRight: '20px'}}
-                            onChange={this.handleChange(GGConsts.NAV_FACILITY_SELECTED)}
+                            onChange={this.handleChange('facility_selected')}
                             input={<Input name="facility" id="state-native-helper" />}
                         >
                             {facilities.map((f, index) => {
@@ -244,11 +229,8 @@ const mapStateToProps = state => {
     return {
         fetching: state.APIreducer.fetching,
         error: state.APIreducer.error,
-        countries: state.dataReducer.COUNTRIES_MAP,
-        states: state.dataReducer.STATES_MAP,
-        lgas: state.dataReducer.LGAS_MAP,
-        facilities: state.dataReducer.FACILITIES_MAP,
-        sensors: state.dataReducer.SENSORS_MAP,
+        geo_map: state.dataReducer.geo_map,
+        sensors: state.dataReducer[GGConsts.SENSORS_MAP],
         navigation: state.navigationReducer.navigation,
     };
 };
@@ -256,7 +238,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onRequestData: (uri, config, resource) => dispatch({ type: GGConsts.API_CALL_REQUEST, uri, config, resource }),
-        updateNav: (navState) => dispatch({ ...navState, type: GGConsts.UPDATE_NAV }),
+        updateNav: (navState) => dispatch({ type: GGConsts.UPDATE_NAV, navState }),
     };
 };
 

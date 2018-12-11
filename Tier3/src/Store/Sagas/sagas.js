@@ -21,28 +21,28 @@ const navigationMap = [
         // type: GGConsts.COUNTRIES,
         reducer: GGConsts.NAV_COUNTRY_SELECTED,
         type: 'country_selected',
-        map: GGConsts.COUNTRIES_MAP,
+        map: 'countries',
     },
     {
         index: 1,
         // type: GGConsts.STATES,
         reducer: GGConsts.NAV_STATE_SELECTED,
         type: 'state_selected',
-        map: GGConsts.STATES_MAP,
+        map: 'states',
     },
     {
         index: 2,
         // type: GGConsts.LGAS,
         reducer: GGConsts.NAV_LGA_SELECTED,
         type: 'lga_selected',
-        map: GGConsts.LGAS_MAP,
+        map: 'lgas',
     },
     {
         index: 3,
         // type: GGConsts.FACILITIES,
         reducer: GGConsts.NAV_FACILITY_SELECTED,
         type: 'facility_selected',
-        map: GGConsts.FACILITIES_MAP,
+        map: 'facilities',
     }];
 
 // TODO: break up Sagas into their own files
@@ -55,11 +55,12 @@ export function* watcherSaga() {
 
 // get Geo Data
 export function* initSaga() {
-    const data = yield getGeo('country_selected');
-    yield  put({ type: GGConsts.COUNTRIES_MAP, data });
+    const data = yield getGeo('countries');
+
+    yield put({ type: GGConsts.GEO_MAP, data: { 'countries': data } });
 
     // init by fetching country data
-    yield navUpdate({ 'country_selected': 'Nigeria' });
+    yield navUpdate({navState: { 'country_selected': 'Nigeria' }});
 }
 
 // get Sensor  Data
@@ -73,13 +74,13 @@ export function* sensorDataSaga() {
 
 const getTierName = navTier => {
     switch(navTier) {
-        case GGConsts.COUNTRIES:
+        case 'country_selected':
             return 'COUNTRY_LEVEL';
-        case GGConsts.STATES:
+        case 'state_selected':
             return 'STATE_LEVEL';
-        case GGConsts.LGAS:
+        case 'lga_selected':
             return 'LGA_LEVEL';
-        case GGConsts.FACILITIES:
+        case 'facility_selected':
             return 'FACILITY_LEVEL';
     }
 }
@@ -87,10 +88,17 @@ const getTierName = navTier => {
 // TODO: move to /selectors.js
 const getNavState = state => state.navigationReducer.navigation;
 
-const getDataState = state => state.dataReducer;
+const getTierState = state => state.navigationReducer.nav_tier;
 
+const getGeoState = state => state.dataReducer.geo_map;
 
-function* updateMenus(curNav, value) {
+/**
+ * Get
+ * @param {number}
+ * @param {number}
+ * @returns {number}
+ */
+function* getNav(curNav, value) {
     // We are only concerned with nav elements down the chain
 
     const childNavs = navigationMap.filter(n => n.index > curNav.index);
@@ -98,14 +106,12 @@ function* updateMenus(curNav, value) {
 
     // If current nav has a specific locatinn selected, Set immediate child to `all`
     if (childNavs.length && value !== 'all') {
-        const dataState = yield select(getDataState);
+
+        // remove the child from the childNavs array because the rest of the children will be turned off
         const child = _.first(childNavs.splice(0,1));
 
-        if (_.isEmpty(dataState[child.map])) {
-            const data = yield getGeo(child.type);
-
-            yield put({ type: child.map, data });
-        }
+        const data = yield getGeo(child.map, value);
+        yield put({ type: GGConsts.GEO_MAP, data: {[child.map]: data} });
 
         navState[child.type] = 'all';
     }
@@ -125,70 +131,47 @@ function* updateMenus(curNav, value) {
     return navState;
 }
 
-// function difference(object, base) {
-//     function changes(object, base) {
-//         return _.transform(object, function(result, value, key) {
-//             if (!_.isEqual(value, base[key])) {
-//                 result[key] = (_.isObject(value) && _.isObject(base[key])) ? changes(value, base[key]) : value;
-//             }
-//         });
-//     }
-//     return changes(object, base);
-// }
+const getTier = (map, value) => {
+    if (value !== 'all') {
+        // If a specific geographic location is selected, the Tier is of that location type, e.g. location: WA, tier: State Level
+        const navTier = getTierName(map.type);
+        return navTier;
 
-// TODO break this up into smaller functions. The `(value && value !== 'all')` check if called several times, group together
+    } else {
+        // If location is 'all', the Tier is of the parent type, e.g. state: all, tier: Country Level
+        const parent = _.first(navigationMap.filter(nav => nav.index === map.index - 1));
+        const navTier = getTierName(parent.type);
+        return navTier;
+    }
+}
+
 function* navUpdate( action ) {
-    const { type, ...nav } = action;
 
-    // if (type === GGConsts.NAVIGATION) {
-    //     return;
-    // }
+    // const { type, ...nav } = action;
+    const { navState: { type, ...nav } = {} } = action;
 
     const navType = _.first(_.keys(nav));
     const navValue = _.first(_.values(nav));
 
+    if (!navValue || !navType) {
+        console.warn(`Something wrong with the selected action: ${action}`);
+    }
 
     // ## The update action properties can be found in the navObj map
-    const navMap = _.first(navigationMap.filter(n => n.type === navType)); // TODO: rename navObj to curNav
-
+    const navMap = _.first(navigationMap.filter(n => n.type === navType));
 
     // ## Set Tier
-    // if (value && value !== 'all') {
-    //     // If a specific geographic location is selected, the Tier is of that location type, e.g. location: WA, tier: State Level
-    //     const nav_tier = getTierName(navObj.type);
-    //     console.log('@@nav_tier', nav_tier);
-    //     // debugger;
-    //     yield put({ type: GGConsts.NAV_TIER, nav_tier });
-    // } else if (value && value === 'all') {
-    //     // If location is 'all', the Tier is of the parent type, e.g. location: all, tier: Country Level
-    //     const parent = _.first(navigationMap.filter(nav => nav.index === navObj.index - 1));
-    //     const nav_tier = getTierName(parent.type);
-    //     console.log('@@nav_tier', nav_tier);
-    //     // debugger;
-    //     yield put({ type: GGConsts.NAV_TIER, nav_tier });
-    // }
+    const nav_tier = getTier(navMap, navValue);
+    yield put({ type: GGConsts.NAV_TIER, nav_tier });
 
-   const navigation = yield updateMenus(navMap, navValue);
-    
-
-   yield put({ type: GGConsts.NAVIGATION, navigation });
-
+    // ## Update Navigation
+    const navigation = yield getNav(navMap, navValue);
+    yield put({ type: GGConsts.NAVIGATION, navigation });
 
     // ## Update Map position, zoom
-    // if (value && value !== 'all') {
-    //
-    //     const state = yield select();
-    //     const { country_selected,
-    //             state_selected,
-    //             lga_selected } = state.navigationReducer;
-    //
-    //     // create a location string for geocode positioning
-    //     const location = [country_selected, state_selected, lga_selected].filter(str => (str && str !== 'all') && str).join(', ');
-    //
-    //     console.warn('@@location', location);
-    //
-    //     yield centerMap(location);
-    // }
+    const map_viewport = yield getViewport();
+    yield put({ type: GGConsts.MAP_VIEWPORT, map_viewport });
+
 
     // ## Update Map style/layers
     // Need to shade regions that are higher up the chain
@@ -256,8 +239,62 @@ function* navUpdate( action ) {
 
 }
 
-function* centerMap(location) {
+/**
+ * Get the location selected in the navigation
+ * @returns {string} location - Concatenated tiers
+ */
+function* getLocation() {
+    const navState = yield select(getNavState);
 
+    const {
+        country_selected,
+        state_selected,
+        lga_selected
+    } = navState;
+
+    const nav = [country_selected, state_selected, lga_selected];
+    const activeNavs = [];
+
+    nav &&_.forEach(nav, t => {
+        // only looking for specific location names in the nav tier
+        if (t && t !== 'all') {
+            activeNavs.push(t);
+        }
+        // break out of the loop since subsequent locations can't exist
+        else {
+            return false;
+        }
+    });
+
+    const location = activeNavs.join(', ');
+    console.log(`%c selected location: ${location}`, 'background: #51326c; color: white; display: block;');
+
+    return location;
+}
+
+/**
+ * Get the zoom leve for the current tier state
+ * @returns {number} zoom
+ */
+function* getZoom() {
+    const tier = yield select(getTierState);
+
+    // TODO: Move this somewhere more fitting
+    const zoomMap = {
+        [GGConsts.COUNTRY_LEVEL]: 5,
+        [GGConsts.STATE_LEVEL]: 6,
+        [GGConsts.LGA_LEVEL]: 7,
+        'default': 5,
+    }
+
+    const zoom = zoomMap[tier] || zoomMap.default;
+    return zoom;
+}
+
+
+function* getViewport() {
+    const zoom = yield getZoom();
+    const location = yield getLocation();
     const results = yield geocodeByAddress(location);
     const coordinates = yield getLatLng(_.first(results));
 
@@ -266,44 +303,52 @@ function* centerMap(location) {
         const map_viewport = {
             longitude: Math.abs(coordinates.lng),
             latitude: Math.abs(coordinates.lat),
-            zoom: 5
+            zoom,
             // transitionDuration: 300,
             // transitionInterpolator: new FlyToInterpolator(),
         };
 
-        yield put({ type: GGConsts.MAP_VIEWPORT, map_viewport });
+        return map_viewport;
     }
 }
 
 
-function* getGeo(type) {
-    const navState = yield select(getNavState);
-    const { country_selected,
-            state_selected } = navState;
+function* getGeo(type, selected = null) {
 
     switch(type) {
-        case 'country_selected':
+        case 'countries':
 
             return yield getMapData(GGConsts.COUNTRIES_MAP, countries_endpoint, 'data');
 
-        case 'state_selected':
+        case 'states':
 
-            let contry_code = getCode(country_selected).toLowerCase();
-            let uri = `${states_endpoint}/${contry_code}`;
+            const contryCode = getCode(selected);
+
+            if (!contryCode) {
+                console.warn(`@@ Couldn't fetch states for ${selected}`);
+                return;
+            }
+            const formattedCode = contryCode.toLowerCase();
+            const uri = `${states_endpoint}/${formattedCode}`;
+
             return yield getMapData(GGConsts.STATES_MAP, uri, 'data.states');
 
-        case 'lga_selected':
+        case 'lgas':
 
             // NOTE: Eventually will need an API to retrieve LGAs for all countries, this is Nigeria specific
+            const { country_selected } = yield select(getNavState);
+
             if (country_selected === 'Nigeria') {
-                let stateFormatted = state_selected.replace(/\State+[.!?]?$/, '').trim().toLowerCase();
+                let stateFormatted = selected.replace(/\State+[.!?]?$/, '').trim().toLowerCase();
                 let uri = `${lgas_endpoint}/${stateFormatted}/details`;
                 return yield getMapData(GGConsts.LGAS_MAP, uri, 'data.lgas');
             }
 
-        case 'facility_selected':
+            return;
 
-            // TODO: hook up to the sensors API
+        case 'facilities':
+
+            // TODO: take sensors map and filter by selected_lga
             const facilities = ['facility1', 'facility2', 'facility3'];
             addAllOption(facilities);
             return facilities;

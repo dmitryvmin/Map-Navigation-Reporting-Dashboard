@@ -20,7 +20,6 @@ import loadDevices from './../Services/API';
 import DeviceDetail from './../PrimeContent/DeviceDetail';
 import AppContext from './../Services/Context';
 import { connect } from "react-redux";
-import { storeErrors } from "./../Services/store";
 import LiveTableRow from './LiveTableRow';
 import ManualTableRow from './ManualTableRow';
 
@@ -52,17 +51,19 @@ const getColumns = navTier => {
     switch(navTier) {
         case GGConsts.COUNTRY_LEVEL:
             columns.push({ id: 'States', numeric: false, disablePadding: true, label: 'States' });
-            return columns;
+            break;
         case GGConsts.STATE_LEVEL:
             columns.push({ id: 'LGAs', numeric: false, disablePadding: true, label: 'LGAs' });
-            return columns;
+            break;
         case GGConsts.LGA_LEVEL:
             columns.push({ id: 'Facilities', numeric: false, disablePadding: true, label: 'Facilities' });
-            return columns;
+            break;
         case GGConsts.FACILITY_LEVEL:
             columns.push({ id: 'Devices', numeric: false, disablePadding: true, label: 'Devices' });
-            return columns;
+            break;
     }
+
+    return columns;
 }
 
 class RTTable extends React.Component {
@@ -95,21 +96,6 @@ class RTTable extends React.Component {
     }
 
     loadData = async () => {
-        try {
-            const sensors = await loadDevices();
-
-            if (sensors != null && sensors != "undefined") {
-
-                const data = this.mapPropsToTableColumns(sensors);
-                this.props.storeErrors(this.state.errors);
-
-                console.log('@@@', data);
-
-                this.setState({ data });
-            }
-        } catch (err) {
-            console.warn("@componentDidMount error: ", err);
-        }
     }
 
     mapPropsToTableColumns = (data) => {
@@ -243,7 +229,7 @@ class RTTable extends React.Component {
         return (
             <Container>
                 <TableWrapper>
-                    {(!this.state.data.length)
+                    {(!nav_tier)
                         ?<div>Loading...</div>
                         :<Table className="table" aria-labelledby="tableTitle">
                             <EnhancedTableHead columns={columns}
@@ -290,7 +276,7 @@ class RTTable extends React.Component {
 }
 
 const Container = styled.div`
-    // width: 80vw;
+
     margin: 0px auto;
     background-color: white;
     margin-top: 15px;
@@ -309,8 +295,4 @@ const mapStateToProps = state => {
     }
 }
 
-const mapDispatchToProps = dispatch => ({
-    storeErrors: (errors) => dispatch(storeErrors(errors))
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(RTTable);
+export default connect(mapStateToProps, null)(RTTable);

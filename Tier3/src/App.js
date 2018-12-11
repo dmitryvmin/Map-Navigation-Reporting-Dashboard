@@ -79,7 +79,7 @@ class App extends Component {
 
                   <Grid item xs={12} sm={6}>
                     <Paper className={classes.paper}>
-                      {/*<Map />*/}
+                      <Map />
                     </Paper>
                   </Grid>
                   <Grid item xs={12} sm={6}>
@@ -95,7 +95,7 @@ class App extends Component {
                             {/*<Header style={{display: 'flex', alignItems: 'center'}}>*/}
                               {/*<SettingsRemote style={{marginRight: '0.5em'}} />Connected Devices*/}
                             {/*</Header>*/}
-                            {/*<RTTable />*/}
+                            <RTTable />
                           </Card>
 
                         </Paper>
