@@ -20,16 +20,19 @@ const navigationMap = [
         index: 0,
         type: 'country_selected',
         map: 'countries',
+        tier: "COUNTRY_LEVEL",
     },
     {
         index: 1,
         type: 'state_selected',
         map: 'states',
+        tier: "STATE_LEVEL",
     },
     {
         index: 2,
         type: 'lga_selected',
         map: 'lgas',
+        tier: "LGA_LEVEL",
     },
     {
         index: 3,
@@ -123,6 +126,7 @@ function* getNav(curNav, value) {
     return navState;
 }
 
+// TODO: Make a broader helper functon for other navigation map props;
 const getTier = (map, value) => {
     if (value !== 'All') {
         // If a specific geographic location is selected, the Tier is of that location type, e.g. location: WA, tier: State Level
@@ -163,7 +167,7 @@ function* navUpdate( action ) {
     yield put({ type: GGConsts.MAP_VIEWPORT, map_viewport });
 
     // Update Map style
-    const map_style = updateMapStyle(navigation, navMap, navValue);
+    const map_style = updateMapStyle(nav_tier, navigation);
     yield put({ type: GGConsts.MAP_STYLE, map_style });
 
 }
@@ -172,7 +176,11 @@ function* navUpdate( action ) {
  * Update Map style/layers
  * @returns {string} location - Concatenated tiers
  */
-const updateMapStyle = (navigation, navMap, navValue) => {
+const updateMapStyle = (tier, navigation) => {
+
+    const navMap = _.first(navigationMap.filter(n => n.tier === tier));
+    const navValue = navigation[navMap.type];
+
     // 1. Get a copy of the map style
     let map_style = getMapStyle();
 
@@ -187,8 +195,8 @@ const updateMapStyle = (navigation, navMap, navValue) => {
     //     });
     // }
     // 3. Shade current layer
-    const filter = getFilter('exclude', navMap.type, navValue);
-    map_style = applyLayerFilter(map_style, navMap.type, filter);
+    // const filter = getFilter('exclude', navMap.type, navValue);
+    // map_style = applyLayerFilter(map_style, navMap.type, filter);
 
     // 4. Shade inner layer
     // NOTE: there's no map for facility level

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Immutable, {fromJS} from 'immutable';
 import MapGL, {Marker, Popup, NavigationControl, FlyToInterpolator} from 'react-map-gl';
+// import MapGL from 'react-map-gl-alt';
 import {ScatterplotLayer} from '@deck.gl/layers';
 import Geocoder from 'react-map-gl-geocoder';
 import { getCode } from 'country-list';
@@ -61,32 +62,8 @@ class Map extends Component {
         }
     }
 
-    mapRef = React.createRef();
+    // mapRef = React.createRef();
 
-    _renderCityMarker = (city, index) => {
-        return (
-            <Marker
-                key={`marker-${index}`}
-                longitude={city.longitude}
-                latitude={city.latitude} >
-
-                <CityPin city={city.city} onClick={() => this.setState({popupInfo: city})} />
-
-                {/*<foreignObject x="0" y="0" width="1" height="1">*/}
-                {/*<PieChart*/}
-                {/*lineWidth={50}*/}
-                {/*radius={10}*/}
-                {/*data={[*/}
-                {/*{ title: 'One', value: 10, color: '#E38627' },*/}
-                {/*{ title: 'Two', value: 15, color: '#C13C37' },*/}
-                {/*{ title: 'Three', value: 20, color: 'green' },*/}
-                {/*]}*/}
-                {/*/>*/}
-                {/*</foreignObject>*/}
-            </Marker>
-        );
-    }
-    //
     // static getDerivedStateFromProps(nextProps, prevState){
     //     return nextProps;
     // }
@@ -94,6 +71,13 @@ class Map extends Component {
     // componentDidUpdate(prevProps) {
     //     const {country_selected: prev_country, state_selected: prev_state, lga_selected: prev_lga} = prevProps;
     //     const {country_selected: curr_country, state_selected: curr_state, lga_selected: curr_lga} = this.props;
+    // }
+
+    // componentDidMount() {
+    //     if (this.mapRef) {
+    //         const map = this.mapRef.getMap();
+    //         window._map = map;
+    //     }
     // }
 
     handleViewportChange = _.debounce((map_viewport) => {
@@ -131,22 +115,36 @@ class Map extends Component {
         this.props.mapClicked(layer.filter[2]);
     }
 
-    _renderPopup() {
-        const {popupInfo} = this.state;
+    _onMapHover = e => {
+        if (e.features.length > 0) {
+            const source = _.get(_.first(e.features), 'source');
+            const id = _.get(_.first(e.features), 'id');
+        //     console.log('@@', source, id);
+        //     // this.mapRef.getMap().setFeatureState({source, id}, {hover: true});
 
-        return popupInfo && (
-                <Popup tipSize={5}
-                       anchor="top"
-                       longitude={popupInfo.longitude}
-                       latitude={popupInfo.latitude}
-                       onClose={() => this.setState({popupInfo: null})} >
-                    <CityInfo info={popupInfo} />
-                </Popup>
-            );
+            console.log('@@', _.first(e.features), source, id);
+
+            const map = this.mapRef.getMap();
+
+            map.setFeatureState({source: 'state_selected-include', id: 616}, { hover: true});
+        }
     }
 
-    handleAddressChange = address => {
+    // _renderPopup() {
+    //     const {popupInfo} = this.state;
+    //
+    //     return popupInfo && (
+    //             <Popup tipSize={5}
+    //                    anchor="top"
+    //                    longitude={popupInfo.longitude}
+    //                    latitude={popupInfo.latitude}
+    //                    onClose={() => this.setState({popupInfo: null})} >
+    //                 <CityInfo info={popupInfo} />
+    //             </Popup>
+    //         );
+    // }
 
+    handleAddressChange = address => {
         geocodeByAddress(address.name)
             .then(results => getLatLng(results[0]))
             .then(coord => {
@@ -168,6 +166,8 @@ class Map extends Component {
         const { map_viewport,
                 map_style } = this.props;
 
+        window._map = this.mapRef;
+
         return (
             <React.Fragment>
                 {this.state.viewport && <MapGL
@@ -177,14 +177,16 @@ class Map extends Component {
                     {...map_viewport}
                     onViewportChange={this.handleViewportChange}
                     onClick={this._onMapClick}
+                    style={{height: '500px'}}
+                    // onHover={this._onMapHover}
                 >
                     {/*{ LOCATIONS.map(this._renderCityMarker) }*/}
 
                     {/*{this._renderPopup()}*/}
 
-                    <div className="nav" style={navStyle}>
-                        <NavigationControl onViewportChange={this.handleViewportChange} />
-                    </div>
+                    {/*<div className="nav" style={navStyle}>*/}
+                        {/*<NavigationControl onViewportChange={this.handleViewportChange} />*/}
+                    {/*</div>*/}
 
                     {/*<ControlPanel*/}
                     {/*containerComponent={this.props.containerComponent}*/}
