@@ -10,35 +10,14 @@ import { getCountryObjByName } from './../../Utils';
 import cc from 'country-code';
 import { getMapStyle, getFilter, getChildFilter, applyLayerFilter } from './../../Map/map-style.js';
 
+import { navigationMap } from './../../Utils';
+
 const countries_endpoint = 'https://restcountries.eu/rest/v2/all';
 const states_endpoint = `${'https://cors-anywhere.herokuapp.com/'}https://countryrestapi.herokuapp.com`; // TODO: save Nigeria states locally or find a better API
 const lgas_endpoint = `http://locationsng-api.herokuapp.com/api/v1/states`;
 const sensors_endpoint = `${GGConsts.API}:${GGConsts.REPORTING_PORT}/sensor/state`;
 
-const navigationMap = [
-    {
-        index: 0,
-        type: 'country_selected',
-        map: 'countries',
-        tier: "COUNTRY_LEVEL",
-    },
-    {
-        index: 1,
-        type: 'state_selected',
-        map: 'states',
-        tier: "STATE_LEVEL",
-    },
-    {
-        index: 2,
-        type: 'lga_selected',
-        map: 'lgas',
-        tier: "LGA_LEVEL",
-    },
-    {
-        index: 3,
-        type: 'facility_selected',
-        map: 'facilities',
-    }];
+
 
 // TODO: break up Sagas into their own files
 
@@ -195,8 +174,8 @@ const updateMapStyle = (tier, navigation) => {
     //     });
     // }
     // 3. Shade current layer
-    // const filter = getFilter('exclude', navMap.type, navValue);
-    // map_style = applyLayerFilter(map_style, navMap.type, filter);
+    const filter = getFilter('exclude', navMap.type, navValue);
+    map_style = applyLayerFilter(map_style, navMap.type, filter);
 
     // 4. Shade inner layer
     // NOTE: there's no map for facility level

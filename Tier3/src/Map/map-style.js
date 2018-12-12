@@ -109,11 +109,6 @@ export const applyLayerFilter = (map_style = MAP_STYLE, type = 'country_selected
                 paint: {
                     'fill-outline-color': '#4e4e4e',
                     'fill-color': GGConsts.DESELECTED_COLOR,
-                    "fill-opacity": ["case",
-                        ["boolean", ["feature-state", "hover"], false],
-                        1,
-                        0.1
-                    ]
                 },
                 filter: ['!in', fkey, fval],
             },

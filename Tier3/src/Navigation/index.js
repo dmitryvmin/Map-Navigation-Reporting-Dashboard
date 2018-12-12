@@ -8,7 +8,7 @@ import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
 
-import { getCountryObjByName } from './../Utils';
+import { getCountryObjByName, navigationMap, getFromNavMap } from './../Utils';
 
 import store from './../Store/index.js';
 import { connect } from "react-redux";
@@ -58,6 +58,7 @@ class Navigation extends Component {
                 lgas,
                 facilities,
             } = {},
+            navigation,
             navigation: {
                 country_selected,
                 state_selected,
@@ -66,16 +67,50 @@ class Navigation extends Component {
             } = {}
         } = this.props;
 
+        debugger;
+
         return (
             <div style={{display: 'flex'}}>
 
                 <div className="Navigation">
 
-                    {/*TODO: Refactor Navigation, use a dropdown component*/}
                     <h4>Navigation</h4>
 
+
+
+                    {/*{navigation.map((nav, index) => {*/}
+
+
+
+                        {/*return (*/}
+
+                            {/*<FormControl>*/}
+                                {/*<NativeSelect*/}
+                                    {/*value={country_selected}*/}
+                                    {/*style={{width: '150px', marginRight: '20px'}}*/}
+                                    {/*onChange={this.handleChange('country_selected')}*/}
+                                    {/*input={<Input name="country" id="country-native-helper" />}*/}
+                                {/*>*/}
+                                    {/*{countries.map((country, index) => {*/}
+                                        {/*return(*/}
+                                            {/*<option key={`nav-${country}-${index}`} value={country}>{country}</option>*/}
+                                        {/*)*/}
+                                    {/*})}*/}
+                                {/*</NativeSelect>*/}
+                                {/*<FormHelperText>Country</FormHelperText>*/}
+                            {/*</FormControl>*/}
+
+                        {/*)*/}
+
+
+
+                    {/*})}*/}
+
                     {/*TIER 1*/}
-                    {countries && country_selected && <FormControl>
+                    {countries && country_selected &&
+
+
+                    <FormControl>
                         <NativeSelect
                             value={country_selected}
                             style={{width: '150px', marginRight: '20px'}}
