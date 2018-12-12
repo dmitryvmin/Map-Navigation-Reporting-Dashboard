@@ -33,4 +33,4 @@ stages:
   - name: bvt test
     script:
       - apk update; apk add openssh
-      - ssh -i ~/.ssh/pe_id_rsa leveler@10.1.73.141 -tt "docker exec -it v8-server sh -c \"./valid8.sh --project=1 --test_plan=271 --configurations='bvt,chrome,remote_off\&65'\""
+      - ssh -i ~/.ssh/pe_id_rsa leveler@10.1.73.141 -tt "docker exec -it v8-server sh -c \"./valid8.sh --project=1 --test_plan=271 --configurations='bvt,chrome,remote_on\&65'\""
