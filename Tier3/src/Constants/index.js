@@ -22,7 +22,6 @@ const AUCMA_PORT = '9003';
 const ADMIN_PORT = '8099';
 const UPLOADED_DEVICES = '8780';
 
-
 // API Actions
 const API_CALL_REQUEST = "API_CALL_REQUEST";
 const API_CALL_SUCCESS = "API_CALL_SUCCESS";
@@ -39,21 +38,12 @@ export const FACILITY_LEVEL = "FACILITY_LEVEL";
 export const UPDATE_NAV = 'UPDATE_NAV';
 export const NAVIGATION = 'NAVIGATION';
 
-export const NAV_COUNTRY_SELECTED = "NAV_COUNTRY_SELECTED";
-export const NAV_STATE_SELECTED = "NAV_STATE_SELECTED";
-export const NAV_LGA_SELECTED = "NAV_LGA_SELECTED";
-export const NAV_FACILITY_SELECTED = "NAV_FACILITY_SELECTED";
-export const NAV_MANUFACTURER_SELECTED = "NAV_MANUFACTURER_SELECTED";
+export const MAP_CLICKED = 'MAP_CLICKED';
 
 export const COUNTRIES_MAP = "COUNTRIES_MAP";
 export const STATES_MAP = "STATES_MAP";
 export const LGAS_MAP = "LGAS_MAP";
 export const FACILITIES_MAP = "FACILITIES_MAP";
-
-export const COUNTRIES = "COUNTRIES";
-export const STATES = "STATES";
-export const LGAS = "LGAS";
-export const FACILITIES = "FACILITIES";
 
 export const SENSORS_MAP = "SENSORS_MAP";
 export const GEO_MAP = "GEO_MAP";
@@ -62,8 +52,8 @@ export const MAP_VIEWPORT = "MAP_VIEWPORT";
 export const MAP_STYLE = "MAP_STYLE";
 
 // Styles
-export const SELECTED_COLOR = "#e9e9e9";
-export const SHADED_COLOR = "#d3d3d3";
+export const SELECTED_COLOR = "#f5f5f5";
+export const DESELECTED_COLOR = "#bcbcbc";
 
 export default class GGConsts {
 
@@ -77,21 +67,8 @@ export default class GGConsts {
   static get SELECTED_COLOR() {
     return SELECTED_COLOR;
   }
-  static get SHADED_COLOR() {
-    return SHADED_COLOR;
-  }
-
-  static get COUNTRIES() {
-    return COUNTRIES;
-  }
-  static get STATES() {
-    return STATES;
-  }
-  static get LGAS() {
-    return LGAS;
-  }
-  static get FACILITIES() {
-    return FACILITIES;
+  static get DESELECTED_COLOR() {
+    return DESELECTED_COLOR;
   }
 
   static get API_CALL_SUCCESS() {
@@ -150,20 +127,8 @@ export default class GGConsts {
     return UPDATE_NAV;
   }
 
-  static get NAV_COUNTRY_SELECTED() {
-    return NAV_COUNTRY_SELECTED;
-  }
-  static get NAV_STATE_SELECTED() {
-    return NAV_STATE_SELECTED;
-  }
-  static get NAV_LGA_SELECTED() {
-    return NAV_LGA_SELECTED;
-  }
-  static get NAV_FACILITY_SELECTED() {
-    return NAV_FACILITY_SELECTED;
-  }
-  static get NAV_MANUFACTURER_SELECTED() {
-    return NAV_MANUFACTURER_SELECTED;
+  static get MAP_CLICKED() {
+    return MAP_CLICKED;
   }
 
   static get GG_CREDS() {

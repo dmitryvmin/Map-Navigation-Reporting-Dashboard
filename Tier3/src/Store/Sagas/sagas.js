@@ -7,8 +7,8 @@ import { getCode } from 'country-list';
 import ReactMapGL, { LinearInterpolator, FlyToInterpolator } from 'react-map-gl';
 import { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 import { getCountryObjByName } from './../../Utils';
-import countryCode from 'country-code';
-import { getMapStyle, applyLayerFilter } from './../../Map/map-style.js';
+import cc from 'country-code';
+import { getMapStyle, getFilter, getChildFilter, applyLayerFilter } from './../../Map/map-style.js';
 
 const countries_endpoint = 'https://restcountries.eu/rest/v2/all';
 const states_endpoint = `${'https://cors-anywhere.herokuapp.com/'}https://countryrestapi.herokuapp.com`; // TODO: save Nigeria states locally or find a better API
@@ -18,29 +18,21 @@ const sensors_endpoint = `${GGConsts.API}:${GGConsts.REPORTING_PORT}/sensor/stat
 const navigationMap = [
     {
         index: 0,
-        // type: GGConsts.COUNTRIES,
-        reducer: GGConsts.NAV_COUNTRY_SELECTED,
         type: 'country_selected',
         map: 'countries',
     },
     {
         index: 1,
-        // type: GGConsts.STATES,
-        reducer: GGConsts.NAV_STATE_SELECTED,
         type: 'state_selected',
         map: 'states',
     },
     {
         index: 2,
-        // type: GGConsts.LGAS,
-        reducer: GGConsts.NAV_LGA_SELECTED,
         type: 'lga_selected',
         map: 'lgas',
     },
     {
         index: 3,
-        // type: GGConsts.FACILITIES,
-        reducer: GGConsts.NAV_FACILITY_SELECTED,
         type: 'facility_selected',
         map: 'facilities',
     }];
@@ -132,7 +124,7 @@ function* getNav(curNav, value) {
 }
 
 const getTier = (map, value) => {
-    if (value !== 'all') {
+    if (value !== 'All') {
         // If a specific geographic location is selected, the Tier is of that location type, e.g. location: WA, tier: State Level
         const navTier = getTierName(map.type);
         return navTier;
@@ -146,15 +138,13 @@ const getTier = (map, value) => {
 }
 
 function* navUpdate( action ) {
-
-    // const { type, ...nav } = action;
-    const { navState: { type, ...nav } = {} } = action;
+    const { type, ...nav } = action.navState;
 
     const navType = _.first(_.keys(nav));
     const navValue = _.first(_.values(nav));
 
     if (!navValue || !navType) {
-        console.warn(`Something wrong with the selected action: ${action}`);
+        console.log(`%c something wrong with the selected action: ${action}`, 'background: #c50018; color: white; display: block;');
     }
 
     // ## The update action properties can be found in the navObj map
@@ -169,88 +159,62 @@ function* navUpdate( action ) {
     yield put({ type: GGConsts.NAVIGATION, navigation });
 
     // ## Update Map position, zoom
-    const map_viewport = yield getViewport();
+    const map_viewport = yield getViewport(nav_tier, navigation);
     yield put({ type: GGConsts.MAP_VIEWPORT, map_viewport });
 
+    // Update Map style
+    const map_style = updateMapStyle(navigation, navMap, navValue);
+    yield put({ type: GGConsts.MAP_STYLE, map_style });
 
-    // ## Update Map style/layers
-    // Need to shade regions that are higher up the chain
-    // const mapToUpdate = navigationMap.filter(n => n.index < navObj.index);
-    // get a copy of the map style
-    // let map_style = getMapStyle();
+}
 
+/**
+ * Update Map style/layers
+ * @returns {string} location - Concatenated tiers
+ */
+const updateMapStyle = (navigation, navMap, navValue) => {
+    // 1. Get a copy of the map style
+    let map_style = getMapStyle();
 
-
-
-    // 1. First we shade the parent regions
-    // const parentTiers = navigationMap.filter(n => n.index < navObj.index);
-
-
-
-
-
-
-    // debugger;
-    // if (value && value !== 'allzz') {
-    //     // TODO: should countries be stored as Alpha3 codes? where's the best place to convert - when fetching/storing or when rendering?
-    //     const filter = (action.type === GGConsts.NAV_COUNTRY_SELECTED) ? countryCode.find({name: value}).alpha3 : value;
-    //
-    //
-    //     const childNav = _.first(navigationMap.filter(nav => nav.index === navObj.index + 1));
-    //
-    //     // map_style = applyLayerFilter(map_style, childNav.type, 'all');
-    //     // debugger;
-    //     // shade outer layers
-    //     if (mapToUpdate.length) {
-    //         const _state = yield select();
-    //
-    //         mapToUpdate.forEach(nav => {
-    //             // TODO: refactor - need a helper function to get the filter code. Related to the above TODO
-    //             let value = _state.navigationReducer[nav.state]
-    //             let filter = (nav.type === GGConsts.COUNTRIES) ? countryCode.find({name: value}).alpha3 : value;
-    //
-    //             map_style = applyLayerFilter(map_style, nav.type, filter);
-    //         });
-    //     }
-
-        // lastly, shade the selected nav layer
-
-
-
-        // map_style = applyLayerFilter(map_style, navObj.type, filter);
-        //
-        // yield put({ type: GGConsts.MAP_STYLE, map_style });
-
-
-
-
-
-    // } else if (value && value === 'all') {
-
-        // Fot no country selected view only
-
-        // map_style = applyLayerFilter(map_style, navObj.type, 'all');
-
-
-        // yield put({ type: GGConsts.MAP_STYLE, map_style });
-
-
+    // 2. First shade the parent regions
+    // const parentTiers = navigationMap.filter(n => n.index < navMap.index);
+    // if (parentTiers.length) {
+    //     parentTiers.forEach(n => {
+    //         let type = n.type;
+    //         let value = navigation[type];
+    //         let filter = getFilter('exclude', type, value);
+    //         map_style = applyLayerFilter(map_style, type, filter);
+    //     });
     // }
+    // 3. Shade current layer
+    const filter = getFilter('exclude', navMap.type, navValue);
+    map_style = applyLayerFilter(map_style, navMap.type, filter);
 
+    // 4. Shade inner layer
+    // NOTE: there's no map for facility level
+    if (navMap.type !== 'lga_selected') {
+        const childTier = _.first(navigationMap.filter(n => n.index === navMap.index + 1)) || null;
+        const t = childTier.type;
+        const f = getChildFilter('include', t, navValue);
+
+        map_style = applyLayerFilter(map_style, t, f);
+    }
+
+    return map_style;
 }
 
 /**
  * Get the location selected in the navigation
  * @returns {string} location - Concatenated tiers
  */
-function* getLocation() {
-    const navState = yield select(getNavState);
+function getLocation(navigation) {
+    // const navState = yield select(getNavState);
 
     const {
         country_selected,
         state_selected,
         lga_selected
-    } = navState;
+    } = navigation;
 
     const nav = [country_selected, state_selected, lga_selected];
     const activeNavs = [];
@@ -276,14 +240,14 @@ function* getLocation() {
  * Get the zoom leve for the current tier state
  * @returns {number} zoom
  */
-function* getZoom() {
-    const tier = yield select(getTierState);
+function getZoom(tier) {
+    // const tier = yield select(getTierState);
 
     // TODO: Move this somewhere more fitting
     const zoomMap = {
         [GGConsts.COUNTRY_LEVEL]: 5,
-        [GGConsts.STATE_LEVEL]: 6,
-        [GGConsts.LGA_LEVEL]: 7,
+        [GGConsts.STATE_LEVEL]: 8,
+        [GGConsts.LGA_LEVEL]: 11,
         'default': 5,
     }
 
@@ -292,9 +256,9 @@ function* getZoom() {
 }
 
 
-function* getViewport() {
-    const zoom = yield getZoom();
-    const location = yield getLocation();
+function* getViewport(tier, navigation) {
+    const zoom = getZoom(tier);
+    const location = getLocation(navigation);
     const results = yield geocodeByAddress(location);
     const coordinates = yield getLatLng(_.first(results));
 
@@ -357,7 +321,7 @@ function* getGeo(type, selected = null) {
 
 // add an 'all' option to the hash for the dropdown
 const addAllOption = (data) => {
-    data.unshift('all');
+    data.unshift('All');
     return data;
 }
 
@@ -376,7 +340,9 @@ function* getMapData(type, resource, key) {
     if (data) {
         // remove if data is saved locally instead of fetched from the API
         if (type === GGConsts.COUNTRIES_MAP) data = formatCountryMap(data);
-
+        // sort alphabetically
+        data.sort();
+        // add an `all` option
         addAllOption(data);
         return data;
 

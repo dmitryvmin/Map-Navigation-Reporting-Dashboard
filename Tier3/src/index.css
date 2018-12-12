@@ -43,7 +43,7 @@ body {
 }
 
 .table {
-	min-width: 1020px;
+	/*min-width: 1020px;*/
 }
 
 .error-message {

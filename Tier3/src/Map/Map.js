@@ -10,7 +10,7 @@ import _ from 'lodash';
 
 import * as i18nIsoCountries from 'i18n-iso-countries'; //https://www.npmjs.com/package/i18n-iso-countries
 
-import { setMapViewport } from './../Store/Actions';
+import { setMapViewport, mapClicked } from './../Store/Actions';
 
 import { connect } from "react-redux";
 import GGConsts from '../Constants';
@@ -125,7 +125,10 @@ class Map extends Component {
     }
 
     _onMapClick = e => {
-        console.log('@@', e.features);
+        const layer = _.get(_.first(e.features), 'layer');
+        const props = _.get(_.first(e.features), 'properties');
+        console.log(layer, props);
+        this.props.mapClicked(layer.filter[2]);
     }
 
     _renderPopup() {
@@ -207,6 +210,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         setMapViewport: (map_viewport) => dispatch(setMapViewport(map_viewport)),
+        mapClicked: (prop) => dispatch(mapClicked(prop)),
     }
 }
 

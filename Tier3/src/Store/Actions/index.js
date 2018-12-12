@@ -7,3 +7,10 @@ export const setMapViewport = (map_viewport) => {
     }
 };
 
+export const mapClicked = (prop) => {
+    return {
+        type: GGConsts.MAP_CLICKED,
+        prop
+    }
+}
+

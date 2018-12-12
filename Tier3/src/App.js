@@ -77,13 +77,18 @@ class App extends Component {
                     <Navigation />
                   </Grid>
 
+                  {/*<Grid item xs={12}>*/}
+                    {/*<Paper className={classes.paper}>*/}
+                      {/*<Map />*/}
+                    {/*</Paper>*/}
+                  {/*</Grid>*/}
+
                   <Grid item xs={12} sm={6}>
                     <Paper className={classes.paper}>
                       <Map />
                     </Paper>
                   </Grid>
                   <Grid item xs={12} sm={6}>
-
                     <Grid container spacing={24}>
                       {/*<Grid item xs={12}>*/}
                         {/*<Paper className={classes.paper}>Charts</Paper>*/}
@@ -97,7 +102,6 @@ class App extends Component {
                             {/*</Header>*/}
                             <RTTable />
                           </Card>
-
                         </Paper>
                       </Grid>
                     </Grid>
