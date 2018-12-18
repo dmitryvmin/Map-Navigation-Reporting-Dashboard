@@ -1,309 +1,354 @@
-import React, { Component } from 'react';
-import Immutable, {fromJS} from 'immutable';
-import MapGL, {Marker, Popup, NavigationControl, FlyToInterpolator} from 'react-map-gl';
-// import MapGL from 'react-map-gl-alt';
-import {ScatterplotLayer} from '@deck.gl/layers';
-import Geocoder from 'react-map-gl-geocoder';
-import { getCode } from 'country-list';
-import countryCode from 'country-code';
-import { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
-import _ from 'lodash';
-
-import * as i18nIsoCountries from 'i18n-iso-countries'; //https://www.npmjs.com/package/i18n-iso-countries
-
-import { setMapViewport, mapClicked } from './../Store/Actions';
-
-import { connect } from "react-redux";
 import GGConsts from '../Constants';
-
-import PieChart from 'react-minimal-pie-chart';
-
-import { getCountryObjByName } from './../Utils';
-
-import ControlPanel from './ControlPanel';
+import React, {Component} from 'react';
+import {StaticMap} from 'react-map-gl';
+import DeckGL, {MapView, FirstPersonView, OrbitView, MapController, FlyToInterpolator, GeoJsonLayer, IconLayer} from 'deck.gl';
+import { navigationMap } from './../Utils';
+import { connect } from "react-redux";
+import _ from 'lodash';
 import CityPin from './pin';
-import CityInfo from './info';
+import IconClusterLayer from './icon-cluster-layer';
 
-import getUpdatedMapStyle from './map-style.js';
+import {
+    setMapViewport,
+    mapClicked,
+    navHovered
+} from './../Store/Actions';
 
-import MAP_STYLE from './style.json';
-const MAP_TOKEN = 'pk.eyJ1IjoiZG1pdHJ5bWluIiwiYSI6ImNqb3FmZ2VtcDAwMWszcG84cjJxdWg5NncifQ.mphHlEjmVZzV57R-3BWJqw';
+import markerData from './statesData.json';
+import icon from './location-icon-atlas.png';
+import iconMapping from './location-icon-mapping.json';
+// Source data CSV
+const DATA_URL =
+    'https://raw.githubusercontent.com/uber-common/deck.gl-data/master/examples/icon/meteorites.json';
 
-
-const navStyle = {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    padding: '10px'
-};
-
-const LOCATIONS = [
-    {"city": "Bauchi",
-        "latitude": 10.6371,
-        "longitude": 10.0807},
-    {"city": "Kaduna",
-        "latitude": 10.1590,
-        "longitude": 8.1339},
-    {"city": "Kano",
-        "latitude": 11.7574,
-        "longitude": 8.6601}
-];
-
+const stopPropagation = evt => evt.stopPropagation();
 
 class Map extends Component {
-    state = {
-        mapInfo: '',
-        viewport: {
-            width: '100%',
-            height: 712,
-            latitude: 9.077751,
-            longitude: 8.6774567,
-            zoom: 5
-        }
+    constructor(props) {
+        super(props);
+        this.state = {
+            settings: {
+                orthographic: false,
+                multiview: false,
+                infovis: false,
+                useDevicePixels: true,
+                pickingRadius: 0,
+                drawPickingColors: false,
+
+                // Model matrix manipulation
+                separation: 0,
+                rotationZ: 0,
+                rotationX: 0
+            },
+            markers: [],
+        };
     }
-
-    // mapRef = React.createRef();
-
-    // static getDerivedStateFromProps(nextProps, prevState){
-    //     return nextProps;
-    // }
-    //
-    // componentDidUpdate(prevProps) {
-    //     const {country_selected: prev_country, state_selected: prev_state, lga_selected: prev_lga} = prevProps;
-    //     const {country_selected: curr_country, state_selected: curr_state, lga_selected: curr_lga} = this.props;
-    // }
 
     componentDidMount() {
-
-        if (this.mapRef) {
-            const map = this.mapRef.getMap();
-            map.on('load', function() {
-                // Add a new source from our GeoJSON data and set the
-                // 'cluster' option to true. GL-JS will add the point_count property to your source data.
-                map.addSource("earthquakes", {
-                    type: "geojson",
-                    // Point to GeoJSON data. This example visualizes all M1.0+ earthquakes
-                    // from 12/22/15 to 1/21/16 as logged by USGS' Earthquake hazards program.
-                    data: "https://www.mapbox.com/mapbox-gl-js/assets/earthquakes.geojson",
-                    cluster: true,
-                    clusterMaxZoom: 14, // Max zoom to cluster points on
-                    clusterRadius: 50 // Radius of each cluster when clustering points (defaults to 50)
-                });
-
-                map.addLayer({
-                    id: "clusters",
-                    type: "circle",
-                    source: "earthquakes",
-                    filter: ["has", "point_count"],
-                    paint: {
-                        // Use step expressions (https://www.mapbox.com/mapbox-gl-js/style-spec/#expressions-step)
-                        // with three steps to implement three types of circles:
-                        //   * Blue, 20px circles when point count is less than 100
-                        //   * Yellow, 30px circles when point count is between 100 and 750
-                        //   * Pink, 40px circles when point count is greater than or equal to 750
-                        "circle-color": [
-                            "step",
-                            ["get", "point_count"],
-                            "#51bbd6",
-                            100,
-                            "#f1f075",
-                            750,
-                            "#f28cb1"
-                        ],
-                        "circle-radius": [
-                            "step",
-                            ["get", "point_count"],
-                            20,
-                            100,
-                            30,
-                            750,
-                            40
-                        ]
-                    }
-                });
-
-                map.addLayer({
-                    id: "cluster-count",
-                    type: "symbol",
-                    source: "earthquakes",
-                    filter: ["has", "point_count"],
-                    layout: {
-                        "text-field": "{point_count_abbreviated}",
-                        "text-font": ["DIN Offc Pro Medium", "Arial Unicode MS Bold"],
-                        "text-size": 12
-                    }
-                });
-
-                map.addLayer({
-                    id: "unclustered-point",
-                    type: "circle",
-                    source: "earthquakes",
-                    filter: ["!", ["has", "point_count"]],
-                    paint: {
-                        "circle-color": "#11b4da",
-                        "circle-radius": 4,
-                        "circle-stroke-width": 1,
-                        "circle-stroke-color": "#fff"
-                    }
-                });
-
-                // inspect a cluster on click
-                // map.on('click', 'clusters', function (e) {
-                //     var features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
-                //     var clusterId = features[0].properties.cluster_id;
-                //     map.getSource('earthquakes').getClusterExpansionZoom(clusterId, function (err, zoom) {
-                //         if (err)
-                //             return;
-                //
-                //         map.easeTo({
-                //             center: features[0].geometry.coordinates,
-                //             zoom: zoom
-                //         });
-                //     });
-                // });
-                //
-                // map.on('mouseenter', 'clusters', function () {
-                //     map.getCanvas().style.cursor = 'pointer';
-                // });
-                // map.on('mouseleave', 'clusters', function () {
-                //     map.getCanvas().style.cursor = '';
-                // });
-            });
-        }
+        window.addEventListener('resize', this._resize);
+        this._resize();
     }
 
-    handleViewportChange = _.debounce((map_viewport) => {
-        const { latitude,
-                longitude,
-                zoom } = this.props.map_viewport;
+    componentWillUnmount() {
+        window.removeEventListener('resize', this._resize);
+    }
 
-        const { latitude: new_latitude,
-                longitude: new_longitude,
-                zoom: new_zoom } = map_viewport;
+    _resize = () => {
+        this.setState({
+            viewState: {
+                ...this.state.viewState,
+                width: this.props.width || window.innerWidth,
+                height: this.props.height || window.innerHeight
+            }
+        });
+    }
 
-        if ((new_latitude && new_latitude !== latitude) ||
-            (new_longitude && new_longitude !== longitude) ||
-            (new_zoom && new_zoom !== zoom)) {
+    _onStyleChange(style) {
+        this._interruptionStyle = style;
+    }
 
-            this.props.setMapViewport(map_viewport);
-        }
-    }, 10);
-
-    handleStyleChange = map_style => this.setState({ map_style });
-
-    handleGeocoderViewportChange = (viewport) => {
-        const geocoderDefaultOverrides = { transitionDuration: 1000 }
-
-        return this.handleViewportChange({
-            ...viewport,
-            ...geocoderDefaultOverrides
-        })
+    _onViewStateChange = ({ viewState }) => {
+        this.props.setMapViewport({...viewState, transitionDuration: 0});
     }
 
     _onMapClick = e => {
+        const { tier } = this.props;
         const layer = _.get(_.first(e.features), 'layer');
         const props = _.get(_.first(e.features), 'properties');
-        console.log(layer, props);
-        // this.props.mapClicked(layer.filter[2]);
 
-
+        // if (layer && props) {
+        //     const type = _.first(layer.id.split('-'));
+        //     const filter = getFilterKey(type);
+        //     let value = _.get(props, filter);
+        //     if (type === 'country_selected') value = getCountryName(value);
+        //     // const toMap = _.first(navigationMap.filter(n => n.index === curMap.index + 1));
+        //
+        //     this.props.navigateTo({ [type]: value });
+        // }
     }
 
-    _onMapHover = e => {
-        if (e.features.length > 0) {
-            const source = _.get(_.first(e.features), 'source');
-            const id = _.get(_.first(e.features), 'id');
-        //     console.log('@@', source, id);
-        //     // this.mapRef.getMap().setFeatureState({source, id}, {hover: true});
+    // _renderTooltip = () => {
+    //     const {x, y, hoveredObject} = this.state;
+    //     return (
+    //         hoveredObject && (
+    //             <div className="tooltip" style={{position: 'absolute', zIndex: 1000, top: y - 50, left: x}}>
+    //                 <div>{hoveredObject.properties.admin2Name} </div>
+    //             </div>
+    //         )
+    //     );
+    // }
 
-            console.log('@@', _.first(e.features), source, id);
+    _onLayerHover = ({x, y, object}) => {
+        if (!object) {
+            return null;
+        }
 
-            const map = this.mapRef.getMap();
+        const { tier } = this.props;
+        const curMap = _.first(navigationMap.filter(f => f.tier === tier));
+        const newMap = _.first(navigationMap.filter(f => f.index === curMap.index + 1));
+        const value = object.properties[newMap.code]
 
-            map.setFeatureState({source: 'state_selected-include', id: 616}, { hover: true});
+        if (!value) {
+            console.log(`%c something wrong with the hovered location: ${value}`, 'background: #c50018; color: white; display: block;');
+        } else {
+            this.props.navHovered(value);
         }
     }
 
-    // _renderPopup() {
-    //     const {popupInfo} = this.state;
-    //
-    //     return popupInfo && (
-    //             <Popup tipSize={5}
-    //                    anchor="top"
-    //                    longitude={popupInfo.longitude}
-    //                    latitude={popupInfo.latitude}
-    //                    onClose={() => this.setState({popupInfo: null})} >
-    //                 <CityInfo info={popupInfo} />
-    //             </Popup>
-    //         );
-    // }
+    _onLayerClick = e => {
+        console.log(e.object.properties);
+    }
 
-    handleAddressChange = address => {
-        geocodeByAddress(address.name)
-            .then(results => getLatLng(results[0]))
-            .then(coord => {
-                    this.setState(prevState => ({
-                        ...prevState,
-                        viewport: {
-                            ...prevState.viewport,
-                            latitude: coord.latitude,
-                            longitude: coord.longitude
-                        }
-                    }))
-                }
-            );
+    // DeckGL and mapbox will both draw into this WebGL context
+    _onWebGLInitialized = (gl) => {
+        this.setState({gl});
+    }
 
+    _renderLayers = () => {
+        const { tier, navigation, hover, viewState } = this.props;
+        const layers = [];
+
+        const getChildGeoLayer = (map) => {
+            return new GeoJsonLayer({
+                id: `${hover && hover}-${map.type}`,
+                data: map.data,
+                opacity: 0.8,
+                stroked: false,
+                filled: true,
+                extruded: false,
+                wireframe: true,
+                fp64: true,
+                getLineColor: [255, 255, 255],
+                getFillColor: f => (f.properties[map.code] === hover) ? [255, 255, 0] : [199, 233, 180],
+                updateTrigger: {
+                    getFillColor: hover
+                },
+                pickable: true,
+                onHover: this._onLayerHover,
+                onClick: this._onLayerClick,
+            })
+
+        }
+
+        const getCurGeoLayer = (map, data) => {
+            return new GeoJsonLayer({
+                id: `${hover && hover}-${map.type}`,
+                data: data,
+                opacity: 0.8,
+                stroked: false,
+                filled: true,
+                extruded: true,
+                wireframe: true,
+                fp64: true,
+                getLineColor: [255, 255, 255],
+                // getFilterValue: f => f.properties[map.code],
+                getFillColor: [105, 105, 105],
+                // pickable: true,
+                // onHover: this._onHover,
+                // onClick: this._onClick,
+            })
+
+        }
+
+        // 1. Current Tier Layers
+        const curMap = _.first(navigationMap.filter(f => f.tier === tier));
+        const selected = navigation[curMap.type];
+
+        const test = curMap.data.features.filter(f => f.properties[curMap.code] === selected);
+        console.log('@@test', curMap.data.features, test);
+        const data = curMap.data.features.filter(f => {
+
+            return( f.properties[curMap.code] !== selected );
+        });
+
+        // Add Markers
+        // data && this.setState({ markers: data });
+        const getIconsLayer = (data) => {
+            const icons = new IconLayer({
+                id: 'icon',
+                data,
+                wrapLongitude: true,
+                getIcon: d => 'marker',
+                sizeScale: 15,
+                getPosition: d => d.geometry.coordinates,
+                getColor: [188, 0, 23],
+                iconPoi: 'https://static.thenounproject.com/png/1164981-200.png',
+                iconMapping: {
+                    marker: {
+                        x: 0,
+                        y: 0,
+                        width: 128,
+                        height: 128,
+                        anchorY: 128,
+                        mask: true,
+                    },
+                },
+            })
+        }
+
+        // const markers = getIconsLayer(data);
+        // layers.push(markers);
+
+        const curLayer = getCurGeoLayer(curMap, data);
+        // layers.push(curLayer);
+
+        // if (hovered !== selected) {
+        //     this.setState({ hovered: selected });
+        // }
+
+        // 2. Child Tier Layers
+        const childMap = _.first(navigationMap.filter(f => f.index === curMap.index + 1));
+        const childLayer = getChildGeoLayer(childMap);
+
+        layers.push(childLayer);
+        
+        const showCluster = true;
+
+        const layerProps = {
+            data: DATA_URL,
+            pickable: true,
+            wrapLongitude: true,
+            getPosition: d => d.coordinates,
+            iconMapping: iconMapping,
+            iconAtlas: icon,
+            sizeScale: 60
+        };
+
+        const size = viewState ? Math.min(Math.pow(1.5, viewState.zoom - 10), 1) : 0.1;
+
+        const markerLayers = showCluster
+            ? new IconClusterLayer({...layerProps, id: 'icon-cluster'})
+            : new IconLayer({
+                ...layerProps,
+                id: 'icon',
+                getIcon: d => 'marker',
+                getSize: size
+            });
+
+        layers.push(markerLayers);
+
+
+        // FACILITIES.map(d => {
+        //     layers.push(new ScatterplotLayer({
+        //         id: 'geojson-facilities',
+        //         data: d,
+        //         radiusScale: 20,
+        //         getPosition: d => ({longitude: d.coordinates.longitude, latitude: d.coordinates.latitude}),
+        //         getColor: [255, 140, 0],
+        //         pickable: true,
+        //         // onHover: this._onHover
+        //     }))
+        // })
+
+        return layers;
+    }
+
+    _getViews = () => {
+        const {
+            settings: {orthographic}
+        } = this.state;
+        // https://github.com/uber/deck.gl/blob/6.3-release/examples/layer-browser/src/app.js
+        return new MapView({id: 'basemap', controller: MapController, orthographic});
     }
 
     render() {
-        const { mapInfo } = this.state;
-        const { map_viewport,
-                map_style } = this.props;
+        const { viewState, mapStyle } = this.props;
+        const { gl, markers } = this.state;
+
+        const views = this._getViews();
+        const layers = this._renderLayers();
 
         return (
-            <React.Fragment>
-                {this.state.viewport && <MapGL
-                    mapboxApiAccessToken={MAP_TOKEN}
-                    mapStyle={map_style}
-                    ref={(map) => { this.mapRef = map; }}
-                    {...map_viewport}
-                    onViewportChange={this.handleViewportChange}
-                    onClick={this._onMapClick}
-                    style={{height: '500px'}}
+            <div>
+                <DeckGL
+                    // initialViewState={INITIAL_VIEW_STATE}
+                    viewState={viewState}
+                    controller={{type: MapController, dragRotate: false}}
+                    onViewStateChange={this._onViewStateChange}
+                    // views={views}
+                    ref={(ref) => {
+                        // save a reference to the Deck instance
+                        this._deck = ref && ref.deck
+                    }}
+                    layers={layers}
+                    // onClick={this._onMapClick}
                     // onHover={this._onMapHover}
+                    onWebGLInitialized={this._onWebGLInitialized}
                 >
-                    {/*{ LOCATIONS.map(this._renderCityMarker) }*/}
+                    {gl && <StaticMap
+                        ref={ref => {
+                            // save a reference to the mapboxgl.Map instance
+                            this._map = ref && ref.getMap();
+                        }}
+                        // gl={gl}
+                        preventStyleDiffing={true}
+                        reuse
+                        mapStyle={'mapbox://styles/mapbox/light-v9'}
+                        mapboxApiAccessToken={GGConsts.MAPBOX_TOKEN}>
 
-                    {/*{this._renderPopup()}*/}
 
-                    <div className="nav" style={navStyle}>
-                        <NavigationControl onViewportChange={this.handleViewportChange} />
-                    </div>
+                        {/*<Marker latitude={9.0820} longitude={8.6753} offsetLeft={-20} offsetTop={-10}>*/}
+                        {/*<div>You are here</div>*/}
+                        {/*</Marker>*/}
 
-                    {/*<ControlPanel*/}
-                    {/*containerComponent={this.props.containerComponent}*/}
-                    {/*onChange={this.handleStyleChange} />*/}
+                    </StaticMap>
+                    }
 
-                </MapGL>}
-                {/*<pre>{mapInfo && mapInfo}</pre>*/}
-            </React.Fragment>
+                    {/*{this._renderTooltip}*/}
+
+                </DeckGL>
+
+                {/*<ControlPanel*/}
+                {/*containerComponent={this.props.containerComponent}*/}
+                {/*onViewportChange={this._easeTo.bind(this)}*/}
+                {/*interruptionStyles={interruptionStyles}*/}
+                {/*onStyleChange={this._onStyleChange.bind(this)}*/}
+                {/*/>*/}
+            </div>
         );
     }
 }
 
 const mapStateToProps = state => {
     return {
-        map_viewport: state.mapReducer.map_viewport,
-        map_style: state.mapReducer.map_style,
+        viewState: state.mapReducer.map_viewport,
+        mapStyle: state.mapReducer.map_style,
+        layers: state.mapReducer.map_layers,
         country_selected: state.navigationReducer.country_selected,
         state_selected: state.navigationReducer.state_selected,
         lga_selected: state.navigationReducer.lga_selected,
+        navigation: state.navigationReducer.navigation,
+        tier: state.navigationReducer.nav_tier,
+        hover: state.navigationReducer.nav_hover,
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
         setMapViewport: (map_viewport) => dispatch(setMapViewport(map_viewport)),
+        navigateTo: (navState) => dispatch({ type: GGConsts.UPDATE_NAV, navState }),
+        navHovered: (nav_hover) => dispatch({ type: GGConsts.NAV_HOVER, nav_hover }),
+        // navHovered: (val) => dispatch(navHovered(val)),
         mapClicked: (prop) => dispatch(mapClicked(prop)),
     }
 }

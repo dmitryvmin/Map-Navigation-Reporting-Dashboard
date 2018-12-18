@@ -1,27 +1,16 @@
 import React from 'react';
-import classNames from 'classnames';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { dstyles } from './../Constants/deviceStyle';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Checkbox from '@material-ui/core/Checkbox';
-import IconButton from '@material-ui/core/IconButton';
 import GGConsts from '../Constants';
 import EnhancedTableHead from './EnhancedTableHead';
-import loadDevices from './../Services/API';
-import DeviceDetail from './../PrimeContent/DeviceDetail';
-import AppContext from './../Services/Context';
 import { connect } from "react-redux";
-import LiveTableRow from './LiveTableRow';
+import Row from './Row';
 import ManualTableRow from './ManualTableRow';
+import { navigationMap } from './../Utils';
+import _ from 'lodash';
+import { navHovered } from './../Store/Actions';
 
 import { desc,
     stableSort,
@@ -50,20 +39,34 @@ const getColumns = navTier => {
 
     switch(navTier) {
         case GGConsts.COUNTRY_LEVEL:
-            columns.push({ id: 'States', numeric: false, disablePadding: true, label: 'States' });
+            columns.push({ id: 'states', numeric: false, disablePadding: true, label: 'States' });
             break;
         case GGConsts.STATE_LEVEL:
-            columns.push({ id: 'LGAs', numeric: false, disablePadding: true, label: 'LGAs' });
+            columns.push({ id: 'lgas', numeric: false, disablePadding: true, label: 'LGAs' });
             break;
         case GGConsts.LGA_LEVEL:
-            columns.push({ id: 'Facilities', numeric: false, disablePadding: true, label: 'Facilities' });
+            columns.push({ id: 'facilities', numeric: false, disablePadding: true, label: 'Facilities' });
             break;
         case GGConsts.FACILITY_LEVEL:
-            columns.push({ id: 'Devices', numeric: false, disablePadding: true, label: 'Devices' });
+            columns.push({ id: 'devices', numeric: false, disablePadding: true, label: 'Devices' });
             break;
     }
 
     return columns;
+}
+
+const getData = tier => {
+
+    const curNavMap = _.first(navigationMap.filter(f => f.tier === tier));
+    const childNavMap = _.first(navigationMap.filter(f => f.index === curNavMap.index + 1));
+
+    const data = childNavMap.data.features.reduce((acc, cur) => {
+       let name = cur.properties[childNavMap.code];
+       acc.push({ [childNavMap.map]: name });
+       return acc;
+    }, []);
+
+    return data;
 }
 
 class RTTable extends React.Component {
@@ -71,8 +74,8 @@ class RTTable extends React.Component {
         super(props);
         this.state = {
             order: 'asc',
-            orderBy: 'status',
-            data: [],
+            orderBy: 'states',
+            data: getData(this.props.nav_tier),
             errors: [],
             page: 0,
             rowsPerPage: 10,
@@ -83,91 +86,32 @@ class RTTable extends React.Component {
         this.intervalId = null;
     }
 
-    async componentDidMount() {
-        this.loadData();
-        if ( !this.state.selectedDevice ) {
-            this.intervalId = setInterval( this.loadData, 10000 );
-        }
-    }
-
-    componentWillUnmount() {
-        clearInterval(this.intervalId);
-        this.selectedDevice = null;
-    }
-
-    loadData = async () => {
-    }
+    // async componentDidMount() {
+    //     this.loadData();
+    //     if ( !this.state.selectedDevice ) {
+    //         this.intervalId = setInterval( this.loadData, 10000 );
+    //     }
+    // }
+    //
+    // componentWillUnmount() {
+    //     clearInterval(this.intervalId);
+    //     this.selectedDevice = null;
+    // }
+    //
+    // loadData = async () => {
+    // }
 
     mapPropsToTableColumns = (data) => {
         const device_info = [];
 
         data.forEach(d => {
-            const obj = {
-                id : d.id,
-                sensor : d,
-                status : checkStatus(d),
-                errors : this.getErrors(d),
-                brand : `${d.manufacturer} - ${d.model}`,
-                facility : d.facility.name,
-                district : d.facility.district,
-                holdover : (this.state.device_info && this.state.device_info[d.id] && this.state.device_info[d.id].holdover)
-                    ? [...this.state.device_info[d.id].holdover, precisionRound(d.holdover, 0)]
-                    : [precisionRound(d.holdover, 0)],
-
-                lastping : this.getLastPing(d),
-                lastpingstyle : timechecker48(d.temperature) ? dstyles.redPing : dstyles.clearPing,
-                lasttemp : parseInt(`${Math.round(parseFloat(d.temperature.value))}`),
-                uploaded: false
-            }
+            const obj = {}
 
             device_info.push(obj);
 
         });
 
         return device_info;
-    }
-
-    getLastPing = (sensor) => {
-        let lastping = getLastPingHours(sensor);
-
-        if (lastping !== null && lastping <= 26) {
-            let time = ( lastping === 1 ) ? 'hour' : 'hours';
-
-            return `${lastping} ${time} ago`;
-
-        } else if (lastping !== null && lastping > 26) {
-            let days = Math.floor(lastping / 24);
-            let daycount = (days === 1) ? 'day' : 'days';
-            let hours = Math.round(lastping - (days * 24));
-            let hourscount = (hours === 1) ? 'hour' : 'hours';
-
-            return `${days} ${daycount}, ${hours && hours} ${hourscount} ago`;
-
-        } else {
-            console.warn('getLastPing - no timestamp. sensor: ', sensor);
-            return '-';
-        }
-    }
-
-    getErrors = (sensor) => {
-        let lastping = getLastPingHours(sensor);
-
-        // TODO: sensor object should return errors...
-        if (lastping > 26) {
-            let error = `Over 26 hours since any data has been received`;
-            let sensorErrorPresent = false;
-
-            // this.state.errors && Object.keys(this.state.errors).map((e) => {
-            //   if (sensor.id === e) sensorErrorPresent = true;
-            // });
-            // if (!sensorErrorPresent) this.setState({ errors: {...this.state.errors, [sensor.id]: error } });
-            this.setState({ errors: {...this.state.errors, [sensor.id]: error } });
-
-            return error;
-
-        } else  {
-            return null;
-        }
     }
 
     handleRequestSort = (event, property) => {
@@ -181,18 +125,24 @@ class RTTable extends React.Component {
         this.setState({ order, orderBy });
     };
 
-    handleRowClick = (event, device) => {
-        console.log(event, device);
-        this.setState({isDetailOpen: true, selectedDevice: device });
+    getNewNav = location => {
+        const {nav_tier} = this.props;
+        const curMap = _.first(navigationMap.filter(f => f.tier === nav_tier));
+        const childMap = _.first(navigationMap.filter(f => f.index === curMap.index + 1));
+        const value = location[childMap.map];
+
+        return({ type: childMap.type, value });
     }
 
-    handleDetailOpen = () => {
-        this.setState({isDetailOpen: true});
-    };
+    handleRowHover = location => e => {
+        const newNav = this.getNewNav(location);
+        this.props.navHovered(newNav.value);
+    }
 
-    handleDetailClose = () => {
-        this.setState({isDetailOpen: false, selectedDevice: null});
-    };
+    handleRowClick = location => e => {
+        const newNav = this.getNewNav(location);
+        this.props.updateNav(newNav.type, newNav.value);
+    }
 
     handleChangePage = (event, page) => {
         this.setState({ page });
@@ -202,25 +152,19 @@ class RTTable extends React.Component {
         this.setState({ rowsPerPage: event.target.value });
     };
 
-    isSelected = id => {
-        this.state.selected && this.state.selected.indexOf(id) !== -1;
-    }
-
     render() {
-        const { classes,
-                table,
-                nav_tier } = this.props;
-
+        const {nav_tier} = this.props;
         if (!nav_tier) {
             return null;
         }
 
-        const { data,
+        const {
+            data,
             order,
             orderBy,
-            selected,
             rowsPerPage,
-            page } = this.state;
+            page
+        } = this.state;
 
         const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
@@ -239,51 +183,45 @@ class RTTable extends React.Component {
                                                orderBy={orderBy}
                                                onRequestSort={this.handleRequestSort}
                                                rowCount={data.length}/>
-                            {/*<TableBody>*/}
-                                {/*{stableSort(data, getSorting(order, orderBy))*/}
-                                    {/*.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)*/}
-                                    {/*.map((d, i) => {*/}
-                                        {/*const isSelected = this.isSelected(d.id);*/}
-                                        {/*return(*/}
-                                            {/*<LiveTableRow d={d} key={`${d}-${i}`} isSelected={isSelected} handleRowClick={this.handleRowClick} />*/}
-                                        {/*)*/}
-                                    {/*})}*/}
+                            <TableBody>
+                                {stableSort(data, getSorting(order, orderBy))
+                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                    .map((d, i) => {
+                                        // const isSelected = this.isSelected(d.id);
+                                        return(
+                                            <Row data={d}
+                                                 key={`${d}-${i}`}
+                                                 columns={columns}
+                                                 handleRowHover={this.handleRowHover}
+                                                 handleRowClick={this.handleRowClick} />
+                                        )
+                                    })}
                                 {/*{emptyRows > 0 && (*/}
                                     {/*<TableRow style={{ height: 49 * emptyRows }}>*/}
                                         {/*<TableCell colSpan={6} />*/}
                                     {/*</TableRow>*/}
                                 {/*)}*/}
-                            {/*</TableBody>*/}
+                            </TableBody>
                         </Table>
                     }
                 </TableWrapper>
-                {/*<TablePagination component="div"*/}
-                                 {/*rowsPerPageOptions={[10,20,50]}*/}
-                                 {/*count={data.length}*/}
-                                 {/*rowsPerPage={rowsPerPage}*/}
-                                 {/*page={page}*/}
-                                 {/*backIconButtonProps={{*/}
-                                     {/*'aria-label': 'Previous Page',*/}
-                                 {/*}}*/}
-                                 {/*nextIconButtonProps={{*/}
-                                     {/*'aria-label': 'Next Page',*/}
-                                 {/*}}*/}
-                                 {/*onChangePage={this.handleChangePage}*/}
-                                 {/*onChangeRowsPerPage={this.handleChangeRowsPerPage}/>*/}
+                <TablePagination component="div"
+                                 rowsPerPageOptions={[10,20,50]}
+                                 count={data.length}
+                                 rowsPerPage={rowsPerPage}
+                                 page={page}
+                                 backIconButtonProps={{
+                                     'aria-label': 'Previous Page',
+                                 }}
+                                 nextIconButtonProps={{
+                                     'aria-label': 'Next Page',
+                                 }}
+                                 onChangePage={this.handleChangePage}
+                                 onChangeRowsPerPage={this.handleChangeRowsPerPage}/>
             </Container>
         );
     }
 }
-
-const Container = styled.div`
-
-    margin: 0px auto;
-    background-color: white;
-    margin-top: 15px;
-`;
-const TableWrapper = styled.div`
-    overflow-x: auto;
-`;
 
 const mapStateToProps = state => {
     return {
@@ -295,4 +233,20 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps, null)(RTTable);
+const mapDispatchToProps = dispatch => {
+    return {
+        updateNav: (type, val) => dispatch({ type: GGConsts.UPDATE_NAV, [type]: val }),
+        navHovered: (nav_hover) => dispatch({ type: GGConsts.NAV_HOVER, nav_hover }),
+    };
+};
+
+const Container = styled.div`
+    margin: 0px auto;
+    background-color: white;
+    margin-top: 15px;
+`;
+const TableWrapper = styled.div`
+    overflow-x: auto;
+`;
+
+export default connect(mapStateToProps, mapDispatchToProps)(RTTable);

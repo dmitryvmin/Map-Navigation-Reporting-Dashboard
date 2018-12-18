@@ -33,20 +33,20 @@ const renderActiveShape = (props) => {
                 endAngle={endAngle}
                 fill={color}
             />
-            {/*<Sector*/}
-                {/*cx={cx}*/}
-                {/*cy={cy}*/}
-                {/*startAngle={startAngle}*/}
-                {/*endAngle={endAngle}*/}
-                {/*innerRadius={outerRadius + 6}*/}
-                {/*outerRadius={outerRadius + 10}*/}
-                {/*fill={color}*/}
-            {/*/>*/}
+            <Sector
+                cx={cx}
+                cy={cy}
+                startAngle={startAngle}
+                endAngle={endAngle}
+                innerRadius={outerRadius + 6}
+                outerRadius={outerRadius + 10}
+                fill={color}
+            />
             {/*<path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={color} fill="none"/>*/}
             {/*<circle cx={ex} cy={ey} r={2} fill={color} stroke="none"/>*/}
             {/*<text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor} fill="#333">{`${value}...`}</text>*/}
             {/*<text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={18} textAnchor={textAnchor} fill="#333">*/}
-                {`Ratio...`}
+                {/*{`Ratio...`}*/}
                 {/*{`(Rate ${(percent * 100).toFixed(0)}%)`}*/}
             {/*</text>*/}
         </g>
@@ -66,15 +66,15 @@ class TwoLevelPieChart extends React.Component {
 
     render () {
         return (
-            <PieChart width={50} height={50}>
+            <PieChart width={75} height={75}>
                 <Pie
                     activeIndex={this.state.activeIndex}
                     activeShape={renderActiveShape}
                     data={data}
                     // cx={300}
                     // cy={200}
-                    innerRadius={25}
-                    outerRadius={45}
+                    innerRadius={15}
+                    outerRadius={25}
                     // fill="red"
                     onMouseEnter={this.onPieEnter}
                 >

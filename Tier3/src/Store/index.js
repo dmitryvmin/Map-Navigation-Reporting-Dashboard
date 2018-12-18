@@ -1,6 +1,7 @@
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import createSagaMiddleware from 'redux-saga'
 import loggerMiddleware from 'redux-logger';
+import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly';
 import reducers from './Reducers/index.js';
 import { initSaga, watcherSaga, sensorDataSaga } from './Sagas/sagas.js'
 import { persistStore, persistReducer, persistCombineReducers } from 'redux-persist';
@@ -17,8 +18,10 @@ const persistConfig = {
 // create the saga middleware
 const sagaMiddleware = createSagaMiddleware();
 
-// dev tools middleware
-const reduxDevTools = window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__();
+const middleware = [
+    applyMiddleware(sagaMiddleware),
+    ...(window.__REDUX_DEVTOOLS_EXTENSION__ ? [window.__REDUX_DEVTOOLS_EXTENSION__()] : [])
+];
 
 // const persistCombinedReducers = persistCombineReducers(persistConfig, reducers);
 
@@ -26,14 +29,14 @@ const reduxDevTools = window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVT
 const store = createStore(
     combineReducers(reducers),
     // persistCombinedReducers,
-    compose(applyMiddleware(sagaMiddleware), reduxDevTools)
+    compose(...middleware)
 );
 
 // run only once - when hooking up redux-persist, check if country state has already been fetched
 // TODO: finish hook up redux-persist
 
 sagaMiddleware.run(watcherSaga);
-sagaMiddleware.run(sensorDataSaga);
+// sagaMiddleware.run(sensorDataSaga);
 sagaMiddleware.run(initSaga);
 
 // export const persistor = persistStore(store);

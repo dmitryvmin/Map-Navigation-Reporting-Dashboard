@@ -1,39 +1,22 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
+import {connect} from "react-redux";
 import _ from 'lodash';
-
 import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
 import NativeSelect from '@material-ui/core/NativeSelect';
 import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
-
-import { getCountryObjByName, navigationMap, getFromNavMap } from './../Utils';
-
-import store from './../Store/index.js';
-import { connect } from "react-redux";
+import {
+    navigationMap,
+    getFromNavMap,
+    formatLabel
+} from './../Utils';
 import GGConsts from '../Constants';
 
 const config = {
-    headers: { 'Authorization': `Basic ${GGConsts.HEADER_AUTH}` }
+    headers: {'Authorization': `Basic ${GGConsts.HEADER_AUTH}`}
 }
-
 const uri = `${GGConsts.API}:${GGConsts.REPORTING_PORT}/sensor/state`;
 
-
-const styles = theme => ({
-    root: {
-        display: 'flex',
-        flexWrap: 'wrap',
-    },
-    formControl: {
-        margin: theme.spacing.unit,
-        minWidth: 120,
-    },
-    selectEmpty: {
-        marginTop: theme.spacing.unit * 2,
-    },
-})
 
 class Navigation extends Component {
 
@@ -43,8 +26,7 @@ class Navigation extends Component {
 
     handleChange = source => event => {
         const value = event.target.value;
-        const navUpdate = { [source]: value };
-        this.props.updateNav(navUpdate);
+        this.props.updateNav(source, value);
     }
 
     render() {
@@ -52,12 +34,7 @@ class Navigation extends Component {
             fetching,
             sensors,
             error,
-            geo_map: {
-                countries,
-                states,
-                lgas,
-                facilities,
-            } = {},
+            geo_map,
             navigation,
             navigation: {
                 country_selected,
@@ -67,8 +44,6 @@ class Navigation extends Component {
             } = {}
         } = this.props;
 
-        debugger;
-
         return (
             <div style={{display: 'flex'}}>
 
@@ -76,114 +51,41 @@ class Navigation extends Component {
 
                     <h4>Navigation</h4>
 
+                    {Object.entries(navigation).map(nav => {
 
+                        const [t, v] = nav;
+                        const r = _.first(navigationMap.filter(m => m.type === t));
+                        const m = geo_map[r.map];
 
-                    {/*{navigation.map((nav, index) => {*/}
+                        // debugger;
 
+                        if (m && v) {
+                            return (<FormControl key={`${t}-${v}`}>
+                                <NativeSelect
+                                    value={v}
+                                    style={{width: '150px', marginRight: '20px'}}
+                                    onChange={this.handleChange(t)}
+                                    input={<Input name={`${m}`} id={`${m}-native-helper`}/>}
+                                >
+                                    {m.map((n, i) => {
+                                        const name = n.properties[r.code];
+                                        return (
+                                            <option key={`nav-${name}-${i}`} value={name}>{name}</option>
+                                        )
+                                    })}
+                                </NativeSelect>
+                                <FormHelperText>{formatLabel(t)}</FormHelperText>
+                            </FormControl>)
+                        } else {
+                            return null;
+                        }
 
-
-                        {/*return (*/}
-
-                            {/*<FormControl>*/}
-                                {/*<NativeSelect*/}
-                                    {/*value={country_selected}*/}
-                                    {/*style={{width: '150px', marginRight: '20px'}}*/}
-                                    {/*onChange={this.handleChange('country_selected')}*/}
-                                    {/*input={<Input name="country" id="country-native-helper" />}*/}
-                                {/*>*/}
-                                    {/*{countries.map((country, index) => {*/}
-                                        {/*return(*/}
-                                            {/*<option key={`nav-${country}-${index}`} value={country}>{country}</option>*/}
-                                        {/*)*/}
-                                    {/*})}*/}
-                                {/*</NativeSelect>*/}
-                                {/*<FormHelperText>Country</FormHelperText>*/}
-                            {/*</FormControl>*/}
-
-                        {/*)*/}
-
-
-
-                    {/*})}*/}
-
-                    {/*TIER 1*/}
-                    {countries && country_selected &&
-
-
-                    <FormControl>
-                        <NativeSelect
-                            value={country_selected}
-                            style={{width: '150px', marginRight: '20px'}}
-                            onChange={this.handleChange('country_selected')}
-                            input={<Input name="country" id="country-native-helper" />}
-                        >
-                            {countries.map((country, index) => {
-                                return(
-                                    <option key={`nav-${country}-${index}`} value={country}>{country}</option>
-                                )
-                            })}
-                        </NativeSelect>
-                        <FormHelperText>Country</FormHelperText>
-                    </FormControl>}
-
-
-                    {/*TIER 2*/}
-                    {states && state_selected && <FormControl>
-                        <NativeSelect
-                            value={state_selected}
-                            style={{width: '150px', marginRight: '20px'}}
-                            onChange={this.handleChange('state_selected')}
-                            input={<Input name="state" id="state-native-helper" />}
-                        >
-                            {states.map((state, index) => {
-                                return(
-                                    <option key={`nav-${state}-${index}`} value={state}>{state}</option>
-                                )
-                            })}
-                        </NativeSelect>
-                        <FormHelperText>State</FormHelperText>
-                    </FormControl>}
-
-                    {/*TIER 3*/}
-                    {lgas && lga_selected && <FormControl>
-                        <NativeSelect
-                            value={lga_selected}
-                            style={{width: '150px', marginRight: '20px'}}
-                            onChange={this.handleChange('lga_selected')}
-                            input={<Input name="lga" id="state-native-helper" />}
-                        >
-                            {lgas.map((l,i) => {
-                                return(
-                                    <option key={`nav-${l}-${i}`} value={l}>{l}</option>
-                                )
-                            })}
-                        </NativeSelect>
-                        <FormHelperText>LGA</FormHelperText>
-                    </FormControl>}
-
-                    {/*/!*TIER 4*!/*/}
-                    {facilities && facility_selected && <FormControl>
-                        <NativeSelect
-                            value={facility_selected}
-                            style={{width: '150px', marginRight: '20px'}}
-                            onChange={this.handleChange('facility_selected')}
-                            input={<Input name="facility" id="state-native-helper" />}
-                        >
-                            {facilities.map((f, index) => {
-                                return(
-                                    <option key={`nav-${f}-${index}`} value={f}>{f}</option>
-                                )
-                            })}
-                        </NativeSelect>
-                        <FormHelperText>Facility</FormHelperText>
-                    </FormControl>}
+                    })}
 
                 </div>
 
                 <div>
-
                     <h4>Metric</h4>
-
                     {<FormControl>
                         <NativeSelect
                             onChange={this.handleChange('datapoint')}
@@ -200,10 +102,8 @@ class Navigation extends Component {
                     </FormControl>}
 
                 </div>
-
                 <div>
                     <h4>Filters</h4>
-
                     {<FormControl>
                         <NativeSelect
                             onChange={this.handleChange('Manufacturer')}
@@ -218,7 +118,6 @@ class Navigation extends Component {
                         </NativeSelect>
                         <FormHelperText>Manufacturer</FormHelperText>
                     </FormControl>}
-
                     {<FormControl>
                         <NativeSelect
                             onChange={this.handleChange('Timeframe')}
@@ -235,26 +134,6 @@ class Navigation extends Component {
                     </FormControl>}
 
                 </div>
-
-
-
-              {/*<div>*/}
-                    {/*{sensors ? (*/}
-                        {/*<p className="App-intro">Keep clicking for new</p>*/}
-                    {/*) : (*/}
-                        {/*<p className="App-intro">Fetch Data</p>*/}
-                    {/*)}*/}
-
-                    {/*{fetching ? (*/}
-                        {/*<button disabled>Fetching...</button>*/}
-                    {/*) : (*/}
-                        {/*<button onClick={this.onRequestData}>Request Data</button>*/}
-                    {/*)}*/}
-
-                    {/*{error && <p style={{ color: "red" }}>Uh oh - something went wrong!</p>}*/}
-
-                    {/*<pre>{sensors && JSON.stringify(sensors)}</pre>*/}
-              {/*</div>*/}
             </div>
         );
     }
@@ -273,10 +152,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onRequestData: (uri, config, resource) => dispatch({ type: GGConsts.API_CALL_REQUEST, uri, config, resource }),
-        updateNav: (navState) => dispatch({ type: GGConsts.UPDATE_NAV, navState }),
+        updateNav: (navType, navVal) => dispatch({ type: GGConsts.UPDATE_NAV, [navType]: navVal }),
     };
 };
-
-export const getUri = state => state.uri;
 
 export default connect(mapStateToProps, mapDispatchToProps)(Navigation);

@@ -1,18 +1,8 @@
 import {fromJS} from 'immutable';
 import GGConsts from './../Constants';
 import MAP_STYLE from './style.json';
-import cc from 'country-code';
 
-const getFilterKey = type => {
-    switch(type) {
-        case 'country_selected':
-            return 'ADM0_A3';
-        case 'state_selected':
-            return 'gn_name';
-        case 'lga_selected':
-            return 'admin2Name';
-    }
-}
+import { getFilterKey, getCountryCode } from './../Utils';
 
 const getSourceLayer = type => {
     switch(type) {
@@ -45,12 +35,6 @@ export const getMapStyle = () => {
     };
 
     return map_style;
-}
-
-const getCountryCode = country => {
-    const c = cc.find({name: country});
-    const code = c.alpha3;
-    return code;
 }
 
 export const getFilter = (mode, type, value) => {
@@ -107,8 +91,8 @@ export const applyLayerFilter = (map_style = MAP_STYLE, type = 'country_selected
                 visibility: 'visible',
                 source: `${type}-${mode}`,
                 paint: {
-                    'fill-outline-color': '#4e4e4e',
-                    'fill-color': GGConsts.DESELECTED_COLOR,
+                    'fill-outline-color': (fkey === 'gn_name') ? 'white' : '#4e4e4e',
+                    'fill-color': (fkey === 'ADM0_A3') ? GGConsts.OFF_COLOR : GGConsts.DESELECTED_COLOR,
                 },
                 filter: ['!in', fkey, fval],
             },

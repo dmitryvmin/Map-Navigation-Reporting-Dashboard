@@ -15,31 +15,31 @@ const pinStyle = {
 export default class CityPin extends PureComponent {
 
     render() {
-        const {onClick, city} = this.props;
+        const {onClick, location} = this.props;
         const size = 50;
 
         return (
             <svg height={size}
-                viewBox="0 0 50 50"
-                style={{...pinStyle, transform: `translate(${-size / 2}px,${-size}px)`, overflow: 'visible'}}
-                onClick={onClick}>
+                 viewBox="0 0 50 50"
+                 style={{...pinStyle, transform: `translate(${-size / 2}px,${-size}px)`, overflow: 'visible'}}
+                 onClick={onClick}>
                 {/*<path d={ICON}/>*/}
                 {/*<circle cx="10" cy="10" r="10"/>*/}
 
-                <foreignObject x="0" y="0" width="50" height="50">
-                    {/*<PieChart lineWidth={50}*/}
-                                         {/*radius={50}*/}
-                                         {/*data={[*/}
-                                             {/*{ title: 'One', value: 10, color: '#E38627' },*/}
-                                             {/*{ title: 'Two', value: 15, color: '#C13C37' },*/}
-                                             {/*{ title: 'Three', value: 20, color: 'green' },*/}
-                                         ]} />
+                <foreignObject x="0" y="50" width="50" height="50">
+                    <PieChart lineWidth={50}
+                              radius={50}
+                              data={[
+                                  {title: 'One', value: 10, color: '#E38627'},
+                                  {title: 'Two', value: 15, color: '#C13C37'},
+                                  {title: 'Three', value: 20, color: 'green'},
+                              ]}/>
 
-                    <TwoLevelPieChart />
+                    {/*<TwoLevelPieChart />*/}
 
                 </foreignObject>
 
-                <text x="0" y="105" fontSize={'18px'} fill={'black'}>{city}</text>
+                <text x="0" y="105" fontSize={'18px'} fill={'black'}>{location.name}</text>
             </svg>
 
         );

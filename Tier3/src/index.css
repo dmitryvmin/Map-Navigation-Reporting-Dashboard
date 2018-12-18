@@ -124,3 +124,9 @@ a.mapboxgl-ctrl-logo, .mapboxgl-ctrl.mapboxgl-ctrl-attrib {
 .mapboxgl-popup-anchor-top {
 	margin-top: 0.5em;
 }
+
+#deckgl-wrapper {
+	height: 500px !important;
+	width: 100% !important;
+	position: relative !important;
+}

@@ -1,16 +1,22 @@
 import GGConsts from './../../Constants';
 
-export const setMapViewport = (map_viewport) => {
+export const setMapViewport = map_viewport => {
     return {
         type: GGConsts.MAP_VIEWPORT,
         map_viewport,
     }
 };
 
-export const mapClicked = (prop) => {
+export const mapClicked = nav_click => {
     return {
         type: GGConsts.MAP_CLICKED,
-        prop
+        nav_click,
     }
 }
 
+export const navHovered = nav_hover => {
+    return {
+        type: GGConsts.NAV_HOVER,
+        nav_hover,
+    }
+}

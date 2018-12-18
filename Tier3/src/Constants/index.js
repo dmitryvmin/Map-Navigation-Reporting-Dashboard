@@ -16,6 +16,8 @@ const OWNER_ID = '5896a5c1-a931-4595-8205-8e7635ca4469';
 
 const RT_HEADER = { headers: { 'Authorization': `Basic ${HEADER_AUTH}` }};
 
+const MAPBOX_TOKEN = 'pk.eyJ1IjoiZG1pdHJ5bWluIiwiYSI6ImNqb3FmZ2VtcDAwMWszcG84cjJxdWg5NncifQ.mphHlEjmVZzV57R-3BWJqw';
+
 // Ports
 const REPORTING_PORT = '9000';
 const AUCMA_PORT = '9003';
@@ -51,12 +53,22 @@ export const GEO_MAP = "GEO_MAP";
 export const MAP_VIEWPORT = "MAP_VIEWPORT";
 export const MAP_STYLE = "MAP_STYLE";
 
+export const NAV_HOVER = "NAV_HOVER";
+
 // Styles
 export const SELECTED_COLOR = "#f5f5f5";
 export const DESELECTED_COLOR = "#bcbcbc";
+export const OFF_COLOR = "#6b6b6b";
 
 export default class GGConsts {
 
+  static get NAV_HOVER() {
+    return NAV_HOVER;
+  }
+
+  static get MAPBOX_TOKEN() {
+    return MAPBOX_TOKEN;
+  }
   static get MAP_VIEWPORT() {
     return MAP_VIEWPORT;
   }
@@ -69,6 +81,9 @@ export default class GGConsts {
   }
   static get DESELECTED_COLOR() {
     return DESELECTED_COLOR;
+  }
+  static get OFF_COLOR() {
+    return OFF_COLOR;
   }
 
   static get API_CALL_SUCCESS() {

@@ -89,11 +89,11 @@ class App extends Component {
                     </Paper>
                   </Grid>
                   <Grid item xs={12} sm={6}>
-                    <Grid container spacing={24}>
+                    {/*<Grid container spacing={24}>*/}
                       {/*<Grid item xs={12}>*/}
                         {/*<Paper className={classes.paper}>Charts</Paper>*/}
                       {/*</Grid>*/}
-                      <Grid item xs={12}>
+                      {/*<Grid item xs={12}>*/}
                         <Paper className={classes.paper}>
 
                           <Card style={{overflow: 'auto'}}>
@@ -103,8 +103,8 @@ class App extends Component {
                             <RTTable />
                           </Card>
                         </Paper>
-                      </Grid>
-                    </Grid>
+                      {/*</Grid>*/}
+                    {/*</Grid>*/}
                   </Grid>
 
                 </Grid>

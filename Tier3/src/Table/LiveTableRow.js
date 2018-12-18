@@ -23,13 +23,13 @@ const LiveTableRow = props => {
               	  selected={isSelected}
   				  aria-checked={isSelected}>
 	      <TableCell style={styles.cell}>
-	        {(d.status === 'red') 
-	         ? <Tippy position="top" 
-	                  interactive 
-	                  trigger="mouseenter" 
-	                  theme="light" 
-	                  distance="20" 
-	                  arrow="true" 
+	        {(d.status === 'red')
+	         ? <Tippy position="top"
+	                  interactive
+	                  trigger="mouseenter"
+	                  theme="light"
+	                  distance="20"
+	                  arrow="true"
 	                  html={(
 	                    <div>
 	                      <div className="error-message">
@@ -39,7 +39,7 @@ const LiveTableRow = props => {
 	                    </div>
 	                  )}>
 	              {statusDisplay(d.status)}
-	            </Tippy> 
+	            </Tippy>
 	         : statusDisplay(d.status)}
 	      </TableCell>
 	      <TableCell style={styles.cell}>
