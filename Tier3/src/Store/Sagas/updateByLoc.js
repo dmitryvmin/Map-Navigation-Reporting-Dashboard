@@ -5,6 +5,7 @@ import { navigationMap } from './../../Utils';
 import getTier from './getTier';
 import getNav from './getNav';
 import getViewport from './getViewport';
+import updateMapboxStyle from './updateMapboxStyle';
 import getMapLayers from './getMapLayers';
 
 /**
@@ -36,7 +37,7 @@ function* updateByLoc( action ) {
     yield put({ type: GGConsts.MAP_VIEWPORT, map_viewport });
 
     // Update Map style
-    // const map_style = updateMapStyle(nav_tier, navigation);
+    // const map_style = updateMapboxStyle(nav_tier, navigation);
     // yield put({ type: GGConsts.MAP_STYLE, map_style });
 
     // Update Layers

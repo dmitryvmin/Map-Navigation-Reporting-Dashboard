@@ -4,6 +4,7 @@ import interactionReducer from './ui';
 import APIreducer from './api';
 import dataReducer from './data';
 import mapReducer from './map';
+import metricReducer from './metric';
 
 const reducers = {
     errorsReducer,
@@ -11,7 +12,8 @@ const reducers = {
     interactionReducer,
     APIreducer,
     dataReducer,
-    mapReducer
+    mapReducer,
+    metricReducer,
 };
 
 export default reducers;

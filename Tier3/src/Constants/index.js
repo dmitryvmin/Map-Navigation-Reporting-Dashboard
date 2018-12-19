@@ -1,12 +1,33 @@
+import { createMuiTheme } from '@material-ui/core/styles';
+import indigo from 'material-ui/colors/indigo';
+
+// Theme
+const THEME_COLOR = '#51326c';
+const MUI_THEME = createMuiTheme({
+    palette: {
+        primary: {
+            main: indigo[500],
+        },
+    },
+    typography: {
+        fontFamily: [
+            "Roboto",
+            "-apple-system",
+            "BlinkMacSystemFont",
+            "Segoe UI",
+            "Arial",
+            "sans-serif"
+        ].join(","),
+        useNextVariants: true
+    }
+});
+
 // API Creds
 const GG_CREDS = 'demo:Change is good!';
 const API_HEADER = {
     'Accept': 'application/json',
     'Authorization': 'Basic ' + btoa(GG_CREDS)
 };
-
-// Theme
-const THEME_COLOR = '#51326c';
 
 // Endpoints
 // TODO: clean up the names
@@ -39,7 +60,6 @@ export const FACILITY_LEVEL = "FACILITY_LEVEL";
 
 export const UPDATE_NAV = 'UPDATE_NAV';
 export const NAVIGATION = 'NAVIGATION';
-
 export const MAP_CLICKED = 'MAP_CLICKED';
 
 export const COUNTRIES_MAP = "COUNTRIES_MAP";
@@ -52,8 +72,16 @@ export const GEO_MAP = "GEO_MAP";
 
 export const MAP_VIEWPORT = "MAP_VIEWPORT";
 export const MAP_STYLE = "MAP_STYLE";
-
 export const NAV_HOVER = "NAV_HOVER";
+
+// Metric Constans=
+export const METRIC_ALARMS = "Alarms";
+export const METRIC_UPTIME = "Uptime";
+export const METRIC_REPORTING = "Reporting";
+export const METRIC_HOLDOVER = "Holdover";
+export const METRICS = [METRIC_ALARMS, METRIC_UPTIME, METRIC_REPORTING, METRIC_HOLDOVER];
+export const UPDATE_METRIC = "UPDATE_METRIC"; // status of the update
+export const METRIC_SELECTED = "METRIC_SELECTED"
 
 // Styles
 export const SELECTED_COLOR = "#f5f5f5";
@@ -61,6 +89,32 @@ export const DESELECTED_COLOR = "#bcbcbc";
 export const OFF_COLOR = "#6b6b6b";
 
 export default class GGConsts {
+
+  static get MUI_THEME() {
+    return MUI_THEME;
+  }
+
+  static get METRICS() {
+    return METRICS;
+  }
+  static get METRIC_SELECTED() {
+    return METRIC_SELECTED;
+  }
+  static get UPDATE_METRIC() {
+    return UPDATE_METRIC;
+  }
+  static get METRIC_ALARMS() {
+    return METRIC_ALARMS;
+  }
+  static get METRIC_UPTIME() {
+    return METRIC_UPTIME;
+  }
+  static get METRIC_REPORTING() {
+    return METRIC_REPORTING;
+  }
+  static get METRIC_HOLDOVER() {
+    return METRIC_HOLDOVER;
+  }
 
   static get NAV_HOVER() {
     return NAV_HOVER;

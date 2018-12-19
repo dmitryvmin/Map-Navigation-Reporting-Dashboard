@@ -1,5 +1,4 @@
 import React from 'react';
-import { dstyles } from './../Constants/deviceStyle';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';

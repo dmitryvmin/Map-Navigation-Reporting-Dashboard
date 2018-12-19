@@ -19,16 +19,23 @@ function navReducer(state = initState, action) {
                 ...state,
                 nav_tier: action.nav_tier
             }
+
         case GGConsts.UPDATE_NAV:
             return {
                 ...state,
                 nav_updating: true,
             }
+
         case GGConsts.NAV_HOVER:
             return {
                 ...state,
-                nav_hover: action.nav_hover,
+                nav_hover: {
+                    value: action.nav_hover.value ? action.nav_hover.value : state.nav_hover.value,
+                    x: action.nav_hover.x ? action.nav_hover.x : state.nav_hover.x,
+                    y: action.nav_hover.y ? action.nav_hover.y : state.nav_hover.y,
+                }
             }
+
         case GGConsts.NAVIGATION:
             return {
                 ...state,

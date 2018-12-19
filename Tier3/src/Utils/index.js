@@ -6,7 +6,7 @@ import lgasData from './../Map/lgasData.json';
 
 export const formatLabel = loc => {
     let label = loc.split('_');
-    label.splice(-1,1);
+    label.splice(-1, 1);
     label = label.join(' ');
     return label;
 }
@@ -17,7 +17,7 @@ export const getCountryObjByName = (data, name) => {
 
 // getFilterKey and getChildFilterKey are for working mapbox shapefiles
 export const getFilterKey = type => {
-    switch(type) {
+    switch (type) {
         case 'country_selected':
             return 'ADM0_A3';
         case 'state_selected':
@@ -27,7 +27,7 @@ export const getFilterKey = type => {
     }
 }
 export const getChildFilterKey = type => {
-    switch(type) {
+    switch (type) {
         case 'country_selected':
             return 'adm0_a3';
         case 'state_selected':
@@ -49,14 +49,68 @@ export const getCountryCode = country => {
     return code;
 }
 
-// TODO: maybe make a getter utility
+// TODO: this function will eventually move into a Data Processing Saga
+// so we can synchronously derive the data state from the selected  metric/filter/time params
+export const getData = tier => {
+
+    const childNav = getNMapChild(tier);
+
+    if (!childNav.data) {
+        return null;
+    }
+
+    const data = childNav.data.features.reduce((acc, cur) => {
+        let name = cur.properties[childNav.code];
+        acc.push({[childNav.map]: name});
+        return acc;
+    }, []);
+
+    return data;
+}
+
+/**
+ * Returns a child map (next down the nav hierarchy, index + 1)
+ * @param {string || number} - take in any of keys that a navigationMap object has
+ * @returns {Object} return a child navigationMap object
+ */
+export const getNMapChild = (value) => {
+    for (let n of navigationMap) {
+        for (let v of Object.values(n)) {
+            if (v === value) {
+                return getNMap(n.index + 1);
+            }
+        }
+        ;
+    }
+    ;
+}
+
+export const getNMap = (value) => {
+    for (let n of navigationMap) {
+        for (let v of Object.values(n)) {
+            if (v === value) {
+                return n;
+            }
+        }
+        ;
+    }
+    ;
+}
+
+export const getNMapByTier = (tier) => {
+    return _.first(navigationMap.filter(f => f.tier === tier));
+}
+
+export const getNMapByIndex = (index) => {
+    return _.first(navigationMap.filter(f => f.index === index));
+}
+
+// TODO: replace strings with constants
 export const navigationMap = [
     {
         index: -1,
         type: 'world_selected',
-        // map: 'countries',
         tier: "WORLD_LEVEL",
-        // code: 'admin0Name',
     },
     {
         index: 0,

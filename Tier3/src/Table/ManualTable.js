@@ -2,7 +2,6 @@ import React from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { dstyles } from './../Constants/deviceStyle';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -11,13 +10,11 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import GGConsts from '../Constants';
 import EnhancedTableHead from './EnhancedTableHead';
 // import loadDevices from './../Services/API';
-import DeviceDetail from './../PrimeContent/DeviceDetail';
 import AppContext from './../Services/Context';
 import { connect } from "react-redux";
 import { storeErrors } from "./../Services/store";
@@ -243,10 +240,10 @@ class LiveTable extends React.Component {
 
     return (
       <Container>
-        {this.state.isDetailOpen && <DeviceDetail isOpen={this.state.isDetailOpen}
-                  handleOpen={this.handleDetailOpen}
-                  handleClose={this.handleDetailClose}
-                  device={this.state.selectedDevice} />}
+        {/*{this.state.isDetailOpen && <DeviceDetail isOpen={this.state.isDetailOpen}*/}
+                  {/*handleOpen={this.handleDetailOpen}*/}
+                  {/*handleClose={this.handleDetailClose}*/}
+                  {/*device={this.state.selectedDevice} />}*/}
 
         <TableWrapper>
           {(!data)

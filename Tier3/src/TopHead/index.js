@@ -1,137 +1,80 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
-import Avatar from 'material-ui/Avatar';
-import SocialPersonOutline from 'material-ui/svg-icons/social/person-outline';
-import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down';
-import IconMenu from 'material-ui/IconMenu';
-import MenuItem from 'material-ui/MenuItem';
-import IconButton from 'material-ui/IconButton';
-import 'typeface-roboto'; 
+import Avatar from '@material-ui/core/Avatar';
+import Person from '@material-ui/icons/PersonOutline';
+// import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down';
+// import MenuItem from '@material-ui/core/MenuItem';
+// import IconButton from '@material-ui/core/IconButton';
+import 'typeface-roboto';
 
 const styles = {
-  topHeader: {
-    width: '100%',
-    display: 'flex',
-    justifyContent: 'space-between',
-    paddingTop: '14px',
-    paddingBottom: '14px',
-    lineHeight: '64px',
-    fontFamily: 'Roboto, sans-serif',
-    backgroundColor: 'white',
-  },
-  avatarFlag: {
-    margin: '12px',
-    lineHeight: '64px',
-    verticalAlign: 'middle',
-    objectFit: 'cover'
-  },
-  avatarUser: {
-    margin: '12px',
-    verticalAlign: 'middle',
-  },
-  titleArea: {
-    fontWeight: '400',
-    verticalAlign: 'middle',
-    fontSize: '22px',
-  },
-  topNavArea: {
-    lineHeight: '80px',
-    verticalAlign: 'middle',
-  },
-  topNavButton: {
-    textTransform: 'none',
-  },
-  userArea: {
-    marginRight: '48px',
-    lineHeight: '80px',
-    verticalAlign: 'middle',
-    fontSize: '18px',
-  },
-  downArrow: {
-    verticalAlign: 'middle',
-  },
-  tabMod: {
-    marginTop: '-48px',
-  },
-  footerwrap: {
-    width: '100%',
-    backgroundColor: 'white',
-    position: 'fixed',
-    bottom: 0,
-    left: 0,
-    padding: '2em 0',
-  },
-  ggfooter: {
-    width: '80vw',
-    margin: '0 auto',
-    paddingTop: '24px',
-    display: 'flex',
-    justifyContent: 'space-between',
-  },
-  footerHeader: {
-    marginTop: 0,
-    fontWeight: 700,
-  },
-  footerUL: {
-    listStyle: 'none',
-    paddingLeft: '0',
-  },
-  deviceTableHeader: {
-    margin: "16px 0 16px 0",
-  },
+    topHeader: {
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'space-between',
+        paddingTop: '14px',
+        paddingBottom: '14px',
+        backgroundColor: 'white',
+    },
+    avatarFlag: {
+        margin: '12px',
+        objectFit: 'cover'
+    },
+    avatarUser: {
+        margin: '12px',
+    },
+    titleArea: {
+        fontWeight: '400',
+        fontSize: '22px',
+        display: 'flex',
+        alignItems: 'center',
+    },
+    userArea: {
+        fontSize: '18px',
+    },
 };
 
 export default class TopHead extends Component {
-  constructor (props, context) {
-    super(props, context);
+    constructor(props, context) {
+        super(props, context);
 
-    this.state = {
-      moh: 'Kenya'
+        this.state = {
+            moh: 'Kenya'
+        }
     }
-  }
 
-  testclick(e, content) {
-    e.preventDefault();
-    console.log(content);
-    this.props.contentChange(content);
-  }
+    testclick(e, content) {
+        e.preventDefault();
+        console.log(content);
+        this.props.contentChange(content);
+    }
 
-  render () {
-    return (
-        <header style={styles.topHeader}>
-          <div style={styles.titleArea} >
-            <Avatar
-              src="/img/flag.jpg"
-              size={60}
-              style={styles.avatarFlag}
-              alt="flag icon"
-            />
-            {/*Example MOH Reporting Tool*/}
-          </div>
-           <div style={styles.topNavArea}>
-            {/*<FlatButton label="People" style={styles.topNavButton} onClick={(e) => this.testclick(e, "people")} />
-            <FlatButton label="Int ORGS" style={styles.topNavButton} onClick={(e) => this.testclick(e, "intorgs")} />
-            <FlatButton label="Admin Tools" style={styles.topNavButton} onClick={(e) => this.testclick(e, "admin")} />*/}
-          </div>
-          <div style={styles.userArea} >
-            <Avatar
-              icon={<SocialPersonOutline />}
-              style={styles.avatarUser}
-            />
-            Jon D.
-            <IconMenu
-              iconButtonElement={<IconButton style={styles.downArrow}><KeyboardArrowDown /></IconButton>}
-              anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-              targetOrigin={{horizontal: 'right', vertical: 'top'}}
-            >
-              <MenuItem primaryText="Change MOH" onClick={(e) => this.testclick(e, "changemoh")} />
-              <MenuItem primaryText="Change User" onClick={(e) => this.testclick(e, "changeuser")} />
-              <MenuItem primaryText="Settings" onClick={(e) => this.testclick(e, "settings")} />
-              <MenuItem primaryText="Reset Data" onClick={(e) => this.resetdata(e)} />
-              <MenuItem primaryText="Sign out" onClick={(e) => this.props.authenticate(false)} />
-            </IconMenu>
-          </div>
-        </header>
-      )
+    render() {
+        return (
+            <header style={styles.topHeader}>
+                <div style={styles.titleArea}>
+                    <Avatar
+                        src="/img/flag.jpg"
+                        size={60}
+                        style={styles.avatarFlag}
+                        alt="flag icon"
+                    />
+                    Master Reporting Tool
+                </div>
+                <div style={styles.userArea}>
+                    <Avatar style={styles.avatarUser}>
+                        <Person />
+                    </Avatar>
+
+                    {/*<IconMenu*/}
+                        {/*iconButtonElement={<IconButton style={styles.downArrow}><KeyboardArrowDown /></IconButton>}*/}
+                        {/*anchorOrigin={{horizontal: 'right', vertical: 'top'}}*/}
+                        {/*targetOrigin={{horizontal: 'right', vertical: 'top'}}*/}
+                    {/*>*/}
+                        {/*<MenuItem primaryText="Sign out" onClick={(e) => this.props.authenticate(false)}/>*/}
+                    {/*</IconMenu>*/}
+                </div>
+            </header>
+        )
     }
 }

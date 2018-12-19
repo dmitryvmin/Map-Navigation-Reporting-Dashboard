@@ -8,7 +8,8 @@ import fetchData from './apiSaga';
 export function* watcherSaga() {
     yield takeLatest(GGConsts.API_CALL_REQUEST, workerSaga);
     yield takeLatest(GGConsts.UPDATE_NAV, updateByLoc);
-    yield throttle(100, GGConsts.NAV_HOVER, hoverSage);
+    yield throttle(100, GGConsts.NAV_HOVER, hoverSaga);
+    yield takeLatest(GGConsts.UPDATE_METRIC, metricSaga);
 }
 
 // saga initialized when the App first loads. Redux-persist logic will go here
@@ -29,9 +30,17 @@ export function* sensorDataSaga() {
     yield put({ type: GGConsts.SENSORS_MAP, [GGConsts.SENSORS_MAP]: sensors });
 }
 
-function* hoverSage(action) {
+function* hoverSaga(action) {
     // TODO: add hover logic here. Move it out of Map.js and Table.js
     return;
+}
+
+function* metricSaga(action) {
+    const { metric_selected } = action;
+
+    // TODO: filter sensors data by the selected metric...
+
+    yield put({ type: GGConsts.METRIC_SELECTED, metric_selected });
 }
 
 // makes the api call when watcher saga sees the action

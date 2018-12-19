@@ -2,7 +2,6 @@ import React from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { dstyles } from './../Constants/deviceStyle';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -11,13 +10,11 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import GGConsts from '../Constants';
 import EnhancedTableHead from './EnhancedTableHead';
 import loadDevices from './../Services/API';
-import DeviceDetail from './../PrimeContent/DeviceDetail';
 import AppContext from './../Services/Context';
 import { connect } from "react-redux";
 import { storeErrors } from "./../Services/store";
@@ -98,7 +95,7 @@ class LiveTable extends React.Component {
             : [precisionRound(d.holdover, 0)],
 
         lastping : this.getLastPing(d),
-        lastpingstyle : timechecker48(d.temperature) ? dstyles.redPing : dstyles.clearPing,
+        lastpingstyle : timechecker48(d.temperature) ? 'redPing' : 'clearPing',
         lasttemp : parseInt(`${Math.round(parseFloat(d.temperature.value))}`),
         uploaded: false
       }
@@ -205,10 +202,10 @@ class LiveTable extends React.Component {
 
     return (
       <Container>
-        <DeviceDetail isOpen={this.state.isDetailOpen}
-                      handleOpen={this.handleDetailOpen}
-                      handleClose={this.handleDetailClose}
-                      device={this.state.selectedDevice} />
+        {/*<DeviceDetail isOpen={this.state.isDetailOpen}*/}
+                      {/*handleOpen={this.handleDetailOpen}*/}
+                      {/*handleClose={this.handleDetailClose}*/}
+                      {/*device={this.state.selectedDevice} />*/}
         <TableWrapper>
           {(!this.state.data.length)
           ?<div>Loading...</div>

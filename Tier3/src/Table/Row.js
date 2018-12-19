@@ -6,7 +6,10 @@ import TableRow from '@material-ui/core/TableRow';
 import Tooltip from '@material-ui/core/Tooltip';
 import {Tooltip as Tippy} from 'react-tippy';
 import ProgressBar from "virtual-progress-bar";
-import { navigationMap } from './../Utils';
+import {
+    navigationMap,
+    getNMapChild
+} from './../Utils';
 
 class Row extends Component {
     constructor(props) {
@@ -16,26 +19,31 @@ class Row extends Component {
         };
     }
 
-    static getDerivedStateFromProps(nextProps, prevState){
-        if(nextProps.nav_hover !== prevState.nav_hover){
-            return { nav_hover: nextProps.nav_hover};
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.nav_hover !== prevState.nav_hover) {
+            return {nav_hover: nextProps.nav_hover};
         }
         else return null;
     }
 
     componentDidUpdate(prevProps, prevState) {
-        const { nav_tier, data } = this.props;
-        const curMap = _.first(navigationMap.filter(f => f.tier === nav_tier));
-        const newMap = _.first(navigationMap.filter(f => f.index === curMap.index + 1));
+        const {
+            nav_tier,
+            data
+        } = this.props;
 
-        const { nav_hover, selected } = this.state;
+        const {
+            nav_hover,
+            selected
+        } = this.state;
 
-        if ( data[newMap.map] === nav_hover && !selected ) {
+        const childNav = getNMapChild(nav_tier);
 
-            this.setState({ selected: true });
+        if (data[childNav.map] === nav_hover && !selected) {
+            this.setState({selected: true});
 
-        } else if ( data[newMap.map] !== nav_hover && selected) {
-            this.setState({ selected: false });
+        } else if (data[childNav.map] !== nav_hover && selected) {
+            this.setState({selected: false});
         }
     }
 
@@ -45,14 +53,13 @@ class Row extends Component {
             handleRowClick,
             handleRowHover,
             columns,
-            hover,
         } = this.props;
 
         if (!data || !columns.length) {
             return null;
         }
 
-        const { selected } = this.state;
+        const {selected} = this.state;
 
         return (
             <TableRow onClick={handleRowClick(data)}
@@ -84,7 +91,7 @@ class Row extends Component {
 const mapStateToProps = state => {
     return {
         nav_tier: state.navigationReducer.nav_tier,
-        nav_hover: state.navigationReducer.nav_hover,
+        nav_hover: state.navigationReducer.nav_hover.value,
     }
 }
 

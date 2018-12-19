@@ -5,68 +5,63 @@ import TableBody from '@material-ui/core/TableBody';
 import TablePagination from '@material-ui/core/TablePagination';
 import GGConsts from '../Constants';
 import EnhancedTableHead from './EnhancedTableHead';
-import { connect } from "react-redux";
+import {connect} from "react-redux";
 import Row from './Row';
 import ManualTableRow from './ManualTableRow';
-import { navigationMap } from './../Utils';
+import {
+    navigationMap,
+    getNMap,
+    getNMapChild,
+    getData
+} from './../Utils';
 import _ from 'lodash';
-import { navHovered } from './../Store/Actions';
+import {navHovered} from './../Store/Actions';
 
-import { desc,
+import {
+    desc,
     stableSort,
-    getSorting } from './table-sort-helpers';
+    getSorting
+} from './table-sort-helpers';
 
-import { checkStatus,
+import {
+    checkStatus,
     getLastPingHours,
     precisionRound,
     statusDisplay,
     statusBg,
     tempuratureShape,
-    timechecker48 } from './table-display-helpers';
+    timechecker48
+} from './table-display-helpers';
 
 const columns = [
-    { id: 'status', numeric: false, disablePadding: true, label: 'Status'},
-    { id: 'holdover', numeric: true, disablePadding: false, label: 'Holdover Days'},
-    { id: 'lasttemp', numeric: true, disablePadding: false, label: 'Last Reading Temp (C)'},
-    { id: 'brand', numeric: false, disablePadding: false, label: 'Brand/Model'},
-    { id: 'facility', numeric: false, disablePadding: false, label: 'Facility'},
-    { id: 'lastping', numeric: true, disablePadding: false, label: 'Last Ping'},
+    {id: 'status', numeric: false, disablePadding: true, label: 'Status'},
+    {id: 'holdover', numeric: true, disablePadding: false, label: 'Holdover Days'},
+    {id: 'lasttemp', numeric: true, disablePadding: false, label: 'Last Reading Temp (C)'},
+    {id: 'brand', numeric: false, disablePadding: false, label: 'Brand/Model'},
+    {id: 'facility', numeric: false, disablePadding: false, label: 'Facility'},
+    {id: 'lastping', numeric: true, disablePadding: false, label: 'Last Ping'},
 ];
 
 // TODO: introduce selectors for derived state
 const getColumns = navTier => {
     let columns = [];
 
-    switch(navTier) {
+    switch (navTier) {
         case GGConsts.COUNTRY_LEVEL:
-            columns.push({ id: 'states', numeric: false, disablePadding: true, label: 'States' });
+            columns.push({id: 'states', numeric: false, disablePadding: true, label: 'States'});
             break;
         case GGConsts.STATE_LEVEL:
-            columns.push({ id: 'lgas', numeric: false, disablePadding: true, label: 'LGAs' });
+            columns.push({id: 'lgas', numeric: false, disablePadding: true, label: 'LGAs'});
             break;
         case GGConsts.LGA_LEVEL:
-            columns.push({ id: 'facilities', numeric: false, disablePadding: true, label: 'Facilities' });
+            columns.push({id: 'facilities', numeric: false, disablePadding: true, label: 'Facilities'});
             break;
         case GGConsts.FACILITY_LEVEL:
-            columns.push({ id: 'devices', numeric: false, disablePadding: true, label: 'Devices' });
+            columns.push({id: 'devices', numeric: false, disablePadding: true, label: 'Devices'});
             break;
     }
 
     return columns;
-}
-
-const getData = tier => {
-
-    const curNavMap = _.first(navigationMap.filter(f => f.tier === tier));
-    const childNavMap = _.first(navigationMap.filter(f => f.index === curNavMap.index + 1));
-
-    const data = childNavMap.data.features.reduce((acc, cur) => {
-       let name = cur.properties[childNavMap.code];
-       acc.push({ [childNavMap.map]: name });
-       return acc;
-    }, []);
-
-    return data;
 }
 
 class RTTable extends React.Component {
@@ -75,7 +70,6 @@ class RTTable extends React.Component {
         this.state = {
             order: 'asc',
             orderBy: 'states',
-            data: getData(this.props.nav_tier),
             errors: [],
             page: 0,
             rowsPerPage: 10,
@@ -106,9 +100,7 @@ class RTTable extends React.Component {
 
         data.forEach(d => {
             const obj = {}
-
             device_info.push(obj);
-
         });
 
         return device_info;
@@ -127,16 +119,16 @@ class RTTable extends React.Component {
 
     getNewNav = location => {
         const {nav_tier} = this.props;
-        const curMap = _.first(navigationMap.filter(f => f.tier === nav_tier));
-        const childMap = _.first(navigationMap.filter(f => f.index === curMap.index + 1));
-        const value = location[childMap.map];
+        const childNav = getNMapChild(nav_tier)
+        const type = childNav.type;
+        const value = location[childNav.map];
 
-        return({ type: childMap.type, value });
+        return ({type, value});
     }
 
     handleRowHover = location => e => {
         const newNav = this.getNewNav(location);
-        this.props.navHovered(newNav.value);
+        this.props.navHovered({ value: newNav.value });
     }
 
     handleRowClick = location => e => {
@@ -145,11 +137,11 @@ class RTTable extends React.Component {
     }
 
     handleChangePage = (event, page) => {
-        this.setState({ page });
+        this.setState({page});
     };
 
     handleChangeRowsPerPage = event => {
-        this.setState({ rowsPerPage: event.target.value });
+        this.setState({rowsPerPage: event.target.value});
     };
 
     render() {
@@ -159,54 +151,51 @@ class RTTable extends React.Component {
         }
 
         const {
-            data,
             order,
             orderBy,
             rowsPerPage,
             page
         } = this.state;
 
-        const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
-
         const columns = getColumns(nav_tier);
+        const data = getData(nav_tier);
+        const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
         return (
             <Container>
                 <TableWrapper>
-                    {(!nav_tier)
-                        ?<div>Loading...</div>
-                        :<Table className="table" aria-labelledby="tableTitle">
-                            <EnhancedTableHead columns={columns}
-                                               tableCols={columns}
-                                               numSelected={0}
-                                               order={order}
-                                               orderBy={orderBy}
-                                               onRequestSort={this.handleRequestSort}
-                                               rowCount={data.length}/>
-                            <TableBody>
-                                {stableSort(data, getSorting(order, orderBy))
-                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                    .map((d, i) => {
-                                        // const isSelected = this.isSelected(d.id);
-                                        return(
-                                            <Row data={d}
-                                                 key={`${d}-${i}`}
-                                                 columns={columns}
-                                                 handleRowHover={this.handleRowHover}
-                                                 handleRowClick={this.handleRowClick} />
-                                        )
-                                    })}
-                                {/*{emptyRows > 0 && (*/}
-                                    {/*<TableRow style={{ height: 49 * emptyRows }}>*/}
-                                        {/*<TableCell colSpan={6} />*/}
-                                    {/*</TableRow>*/}
-                                {/*)}*/}
-                            </TableBody>
-                        </Table>
-                    }
+                    <Table className="table"
+                           aria-labelledby="tableTitle">
+                        <EnhancedTableHead columns={columns}
+                                           tableCols={columns}
+                                           numSelected={0}
+                                           order={order}
+                                           orderBy={orderBy}
+                                           onRequestSort={this.handleRequestSort}
+                                           rowCount={data.length}/>
+                        <TableBody>
+                            {stableSort(data, getSorting(order, orderBy))
+                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                .map((d, i) => {
+                                    // const isSelected = this.isSelected(d.id);
+                                    return (
+                                        <Row data={d}
+                                             key={`${d}-${i}`}
+                                             columns={columns}
+                                             handleRowHover={this.handleRowHover}
+                                             handleRowClick={this.handleRowClick}/>
+                                    )
+                                })}
+                            {/*{emptyRows > 0 && (*/}
+                            {/*<TableRow style={{ height: 49 * emptyRows }}>*/}
+                            {/*<TableCell colSpan={6} />*/}
+                            {/*</TableRow>*/}
+                            {/*)}*/}
+                        </TableBody>
+                    </Table>
                 </TableWrapper>
                 <TablePagination component="div"
-                                 rowsPerPageOptions={[10,20,50]}
+                                 rowsPerPageOptions={[10, 20, 50]}
                                  count={data.length}
                                  rowsPerPage={rowsPerPage}
                                  page={page}
@@ -235,15 +224,14 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        updateNav: (type, val) => dispatch({ type: GGConsts.UPDATE_NAV, [type]: val }),
-        navHovered: (nav_hover) => dispatch({ type: GGConsts.NAV_HOVER, nav_hover }),
+        updateNav: (type, val) => dispatch({type: GGConsts.UPDATE_NAV, [type]: val}),
+        navHovered: (nav_hover) => dispatch({type: GGConsts.NAV_HOVER, nav_hover}),
     };
 };
 
 const Container = styled.div`
     margin: 0px auto;
     background-color: white;
-    margin-top: 15px;
 `;
 const TableWrapper = styled.div`
     overflow-x: auto;

@@ -1,9 +1,25 @@
 import GGConsts from '../Constants';
 import React, {Component} from 'react';
 import {StaticMap} from 'react-map-gl';
-import DeckGL, {MapView, FirstPersonView, OrbitView, MapController, FlyToInterpolator, GeoJsonLayer, IconLayer} from 'deck.gl';
-import { navigationMap } from './../Utils';
-import { connect } from "react-redux";
+import DeckGL, {
+    MapView,
+    FirstPersonView,
+    OrbitView,
+    MapController,
+    FlyToInterpolator,
+    GeoJsonLayer,
+    IconLayer
+} from 'deck.gl';
+
+import {
+    navigationMap,
+    getNMapChild,
+    getNMap,
+} from './../Utils';
+
+import {connect} from "react-redux";
+import styled from 'styled-components';
+import Card from '@material-ui/core/Card';
 import _ from 'lodash';
 import CityPin from './pin';
 import IconClusterLayer from './icon-cluster-layer';
@@ -17,6 +33,7 @@ import {
 import markerData from './statesData.json';
 import icon from './location-icon-atlas.png';
 import iconMapping from './location-icon-mapping.json';
+
 // Source data CSV
 const DATA_URL =
     'https://raw.githubusercontent.com/uber-common/deck.gl-data/master/examples/icon/meteorites.json';
@@ -67,12 +84,12 @@ class Map extends Component {
         this._interruptionStyle = style;
     }
 
-    _onViewStateChange = ({ viewState }) => {
+    _onViewStateChange = ({viewState}) => {
         this.props.setMapViewport({...viewState, transitionDuration: 0});
     }
 
     _onMapClick = e => {
-        const { tier } = this.props;
+        const {tier} = this.props;
         const layer = _.get(_.first(e.features), 'layer');
         const props = _.get(_.first(e.features), 'properties');
 
@@ -87,31 +104,40 @@ class Map extends Component {
         // }
     }
 
-    // _renderTooltip = () => {
-    //     const {x, y, hoveredObject} = this.state;
-    //     return (
-    //         hoveredObject && (
-    //             <div className="tooltip" style={{position: 'absolute', zIndex: 1000, top: y - 50, left: x}}>
-    //                 <div>{hoveredObject.properties.admin2Name} </div>
-    //             </div>
-    //         )
-    //     );
-    // }
+    _renderTooltip = () => {
+        const {
+            x,
+            y,
+            value
+        } = this.props.hover;
+
+        if (!x || !y || !value) {
+            return null;
+        }
+
+        return (
+            <Tooltip x={x} y={y}>
+                <div>{value}</div>
+            </Tooltip>
+        );
+    }
 
     _onLayerHover = ({x, y, object}) => {
         if (!object) {
             return null;
         }
+        const {
+            tier,
+            hover
+        } = this.props;
 
-        const { tier } = this.props;
-        const curMap = _.first(navigationMap.filter(f => f.tier === tier));
-        const newMap = _.first(navigationMap.filter(f => f.index === curMap.index + 1));
-        const value = object.properties[newMap.code]
+        const childNav = getNMapChild(tier);
+        const value = object.properties[childNav.code];
 
         if (!value) {
             console.log(`%c something wrong with the hovered location: ${value}`, 'background: #c50018; color: white; display: block;');
         } else {
-            this.props.navHovered(value);
+            this.props.navHovered({value, x, y});
         }
     }
 
@@ -125,103 +151,114 @@ class Map extends Component {
     }
 
     _renderLayers = () => {
-        const { tier, navigation, hover, viewState } = this.props;
+        const {
+            tier,
+            navigation,
+            hover,
+            viewState
+        } = this.props;
+
         const layers = [];
 
-        const getChildGeoLayer = (map) => {
+        const getGeoLayer = (map, data) => {
             return new GeoJsonLayer({
-                id: `${hover && hover}-${map.type}`,
-                data: map.data,
-                opacity: 0.8,
-                stroked: false,
-                filled: true,
-                extruded: false,
-                wireframe: true,
-                fp64: true,
-                getLineColor: [255, 255, 255],
-                getFillColor: f => (f.properties[map.code] === hover) ? [255, 255, 0] : [199, 233, 180],
-                updateTrigger: {
-                    getFillColor: hover
-                },
-                pickable: true,
-                onHover: this._onLayerHover,
-                onClick: this._onLayerClick,
-            })
-
-        }
-
-        const getCurGeoLayer = (map, data) => {
-            return new GeoJsonLayer({
-                id: `${hover && hover}-${map.type}`,
+                id: `${tier}-${map.type}`,
                 data: data,
-                opacity: 0.8,
-                stroked: false,
+                opacity: 0.2,
+                stroked: true,
                 filled: true,
                 extruded: true,
                 wireframe: true,
                 fp64: true,
-                getLineColor: [255, 255, 255],
+                getLineColor: [181, 221, 241],
+                // getLineColor: [255, 255, 255],
                 // getFilterValue: f => f.properties[map.code],
                 getFillColor: [105, 105, 105],
                 // pickable: true,
                 // onHover: this._onHover,
                 // onClick: this._onClick,
-            })
+            });
+        }
+        const getChildGeoLayer = (map) => {
+            return new GeoJsonLayer({
+                id: `${hover && hover.value}-${map.type}`,
+                data: map.data,
+                opacity: 0.5,
+                stroked: true,
+                filled: true,
+                extruded: true,
+                wireframe: false,
+                fp64: true,
+                getLineColor: [181, 221, 241],
+                getFillColor: // [199, 233, 180],
+                    f => {
 
+                        return (f.properties[map.code] === hover.value) ? [255, 255, 0] : [199, 233, 180]
+                    },
+                updateTrigger: {
+                    getFillColor: hover.value
+                },
+                pickable: true,
+                onHover: this._onLayerHover,
+
+            })
         }
 
         // 1. Current Tier Layers
-        const curMap = _.first(navigationMap.filter(f => f.tier === tier));
-        const selected = navigation[curMap.type];
+        const curNav = getNMap(tier);
+        const selected = navigation[curNav.type];
 
-        const test = curMap.data.features.filter(f => f.properties[curMap.code] === selected);
-        console.log('@@test', curMap.data.features, test);
-        const data = curMap.data.features.filter(f => {
 
-            return( f.properties[curMap.code] !== selected );
+        const rest = curNav.data.features.filter(f => {
+            return ( f.properties[curNav.code] !== selected );
+        });
+        const cur = curNav.data.features.filter(f => {
+            return ( f.properties[curNav.code] === selected );
         });
 
-        // Add Markers
-        // data && this.setState({ markers: data });
-        const getIconsLayer = (data) => {
-            const icons = new IconLayer({
-                id: 'icon',
-                data,
-                wrapLongitude: true,
-                getIcon: d => 'marker',
-                sizeScale: 15,
-                getPosition: d => d.geometry.coordinates,
-                getColor: [188, 0, 23],
-                iconPoi: 'https://static.thenounproject.com/png/1164981-200.png',
-                iconMapping: {
-                    marker: {
-                        x: 0,
-                        y: 0,
-                        width: 128,
-                        height: 128,
-                        anchorY: 128,
-                        mask: true,
-                    },
-                },
-            })
-        }
-
-        // const markers = getIconsLayer(data);
-        // layers.push(markers);
-
-        const curLayer = getCurGeoLayer(curMap, data);
+        const curLayer = getGeoLayer(curNav, rest);
         // layers.push(curLayer);
 
         // if (hovered !== selected) {
         //     this.setState({ hovered: selected });
         // }
 
+
         // 2. Child Tier Layers
-        const childMap = _.first(navigationMap.filter(f => f.index === curMap.index + 1));
-        const childLayer = getChildGeoLayer(childMap);
+        const childNav = getNMapChild(tier);
+        const childLayer = getChildGeoLayer(childNav);
 
         layers.push(childLayer);
-        
+
+
+        // Add Markers
+        // data && this.setState({ markers: data });
+        // const getIconsLayer = (data) => {
+        //     const icons = new IconLayer({
+        //         id: 'icon',
+        //         data,
+        //         wrapLongitude: true,
+        //         getIcon: d => 'marker',
+        //         sizeScale: 15,
+        //         getPosition: d => d.geometry.coordinates,
+        //         getColor: [188, 0, 23],
+        //         iconPoi: 'https://static.thenounproject.com/png/1164981-200.png',
+        //         iconMapping: {
+        //             marker: {
+        //                 x: 0,
+        //                 y: 0,
+        //                 width: 128,
+        //                 height: 128,
+        //                 anchorY: 128,
+        //                 mask: true,
+        //             },
+        //         },
+        //     })
+        // }
+        // const markers = getIconsLayer(data);
+        // layers.push(markers);
+
+
         const showCluster = true;
 
         const layerProps = {
@@ -272,25 +309,22 @@ class Map extends Component {
     }
 
     render() {
-        const { viewState, mapStyle } = this.props;
-        const { gl, markers } = this.state;
-
-        const views = this._getViews();
-        const layers = this._renderLayers();
+        const {viewState, mapStyle} = this.props;
+        const {gl, markers} = this.state;
 
         return (
-            <div>
+            <MapContainer>
                 <DeckGL
                     // initialViewState={INITIAL_VIEW_STATE}
                     viewState={viewState}
                     controller={{type: MapController, dragRotate: false}}
                     onViewStateChange={this._onViewStateChange}
-                    // views={views}
+                    // views={this._getViews()}
                     ref={(ref) => {
                         // save a reference to the Deck instance
                         this._deck = ref && ref.deck
                     }}
-                    layers={layers}
+                    layers={this._renderLayers()}
                     // onClick={this._onMapClick}
                     // onHover={this._onMapHover}
                     onWebGLInitialized={this._onWebGLInitialized}
@@ -303,6 +337,7 @@ class Map extends Component {
                         // gl={gl}
                         preventStyleDiffing={true}
                         reuse
+                        // mapStyle={mapStyle}
                         mapStyle={'mapbox://styles/mapbox/light-v9'}
                         mapboxApiAccessToken={GGConsts.MAPBOX_TOKEN}>
 
@@ -314,17 +349,17 @@ class Map extends Component {
                     </StaticMap>
                     }
 
-                    {/*{this._renderTooltip}*/}
+                    {/*<ControlPanel*/}
+                    {/*containerComponent={this.props.containerComponent}*/}
+                    {/*onViewportChange={this._easeTo.bind(this)}*/}
+                    {/*interruptionStyles={interruptionStyles}*/}
+                    {/*onStyleChange={this._onStyleChange.bind(this)}*/}
+                    {/*/>*/}
+
+                    {this._renderTooltip}
 
                 </DeckGL>
-
-                {/*<ControlPanel*/}
-                {/*containerComponent={this.props.containerComponent}*/}
-                {/*onViewportChange={this._easeTo.bind(this)}*/}
-                {/*interruptionStyles={interruptionStyles}*/}
-                {/*onStyleChange={this._onStyleChange.bind(this)}*/}
-                {/*/>*/}
-            </div>
+            </MapContainer>
         );
     }
 }
@@ -346,11 +381,30 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         setMapViewport: (map_viewport) => dispatch(setMapViewport(map_viewport)),
-        navigateTo: (navState) => dispatch({ type: GGConsts.UPDATE_NAV, navState }),
-        navHovered: (nav_hover) => dispatch({ type: GGConsts.NAV_HOVER, nav_hover }),
+        navigateTo: (navState) => dispatch({type: GGConsts.UPDATE_NAV, navState}),
+        navHovered: (nav_hover) => dispatch({type: GGConsts.NAV_HOVER, nav_hover}),
         // navHovered: (val) => dispatch(navHovered(val)),
         mapClicked: (prop) => dispatch(mapClicked(prop)),
     }
 }
+
+const MapContainer = styled.div`
+    height: 100%; 
+`;
+
+const Tooltip = styled(Card)`
+    position: absolute;
+    width: 180px;
+    height: 40px; 
+    z-index: 100;
+    transform: translateX(-90px);
+    left: 50%; 
+    bottom: 10px; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    // top: ${props => `${props.y - 50}px`};
+    // left: ${props => `${props.x}px`};
+`;
 
 export default connect(mapStateToProps, mapDispatchToProps)(Map);

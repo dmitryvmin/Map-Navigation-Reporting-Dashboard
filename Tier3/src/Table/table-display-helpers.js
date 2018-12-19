@@ -1,17 +1,16 @@
 import React from 'react';
-import { dstyles } from './../Constants/deviceStyle';
 import moment from 'moment-timezone';
 
 const statusDisplay = (statusString) => {
   switch (statusString) {
     case "red":
-      return <div style={dstyles.reddot} />
+      return <div />
     case "yellow":
-      return <div style={dstyles.yellowdot} />
+      return <div />
     case "green":
-      return <div style={dstyles.greendot} />
+      return <div />
     default:
-      return <div style={dstyles.cleardot} />
+      return <div />
   }
 }
 
@@ -31,19 +30,19 @@ const statusBg = (statusString) => {
 const tempuratureShape = (temperature) => {
   const tempNum = parseFloat(temperature);
   if ( tempNum < 2.0 ) {
-    return <div style={dstyles.coldtemp}>{temperature}&deg;</div>;
+    return <div>{temperature}&deg;</div>;
   }
   else if (tempNum > 8.0 ) {
-    return <div style={dstyles.hottemp}>{temperature}&deg;</div>;
+    return <div>{temperature}&deg;</div>;
   }
   else if (tempNum > 6.0 && tempNum <= 8.0 ) {
-    return <div style={dstyles.warntemp}>{temperature}&deg;</div>;
+    return <div>{temperature}&deg;</div>;
   }
   else if (tempNum >= 2.0 && tempNum < 4.0 ) {
-    return <div style={dstyles.warntemp}>{temperature}&deg;</div>;
+    return <div>{temperature}&deg;</div>;
   }
   else {
-    return <div style={dstyles.goodtemp}>{temperature}&deg;</div>;
+    return <div>{temperature}&deg;</div>;
   }
 }
 

@@ -37,8 +37,8 @@ export const getMapStyle = () => {
     return map_style;
 }
 
-export const getFilter = (mode, type, value) => {
-    const filter = { mode };
+export const getFilter = (type, value) => {
+    const filter = {};
 
     filter.fkey = getFilterKey(type);
 
@@ -51,8 +51,8 @@ export const getFilter = (mode, type, value) => {
     return filter;
 }
 
-export const getChildFilter = (mode, type, value) => {
-    const filter = { mode };
+export const getChildFilter = (type, value) => {
+    const filter = {};
 
     if (type === 'state_selected') {
         filter.fkey = 'adm0_a3';
@@ -67,8 +67,8 @@ export const getChildFilter = (mode, type, value) => {
     return filter;
 }
 
-export const applyLayerFilter = (map_style = MAP_STYLE, type = 'country_selected', filter = {mode: 'exclude', fkey: null, fval: 'all'}) => {
-    const { mode, fkey, fval } = filter;
+export const applyLayerFilter = (map_style = MAP_STYLE, type = 'country_selected', filter = {fkey: null, fval: 'all'}, mode = 'exclude') => {
+    const { fkey, fval } = filter;
     const sourceLayer = getSourceLayer(type);
     const sourceUrl = getSourceUrl(type);
 
