@@ -27,6 +27,9 @@ const styles = theme => ({
     indicator: {
         backgroundColor: '#fff',
     },
+    tabRoot: {
+        minWidth: 40
+    }
 })
 
 class Navigation extends Component {
@@ -109,6 +112,7 @@ class Navigation extends Component {
                           onChange={this.handleChange(GGConsts.METRIC_SELECTED)}>
                         {GGConsts.METRICS.map(m =>
                             <StyledTab key={`metric-${m}`}
+                                       classes={{ root: classes.tabRoot }}
                                        label={m}
                                        value={m}/>
                         )}
@@ -129,7 +133,7 @@ class Navigation extends Component {
                             input={<StyledIn name="manufacturer"
                                              id="state-native-helper"/>}
                         >
-                            {['all', 'm1', 'm2', 'm3'].map((mfc, index) => {
+                            {['All', 'm1', 'm2', 'm3'].map((mfc, index) => {
                                 return (
                                     <Option key={`nav-${mfc}-${index}`}
                                             value={mfc}>{mfc}</Option>
@@ -154,6 +158,10 @@ const StyledSelect = styled(NativeSelect)`
     color: white; 
     width: 160px; 
     margin-right: 1em; 
+   
+    &:before {
+        border-bottom: none !important;
+    }
 `;
 const StyledTab = styled(Tab)`
     text-transform: capitalize !important;
@@ -172,9 +180,9 @@ const Label = styled(FormHelperText)`
     color: white !important; 
 `;
 const StyledChip = styled(Chip)`
-    color: white;
-    background-color: #6a4f82;
-    margin-right: 0.5em;
+    color: white !important;
+    background-color: #6a4f82 !important;
+    margin: 1em 1em 1em 0;
 `;
 const Header = styled.h4`
     text-align: left; 

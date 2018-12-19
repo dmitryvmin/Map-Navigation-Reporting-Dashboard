@@ -23,7 +23,7 @@ function* getViewport(tier, navigation) {
         zoom,
         pitch: 0,
         bearing: 0,
-        transitionDuration: 2500,
+        transitionDuration: 2000,
         transitionInterpolator: new FlyToInterpolator(),
     };
 

@@ -29,6 +29,9 @@ const styles = theme => ({
     indicator: {
         backgroundColor: '#979797',
     },
+    tabRoot: {
+        minWidth: 40
+    }
 })
 
 class Chart extends Component {
@@ -75,6 +78,7 @@ class Chart extends Component {
                           onChange={this.handleChange(GGConsts.METRIC_SELECTED)}>
                         {['7 d', '30 d', '60 d', 'All'].map(m =>
                             <Tab key={`metric-${m}`}
+                                 classes={{ root: classes.tabRoot }}
                                  label={m}
                                  value={m}/>
                         )}
@@ -95,7 +99,7 @@ class Chart extends Component {
 
                 <ResponsiveContainer width="100%" height={200}>
                     {(chartType === 'Bar')
-                        ? <BarChart data={fakeData}>
+                        ? <BarChart data={fakeData} margin={{ top: 20, right: 20, left: 20, bottom: 0 }}>
                             {/*<XAxis dataKey="name"/>*/}
                             {/*<YAxis/>*/}
                             <Tooltip/>
@@ -104,7 +108,7 @@ class Chart extends Component {
                             <Bar dataKey="alarms" fill="#ff9900"/>
                         </BarChart>
 
-                        : <LineChart data={fakeData}>
+                        : <LineChart data={fakeData} margin={{ top: 20, right: 20, left: 20, bottom: 0 }}>
                             <Tooltip/>
                             <Line type="step" dataKey="alarms" stroke="#ff9900" strokeWidth={2} />
                             <Brush dataKey='alarms' height={30} stroke="#dbdbdb"/>
@@ -123,6 +127,7 @@ const mapStateToProps = state => {
 
 const Controls = styled.div`
     display: flex; 
+    justify-content: space-between;
 `;
 
 export default connect(mapStateToProps, null)(withStyles(styles)(Chart))

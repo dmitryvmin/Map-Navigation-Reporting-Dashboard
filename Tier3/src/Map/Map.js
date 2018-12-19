@@ -359,6 +359,7 @@ class Map extends Component {
                     {this._renderTooltip}
 
                 </DeckGL>
+
             </MapContainer>
         );
     }
@@ -389,17 +390,17 @@ const mapDispatchToProps = dispatch => {
 }
 
 const MapContainer = styled.div`
+    width: 100%; 
     height: 100%; 
 `;
-
 const Tooltip = styled(Card)`
     position: absolute;
     width: 180px;
-    height: 40px; 
+    height: 40px;
     z-index: 100;
     transform: translateX(-90px);
-    left: 50%; 
-    bottom: 10px; 
+    left: 50%;
+    bottom: 10px;
     display: flex;
     align-items: center;
     justify-content: center;

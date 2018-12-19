@@ -102,8 +102,7 @@ const IdBar = styled.div`
     background-color: #51326c;
     width: 100%;
     text-align: center;
-    padding-top: 14px;
-    padding-bottom: 24px;
+    padding: 0.5em 0; 
     line-height: 30px;
     color: white;
 `;
