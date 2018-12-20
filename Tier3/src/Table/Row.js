@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from "react-redux";
 import _ from 'lodash';
+import styled from 'styled-components';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -75,9 +76,9 @@ class Row extends Component {
                     let value = data[id];
 
                     return (
-                        <TableCell key={`cell-${id}-${value}`}>
+                        <TableCell key={`cell-${id}-${value}`} align="center">
                             {/*<Tooltip title={id} placement="bottom-start" enterDelay={300}>*/}
-                            <div>{value}</div>
+                            <StyledCell>{value}</StyledCell>
                             {/*</Tooltip>*/}
                         </TableCell>
                     )
@@ -102,5 +103,9 @@ const mapStateToProps = state => {
 //         mapClicked: (prop) => dispatch(mapClicked(prop)),
 //     }
 // }
+
+const StyledCell = styled.div`
+    text-align: center; 
+`;
 
 export default connect(mapStateToProps, null)(Row);

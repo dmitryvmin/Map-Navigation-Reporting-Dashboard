@@ -69,7 +69,10 @@ export const getData = (tier, navigation) => {
 
     data = data.reduce((acc, cur) => {
         let name = cur.properties[childNM.code];
-        acc.push({[childNM.map]: name});
+        acc.push({
+            [childNM.map]: name,
+            ['alarms']: 0,
+        });
         return acc;
     }, []);
 

@@ -44,22 +44,26 @@ const columns = [
 
 // TODO: introduce selectors for derived state
 const getColumns = navTier => {
-    let columns = [];
+    let columns = [
+
+    ];
 
     switch (navTier) {
         case GGConsts.COUNTRY_LEVEL:
-            columns.push({id: 'states', numeric: false, disablePadding: true, label: 'States'});
+            columns.push({id: 'states', numeric: false, disablePadding: false, label: 'States'});
             break;
         case GGConsts.STATE_LEVEL:
-            columns.push({id: 'lgas', numeric: false, disablePadding: true, label: 'LGAs'});
+            columns.push({id: 'lgas', numeric: false, disablePadding: false, label: 'LGAs'});
             break;
         case GGConsts.LGA_LEVEL:
-            columns.push({id: 'facilities', numeric: false, disablePadding: true, label: 'Facilities'});
+            columns.push({id: 'facilities', numeric: false, disablePadding: false, label: 'Facilities'});
             break;
         case GGConsts.FACILITY_LEVEL:
-            columns.push({id: 'devices', numeric: false, disablePadding: true, label: 'Devices'});
+            columns.push({id: 'devices', numeric: false, disablePadding: false, label: 'Devices'});
             break;
     }
+
+    columns.push({id: 'alarms', numeric: true, disablePadding: false, label: 'Alarms'});
 
     return columns;
 }

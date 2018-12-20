@@ -1,5 +1,6 @@
 import React, {PureComponent} from 'react';
 import PieChart from 'react-minimal-pie-chart';
+import * as easing from 'easing';
 
 import TwoLevelPieChart from './Pie.js';
 
@@ -15,18 +16,21 @@ const pinStyle = {
 export default class CityPin extends PureComponent {
 
     render() {
-        const {onClick, location} = this.props;
-        const size = 50;
+        const {location,zoom,name} = this.props;
+        const size = zoom / easing('cubic')[0] * 4;
 
         return (
             <svg height={size}
                  viewBox="0 0 50 50"
-                 style={{...pinStyle, transform: `translate(${-size / 2}px,${-size}px)`, overflow: 'visible'}}
-                 onClick={onClick}>
+                 style={{...pinStyle, transform: `translate(${-size}px,${-size * 2}px)`, overflow: 'visible'}}>
                 {/*<path d={ICON}/>*/}
                 {/*<circle cx="10" cy="10" r="10"/>*/}
 
-                <foreignObject x="0" y="50" width="50" height="50">
+                <foreignObject x="0"
+                               y="50"
+                               width="50"
+                               height="50">
+
                     <PieChart lineWidth={50}
                               radius={50}
                               data={[
@@ -39,7 +43,12 @@ export default class CityPin extends PureComponent {
 
                 </foreignObject>
 
-                <text x="0" y="105" fontSize={'18px'} fill={'black'}>{location.name}</text>
+                <text
+                    // textAnchor="middle"
+                      // startOffset="50%"
+                      y="125"
+                      fontSize={'1.5em'}
+                      fill={'black'}>{name}</text>
             </svg>
 
         );

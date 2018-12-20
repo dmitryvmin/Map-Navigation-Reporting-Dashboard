@@ -1,6 +1,6 @@
 import GGConsts from '../Constants';
 import React, {Component} from 'react';
-import {StaticMap} from 'react-map-gl';
+import {StaticMap, Marker} from 'react-map-gl';
 import DeckGL, {
     MapView,
     FirstPersonView,
@@ -193,13 +193,17 @@ class Map extends Component {
             return new GeoJsonLayer({
                 id: `${map.tier}-active-${hover && hover.value}`,
                 data,
-                opacity: 0.1,
+                opacity: 0.05,
                 stroked: true,
                 filled: true,
                 extruded: false,
                 wireframe: false,
                 fp64: true,
-                getLineColor: [181, 221, 241],
+                // getLineWidth: 1,
+                // getElevation: 30,
+                // lineWidthScale: 20,
+                lineWidthMinPixels: 1,
+                getLineColor: [160,160,160],
                 getFillColor: f => (f.properties[map.code] === hover.value) ? [255, 255, 0] : [199, 233, 180],
                 updateTrigger: { getFillColor: hover.value },
                 pickable: true,
@@ -212,13 +216,14 @@ class Map extends Component {
             return new GeoJsonLayer({
                 id: `${map.tier}-inactive-${hover && hover.value}`,
                 data: data,
-                opacity: 0.1,
+                opacity: 0.05,
                 stroked: true,
                 filled: true,
                 extruded: false,
                 wireframe: true,
                 fp64: true,
-                getLineColor: [181, 221, 241],
+                lineWidthMinPixels: 1,
+                getLineColor: [100,100,100],
                 // getFilterValue: f => f.properties[map.code],
                 getFillColor:
                     f => {
@@ -227,6 +232,7 @@ class Map extends Component {
                 updateTrigger: {
                     getFillColor: hover.value
                 },
+                // If we want inactive layers to be interactive uncomment below
                 pickable: true,
                 onHover: this._onLayerHover,
                 onClick: this._onLayerClick,
@@ -251,6 +257,10 @@ class Map extends Component {
                 let parentNM = getNMapParent(type);
                 if (parentNM) data = data.filter(f => f.properties[parentNM.code] === navigation[parentNM.type]);
                 layer = makeActiveGeoLayer(NM, data);
+
+                // Add Markers
+                // addMarkers();
+
             }
             else {
                 data = data.filter(f => {
@@ -266,60 +276,41 @@ class Map extends Component {
         _.toArray(navigationMap).forEach(n => getGeoLayers(n.type));
 
 
-        const curNM = getNMapChild(tier);
-        if (curNM && curNM.data) {
-            // Calculate the centeroid for each geojson multipolygon
-            const points = curNM.data.features.map(f => {
-                let coordinates = turf.centroid(f).geometry.coordinates;
-                let name = f.properties[curNM.code];
-                return {coordinates, name};
-            });
 
-            const showCluster = true;
-            const layerProps = {
-                data: points,
-                pickable: true,
-                wrapLongitude: true,
-                getPosition: d => d.coordinates,
-                iconMapping: iconMapping,
-                iconAtlas: icon,
-                sizeScale: 60
-            };
-            const size = viewState ? Math.min(Math.pow(1.5, viewState.zoom - 10), 1) : 0.1;
-            const markerLayers = showCluster
-                ? new IconClusterLayer({...layerProps, id: 'icon-cluster'})
-                : new IconLayer({
-                    ...layerProps,
-                    id: 'icon',
-                    getIcon: d => 'marker',
-                    getSize: size
-                });
-            layers.push(markerLayers);
-        }
-
-        // FACILITIES.map(d => {
-        //     layers.push(new ScatterplotLayer({
-        //         id: 'geojson-facilities',
-        //         data: d,
-        //         radiusScale: 20,
-        //         getPosition: d => ({longitude: d.coordinates.longitude, latitude: d.coordinates.latitude}),
-        //         getColor: [255, 140, 0],
-        //         pickable: true,
-        //         // onHover: this._onHover
-        //     }))
-        // })
-
-        // const meteors = new ScreenGridLayer({
-        //     id: 'grid',
-        //     data: 'https://raw.githubusercontent.com/uber-common/deck.gl-data/master/examples/screen-grid/uber-pickup-locations.json',
-        //     getPosition: d => [d[0], d[1]],
-        //     getWeight: d => d[2],
-        //     cellSizePixels: 20,
-        //     colorRange,
-        //     // gpuAggregation: true
-        // });
+        // POIs as a deck.gl layer
+        // const curNM = getNMap(tier);
+        // const childNM = getNMapChild(tier);
         //
-        // layers.push(meteors);
+        // if (childNM && childNM.data && childNM.data.features) {
+        //     let points = childNM.data.features.filter(f => f.properties[curNM.code] === navigation[curNM.type]);
+        //     // Calculate the centeroid for each geojson multipolygon
+        //     points = points.map(f => {
+        //         let coordinates = turf.centroid(f).geometry.coordinates;
+        //         let name = f.properties[curNM.code];
+        //         return {coordinates, name};
+        //     });
+        //
+        //     const showCluster = true;
+        //     const layerProps = {
+        //         data: points,
+        //         pickable: true,
+        //         wrapLongitude: true,
+        //         getPosition: d => d.coordinates,
+        //         iconMapping: iconMapping,
+        //         iconAtlas: icon,
+        //         sizeScale: 60
+        //     };
+        //     const size = viewState ? Math.min(Math.pow(1.5, viewState.zoom - 10), 1) : 0.1;
+        //     const markerLayers = showCluster
+        //         ? new IconClusterLayer({...layerProps, id: 'icon-cluster'})
+        //         : new IconLayer({
+        //             ...layerProps,
+        //             id: 'icon',
+        //             getIcon: d => 'marker',
+        //             getSize: size
+        //         });
+        //     layers.push(markerLayers);
+        // }
 
         return layers;
     }
@@ -332,9 +323,38 @@ class Map extends Component {
         return new MapView({id: 'basemap', controller: MapController, orthographic});
     }
 
+    _getMarkers = () => {
+        const {
+            tier,
+            navigation,
+        } = this.props;
+
+        if (!tier || !navigation) {
+            return null
+        }
+
+        const curNM = getNMap(tier);
+        const childNM = getNMapChild(tier);
+
+        if (childNM && childNM.data && childNM.data.features) {
+
+            let points = childNM.data.features.filter(f => f.properties[curNM.code] === navigation[curNM.type]);
+
+            // Calculate the centeroid for each geojson multipolygon
+            points = points.map(f => {
+                let coordinates = turf.centroid(f).geometry.coordinates;
+                let name = f.properties[childNM.code];
+                return {longitude: coordinates[0], latitude: coordinates[1], name};
+            });
+
+            return points;
+        }
+    }
+
     render() {
         const {viewState, mapStyle} = this.props;
-        const {gl, markers} = this.state;
+        const {gl} = this.state;
+        const markers = this._getMarkers();
 
         return (
             <MapContainer>
@@ -361,14 +381,28 @@ class Map extends Component {
                         // gl={gl}
                         preventStyleDiffing={true}
                         reuse
+                        mapStyle="https://api.mapbox.com/styles/v1/dmitrymin/cj4fulpei0m0k2sqrh1pz0jvh.html?fresh=true&title=true&access_token=pk.eyJ1IjoiZG1pdHJ5bWluIiwiYSI6ImNqb3FmZ2VtcDAwMWszcG84cjJxdWg5NncifQ.mphHlEjmVZzV57R-3BWJqw#2.9/7.453962/27.670658/0"
                         // mapStyle={mapStyle}
-                        mapStyle={'mapbox://styles/mapbox/light-v9'}
+                        // mapStyle={'mapbox://styles/mapbox/light-v9'}
                         mapboxApiAccessToken={GGConsts.MAPBOX_TOKEN}>
 
 
                         {/*<Marker latitude={9.0820} longitude={8.6753} offsetLeft={-20} offsetTop={-10}>*/}
                         {/*<div>You are here</div>*/}
                         {/*</Marker>*/}
+
+                        {markers && markers.map((m,i) =>
+                            <Marker
+                                key={`marker-${i}`}
+                                longitude={m.longitude}
+                                latitude={m.latitude}>
+                                <CityPin location={m.name}
+                                         zoom={viewState.zoom}
+                                         name={m.name}
+                                         // onClick={() => this.setState({popupInfo: m.name})}
+                                />
+                            </Marker>
+                        )}
 
                     </StaticMap>
                     }

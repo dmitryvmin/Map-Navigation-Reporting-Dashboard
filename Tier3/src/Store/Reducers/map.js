@@ -29,10 +29,10 @@ const interruptionStyles = [
 const initState = {
     map_style: getMapStyle(),
     map_viewport: {
-        transitionDuration: 5000,
+        // transitionDuration: 5000,
         // transitionInterpolator,
-        transitionEasing: d3.easeCubic,
-        transitionInterruption: TRANSITION_EVENTS.BREAK,
+        // transitionEasing: d3.easeCubic,
+        // transitionInterruption: TRANSITION_EVENTS.BREAK,
         latitude: 9.077751,
         longitude: 8.6774567,
         zoom: 6,
@@ -47,8 +47,8 @@ function mapReducer(state = initState, action) {
             const {
                 latitude,
                 longitude,
-                transitionInterpolator,
-                transitionDuration,
+                // transitionInterpolator,
+                // transitionDuration,
                 zoom,
             } = action.map_viewport;
 
@@ -61,7 +61,7 @@ function mapReducer(state = initState, action) {
                     // transitionInterpolator,
                     // transitionInterpolator: new FlyToInterpolator(),
                     // transitionInterpolator: transitionInterpolator ? transitionInterpolator : transitionInterpolator,
-                    transitionDuration,
+                    // transitionDuration,
                     zoom,
                 }
             }
