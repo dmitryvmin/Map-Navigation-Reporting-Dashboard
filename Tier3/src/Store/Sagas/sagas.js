@@ -8,11 +8,13 @@ import fetchData from './apiSaga';
 export function* watcherSaga() {
     yield takeLatest(GGConsts.API_CALL_REQUEST, workerSaga);
     yield takeLatest(GGConsts.UPDATE_NAV, updateByLoc);
-    yield throttle(100, GGConsts.NAV_HOVER, hoverSaga);
     yield takeLatest(GGConsts.UPDATE_METRIC, metricSaga);
+    yield takeLatest(GGConsts.NAV_HOVER, hoverSaga);
+    // yield throttle(50, GGConsts.NAV_HOVER, hoverSaga);
 }
 
-// saga initialized when the App first loads. Redux-persist logic will go here
+// Initialized when the App first loads.
+// TODO: Redux-persist logic will go here
 export function* initSaga() {
     const data = yield getGeo('country_selected');
     yield put({ type: GGConsts.GEO_MAP, data: { 'countries': data } });

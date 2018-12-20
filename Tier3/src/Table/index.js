@@ -72,7 +72,7 @@ class RTTable extends React.Component {
             orderBy: 'states',
             errors: [],
             page: 0,
-            rowsPerPage: 10,
+            rowsPerPage: 50,
             isDetailOpen: false,
             selectedDevice: null
         }
@@ -114,7 +114,7 @@ class RTTable extends React.Component {
             order = 'asc';
         }
 
-        this.setState({ order, orderBy });
+        this.setState({order, orderBy});
     };
 
     getNewNav = location => {
@@ -128,7 +128,7 @@ class RTTable extends React.Component {
 
     handleRowHover = location => e => {
         const newNav = this.getNewNav(location);
-        this.props.navHovered({ value: newNav.value });
+        this.props.navHovered({value: newNav.value});
     }
 
     handleRowClick = location => e => {
@@ -145,7 +145,11 @@ class RTTable extends React.Component {
     };
 
     render() {
-        const {nav_tier} = this.props;
+        const {
+            nav_tier,
+            navigation
+        } = this.props;
+
         if (!nav_tier) {
             return null;
         }
@@ -154,12 +158,17 @@ class RTTable extends React.Component {
             order,
             orderBy,
             rowsPerPage,
-            page
+            page,
         } = this.state;
 
+
         const columns = getColumns(nav_tier);
-        const data = getData(nav_tier);
-        const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
+        const data = getData(nav_tier, navigation);
+
+        if (!data) {
+            return null;
+        }
+        // const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
         return (
             <Container>
@@ -176,37 +185,34 @@ class RTTable extends React.Component {
                         <TableBody>
                             {stableSort(data, getSorting(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map((d, i) => {
-                                    // const isSelected = this.isSelected(d.id);
-                                    return (
-                                        <Row data={d}
-                                             key={`${d}-${i}`}
-                                             columns={columns}
-                                             handleRowHover={this.handleRowHover}
-                                             handleRowClick={this.handleRowClick}/>
-                                    )
-                                })}
+                                .map((d, i) =>
+                                    <Row data={d}
+                                         key={`${d}-${i}`}
+                                         columns={columns}
+                                         handleRowHover={this.handleRowHover}
+                                         handleRowClick={this.handleRowClick}/>
+                                )}
                             {/*{emptyRows > 0 && (*/}
-                            {/*<TableRow style={{ height: 49 * emptyRows }}>*/}
-                            {/*<TableCell colSpan={6} />*/}
-                            {/*</TableRow>*/}
+                                {/*<TableRow style={{height: 49 * emptyRows}}>*/}
+                                    {/*<TableCell colSpan={6}/>*/}
+                                {/*</TableRow>*/}
                             {/*)}*/}
                         </TableBody>
                     </Table>
                 </TableWrapper>
-                <TablePagination component="div"
-                                 rowsPerPageOptions={[10, 20, 50]}
-                                 count={data.length}
-                                 rowsPerPage={rowsPerPage}
-                                 page={page}
-                                 backIconButtonProps={{
-                                     'aria-label': 'Previous Page',
-                                 }}
-                                 nextIconButtonProps={{
-                                     'aria-label': 'Next Page',
-                                 }}
-                                 onChangePage={this.handleChangePage}
-                                 onChangeRowsPerPage={this.handleChangeRowsPerPage}/>
+                {/*<TablePagination component="div"*/}
+                {/*rowsPerPageOptions={[8, 20, 50]}*/}
+                {/*count={data.length}*/}
+                {/*rowsPerPage={rowsPerPage}*/}
+                {/*page={page}*/}
+                {/*backIconButtonProps={{*/}
+                {/*'aria-label': 'Previous Page',*/}
+                {/*}}*/}
+                {/*nextIconButtonProps={{*/}
+                {/*'aria-label': 'Next Page',*/}
+                {/*}}*/}
+                {/*onChangePage={this.handleChangePage}*/}
+                {/*onChangeRowsPerPage={this.handleChangeRowsPerPage}/>*/}
             </Container>
         );
     }
@@ -219,6 +225,7 @@ const mapStateToProps = state => {
         state_selected: state.navigationReducer.state_selected,
         lga_selected: state.navigationReducer.lga_selected,
         facility_selected: state.navigationReducer.facility_selected,
+        navigation: state.navigationReducer.navigation,
     }
 }
 
@@ -232,6 +239,8 @@ const mapDispatchToProps = dispatch => {
 const Container = styled.div`
     margin: 0px auto;
     background-color: white;
+    height: 50vh;
+    overflow-y: scroll;
 `;
 const TableWrapper = styled.div`
     overflow-x: auto;

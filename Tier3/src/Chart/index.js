@@ -30,7 +30,7 @@ const styles = theme => ({
         backgroundColor: '#979797',
     },
     tabRoot: {
-        minWidth: 40
+        minWidth: 70
     }
 })
 
@@ -55,7 +55,8 @@ class Chart extends Component {
     render() {
         const {
             nav_tier,
-            classes
+            classes,
+            navigation,
         } = this.props;
 
         if (!nav_tier) {
@@ -63,9 +64,7 @@ class Chart extends Component {
         }
 
         const {chartType} = this.state;
-
-        const data = getData(nav_tier);
-
+        const data = getData(nav_tier, navigation);
         const fakeData = _.map(data, el => _.extend({}, el, {alarms: Math.floor(Math.random() * 10)}));
 
         return (
@@ -78,7 +77,7 @@ class Chart extends Component {
                           onChange={this.handleChange(GGConsts.METRIC_SELECTED)}>
                         {['7 d', '30 d', '60 d', 'All'].map(m =>
                             <Tab key={`metric-${m}`}
-                                 classes={{ root: classes.tabRoot }}
+                                 classes={{root: classes.tabRoot}}
                                  label={m}
                                  value={m}/>
                         )}
@@ -91,7 +90,7 @@ class Chart extends Component {
                                     onChange={this.toggle}
                                 />
                             }
-                            label="Bar / Line"
+                            label="Line / Bar"
                         />
                     </FormGroup>
                 </Controls>
@@ -99,7 +98,7 @@ class Chart extends Component {
 
                 <ResponsiveContainer width="100%" height={200}>
                     {(chartType === 'Bar')
-                        ? <BarChart data={fakeData} margin={{ top: 20, right: 20, left: 20, bottom: 0 }}>
+                        ? <BarChart data={fakeData} margin={{top: 20, right: 20, left: 20, bottom: 0}}>
                             {/*<XAxis dataKey="name"/>*/}
                             {/*<YAxis/>*/}
                             <Tooltip/>
@@ -108,9 +107,9 @@ class Chart extends Component {
                             <Bar dataKey="alarms" fill="#ff9900"/>
                         </BarChart>
 
-                        : <LineChart data={fakeData} margin={{ top: 20, right: 20, left: 20, bottom: 0 }}>
+                        : <LineChart data={fakeData} margin={{top: 20, right: 20, left: 20, bottom: 0}}>
                             <Tooltip/>
-                            <Line type="step" dataKey="alarms" stroke="#ff9900" strokeWidth={2} />
+                            <Line type="step" dataKey="alarms" stroke="#ff9900" strokeWidth={2}/>
                             <Brush dataKey='alarms' height={30} stroke="#dbdbdb"/>
                         </LineChart>}
                 </ResponsiveContainer>
@@ -122,6 +121,7 @@ class Chart extends Component {
 const mapStateToProps = state => {
     return {
         nav_tier: state.navigationReducer.nav_tier,
+        navigation: state.navigationReducer.navigation,
     }
 }
 

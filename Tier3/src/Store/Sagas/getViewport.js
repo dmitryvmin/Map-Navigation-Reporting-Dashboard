@@ -1,8 +1,16 @@
 import _ from 'lodash';
-import { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
-import { FlyToInterpolator } from 'react-map-gl';
+import {
+    geocodeByAddress,
+    getLatLng
+} from 'react-places-autocomplete';
+import {
+    FlyToInterpolator,
+    LinearInterpolator
+} from 'react-map-gl';
+import {select} from 'redux-saga/effects';
 import getZoom from './getZoom';
 import getLocation from './getLocation';
+import {getViewport as getViewportState} from './../Selectors';
 
 /**
  * Get the location selected in the navigation
@@ -12,25 +20,22 @@ import getLocation from './getLocation';
 function* getViewport(tier, navigation) {
     const zoom = getZoom(tier);
     const location = getLocation(navigation);
-    let coordinates;
+    const currentVP = yield select(getViewportState);
 
+    let coordinates = null;
     if (location.length) {
         const results = yield geocodeByAddress(location);
         coordinates = yield getLatLng(_.first(results));
     }
 
     const map_viewport = {
+        ...currentVP,
+        longitude: coordinates ? Math.abs(coordinates.lng) : currentVP.longitude,
+        latitude: coordinates ? Math.abs(coordinates.lat) : currentVP.latitude,
+        // transitionDuration: 2000,
+        // transitionInterpolator: new FlyToInterpolator(),
         zoom,
-        pitch: 0,
-        bearing: 0,
-        transitionDuration: 2000,
-        transitionInterpolator: new FlyToInterpolator(),
     };
-
-    if (location.length) {
-        map_viewport.longitude = Math.abs(coordinates.lng);
-        map_viewport.latitude = Math.abs(coordinates.lat);
-    }
 
     return map_viewport;
 }

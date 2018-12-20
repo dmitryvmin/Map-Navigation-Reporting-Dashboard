@@ -51,17 +51,25 @@ export const getCountryCode = country => {
 
 // TODO: this function will eventually move into a Data Processing Saga
 // so we can synchronously derive the data state from the selected  metric/filter/time params
-export const getData = tier => {
+export const getData = (tier, navigation) => {
 
-    const childNav = getNMapChild(tier);
+    const curNM = getNMap(tier); // current navigation map
+    const childNM = getNMapChild(tier); // child navigation map
 
-    if (!childNav.data) {
+    // If no child data - so if facility level
+    if (!childNM.data) {
         return null;
     }
 
-    const data = childNav.data.features.reduce((acc, cur) => {
-        let name = cur.properties[childNav.code];
-        acc.push({[childNav.map]: name});
+    let data = childNM.data.features;
+
+    if (curNM.type !== 'All') {
+        data = data.filter(f => f.properties[curNM.code] === navigation[curNM.type]);
+    }
+
+    data = data.reduce((acc, cur) => {
+        let name = cur.properties[childNM.code];
+        acc.push({[childNM.map]: name});
         return acc;
     }, []);
 
@@ -78,6 +86,18 @@ export const getNMapChild = (value) => {
         for (let v of Object.values(n)) {
             if (v === value) {
                 return getNMap(n.index + 1);
+            }
+        }
+        ;
+    }
+    ;
+}
+
+export const getNMapParent = (value) => {
+    for (let n of navigationMap) {
+        for (let v of Object.values(n)) {
+            if (v === value) {
+                return getNMap(n.index - 1);
             }
         }
         ;
