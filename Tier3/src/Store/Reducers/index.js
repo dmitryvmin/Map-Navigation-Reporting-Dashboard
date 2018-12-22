@@ -5,6 +5,7 @@ import APIreducer from './api';
 import dataReducer from './data';
 import mapReducer from './map';
 import metricReducer from './metric';
+import displayReducer from './display';
 
 const reducers = {
     errorsReducer,
@@ -14,6 +15,7 @@ const reducers = {
     dataReducer,
     mapReducer,
     metricReducer,
+    displayReducer,
 };
 
 export default reducers;

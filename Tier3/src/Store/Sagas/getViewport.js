@@ -10,7 +10,7 @@ import {
 import {select} from 'redux-saga/effects';
 import getZoom from './getZoom';
 import getLocation from './getLocation';
-import {getViewport as getViewportState} from './../Selectors';
+import {viewportSelector} from './../Selectors';
 
 /**
  * Get the location selected in the navigation
@@ -20,7 +20,7 @@ import {getViewport as getViewportState} from './../Selectors';
 function* getViewport(tier, navigation) {
     const zoom = getZoom(tier);
     const location = getLocation(navigation);
-    const currentVP = yield select(getViewportState);
+    const currentVP = yield select(viewportSelector, {key: 'map_viewport'});
 
     let coordinates = null;
     if (location.length) {

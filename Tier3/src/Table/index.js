@@ -33,41 +33,6 @@ import {
     timechecker48
 } from './table-display-helpers';
 
-const columns = [
-    {id: 'status', numeric: false, disablePadding: true, label: 'Status'},
-    {id: 'holdover', numeric: true, disablePadding: false, label: 'Holdover Days'},
-    {id: 'lasttemp', numeric: true, disablePadding: false, label: 'Last Reading Temp (C)'},
-    {id: 'brand', numeric: false, disablePadding: false, label: 'Brand/Model'},
-    {id: 'facility', numeric: false, disablePadding: false, label: 'Facility'},
-    {id: 'lastping', numeric: true, disablePadding: false, label: 'Last Ping'},
-];
-
-// TODO: introduce selectors for derived state
-const getColumns = navTier => {
-    let columns = [
-
-    ];
-
-    switch (navTier) {
-        case GGConsts.COUNTRY_LEVEL:
-            columns.push({id: 'states', numeric: false, disablePadding: false, label: 'States'});
-            break;
-        case GGConsts.STATE_LEVEL:
-            columns.push({id: 'lgas', numeric: false, disablePadding: false, label: 'LGAs'});
-            break;
-        case GGConsts.LGA_LEVEL:
-            columns.push({id: 'facilities', numeric: false, disablePadding: false, label: 'Facilities'});
-            break;
-        case GGConsts.FACILITY_LEVEL:
-            columns.push({id: 'devices', numeric: false, disablePadding: false, label: 'Devices'});
-            break;
-    }
-
-    columns.push({id: 'alarms', numeric: true, disablePadding: false, label: 'Alarms'});
-
-    return columns;
-}
-
 class RTTable extends React.Component {
     constructor(props) {
         super(props);
@@ -123,21 +88,21 @@ class RTTable extends React.Component {
 
     getNewNav = location => {
         const {nav_tier} = this.props;
-        const childNav = getNMapChild(nav_tier)
-        const type = childNav.type;
-        const value = location[childNav.map];
+        const childNM = getNMapChild(nav_tier, 'tier')
+        const type = childNM.type;
+        const value = location[childNM.map];
 
         return ({type, value});
     }
 
     handleRowHover = location => e => {
-        const newNav = this.getNewNav(location);
-        this.props.navHovered({value: newNav.value});
+        const NM = this.getNewNav(location);
+        this.props.navHovered({value: NM.value});
     }
 
     handleRowClick = location => e => {
-        const newNav = this.getNewNav(location);
-        this.props.updateNav(newNav.type, newNav.value);
+        const NM = this.getNewNav(location);
+        this.props.updateNav(NM.type, NM.value);
     }
 
     handleChangePage = (event, page) => {
@@ -151,10 +116,15 @@ class RTTable extends React.Component {
     render() {
         const {
             nav_tier,
-            navigation
+            navigation,
+            display_data: {
+                columns,
+                rows,
+                cells,
+            } = {}
         } = this.props;
 
-        if (!nav_tier) {
+        if (!nav_tier || !columns || !cells) {
             return null;
         }
 
@@ -165,13 +135,6 @@ class RTTable extends React.Component {
             page,
         } = this.state;
 
-
-        const columns = getColumns(nav_tier);
-        const data = getData(nav_tier, navigation);
-
-        if (!data) {
-            return null;
-        }
         // const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
         return (
@@ -185,9 +148,9 @@ class RTTable extends React.Component {
                                            order={order}
                                            orderBy={orderBy}
                                            onRequestSort={this.handleRequestSort}
-                                           rowCount={data.length}/>
+                                           rowCount={cells.length}/>
                         <TableBody>
-                            {stableSort(data, getSorting(order, orderBy))
+                            {stableSort(cells, getSorting(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((d, i) =>
                                     <Row data={d}
@@ -230,6 +193,7 @@ const mapStateToProps = state => {
         lga_selected: state.navigationReducer.lga_selected,
         facility_selected: state.navigationReducer.facility_selected,
         navigation: state.navigationReducer.navigation,
+        display_data: state.displayReducer.display_data,
     }
 }
 

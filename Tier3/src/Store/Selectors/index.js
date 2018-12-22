@@ -1,10 +1,29 @@
+import { createSelector } from 'reselect';
 
-export const getNavState = state => state.navigationReducer.navigation;
+const viewportSelector = createSelector(
+    (state, props) => state[props.key],
+    viewport => viewport
+);
+// TODO: add reselect to the rest like the one above - https://github.com/reduxjs/reselect
 
-export const getTierState = state => state.navigationReducer.nav_tier;
+const navSelector = state => state.navigationReducer.navigation;
 
-export const getGeoState = state => state.dataReducer.geo_map;
+const tierSelector = state => state.navigationReducer.nav_tier;
 
-export const getViewport = state => state.mapReducer.map_viewport;
+const geoSelector = state => state.dataReducer.geo_map;
 
-export const getUri = state => state.uri;
+const sensorsSelector = state => state.dataReducer.sensors_map;
+
+const uriSelector = state => state.uri;
+
+const metricSelector = state => state.metricReducer.metric_selected;
+
+export {
+    navSelector,
+    tierSelector,
+    geoSelector,
+    sensorsSelector,
+    viewportSelector,
+    uriSelector,
+    metricSelector,
+}

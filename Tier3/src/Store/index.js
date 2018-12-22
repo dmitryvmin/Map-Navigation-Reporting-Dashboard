@@ -1,10 +1,13 @@
-import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
+import {createStore, combineReducers, applyMiddleware, compose} from 'redux';
 import createSagaMiddleware from 'redux-saga'
 import loggerMiddleware from 'redux-logger';
-import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly';
+import {composeWithDevTools} from 'redux-devtools-extension/developmentOnly';
 import reducers from './Reducers/index.js';
-import { initSaga, watcherSaga, sensorDataSaga } from './Sagas/sagas.js'
-import { persistStore, persistReducer, persistCombineReducers } from 'redux-persist';
+import {
+    startupSaga,
+    watcherSaga
+} from './Sagas';
+import {persistStore, persistReducer, persistCombineReducers} from 'redux-persist';
 import storage from 'redux-persist/lib/storage' // defaults to localStorage for web and AsyncStorage for react-native
 import localforage from 'localforage';
 
@@ -36,8 +39,7 @@ const store = createStore(
 // TODO: finish hook up redux-persist
 
 sagaMiddleware.run(watcherSaga);
-// sagaMiddleware.run(sensorDataSaga);
-sagaMiddleware.run(initSaga);
+sagaMiddleware.run(startupSaga);
 
 // export const persistor = persistStore(store);
 

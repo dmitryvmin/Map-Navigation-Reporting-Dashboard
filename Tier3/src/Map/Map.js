@@ -14,6 +14,7 @@ import DeckGL, {
 
 import {
     navigationMap,
+    getGeoJson,
     getNMapChild,
     getNMap,
     getNMapParent,
@@ -23,8 +24,8 @@ import {connect} from "react-redux";
 import styled from 'styled-components';
 import Card from '@material-ui/core/Card';
 import _ from 'lodash';
-import CityPin from './pin';
-import IconClusterLayer from './icon-cluster-layer';
+import CityPin from './Pin';
+import IconClusterLayer from './IconClusterLayer';
 
 import {
     setMapViewport,
@@ -32,11 +33,11 @@ import {
     navHovered
 } from './../Store/Actions';
 
-import markerData from './statesData.json';
-import icon from './location-icon-atlas.png';
-import iconMapping from './location-icon-mapping.json';
+import markerData from '../Data/statesData.json';
+import icon from '../Images/location-icon-atlas.png';
+import iconMapping from '../Data/location-icon-mapping.json';
 
-import lgasData from './../Map/lgasData.json';
+import lgasData from '../Data/lgasData.json';
 
 import * as turf from '@turf/turf';
 
@@ -48,10 +49,6 @@ const colorRange = [
     [240, 59, 32, 212],
     [189, 0, 38, 255]
 ];
-
-// Source data CSV
-const DATA_URL =
-    'https://raw.githubusercontent.com/uber-common/deck.gl-data/master/examples/icon/meteorites.json';
 
 class Map extends Component {
     constructor(props) {
@@ -129,12 +126,12 @@ class Map extends Component {
             hover
         } = this.props;
 
-        const NMchild = getNMapChild(tier);
+        const NMchild = getNMapChild(tier, 'tier');
         let value;
         value = object.properties[NMchild.code]
 
         if (!value) {
-            const NMparent = getNMap(tier);
+            const NMparent = getNMap(tier, 'tier');
             value = object.properties[NMparent.code];
         }
 
@@ -155,14 +152,14 @@ class Map extends Component {
             tier,
         } = this.props;
 
-        const NMchild = getNMapChild(tier);
+        const NMchild = getNMapChild(tier, 'tier');
         let value, type;
         value = object.properties[NMchild.code];
 
         if (value) {
             type = NMchild.type;
         } else {
-            const NMparent = getNMap(tier);
+            const NMparent = getNMap(tier, 'tier');
             value = object.properties[NMparent.code];
             type = NMparent.type;
         }
@@ -203,9 +200,9 @@ class Map extends Component {
                 // getElevation: 30,
                 // lineWidthScale: 20,
                 lineWidthMinPixels: 1,
-                getLineColor: [160,160,160],
+                getLineColor: [160, 160, 160],
                 getFillColor: f => (f.properties[map.code] === hover.value) ? [255, 255, 0] : [199, 233, 180],
-                updateTrigger: { getFillColor: hover.value },
+                updateTrigger: {getFillColor: hover.value},
                 pickable: true,
                 onHover: this._onLayerHover,
                 onClick: this._onLayerClick,
@@ -215,7 +212,7 @@ class Map extends Component {
         const makeInactiveGeoLayer = (map, data) => {
             return new GeoJsonLayer({
                 id: `${map.tier}-inactive-${hover && hover.value}`,
-                data: data,
+                data,
                 opacity: 0.05,
                 stroked: true,
                 filled: true,
@@ -223,12 +220,11 @@ class Map extends Component {
                 wireframe: true,
                 fp64: true,
                 lineWidthMinPixels: 1,
-                getLineColor: [100,100,100],
+                getLineColor: [100, 100, 100],
                 // getFilterValue: f => f.properties[map.code],
-                getFillColor:
-                    f => {
-                        return (f.properties[map.code] === hover.value) ? [50,50,50] : [105, 105, 105]
-                    },
+                getFillColor: f => {
+                    return (f.properties[map.code] === hover.value) ? [50, 50, 50] : [105, 105, 105]
+                },
                 updateTrigger: {
                     getFillColor: hover.value
                 },
@@ -245,8 +241,8 @@ class Map extends Component {
                 return;
             }
 
-            const NM = getNMap(type);
-            let data = NM.data.features;
+            const NM = getNMap(type, 'type');
+            let data = getGeoJson(NM.type);
             if (!data) {
                 return;
             }
@@ -254,7 +250,7 @@ class Map extends Component {
             let layer;
             if (selected === 'All') {
                 // filter by parent
-                let parentNM = getNMapParent(type);
+                let parentNM = getNMapParent(type, 'type');
                 if (parentNM) data = data.filter(f => f.properties[parentNM.code] === navigation[parentNM.type]);
                 layer = makeActiveGeoLayer(NM, data);
 
@@ -274,7 +270,6 @@ class Map extends Component {
         }
 
         _.toArray(navigationMap).forEach(n => getGeoLayers(n.type));
-
 
 
         // POIs as a deck.gl layer
@@ -333,12 +328,13 @@ class Map extends Component {
             return null
         }
 
-        const curNM = getNMap(tier);
-        const childNM = getNMapChild(tier);
+        const curNM = getNMap(tier, 'tier');
+        const childNM = getNMapChild(tier, 'tier');
+        const geoJson = getGeoJson(childNM.type);
 
-        if (childNM && childNM.data && childNM.data.features) {
+        if (childNM && geoJson) {
 
-            let points = childNM.data.features.filter(f => f.properties[curNM.code] === navigation[curNM.type]);
+            let points = geoJson.filter(f => f.properties[curNM.code] === navigation[curNM.type]);
 
             // Calculate the centeroid for each geojson multipolygon
             points = points.map(f => {
@@ -359,39 +355,25 @@ class Map extends Component {
         return (
             <MapContainer>
                 <DeckGL
-                    // initialViewState={INITIAL_VIEW_STATE}
                     viewState={viewState}
                     controller={{type: MapController, dragRotate: false}}
                     onViewStateChange={this._onViewStateChange}
-                    // views={this._getViews()}
                     ref={(ref) => {
-                        // save a reference to the Deck instance
-                        this._deck = ref && ref.deck
+                        this._deck = ref && ref.deck  // reference to the Deck instance
                     }}
                     layers={this._renderLayers()}
-                    // onClick={this._onMapClick}
-                    // onHover={this._onMapHover}
                     onWebGLInitialized={this._onWebGLInitialized}
                 >
                     {gl && <StaticMap
                         ref={ref => {
-                            // save a reference to the mapboxgl.Map instance
-                            this._map = ref && ref.getMap();
+                            this._map = ref && ref.getMap(); // reference to the mapboxgl.Map instance
                         }}
-                        // gl={gl}
                         preventStyleDiffing={true}
                         reuse
-                        mapStyle="https://api.mapbox.com/styles/v1/dmitrymin/cj4fulpei0m0k2sqrh1pz0jvh.html?fresh=true&title=true&access_token=pk.eyJ1IjoiZG1pdHJ5bWluIiwiYSI6ImNqb3FmZ2VtcDAwMWszcG84cjJxdWg5NncifQ.mphHlEjmVZzV57R-3BWJqw#2.9/7.453962/27.670658/0"
-                        // mapStyle={mapStyle}
-                        // mapStyle={'mapbox://styles/mapbox/light-v9'}
+                        mapStyle={mapStyle}
                         mapboxApiAccessToken={GGConsts.MAPBOX_TOKEN}>
 
-
-                        {/*<Marker latitude={9.0820} longitude={8.6753} offsetLeft={-20} offsetTop={-10}>*/}
-                        {/*<div>You are here</div>*/}
-                        {/*</Marker>*/}
-
-                        {markers && markers.map((m,i) =>
+                        {markers && markers.map((m, i) =>
                             <Marker
                                 key={`marker-${i}`}
                                 longitude={m.longitude}
@@ -399,7 +381,7 @@ class Map extends Component {
                                 <CityPin location={m.name}
                                          zoom={viewState.zoom}
                                          name={m.name}
-                                         // onClick={() => this.setState({popupInfo: m.name})}
+                                    // onClick={() => this.setState({popupInfo: m.name})}
                                 />
                             </Marker>
                         )}
@@ -410,7 +392,6 @@ class Map extends Component {
                     {/*<ControlPanel*/}
                     {/*containerComponent={this.props.containerComponent}*/}
                     {/*onViewportChange={this._easeTo.bind(this)}*/}
-                    {/*interruptionStyles={interruptionStyles}*/}
                     {/*onStyleChange={this._onStyleChange.bind(this)}*/}
                     {/*/>*/}
 
@@ -440,10 +421,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         setMapViewport: (map_viewport) => dispatch(setMapViewport(map_viewport)),
-        // navigateTo: (navState) => dispatch({type: GGConsts.UPDATE_NAV, navState}),
         navHovered: (nav_hover) => dispatch({type: GGConsts.NAV_HOVER, nav_hover}),
         updateNav: (navType, navVal) => dispatch({type: GGConsts.UPDATE_NAV, [navType]: navVal}),
-        // mapClicked: (prop) => dispatch(mapClicked(prop)),
     }
 }
 

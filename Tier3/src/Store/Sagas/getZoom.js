@@ -6,7 +6,7 @@ import GGConsts from '../../Constants';
  * @returns {number} zoom
  */
 function getZoom(tier) {
-    // const tier = yield select(getTierState);
+    // const tier = yield select(tierSelector);
 
     const zoomMap = {
         [GGConsts.COUNTRY_LEVEL]: 5,

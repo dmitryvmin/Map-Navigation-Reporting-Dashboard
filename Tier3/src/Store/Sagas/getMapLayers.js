@@ -1,7 +1,7 @@
 import {GeoJsonLayer} from 'deck.gl';
 import GGConsts from '../../Constants';
-import statesData from './../../Map/statesData.json';
-import lgasData from './../../Map/lgasData.json';
+import statesData from '../../Data/statesData.json';
+import lgasData from '../../Data/lgasData.json';
 
 const getMapLayers = (tier, navigation) => {
 

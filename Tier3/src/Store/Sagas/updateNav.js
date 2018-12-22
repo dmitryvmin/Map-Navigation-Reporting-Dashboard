@@ -1,10 +1,14 @@
 import _ from 'lodash';
-import { put } from 'redux-saga/effects';
+import {
+    put,
+    call
+} from 'redux-saga/effects';
 import GGConsts from '../../Constants';
-import { navigationMap } from './../../Utils';
+import {getNMap} from './../../Utils';
 import getTier from './getTier';
 import getNav from './getNav';
 import getViewport from './getViewport';
+import composeDisplayData from './composeDisplayData';
 import updateMapboxStyle from './updateMapboxStyle';
 import getMapLayers from './getMapLayers';
 
@@ -12,8 +16,8 @@ import getMapLayers from './getMapLayers';
  * When the navigation changes, this computes and updates the state
  * @param {object}
  */
-function* updateByLoc( action ) {
-    const { type, ...nav } = action;
+function* updateNav(action) {
+    const {type, ...nav} = action;
     const navType = _.first(_.keys(nav));
     const navValue = _.first(_.values(nav));
 
@@ -22,19 +26,19 @@ function* updateByLoc( action ) {
     }
 
     // ## The update action properties can be found in the navObj map
-    const navMap = _.first(navigationMap.filter(n => n.type === navType));
+    const NM = getNMap(navType, 'type');
 
     // ## Set Tier
-    const nav_tier = getTier(navMap, navValue);
-    yield put({ type: GGConsts.NAV_TIER, nav_tier });
+    const nav_tier = getTier(NM, navValue);
+    yield put({type: GGConsts.NAV_TIER, nav_tier});
 
     // ## Update Navigation
-    const navigation = yield getNav(navMap, navValue);
-    yield put({ type: GGConsts.NAVIGATION, navigation });
+    const navigation = yield call(getNav, NM, navValue);
+    yield put({type: GGConsts.NAVIGATION, navigation});
 
     // ## Update Map position, zoom
-    const map_viewport = yield getViewport(nav_tier, navigation);
-    yield put({ type: GGConsts.MAP_VIEWPORT, map_viewport });
+    const map_viewport = yield call(getViewport, nav_tier, navigation);
+    yield put({type: GGConsts.MAP_VIEWPORT, map_viewport});
 
     // Update Map style
     // const map_style = updateMapboxStyle(nav_tier, navigation);
@@ -43,6 +47,8 @@ function* updateByLoc( action ) {
     // Update Layers
     // const layers = getMapLayers(nav_tier, navigation);
 
+    // Update Data
+    yield composeDisplayData();
 }
 
-export default updateByLoc;
+export default updateNav;

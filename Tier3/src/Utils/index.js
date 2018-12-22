@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import cc from 'country-code';
-import countriesData from './../Map/countriesData.json';
-import statesData from './../Map/statesData.json';
-import lgasData from './../Map/lgasData.json';
+import countriesData from '../Data/countriesData.json';
+import statesData from '../Data/statesData.json';
+import lgasData from '../Data/lgasData.json';
 
 export const formatLabel = loc => {
     let label = loc.split('_');
@@ -53,15 +53,14 @@ export const getCountryCode = country => {
 // so we can synchronously derive the data state from the selected  metric/filter/time params
 export const getData = (tier, navigation) => {
 
-    const curNM = getNMap(tier); // current navigation map
-    const childNM = getNMapChild(tier); // child navigation map
+    const curNM = getNMap(tier, 'tier'); // current navigation map
+    const childNM = getNMapChild(tier, 'tier'); // child navigation map
 
-    // If no child data - so if facility level
-    if (!childNM.data) {
+    if (childNM.type === 'facility_selected') {
         return null;
     }
 
-    let data = childNM.data.features;
+    let data = getGeoJson(childNM.type);
 
     if (curNM.type !== 'All') {
         data = data.filter(f => f.properties[curNM.code] === navigation[curNM.type]);
@@ -81,51 +80,57 @@ export const getData = (tier, navigation) => {
 
 /**
  * Returns a child map (next down the nav hierarchy, index + 1)
- * @param {string || number} - take in any of keys that a navigationMap object has
+ * @param {string | number} value - value to search by. any of the values that the navigationMap object has.
+ * @param {object | string} identifier - value type to help limit the search. If none provided, assuming the first arg is a map object
  * @returns {Object} return a child navigationMap object
  */
-export const getNMapChild = (value) => {
-    for (let n of navigationMap) {
-        for (let v of Object.values(n)) {
-            if (v === value) {
-                return getNMap(n.index + 1);
+const getNMSibling = (value, id = false, sibling) => {
+    let map;
+
+    if (id) {
+        for (let n of navigationMap) {
+            for (let v of Object.values(n)) {
+                if (v === value) {
+                    map = getNMap(n.index + sibling);
+                }
             }
         }
-        ;
+    } else {
+        let childIx = value.index + sibling;
+        map = getNMap(childIx, 'index');
     }
-    ;
+
+    // console.log(`%c Utils NM for ${value}: ${JSON.stringify(map)}`, 'background: #ffc107; color: white; display: block;');
+
+    return map;
+
 }
 
-export const getNMapParent = (value) => {
-    for (let n of navigationMap) {
-        for (let v of Object.values(n)) {
-            if (v === value) {
-                return getNMap(n.index - 1);
+export const getNMapChild = (value, id) => {
+    let sibling = 1;
+    let siblingMap = getNMSibling(value, id, sibling);
+    return siblingMap;
+}
+
+export const getNMapParent = (value, id) => {
+    let sibling = -1;
+    let siblingMap = getNMSibling(value, id, sibling);
+    return siblingMap;
+}
+
+export const getNMap = (value, type = null) => {
+    if (!type) {
+        for (let n of navigationMap) {
+            for (let v of Object.values(n)) {
+                if (v === value) {
+                    return n;
+                }
             }
         }
-        ;
+    } else {
+        let map = _.first(navigationMap.filter(n => n[type] === value));
+        return map;
     }
-    ;
-}
-
-export const getNMap = (value) => {
-    for (let n of navigationMap) {
-        for (let v of Object.values(n)) {
-            if (v === value) {
-                return n;
-            }
-        }
-        ;
-    }
-    ;
-}
-
-export const getNMapByTier = (tier) => {
-    return _.first(navigationMap.filter(f => f.tier === tier));
-}
-
-export const getNMapByIndex = (index) => {
-    return _.first(navigationMap.filter(f => f.index === index));
 }
 
 // TODO: replace strings with constants
@@ -141,7 +146,6 @@ export const navigationMap = [
         map: 'countries',
         tier: "COUNTRY_LEVEL",
         code: 'admin0Name',
-        data: countriesData,
     },
     {
         index: 1,
@@ -149,7 +153,6 @@ export const navigationMap = [
         map: 'states',
         tier: "STATE_LEVEL",
         code: 'admin1Name',
-        data: statesData,
     },
     {
         index: 2,
@@ -157,7 +160,6 @@ export const navigationMap = [
         map: 'lgas',
         tier: "LGA_LEVEL",
         code: 'admin2Name',
-        data: lgasData,
     },
     {
         index: 3,
@@ -166,3 +168,15 @@ export const navigationMap = [
         tier: "FACILITY_LEVEL",
     }
 ];
+
+
+export const geoJsonDataMap = {
+    'country_selected': countriesData,
+    'state_selected': statesData,
+    'lga_selected': lgasData,
+};
+
+export const getGeoJson = (type) => {
+    let data = geoJsonDataMap[type].features;
+    return data;
+}

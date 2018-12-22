@@ -22,6 +22,11 @@ const MUI_THEME = createMuiTheme({
     }
 });
 
+// Colors
+export const SELECTED_COLOR = "#f5f5f5";
+export const DESELECTED_COLOR = "#bcbcbc";
+export const OFF_COLOR = "#6b6b6b";
+
 // API Creds
 const GG_CREDS = 'demo:Change is good!';
 const API_HEADER = {
@@ -34,9 +39,7 @@ const API_HEADER = {
 const API = 'http://20.36.19.106';
 const HEADER_AUTH = 'Z2xvYmFsLmdvb2Q6fkYoRzNtKUtQeT8/ZHd4fg==';
 const OWNER_ID = '5896a5c1-a931-4595-8205-8e7635ca4469';
-
 const RT_HEADER = { headers: { 'Authorization': `Basic ${HEADER_AUTH}` }};
-
 const MAPBOX_TOKEN = 'pk.eyJ1IjoiZG1pdHJ5bWluIiwiYSI6ImNqb3FmZ2VtcDAwMWszcG84cjJxdWg5NncifQ.mphHlEjmVZzV57R-3BWJqw';
 
 // Ports
@@ -44,6 +47,9 @@ const REPORTING_PORT = '9000';
 const AUCMA_PORT = '9003';
 const ADMIN_PORT = '8099';
 const UPLOADED_DEVICES = '8780';
+
+// Data
+const SENSORS_ENDPOINT = `${API}:${REPORTING_PORT}/sensor/state`;
 
 // API Actions
 const API_CALL_REQUEST = "API_CALL_REQUEST";
@@ -83,12 +89,13 @@ export const METRICS = [METRIC_ALARMS, METRIC_UPTIME, METRIC_REPORTING, METRIC_H
 export const UPDATE_METRIC = "UPDATE_METRIC"; // status of the update
 export const METRIC_SELECTED = "METRIC_SELECTED"
 
-// Styles
-export const SELECTED_COLOR = "#f5f5f5";
-export const DESELECTED_COLOR = "#bcbcbc";
-export const OFF_COLOR = "#6b6b6b";
+export const DISPLAY_DATA = "DISPLAY_DATA";
 
 export default class GGConsts {
+
+  static get DISPLAY_DATA() {
+    return DISPLAY_DATA;
+  }
 
   static get MUI_THEME() {
     return MUI_THEME;
@@ -205,6 +212,9 @@ export default class GGConsts {
   }
   static get API() {
     return API;
+  }
+  static get SENSORS_ENDPOINT() {
+    return SENSORS_ENDPOINT;
   }
   static get RT_HEADER() {
     return RT_HEADER;

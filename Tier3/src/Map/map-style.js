@@ -1,6 +1,6 @@
 import {fromJS} from 'immutable';
 import GGConsts from './../Constants';
-import MAP_STYLE from './style.json';
+import MAP_STYLE from '../Data/style.json';
 
 import { getFilterKey, getCountryCode } from './../Utils';
 

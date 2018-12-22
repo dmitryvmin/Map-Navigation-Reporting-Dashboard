@@ -1,0 +1,65 @@
+{
+    "version": 8,
+    "name": "RT",
+    "metadata": {
+        "mapbox:autocomposite": true,
+        "mapbox:type": "template",
+        "mapbox:sdk-support": {
+            "js": "0.40.0",
+            "android": "5.2.0",
+            "ios": "3.7.0"
+        }
+    },
+    "center": [14.544155699636917, 4.663275303592144],
+    "zoom": 3.4508314208534614,
+    "bearing": 0,
+    "pitch": 0,
+    "sources": {
+        "composite": {
+            "url": "mapbox://mapbox.mapbox-streets-v7",
+            "type": "vector"
+        }
+    },
+    "sprite": "mapbox://sprites/dmitrymin/cj4fulpei0m0k2sqrh1pz0jvh",
+    "glyphs": "mapbox://fonts/dmitrymin/{fontstack}/{range}.pbf",
+    "layers": [
+        {
+            "id": "background",
+            "type": "background",
+            "paint": {
+                "background-color": "hsl(84, 68%, 36%)",
+                "background-opacity": 1,
+                "background-pattern": "wave-sm"
+            }
+        },
+        {
+            "id": "waterway",
+            "type": "line",
+            "source": "composite",
+            "source-layer": "waterway",
+            "filter": [
+                "all",
+                ["==", "$type", "LineString"],
+                ["in", "class", "canal", "river"]
+            ],
+            "paint": {
+                "line-color": "hsl(195, 42%, 30%)",
+                "line-width": {"base": 1.4, "stops": [[8, 0.5], [20, 15]]}
+            }
+        },
+        {
+            "id": "water",
+            "type": "fill",
+            "source": "composite",
+            "source-layer": "water",
+            "filter": ["in", "$type", "LineString", "Point", "Polygon"],
+            "paint": {"fill-color": "hsl(190, 33%, 86%)", "fill-opacity": 0.19}
+        }
+    ],
+    "created": "2017-06-27T17:30:41.126Z",
+    "id": "cj4fulpei0m0k2sqrh1pz0jvh",
+    "modified": "2018-12-20T03:06:13.580Z",
+    "owner": "dmitrymin",
+    "visibility": "public",
+    "draft": false
+}

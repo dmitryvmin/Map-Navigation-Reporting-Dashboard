@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react';
 import {fromJS} from 'immutable';
-import MAP_STYLE from './style.json';
+import MAP_STYLE from '../Data/style.json';
 
 const defaultMapStyle = fromJS(MAP_STYLE);
 

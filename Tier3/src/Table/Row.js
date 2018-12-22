@@ -38,7 +38,7 @@ class Row extends Component {
             selected
         } = this.state;
 
-        const childNav = getNMapChild(nav_tier);
+        const childNav = getNMapChild(nav_tier, 'tier');
 
         if (data[childNav.map] === nav_hover && !selected) {
             this.setState({selected: true});

@@ -5,7 +5,7 @@ import _ from 'lodash';
  * @returns {string} location - Concatenated tiers
  */
 function getLocation(navigation) {
-    // const navState = yield select(getNavState);
+    // const navState = yield select(navSelector);
 
     const {
         country_selected,

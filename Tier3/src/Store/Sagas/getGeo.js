@@ -1,12 +1,12 @@
 import _ from 'lodash';
 import GGConsts from '../../Constants';
-import fetchData from './apiSaga';
-import { navigationMap } from './../../Utils';
+import {fetchData} from './fetch';
+import {navigationMap} from './../../Utils';
 
 // for Local
-import countriesData from './../../Map/countriesData.json';
-import statesData from './../../Map/statesData.json';
-import lgasData from './../../Map/lgasData.json';
+import countriesData from '../../Data/countriesData.json';
+import statesData from '../../Data/statesData.json';
+import lgasData from '../../Data/lgasData.json';
 
 // for REST
 const countries_endpoint = 'https://restcountries.eu/rest/v2/all';
@@ -16,7 +16,7 @@ const lgas_endpoint = `http://locationsng-api.herokuapp.com/api/v1/states`;
 // For fetching live data from an endpoint
 function* getGeo(type, selected = null) {
 
-    switch(type) {
+    switch (type) {
         case 'country_selected': {
 
             // For REST
@@ -46,7 +46,7 @@ function* getGeo(type, selected = null) {
         case 'lga_selected': {
 
             // For REST
-            // const { country_selected } = yield select(getNavState);
+            // const { country_selected } = yield select(navSelector);
             // if (country_selected === 'Nigeria') {
             //     let stateFormatted = selected.replace(/\State+[.!?]?$/, '').trim().toLowerCase();
             //     let uri = `${lgas_endpoint}/${stateFormatted}/details`;
