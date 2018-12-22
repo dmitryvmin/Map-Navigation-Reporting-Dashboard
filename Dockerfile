@@ -6,6 +6,8 @@ LABEL maintainer "Level11, Inc"
 
 COPY intchngfe   /usr/share/nginx/intchngfe/
 COPY mohfe       /usr/share/nginx/mohfe/
+COPY Tier3       /usr/share/nginx/Tier3/
+
 COPY nginx/vhost.conf /etc/nginx/conf.d/default.conf
 
-EXPOSE 8080 8081
+EXPOSE 8080 8081 8082

@@ -7,6 +7,7 @@ stages:
     script:
       - bash npm_build.sh intchngfe
       - bash npm_build.sh mohfe
+      - bash npm_build.sh Tier3
   - name: docker build
     script:
       - mkdir -p build
@@ -14,6 +15,7 @@ stages:
       - cp -R nginx build
       - cp -R intchngfe/build build/intchngfe
       - cp -R mohfe/build build/mohfe
+      - cp -R Tier3/build build/Tier3
       - docker build --tag global-good/report-tools --build-arg CONT_BUILD_SHA=11111 build
   - name: tag & push
     script:
