@@ -177,6 +177,9 @@ export const geoJsonDataMap = {
 };
 
 export const getGeoJson = (type) => {
+    if (!geoJsonDataMap[type]) {
+        return;
+    }
     let data = geoJsonDataMap[type].features;
     return data;
 }
