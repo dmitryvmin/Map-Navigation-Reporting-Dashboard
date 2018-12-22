@@ -24,14 +24,14 @@ export function* watcherSaga() {
         takeLatest(GGConsts.API_CALL_REQUEST, workerSaga),
 
         // These actions effect displayed data, call composeDisplayData
-        takeLatest('UPDATE_TIMEFRAME', updateTimeframe),
-        takeLatest('UPDATE_DEVICE_TYPE', updateDevice),
+        takeLatest(GGConsts.UPDATE_TIMEFRAME, updateTimeframe),
+        takeLatest(GGConsts.UPDATE_DEVICE_TYPE, updateDevice),
         takeLatest('UPDATE_MANUFACTURER', updateMfc),
         takeLatest(GGConsts.UPDATE_NAV, updateNav),
         takeLatest(GGConsts.UPDATE_METRIC, updateMetric),
 
-        // takeLatest(GGConsts.NAV_HOVER, updateHover),
-        yield throttle(50, GGConsts.NAV_HOVER, updateHover),
+        takeLatest(GGConsts.NAV_HOVER, updateHover),
+        // yield throttle(50, GGConsts.NAV_HOVER, updateHover),
     ]);
 }
 

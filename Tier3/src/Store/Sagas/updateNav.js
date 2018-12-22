@@ -9,6 +9,7 @@ import getTier from './getTier';
 import getNav from './getNav';
 import getViewport from './getViewport';
 import composeDisplayData from './composeDisplayData';
+import getMarkers from './getMarkers';
 import updateMapboxStyle from './updateMapboxStyle';
 import getMapLayers from './getMapLayers';
 
@@ -36,6 +37,14 @@ function* updateNav(action) {
     const navigation = yield call(getNav, NM, navValue);
     yield put({type: GGConsts.NAVIGATION, navigation});
 
+    // ## Update Data
+    const display_data = yield call(composeDisplayData);
+    yield put({type: GGConsts.DISPLAY_DATA, display_data });
+
+    // ## Update Markers
+    const markers = yield call(getMarkers);
+    yield put({type: GGConsts.MARKERS, markers});
+
     // ## Update Map position, zoom
     const map_viewport = yield call(getViewport, nav_tier, navigation);
     yield put({type: GGConsts.MAP_VIEWPORT, map_viewport});
@@ -47,8 +56,6 @@ function* updateNav(action) {
     // Update Layers
     // const layers = getMapLayers(nav_tier, navigation);
 
-    // Update Data
-    yield composeDisplayData();
 }
 
 export default updateNav;

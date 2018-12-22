@@ -65,10 +65,10 @@ class App extends Component {
                             </IdBar>
                             <StickyFootCon>
                                 <Grid container spacing={0}>
-                                    <Grid item xs={12} sm={6}>
+                                    <Grid item xs={12} md={6}>
                                         <Map />
                                     </Grid>
-                                    <Grid item xs={12} sm={6}>
+                                    <Grid item xs={12} md={6}>
                                         <Chart />
                                         <RTTable />
                                     </Grid>

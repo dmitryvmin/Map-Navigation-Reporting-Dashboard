@@ -21,9 +21,8 @@ import {
     Line,
     ResponsiveContainer
 } from 'recharts';
-import {
-    getData
-} from './../Utils';
+
+import {getNMapChild} from './../Utils';
 
 const styles = theme => ({
     indicator: {
@@ -34,6 +33,17 @@ const styles = theme => ({
     }
 })
 
+const CustomizedTick = props => {
+    const {payload, x, y} = props;
+
+    return (
+        <g transform={`translate(${x},${y})`}>
+            <text x={0} y={0} dy={2} fontSize="8" textAnchor="end" fill="#666"
+                  transform="rotate(-45)">{payload.value}</text>
+        </g>
+    )
+}
+
 class Chart extends Component {
     constructor(props) {
         super(props);
@@ -42,9 +52,8 @@ class Chart extends Component {
         };
     }
 
-    handleChange = source => e => {
-        // const value = e.target.value;
-        // this.props.updateNav(source, value);
+    handleChange = (e, value) => {
+        this.props.updateTimeframe(value);
     }
 
     toggle = e => {
@@ -57,29 +66,40 @@ class Chart extends Component {
             nav_tier,
             classes,
             navigation,
+            timeframe_selected,
+            metric_selected,
+            display_data,
         } = this.props;
 
-        if (!nav_tier) {
+
+        if (!nav_tier || !display_data) {
             return null;
         }
 
+        const {
+            columns,
+            cells,
+        } = display_data || null;
+
         const {chartType} = this.state;
-        const data = getData(nav_tier, navigation);
-        const fakeData = _.map(data, el => _.extend({}, el, {alarms: Math.floor(Math.random() * 10)}));
+
+        let label = getNMapChild(nav_tier, 'tier').map;
 
         return (
             <React.Fragment>
                 <Controls>
-                    <Tabs value={'30 d'}
-                          classes={{
-                              indicator: classes.indicator
-                          }}
-                          onChange={this.handleChange(GGConsts.METRIC_SELECTED)}>
-                        {['7 d', '30 d', '60 d', 'All'].map(m =>
-                            <Tab key={`metric-${m}`}
-                                 classes={{root: classes.tabRoot}}
-                                 label={m}
-                                 value={m}/>
+                    <Tabs
+                        value={timeframe_selected}
+                        classes={{
+                            indicator: classes.indicator
+                        }}
+                        onChange={this.handleChange}>
+                        {GGConsts.TIMEFRAMES.map(t =>
+                            <Tab
+                                key={`timeframe-${t}`}
+                                classes={{root: classes.tabRoot}}
+                                label={t}
+                                value={t}/>
                         )}
                     </Tabs>
                     <FormGroup row>
@@ -96,21 +116,39 @@ class Chart extends Component {
                 </Controls>
 
 
-                <ResponsiveContainer width="100%" height={200}>
+                <ResponsiveContainer
+                    width="100%"
+                    height={200}>
                     {(chartType === 'Bar')
-                        ? <BarChart data={fakeData} margin={{top: 20, right: 20, left: 20, bottom: 0}}>
-                            {/*<XAxis dataKey="name"/>*/}
+                        ? <BarChart
+                            data={cells}
+                            margin={{top: 20, right: 20, left: 20, bottom: 40}}>
+                            <XAxis
+                                dataKey={label}
+                                tick={<CustomizedTick/>}
+                                interval={0}/>
                             {/*<YAxis/>*/}
                             <Tooltip/>
                             {/*<ReferenceLine y={0} stroke='#000'/>*/}
-                            <Brush dataKey='alarms' height={30} stroke="#dbdbdb"/>
-                            <Bar dataKey="alarms" fill="#ff9900"/>
+                            {/*<Brush dataKey='alarms' height={30} stroke="#dbdbdb"/>*/}
+                            <Bar
+                                dataKey={metric_selected}
+                                fill="#ff9900"/>
                         </BarChart>
 
-                        : <LineChart data={fakeData} margin={{top: 20, right: 20, left: 20, bottom: 0}}>
+                        : <LineChart
+                            data={cells}
+                            margin={{top: 20, right: 20, left: 20, bottom: 40}}>
                             <Tooltip/>
-                            <Line type="step" dataKey="alarms" stroke="#ff9900" strokeWidth={2}/>
-                            <Brush dataKey='alarms' height={30} stroke="#dbdbdb"/>
+                            <Line
+                                type="step"
+                                dataKey={metric_selected}
+                                stroke="#ff9900"
+                                strokeWidth={2}/>
+                            <Brush
+                                dataKey='alarms'
+                                height={30}
+                                stroke="#dbdbdb"/>
                         </LineChart>}
                 </ResponsiveContainer>
             </React.Fragment>
@@ -122,12 +160,21 @@ const mapStateToProps = state => {
     return {
         nav_tier: state.navigationReducer.nav_tier,
         navigation: state.navigationReducer.navigation,
+        display_data: state.displayReducer.display_data,
+        metric_selected: state.metricReducer.metric_selected,
+        timeframe_selected: state.timeframeReducer.timeframe_selected,
     }
 }
+
+const mapDispatchToProps = dispatch => {
+    return {
+        updateTimeframe: (timeframe_selected) => dispatch({type: GGConsts.UPDATE_TIMEFRAME, timeframe_selected}),
+    };
+};
 
 const Controls = styled.div`
     display: flex; 
     justify-content: space-between;
 `;
 
-export default connect(mapStateToProps, null)(withStyles(styles)(Chart))
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Chart));

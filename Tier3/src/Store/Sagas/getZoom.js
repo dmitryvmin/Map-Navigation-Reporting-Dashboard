@@ -9,10 +9,10 @@ function getZoom(tier) {
     // const tier = yield select(tierSelector);
 
     const zoomMap = {
-        [GGConsts.COUNTRY_LEVEL]: 5,
-        [GGConsts.STATE_LEVEL]: 7,
+        [GGConsts.COUNTRY_LEVEL]: 5.5,
+        [GGConsts.STATE_LEVEL]: 7.5,
         [GGConsts.LGA_LEVEL]: 9,
-        'default': 5,
+        'default': 5.5,
     }
 
     const zoom = zoomMap[tier] || zoomMap.default;

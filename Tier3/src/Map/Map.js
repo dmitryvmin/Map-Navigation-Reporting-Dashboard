@@ -39,16 +39,6 @@ import iconMapping from '../Data/location-icon-mapping.json';
 
 import lgasData from '../Data/lgasData.json';
 
-import * as turf from '@turf/turf';
-
-const colorRange = [
-    [255, 255, 178, 25],
-    [254, 217, 118, 85],
-    [254, 178, 76, 127],
-    [253, 141, 60, 170],
-    [240, 59, 32, 212],
-    [189, 0, 38, 255]
-];
 
 class Map extends Component {
     constructor(props) {
@@ -66,32 +56,32 @@ class Map extends Component {
                 separation: 0,
                 rotationZ: 0,
                 rotationX: 0
-            },
-            markers: [],
+            }
         };
     }
 
-    componentDidMount() {
-        window.addEventListener('resize', this._resize);
-        this._resize();
-    }
+    // componentDidMount() {
+    //     window.addEventListener('resize', this._resize);
+    //     this._resize();
+    // }
+    //
+    // componentWillUnmount() {
+    //     window.removeEventListener('resize', this._resize);
+    // }
+    //
+    // _resize = () => {
+    //     this.setState({
+    //         viewState: {
+    //             ...this.state.viewState,
+    //             width: this.props.width || window.innerWidth,
+    //             height: this.props.height || window.innerHeight
+    //         }
+    //     });
+    // }
 
-    componentWillUnmount() {
-        window.removeEventListener('resize', this._resize);
-    }
-
-    _resize = () => {
-        this.setState({
-            viewState: {
-                ...this.state.viewState,
-                width: this.props.width || window.innerWidth,
-                height: this.props.height || window.innerHeight
-            }
-        });
-    }
-
-    _onStyleChange(style) {
-        this._interruptionStyle = style;
+    // DeckGL and mapbox will both draw into this WebGL context
+    _onWebGLInitialized = (gl) => {
+        this.setState({gl});
     }
 
     _onViewStateChange = ({viewState}) => {
@@ -171,17 +161,14 @@ class Map extends Component {
         }
     }
 
-    // DeckGL and mapbox will both draw into this WebGL context
-    _onWebGLInitialized = (gl) => {
-        this.setState({gl});
-    }
-
+    // TODO: the layer logic here needs to be driven by Redux... move to Sagas
     _renderLayers = () => {
         const {
             tier,
             navigation,
             hover,
-            viewState
+            viewState,
+            display_data,
         } = this.props;
 
         const layers = [];
@@ -199,8 +186,8 @@ class Map extends Component {
                 // getLineWidth: 1,
                 // getElevation: 30,
                 // lineWidthScale: 20,
-                lineWidthMinPixels: 1,
-                getLineColor: [160, 160, 160],
+                lineWidthMinPixels: 1.5,
+                getLineColor: [100, 100, 100],
                 getFillColor: f => (f.properties[map.code] === hover.value) ? [255, 255, 0] : [199, 233, 180],
                 updateTrigger: {getFillColor: hover.value},
                 pickable: true,
@@ -219,7 +206,7 @@ class Map extends Component {
                 extruded: false,
                 wireframe: true,
                 fp64: true,
-                lineWidthMinPixels: 1,
+                lineWidthMinPixels: 1.5,
                 getLineColor: [100, 100, 100],
                 // getFilterValue: f => f.properties[map.code],
                 getFillColor: f => {
@@ -310,47 +297,14 @@ class Map extends Component {
         return layers;
     }
 
-    _getViews = () => {
+    render() {
         const {
-            settings: {orthographic}
-        } = this.state;
-        // https://github.com/uber/deck.gl/blob/6.3-release/examples/layer-browser/src/app.js
-        return new MapView({id: 'basemap', controller: MapController, orthographic});
-    }
-
-    _getMarkers = () => {
-        const {
-            tier,
-            navigation,
+            viewState,
+            mapStyle,
+            markers,
         } = this.props;
 
-        if (!tier || !navigation) {
-            return null
-        }
-
-        const curNM = getNMap(tier, 'tier');
-        const childNM = getNMapChild(tier, 'tier');
-        const geoJson = getGeoJson(childNM.type);
-
-        if (childNM && geoJson) {
-
-            let points = geoJson.filter(f => f.properties[curNM.code] === navigation[curNM.type]);
-
-            // Calculate the centeroid for each geojson multipolygon
-            points = points.map(f => {
-                let coordinates = turf.centroid(f).geometry.coordinates;
-                let name = f.properties[childNM.code];
-                return {longitude: coordinates[0], latitude: coordinates[1], name};
-            });
-
-            return points;
-        }
-    }
-
-    render() {
-        const {viewState, mapStyle} = this.props;
         const {gl} = this.state;
-        const markers = this._getMarkers();
 
         return (
             <MapContainer>
@@ -373,14 +327,16 @@ class Map extends Component {
                         mapStyle={mapStyle}
                         mapboxApiAccessToken={GGConsts.MAPBOX_TOKEN}>
 
-                        {markers && markers.map((m, i) =>
+                        {!_.isEmpty(markers) && markers.map((m, i) =>
                             <Marker
                                 key={`marker-${i}`}
                                 longitude={m.longitude}
                                 latitude={m.latitude}>
-                                <CityPin location={m.name}
-                                         zoom={viewState.zoom}
-                                         name={m.name}
+                                <CityPin
+                                    value={m.value}
+                                    chart={m.chart}
+                                    zoom={viewState.zoom}
+                                    name={m.name}
                                     // onClick={() => this.setState({popupInfo: m.name})}
                                 />
                             </Marker>
@@ -415,6 +371,9 @@ const mapStateToProps = state => {
         navigation: state.navigationReducer.navigation,
         tier: state.navigationReducer.nav_tier,
         hover: state.navigationReducer.nav_hover,
+        display_data: state.displayReducer.display_data,
+        metric_selected: state.metricReducer.metric_selected,
+        markers: state.markersReducer.markers,
     }
 }
 

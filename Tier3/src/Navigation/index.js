@@ -10,6 +10,7 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Chip from '@material-ui/core/Chip';
+import Grid from '@material-ui/core/Grid';
 import GGConsts from '../Constants';
 
 import {
@@ -48,6 +49,19 @@ class Navigation extends Component {
         }
     }
 
+    handleDeviceFilter = (device_type) => (e) => {
+        const {
+            updateDevice,
+            device_type_selected,
+        } = this.props;
+
+        if (device_type_selected === device_type) {
+            updateDevice(GGConsts.DEVICE_TYPE_ALL);
+
+        } else {
+            updateDevice(device_type);
+        }
+    }
 
     render() {
         const {
@@ -58,6 +72,7 @@ class Navigation extends Component {
             geo_map,
             updateMetric,
             metric_selected,
+            device_type_selected,
             navigation,
             navigation: {
                 country_selected,
@@ -69,123 +84,155 @@ class Navigation extends Component {
 
         return (
             <NavBar>
+                <Grid
+                    container
+                    spacing={0}>
+                    <Grid item lg={2} md={6} xs={12}>
+                        <ColumnMenu>
+                            <Header>Location:</Header>
 
-                <ColumnMenu>
-                    <Header>Location:</Header>
+                            {Object.entries(navigation).map(nav => {
+                                const [t, v] = nav;
+                                const r = _.first(navigationMap.filter(m => m.type === t));
+                                const m = geo_map[r.map];
 
-                    {Object.entries(navigation).map(nav => {
-                        const [t, v] = nav;
-                        const r = _.first(navigationMap.filter(m => m.type === t));
-                        const m = geo_map[r.map];
+                                if (m && v) {
+                                    return (<FormControl key={`${t}-${v}`}>
+                                        <StyledSelect
+                                            value={v}
+                                            onChange={this.handleChange(t)}
+                                            input={<StyledIn
+                                                name={`${m}`}
+                                                id={`${m}-native-helper`}/>}
+                                        >
+                                            {m.map((n, i) => {
+                                                const name = n.properties[r.code];
+                                                return (
+                                                    <Option
+                                                        key={`nav-${name}-${i}`}
+                                                        value={name}>{name}
+                                                    </Option>
+                                                )
+                                            })}
+                                        </StyledSelect>
+                                        {/*<Label>{formatLabel(t)}</Label>*/}
+                                    </FormControl>)
+                                } else {
+                                    return null;
+                                }
 
-                        if (m && v) {
-                            return (<FormControl key={`${t}-${v}`}>
+                            })}
+                        </ColumnMenu>
+                    </Grid>
+                    <Grid item lg={5} md={6} xs={12}>
+                        <Header>Metric:</Header>
+                        <Tabs
+                            value={metric_selected}
+                            classes={{
+                                indicator: classes.indicator
+                            }}
+                            onChange={this.handleChange(GGConsts.METRIC_SELECTED)}>
+                            {GGConsts.METRICS.map(m =>
+                                <StyledTab
+                                    key={`metric-${m}`}
+                                    classes={{root: classes.tabRoot}}
+                                    label={m}
+                                    value={m}
+                                />
+                            )}
+                        </Tabs>
+                    </Grid>
+                    <Grid item lg={3} md={6} xs={6}>
+                        <Header>Devices Type:</Header>
+                        <ChipContainer>
+                            <StyledChip
+                                active={(device_type_selected === GGConsts.DEVICE_TYPE_CONNECTED) ? 'active' : undefined}
+                                onClick={this.handleDeviceFilter(GGConsts.DEVICE_TYPE_CONNECTED)}
+                                label={_.last(GGConsts.DEVICE_TYPE_CONNECTED.split('_'))}
+                            />
+                            <StyledChip
+                                active={(device_type_selected === GGConsts.DEVICE_TYPE_UPLOADED) ? 'active' : undefined}
+                                onClick={this.handleDeviceFilter(GGConsts.DEVICE_TYPE_UPLOADED)}
+                                label={_.last(GGConsts.DEVICE_TYPE_UPLOADED.split('_'))}
+                            />
+                        </ChipContainer>
+                    </Grid>
+                    <Grid item lg={2} md={6} xs={6}>
+                        <ColumnMenu>
+                            <Header>Manufacturer:</Header>
+                            {<FormControl>
                                 <StyledSelect
-                                    value={v}
-                                    onChange={this.handleChange(t)}
-                                    input={<StyledIn name={`${m}`}
-                                                     id={`${m}-native-helper`}/>}
+                                    onChange={this.handleChange('Manufacturer')}
+                                    input={
+                                        <StyledIn
+                                            name="manufacturer"
+                                            id="state-native-helper"
+                                        />}
                                 >
-                                    {m.map((n, i) => {
-                                        const name = n.properties[r.code];
+                                    {['All', 'm1', 'm2', 'm3'].map((mfc, index) => {
                                         return (
-                                            <Option key={`nav-${name}-${i}`}
-                                                    value={name}>{name}</Option>
+                                            <Option
+                                                key={`nav-${mfc}-${index}`}
+                                                value={mfc}>{mfc}</Option>
                                         )
                                     })}
                                 </StyledSelect>
-                                {/*<Label>{formatLabel(t)}</Label>*/}
-                            </FormControl>)
-                        } else {
-                            return null;
-                        }
-
-                    })}
-                </ColumnMenu>
-
-                <div>
-                    <Header>Metric:</Header>
-                    <Tabs value={metric_selected}
-                          classes={{
-                              indicator: classes.indicator
-                          }}
-                          onChange={this.handleChange(GGConsts.METRIC_SELECTED)}>
-                        {GGConsts.METRICS.map(m =>
-                            <StyledTab key={`metric-${m}`}
-                                       classes={{ root: classes.tabRoot }}
-                                       label={m}
-                                       value={m}/>
-                        )}
-                    </Tabs>
-                </div>
-
-                <div>
-                    <Header>Devices Type:</Header>
-                    <StyledChip label="Connected"/>
-                    <StyledChip label="Uploaded"/>
-                </div>
-
-                <ColumnMenu>
-                    <Header>Manufacturer:</Header>
-                    {<FormControl>
-                        <StyledSelect
-                            onChange={this.handleChange('Manufacturer')}
-                            input={<StyledIn name="manufacturer"
-                                             id="state-native-helper"/>}
-                        >
-                            {['All', 'm1', 'm2', 'm3'].map((mfc, index) => {
-                                return (
-                                    <Option key={`nav-${mfc}-${index}`}
-                                            value={mfc}>{mfc}</Option>
-                                )
-                            })}
-                        </StyledSelect>
-                        {/*<Label>Manufacturer</Label>*/}
-                    </FormControl>}
-                </ColumnMenu>
-
+                                {/*<Label>Manufacturer</Label>*/}
+                            </FormControl>}
+                        </ColumnMenu>
+                    </Grid>
+                </Grid>
             </NavBar>
         );
     }
 }
 
 const NavBar = styled.div`
-    display: flex; 
+    display: flex;
     justify-content: space-between;
     margin: 0 4em;
 `;
 const StyledSelect = styled(NativeSelect)`
-    color: white; 
-    width: 160px; 
-    margin-right: 1em; 
-   
+    color: white;
+    width: 160px;
+    margin-right: 1em;
+
     &:before {
-        border-bottom: none !important;
+        border - bottom: none !important;
     }
 `;
 const StyledTab = styled(Tab)`
     text-transform: capitalize !important;
 `;
 const Option = styled.option`
-    color: white !important; 
+    color: white !important;
 `;
 const StyledIn = styled(Input)`
-    color: white !important; 
+    color: white !important;
 `;
 const ColumnMenu = styled.div`
     display: flex;
-    flex-direction: column; 
+    flex-direction: column;
 `;
 const Label = styled(FormHelperText)`
-    color: white !important; 
+    color: white !important;
+`;
+const ChipContainer = styled.div`
+    display: flex;
 `;
 const StyledChip = styled(Chip)`
     color: white !important;
     background-color: #6a4f82 !important;
-    margin: 1em 1em 1em 0;
+    margin: 0.5em 1em 0 0;
+
+    ${({active}) => {
+    return (active && `
+        background: #ffffff50 !important;
+    `)
+}}
 `;
 const Header = styled.h4`
-    text-align: left; 
+    text-align: left;
     font-weight: 100;
     font-size: 12px;
     margin: 0;
@@ -201,6 +248,7 @@ const mapStateToProps = state => {
         sensors: state.dataReducer[GGConsts.SENSORS_MAP],
         navigation: state.navigationReducer.navigation,
         metric_selected: state.metricReducer.metric_selected,
+        device_type_selected: state.deviceReducer.device_type_selected,
     };
 };
 
@@ -209,6 +257,7 @@ const mapDispatchToProps = dispatch => {
         onRequestData: (uri, config, resource) => dispatch({type: GGConsts.API_CALL_REQUEST, uri, config, resource}),
         updateNav: (navType, navVal) => dispatch({type: GGConsts.UPDATE_NAV, [navType]: navVal}),
         updateMetric: (metric_selected) => dispatch({type: GGConsts.UPDATE_METRIC, metric_selected}),
+        updateDevice: (device_type_selected) => dispatch({type: GGConsts.UPDATE_DEVICE_TYPE, device_type_selected}),
     };
 };
 

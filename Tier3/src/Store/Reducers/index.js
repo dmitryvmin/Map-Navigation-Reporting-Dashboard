@@ -6,6 +6,9 @@ import dataReducer from './data';
 import mapReducer from './map';
 import metricReducer from './metric';
 import displayReducer from './display';
+import timeframeReducer from './timeframe';
+import deviceReducer from './device';
+import markersReducer from './markers';
 
 const reducers = {
     errorsReducer,
@@ -16,6 +19,9 @@ const reducers = {
     mapReducer,
     metricReducer,
     displayReducer,
+    timeframeReducer,
+    deviceReducer,
+    markersReducer,
 };
 
 export default reducers;

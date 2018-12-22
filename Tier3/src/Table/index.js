@@ -117,16 +117,17 @@ class RTTable extends React.Component {
         const {
             nav_tier,
             navigation,
-            display_data: {
-                columns,
-                rows,
-                cells,
-            } = {}
+            display_data,
         } = this.props;
 
-        if (!nav_tier || !columns || !cells) {
+        if (!nav_tier || !display_data) {
             return null;
         }
+
+        const {
+            columns,
+            cells,
+        } = display_data || null;
 
         const {
             order,
@@ -140,29 +141,32 @@ class RTTable extends React.Component {
         return (
             <Container>
                 <TableWrapper>
-                    <Table className="table"
-                           aria-labelledby="tableTitle">
-                        <EnhancedTableHead columns={columns}
-                                           tableCols={columns}
-                                           numSelected={0}
-                                           order={order}
-                                           orderBy={orderBy}
-                                           onRequestSort={this.handleRequestSort}
-                                           rowCount={cells.length}/>
+                    <Table
+                        className="table"
+                        aria-labelledby="tableTitle">
+                        <EnhancedTableHead
+                            columns={columns}
+                            tableCols={columns}
+                            numSelected={0}
+                            order={order}
+                            orderBy={orderBy}
+                            onRequestSort={this.handleRequestSort}
+                            rowCount={cells.length}/>
                         <TableBody>
                             {stableSort(cells, getSorting(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((d, i) =>
-                                    <Row data={d}
-                                         key={`${d}-${i}`}
-                                         columns={columns}
-                                         handleRowHover={this.handleRowHover}
-                                         handleRowClick={this.handleRowClick}/>
+                                    <Row
+                                        data={d}
+                                        key={`${d}-${i}`}
+                                        columns={columns}
+                                        handleRowHover={this.handleRowHover}
+                                        handleRowClick={this.handleRowClick}/>
                                 )}
                             {/*{emptyRows > 0 && (*/}
-                                {/*<TableRow style={{height: 49 * emptyRows}}>*/}
-                                    {/*<TableCell colSpan={6}/>*/}
-                                {/*</TableRow>*/}
+                            {/*<TableRow style={{height: 49 * emptyRows}}>*/}
+                            {/*<TableCell colSpan={6}/>*/}
+                            {/*</TableRow>*/}
                             {/*)}*/}
                         </TableBody>
                     </Table>

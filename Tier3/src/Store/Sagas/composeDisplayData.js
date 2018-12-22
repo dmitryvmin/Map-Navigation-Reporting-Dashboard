@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import GGConsts from '../../Constants';
 import {
     select,
@@ -59,7 +60,8 @@ function* composeDisplayData( dataParam ) {
     };
 
     columns.push(getColumn(metric));
-    columns.push(getColumn(childNM.map))
+    columns.push(getColumn(childNM.map));
+    columns.push(getColumn('Devices'));
 
     // Rows
     let data = getGeoJson(childNM.type);
@@ -71,19 +73,20 @@ function* composeDisplayData( dataParam ) {
 
     // Cells
     // TODO: Data sorting/filtering by DataParams will happen here...
+
     let cells = rows.reduce((acc, cur) => {
         let name = cur.properties[childNM.code];
         acc.push({
             [childNM.map]: name,
-            ['alarms']: 0,
+            // For tsting:
+            ['Alarms']: _.random(0, 30),
+            ['Holdover']: _.random(0, 10),
+            ['chart']: Math.random() >= 0.7,
         });
         return acc;
     }, []);
 
-
-    yield put({type: GGConsts.DISPLAY_DATA, display_data: {columns, rows, cells}});
-
-    return;
+    return {columns, rows, cells};
 
 }
 

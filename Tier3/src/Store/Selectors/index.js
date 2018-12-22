@@ -4,6 +4,7 @@ const viewportSelector = createSelector(
     (state, props) => state[props.key],
     viewport => viewport
 );
+
 // TODO: add reselect to the rest like the one above - https://github.com/reduxjs/reselect
 
 const navSelector = state => state.navigationReducer.navigation;
@@ -18,6 +19,8 @@ const uriSelector = state => state.uri;
 
 const metricSelector = state => state.metricReducer.metric_selected;
 
+const displaySelector = state => state.displayReducer.display_data;
+
 export {
     navSelector,
     tierSelector,
@@ -26,4 +29,5 @@ export {
     viewportSelector,
     uriSelector,
     metricSelector,
+    displaySelector,
 }

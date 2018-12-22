@@ -16,39 +16,78 @@ const pinStyle = {
 export default class CityPin extends PureComponent {
 
     render() {
-        const {location,zoom,name} = this.props;
-        const size = zoom / easing('cubic')[0] * 4;
+        const {
+            chart,
+            zoom,
+            name,
+            value
+        } = this.props;
+
+        console.log('@@zoom:', zoom);
+
+        const size = Math.pow(zoom, easing('exponential')[0] * 2);
 
         return (
-            <svg height={size}
-                 viewBox="0 0 50 50"
-                 style={{...pinStyle, transform: `translate(${-size}px,${-size * 2}px)`, overflow: 'visible'}}>
+            <svg
+                height={size}
+                viewBox="0 0 50 50"
+                style={{...pinStyle, transform: `translate(${-size}px,${-size * 2}px)`, overflow: 'visible'}}>
                 {/*<path d={ICON}/>*/}
                 {/*<circle cx="10" cy="10" r="10"/>*/}
 
-                <foreignObject x="0"
-                               y="50"
-                               width="50"
-                               height="50">
+                <foreignObject
+                    x="0"
+                    y="50"
+                    width="50"
+                    height="50"
+                >
 
-                    <PieChart lineWidth={50}
-                              radius={50}
-                              data={[
-                                  {title: 'One', value: 10, color: '#E38627'},
-                                  {title: 'Two', value: 15, color: '#C13C37'},
-                                  {title: 'Three', value: 20, color: 'green'},
-                              ]}/>
+                    {chart
+                        ?
+                        <PieChart
+                            lineWidth={50}
+                            radius={50}
+                            // rounded={true}
+                            animate={true}
+                            // cy="40"
+                            // totalValue={value}
+                            data={[
+                                {title: 'One', value: 10, color: '#E38627'},
+                                {title: 'Two', value: 15, color: '#C13C37'},
+                                {title: 'Three', value: 20, color: 'green'},
+                            ]}
+                        />
+                        :
+                        <svg>
+                            <circle
+                                pointerEvents="none"
+                                fill="green"
+                                r="8"
+                                cx="50"
+                                cy="50"
+                            />
+                        </svg>
+                    }
 
                     {/*<TwoLevelPieChart />*/}
 
                 </foreignObject>
 
+                {/*<text*/}
+                {/*x="150"*/}
+                {/*y="150"*/}
+                {/*textAnchor="middle"*/}
+                {/*startOffset="50%"*/}
+                {/*fontSize={'3em'}*/}
+                {/*fill={'black'}>{value}</text>*/}
+
                 <text
                     // textAnchor="middle"
-                      // startOffset="50%"
-                      y="125"
-                      fontSize={'1.5em'}
-                      fill={'black'}>{name}</text>
+                    // startOffset="50%"
+                    y="125"
+                    x="15"
+                    fontSize={'1em'}
+                    fill={'black'}>{name}</text>
             </svg>
 
         );
