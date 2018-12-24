@@ -1,18 +1,18 @@
 import GGConsts from '../../Constants';
 
 const initState = {
-    nav_tier: false,
-    nav_hover: false,
+    nav_tier: null,
+    nav_hover: null,
     nav_updating: false,
     navigation: {
         country_selected: 'Nigeria',
         state_selected: 'All',
-        lga_selected: false,
-        facility_selected: false,
+        lga_selected: null,
+        facility_selected: null,
     }
 }
 
-function navReducer(state = initState, action) {
+function navigationReducer(state = initState, action) {
     switch (action.type) {
         case GGConsts.NAV_TIER:
             return {
@@ -50,4 +50,4 @@ function navReducer(state = initState, action) {
     }
 }
 
-export default navReducer;
+export default navigationReducer;

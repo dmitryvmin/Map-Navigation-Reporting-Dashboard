@@ -39,6 +39,10 @@ function* composeDisplayData( dataParam ) {
     // 4. Filter - Device Manufacturer
     // 5. Timeframe
 
+    if (!sensors || !navigation || !tier || !metric) {
+        return;
+    }
+
     const curNM = getNMap(tier, 'tier'); // current navigation map
     const childNM = getNMapChild(tier, 'tier'); // child navigation map
 

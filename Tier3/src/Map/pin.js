@@ -23,8 +23,6 @@ export default class CityPin extends PureComponent {
             value
         } = this.props;
 
-        console.log('@@zoom:', zoom);
-
         const size = Math.pow(zoom, easing('exponential')[0] * 2);
 
         return (

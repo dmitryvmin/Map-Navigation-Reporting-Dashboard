@@ -127,3 +127,39 @@ class Cluster extends PureComponent {
 }
 
 export default Cluster;
+
+// ### CLUSTERING
+// POIs as a deck.gl layer
+// const curNM = getNMap(tier);
+// const childNM = getNMapChild(tier);
+//
+// if (childNM && childNM.data && childNM.data.features) {
+//     let points = childNM.data.features.filter(f => f.properties[curNM.code] === navigation[curNM.type]);
+//     // Calculate the centeroid for each geojson multipolygon
+//     points = points.map(f => {
+//         let coordinates = turf.centroid(f).geometry.coordinates;
+//         let name = f.properties[curNM.code];
+//         return {coordinates, name};
+//     });
+//
+//     const showCluster = true;
+//     const layerProps = {
+//         data: points,
+//         pickable: true,
+//         wrapLongitude: true,
+//         getPosition: d => d.coordinates,
+//         iconMapping: iconMapping,
+//         iconAtlas: icon,
+//         sizeScale: 60
+//     };
+//     const size = viewState ? Math.min(Math.pow(1.5, viewState.zoom - 10), 1) : 0.1;
+//     const markerLayers = showCluster
+//         ? new IconClusterLayer({...layerProps, id: 'icon-cluster'})
+//         : new IconLayer({
+//             ...layerProps,
+//             id: 'icon',
+//             getIcon: d => 'marker',
+//             getSize: size
+//         });
+//     layers.push(markerLayers);
+// }

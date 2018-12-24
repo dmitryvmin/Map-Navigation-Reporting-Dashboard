@@ -9,6 +9,7 @@ import displayReducer from './display';
 import timeframeReducer from './timeframe';
 import deviceReducer from './device';
 import markersReducer from './markers';
+import layersReducer from './layers';
 
 const reducers = {
     errorsReducer,
@@ -22,6 +23,7 @@ const reducers = {
     timeframeReducer,
     deviceReducer,
     markersReducer,
+    layersReducer,
 };
 
 export default reducers;

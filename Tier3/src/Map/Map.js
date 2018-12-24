@@ -1,16 +1,12 @@
 import GGConsts from '../Constants';
 import React, {Component} from 'react';
-import {StaticMap, Marker} from 'react-map-gl';
-import DeckGL, {
-    MapView,
-    FirstPersonView,
-    OrbitView,
-    MapController,
-    FlyToInterpolator,
-    GeoJsonLayer,
-    IconLayer,
-    ScreenGridLayer
-} from 'deck.gl';
+import {connect} from "react-redux";
+import styled from 'styled-components';
+import _ from 'lodash';
+import ReactMapGL, {StaticMap, Marker} from 'react-map-gl';
+import {MapboxLayer} from '@deck.gl/mapbox';
+import DeckGLOverlay from './deckgl-overlay.js';
+import DeckGL, {GeoJsonLayer} from 'deck.gl';
 
 import {
     navigationMap,
@@ -20,131 +16,71 @@ import {
     getNMapParent,
 } from './../Utils';
 
-import {connect} from "react-redux";
-import styled from 'styled-components';
-import Card from '@material-ui/core/Card';
-import _ from 'lodash';
-import CityPin from './Pin';
-import IconClusterLayer from './IconClusterLayer';
-
+import {setMapViewport} from './../Store/Actions';
 import {
-    setMapViewport,
-    mapClicked,
-    navHovered
-} from './../Store/Actions';
+    makeActiveGeoLayer,
+    makeInactiveGeoLayer,
+} from './../Store/Sagas/getDeckLayers';
 
-import markerData from '../Data/statesData.json';
-import icon from '../Images/location-icon-atlas.png';
+import IconClusterLayer from './IconClusterLayer';
 import iconMapping from '../Data/location-icon-mapping.json';
-
-import lgasData from '../Data/lgasData.json';
-
+import CityPin from './Pin';
+import POITooltip from './Tooltip';
 
 class Map extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            settings: {
-                orthographic: false,
-                multiview: false,
-                infovis: false,
-                useDevicePixels: true,
-                pickingRadius: 0,
-                drawPickingColors: false,
-
-                // Model matrix manipulation
-                separation: 0,
-                rotationZ: 0,
-                rotationX: 0
-            }
-        };
+        this.state = {}
     }
-
     // componentDidMount() {
-    //     window.addEventListener('resize', this._resize);
-    //     this._resize();
+    //     window.addEventListener('resize', this.resize);
+    //     this.resize();
     // }
-    //
     // componentWillUnmount() {
-    //     window.removeEventListener('resize', this._resize);
+    //     window.removeEventListener('resize', this.resize);
     // }
+    // resize = () => {
+    //     const {map_viewport} = this.props;
     //
-    // _resize = () => {
-    //     this.setState({
-    //         viewState: {
-    //             ...this.state.viewState,
-    //             width: this.props.width || window.innerWidth,
-    //             height: this.props.height || window.innerHeight
-    //         }
+    //     this.props.setMapViewport({
+    //         ...map_viewport,
+    //         width: map_viewport.width || window.innerWidth,
+    //         height: map_viewport.height || window.innerHeight
     //     });
     // }
-
-    // DeckGL and mapbox will both draw into this WebGL context
-    _onWebGLInitialized = (gl) => {
-        this.setState({gl});
-    }
-
-    _onViewStateChange = ({viewState}) => {
+    onViewStateChange = ({viewState}) => {
         this.props.setMapViewport({...viewState});
     }
-
-    _renderTooltip = () => {
-        const {
-            x,
-            y,
-            value
-        } = this.props.hover;
-
-        if (!x || !y || !value) {
-            return null;
-        }
-
-        return (
-            <Tooltip x={x} y={y}>
-                <div>{value}</div>
-            </Tooltip>
-        );
+    // DeckGL and mapbox will both draw into this WebGL context
+    onWebGLInitialized = (gl) => {
+        this.setState({gl});
     }
+    addToGL = () => {
+        const map = this._map;
+        const deck = this._deck;
+        const layers = this.renderLayers();
 
-    _onLayerHover = ({x, y, object}) => {
+        if (map && deck && layers) {
+            layers.forEach(layer => {
+                let id = layer.id;
+                map.addLayer(new MapboxLayer({id, deck}), 'water');
+            });
+        }
+    }
+    // Add deck layer to mapbox
+    onMapLoad = () => this.addToGL();
+
+    onLayerChange = (info, ui) => {
+        const {x, y, object} = info;
         if (!object) {
             return null;
         }
 
-        const {
-            tier,
-            hover
-        } = this.props;
-
+        const {tier} = this.props;
         const NMchild = getNMapChild(tier, 'tier');
-        let value;
-        value = object.properties[NMchild.code]
 
-        if (!value) {
-            const NMparent = getNMap(tier, 'tier');
-            value = object.properties[NMparent.code];
-        }
-
-        if (!value) {
-            console.log(`%c something wrong with the hovered location: ${value}`, 'background: #c50018; color: white; display: block;');
-        } else {
-            this.props.navHovered({value, x, y});
-        }
-    }
-
-    // TODO: refactor - same as hover
-    _onLayerClick = ({x, y, object}) => {
-        if (!object) {
-            return null;
-        }
-
-        const {
-            tier,
-        } = this.props;
-
-        const NMchild = getNMapChild(tier, 'tier');
-        let value, type;
-        value = object.properties[NMchild.code];
+        let value = object.properties[NMchild.code]
+        let type;
 
         if (value) {
             type = NMchild.type;
@@ -157,69 +93,47 @@ class Map extends Component {
         if (!value) {
             console.log(`%c something wrong with the hovered location: ${value}`, 'background: #c50018; color: white; display: block;');
         } else {
-            this.props.updateNav(type, value);
+
+            if (ui === 'hover') {
+                this.props.navHovered({value, x, y});
+            }
+            else if (ui === 'click') {
+                this.props.updateNav(type, value);
+            }
+
+            this.addToGL();
         }
     }
 
-    // TODO: the layer logic here needs to be driven by Redux... move to Sagas
-    _renderLayers = () => {
+    renderLayers = () => {
+
         const {
-            tier,
             navigation,
-            hover,
-            viewState,
-            display_data,
+            tier,
+            hover
         } = this.props;
 
-        const layers = [];
+        const makeGeoLayer = (map, data, hover) => {
+            let val = hover ? hover.value : null;
+            let id = (val) ? `${map.tier}_hover_${val}` : `${map.tier}`;
 
-        const makeActiveGeoLayer = (map, data) => {
             return new GeoJsonLayer({
-                id: `${map.tier}-active-${hover && hover.value}`,
+                id,
                 data,
-                opacity: 0.05,
+                opacity: 0.5,
                 stroked: true,
                 filled: true,
                 extruded: false,
                 wireframe: false,
                 fp64: true,
-                // getLineWidth: 1,
-                // getElevation: 30,
-                // lineWidthScale: 20,
                 lineWidthMinPixels: 1.5,
                 getLineColor: [100, 100, 100],
-                getFillColor: f => (f.properties[map.code] === hover.value) ? [255, 255, 0] : [199, 233, 180],
-                updateTrigger: {getFillColor: hover.value},
+                getFillColor: f => (f.properties[map.code] === val) ? [235, 78, 120] : [199, 233, 180],
+                updateTrigger: {getFillColor: val},
                 pickable: true,
-                onHover: this._onLayerHover,
-                onClick: this._onLayerClick,
+                onHover: info => this.onLayerChange(info, 'hover'),
+                onClick: info => this.onLayerChange(info, 'click')
             })
-        }
-
-        const makeInactiveGeoLayer = (map, data) => {
-            return new GeoJsonLayer({
-                id: `${map.tier}-inactive-${hover && hover.value}`,
-                data,
-                opacity: 0.05,
-                stroked: true,
-                filled: true,
-                extruded: false,
-                wireframe: true,
-                fp64: true,
-                lineWidthMinPixels: 1.5,
-                getLineColor: [100, 100, 100],
-                // getFilterValue: f => f.properties[map.code],
-                getFillColor: f => {
-                    return (f.properties[map.code] === hover.value) ? [50, 50, 50] : [105, 105, 105]
-                },
-                updateTrigger: {
-                    getFillColor: hover.value
-                },
-                // If we want inactive layers to be interactive uncomment below
-                pickable: true,
-                onHover: this._onLayerHover,
-                onClick: this._onLayerClick,
-            });
         }
 
         const getGeoLayers = (type) => {
@@ -234,65 +148,27 @@ class Map extends Component {
                 return;
             }
 
-            let layer;
             if (selected === 'All') {
                 // filter by parent
                 let parentNM = getNMapParent(type, 'type');
                 if (parentNM) data = data.filter(f => f.properties[parentNM.code] === navigation[parentNM.type]);
-                layer = makeActiveGeoLayer(NM, data);
 
-                // Add Markers
-                // addMarkers();
-
+                const activeLayer =  makeGeoLayer(NM, data, hover);
+                return activeLayer;
             }
-            else {
-                data = data.filter(f => {
-                    return ( f.properties[NM.code] !== selected );
-                });
-                layer = makeInactiveGeoLayer(NM, data);
-            }
-
-            layers.push(layer);
-
+            // else {
+            //     data = data.filter(f => {
+            //         return ( f.properties[NM.code] !== selected );
+            //     });
+            //     layer = makeInactiveGeoLayer(NM, data, hover);
+            // }
         }
 
-        _.toArray(navigationMap).forEach(n => getGeoLayers(n.type));
-
-
-        // POIs as a deck.gl layer
-        // const curNM = getNMap(tier);
-        // const childNM = getNMapChild(tier);
-        //
-        // if (childNM && childNM.data && childNM.data.features) {
-        //     let points = childNM.data.features.filter(f => f.properties[curNM.code] === navigation[curNM.type]);
-        //     // Calculate the centeroid for each geojson multipolygon
-        //     points = points.map(f => {
-        //         let coordinates = turf.centroid(f).geometry.coordinates;
-        //         let name = f.properties[curNM.code];
-        //         return {coordinates, name};
-        //     });
-        //
-        //     const showCluster = true;
-        //     const layerProps = {
-        //         data: points,
-        //         pickable: true,
-        //         wrapLongitude: true,
-        //         getPosition: d => d.coordinates,
-        //         iconMapping: iconMapping,
-        //         iconAtlas: icon,
-        //         sizeScale: 60
-        //     };
-        //     const size = viewState ? Math.min(Math.pow(1.5, viewState.zoom - 10), 1) : 0.1;
-        //     const markerLayers = showCluster
-        //         ? new IconClusterLayer({...layerProps, id: 'icon-cluster'})
-        //         : new IconLayer({
-        //             ...layerProps,
-        //             id: 'icon',
-        //             getIcon: d => 'marker',
-        //             getSize: size
-        //         });
-        //     layers.push(markerLayers);
-        // }
+        const layers = _.toArray(navigationMap).reduce((acc, cur) => {
+            let layer = getGeoLayers(cur.type);
+            if (layer) acc.push(layer);
+            return acc;
+        }, []);
 
         return layers;
     }
@@ -302,6 +178,7 @@ class Map extends Component {
             viewState,
             mapStyle,
             markers,
+            active_layers,
         } = this.props;
 
         const {gl} = this.state;
@@ -310,13 +187,13 @@ class Map extends Component {
             <MapContainer>
                 <DeckGL
                     viewState={viewState}
-                    controller={{type: MapController, dragRotate: false}}
-                    onViewStateChange={this._onViewStateChange}
+                    controller={true}
+                    onViewStateChange={this.onViewStateChange}
                     ref={(ref) => {
                         this._deck = ref && ref.deck  // reference to the Deck instance
                     }}
-                    layers={this._renderLayers()}
-                    onWebGLInitialized={this._onWebGLInitialized}
+                    layers={this.renderLayers()}
+                    onWebGLInitialized={this.onWebGLInitialized}
                 >
                     {gl && <StaticMap
                         ref={ref => {
@@ -324,11 +201,13 @@ class Map extends Component {
                         }}
                         preventStyleDiffing={true}
                         reuse
-                        mapStyle={mapStyle}
+                        gl={gl}
+                        mapStyle="mapbox://styles/mapbox/light-v9" // mapStyle={mapStyle}
+                        onLoad={this.onMapLoad}
                         mapboxApiAccessToken={GGConsts.MAPBOX_TOKEN}>
-
                         {!_.isEmpty(markers) && markers.map((m, i) =>
                             <Marker
+                                gl={gl}
                                 key={`marker-${i}`}
                                 longitude={m.longitude}
                                 latitude={m.latitude}>
@@ -337,24 +216,13 @@ class Map extends Component {
                                     chart={m.chart}
                                     zoom={viewState.zoom}
                                     name={m.name}
-                                    // onClick={() => this.setState({popupInfo: m.name})}
                                 />
                             </Marker>
                         )}
-
                     </StaticMap>
                     }
-
-                    {/*<ControlPanel*/}
-                    {/*containerComponent={this.props.containerComponent}*/}
-                    {/*onViewportChange={this._easeTo.bind(this)}*/}
-                    {/*onStyleChange={this._onStyleChange.bind(this)}*/}
-                    {/*/>*/}
-
-                    {this._renderTooltip}
-
+                    <POITooltip />
                 </DeckGL>
-
             </MapContainer>
         );
     }
@@ -374,6 +242,7 @@ const mapStateToProps = state => {
         display_data: state.displayReducer.display_data,
         metric_selected: state.metricReducer.metric_selected,
         markers: state.markersReducer.markers,
+        active_layers: state.layersReducer.active_layers,
     }
 }
 
@@ -389,19 +258,6 @@ const MapContainer = styled.div`
     width: 100%; 
     height: 100%; 
 `;
-const Tooltip = styled(Card)`
-    position: absolute;
-    width: 180px;
-    height: 40px;
-    z-index: 100;
-    transform: translateX(-90px);
-    left: 50%;
-    bottom: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    // top: ${props => `${props.y - 50}px`};
-    // left: ${props => `${props.x}px`};
-`;
+
 
 export default connect(mapStateToProps, mapDispatchToProps)(Map);

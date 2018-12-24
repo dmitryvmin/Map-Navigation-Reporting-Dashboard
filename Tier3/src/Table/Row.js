@@ -40,10 +40,10 @@ class Row extends Component {
 
         const childNav = getNMapChild(nav_tier, 'tier');
 
-        if (data[childNav.map] === nav_hover && !selected) {
+        if (data[childNav.map] === nav_hover && nav_hover.value && !selected) {
             this.setState({selected: true});
 
-        } else if (data[childNav.map] !== nav_hover && selected) {
+        } else if (data[childNav.map] !== nav_hover && nav_hover.value && selected) {
             this.setState({selected: false});
         }
     }
@@ -92,7 +92,7 @@ class Row extends Component {
 const mapStateToProps = state => {
     return {
         nav_tier: state.navigationReducer.nav_tier,
-        nav_hover: state.navigationReducer.nav_hover.value,
+        nav_hover: state.navigationReducer.nav_hover,
     }
 }
 

@@ -93,9 +93,14 @@ a.mapboxgl-ctrl-logo, .mapboxgl-ctrl.mapboxgl-ctrl-attrib {
 	margin-top: 0.5em;
 }
 
+/*IMPORTANT */
 #deckgl-wrapper {
 	height: 100% !important;
 	min-height: 75vh;
 	width: 100% !important;
 	position: relative !important;
+}
+.overlays {
+	z-index: 10;
+	pointer-events: none;
 }

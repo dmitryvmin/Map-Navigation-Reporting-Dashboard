@@ -102,7 +102,21 @@ const DISPLAY_DATA = "DISPLAY_DATA";
 
 const MARKERS = "MARKERS";
 
+const UPDATE_LAYERS = "UPDATE_LAYERS";
+const ACTIVE_LAYERS = "ACTIVE_LAYERS";
+const INACTIVE_LAYERS = "INACTIVE_LAYERS";
+
 export default class GGConsts {
+
+    static get UPDATE_LAYERS() {
+        return UPDATE_LAYERS;
+    }
+    static get ACTIVE_LAYERS() {
+        return ACTIVE_LAYERS;
+    }
+    static get INACTIVE_LAYERS() {
+        return INACTIVE_LAYERS;
+    }
 
     static get MARKERS() {
         return MARKERS;

@@ -14,6 +14,7 @@ import {Provider} from 'react-redux';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Map from './Map/Map.js';
+import GMap from './Map/GoogleMap.js';
 import Navigation from './Navigation';
 import Chart from './Chart';
 import store from './Store/index.js';
@@ -67,6 +68,7 @@ class App extends Component {
                                 <Grid container spacing={0}>
                                     <Grid item xs={12} md={6}>
                                         <Map />
+                                        {/*<GMap />*/}
                                     </Grid>
                                     <Grid item xs={12} md={6}>
                                         <Chart />

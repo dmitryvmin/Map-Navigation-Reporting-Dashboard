@@ -25,6 +25,7 @@ function* getMarkers()  {
 
     const curNM = getNMap(tier, 'tier');
     const childNM = getNMapChild(tier, 'tier');
+
     const geoJson = getGeoJson(childNM.type);
 
     if (!data || !tier || !navigation || !metric || !geoJson) {

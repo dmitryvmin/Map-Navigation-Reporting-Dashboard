@@ -10,8 +10,8 @@ import getNav from './getNav';
 import getViewport from './getViewport';
 import composeDisplayData from './composeDisplayData';
 import getMarkers from './getMarkers';
-import updateMapboxStyle from './updateMapboxStyle';
-import getMapLayers from './getMapLayers';
+// import updateMapboxStyle from './updateMapboxStyle';
+import getDeckLayers from './getDeckLayers';
 
 /**
  * When the navigation changes, this computes and updates the state
@@ -54,8 +54,8 @@ function* updateNav(action) {
     // yield put({ type: GGConsts.MAP_STYLE, map_style });
 
     // Update Layers
-    // const layers = getMapLayers(nav_tier, navigation);
-
+    // const active_layers = yield call(getDeckLayers);
+    // yield put({type: GGConsts.ACTIVE_LAYERS, active_layers});
 }
 
 export default updateNav;

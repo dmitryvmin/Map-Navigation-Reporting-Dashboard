@@ -11,6 +11,8 @@ const navSelector = state => state.navigationReducer.navigation;
 
 const tierSelector = state => state.navigationReducer.nav_tier;
 
+const hoverSelector = state => state.navigationReducer.nav_hover;
+
 const geoSelector = state => state.dataReducer.geo_map;
 
 const sensorsSelector = state => state.dataReducer.sensors_map;
@@ -24,6 +26,7 @@ const displaySelector = state => state.displayReducer.display_data;
 export {
     navSelector,
     tierSelector,
+    hoverSelector,
     geoSelector,
     sensorsSelector,
     viewportSelector,
