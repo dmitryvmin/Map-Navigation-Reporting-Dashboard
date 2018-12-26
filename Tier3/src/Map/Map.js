@@ -90,7 +90,7 @@ class Map extends Component {
         }
 
         // ###
-        // TODO: optimize
+        // TODO: optimize - tag each geojson polygon with a `tier - location` ID for fast look up
         const {tier} = this.props;
         const NMchild = getNMapChild(tier, 'tier');
 
@@ -132,8 +132,8 @@ class Map extends Component {
             let val = hover ? hover.value : null;
             let id = (val) ? `${map.tier}_hover_${val}` : `${map.tier}`;
 
-            const activeColor = (layerType === 'active') ? [139, 195, 74] : [50, 50, 50];
-            const inactiveColor = (layerType === 'active') ? [255, 255, 255] : [105, 105, 105];
+            const activeColor = (layerType === 'active') ? [139, 195, 74] : [125, 125, 125];
+            const inactiveColor = (layerType === 'active') ? [255, 255, 255] : [150, 150, 150];
 
             return new GeoJsonLayer({
                 id,

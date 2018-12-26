@@ -1,3 +1,4 @@
+import GGConsts from '../Constants';
 import _ from 'lodash';
 import cc from 'country-code';
 import countriesData from '../Data/countriesData.json';
@@ -138,7 +139,7 @@ export const navigationMap = [
     {
         index: -1,
         type: 'world_selected',
-        tier: "WORLD_LEVEL",
+        tier: "GWORLD_LEVEL",
     },
     {
         index: 0,

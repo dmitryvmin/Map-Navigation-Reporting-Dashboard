@@ -5,7 +5,7 @@ import {
 import * as d3 from 'd3-ease';
 import {TRANSITION_EVENTS} from 'deck.gl';
 import GGConsts from '../../Constants';
-import {getMapStyle} from './../../Map/map-style.js';
+import {getMapStyle} from './../../Map/VectorTileUtils.js';
 
 const interruptionStyles = [
     {

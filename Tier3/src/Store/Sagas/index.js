@@ -26,9 +26,10 @@ export function* watcherSaga() {
         // These actions effect displayed data, call composeDisplayData
         takeLatest(GGConsts.UPDATE_TIMEFRAME, updateTimeframe),
         takeLatest(GGConsts.UPDATE_DEVICE_TYPE, updateDevice),
-        takeLatest('UPDATE_MANUFACTURER', updateMfc),
         takeLatest(GGConsts.UPDATE_NAV, updateNav),
         takeLatest(GGConsts.UPDATE_METRIC, updateMetric),
+        // TODO: manufacturers list will be created from the fetched sensor data
+        takeLatest('UPDATE_MANUFACTURER', updateMfc),
 
         takeLatest(GGConsts.NAV_HOVER, updateHover),
         // yield throttle(100, GGConsts.NAV_HOVER, updateHover),

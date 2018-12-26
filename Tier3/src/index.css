@@ -108,3 +108,7 @@ a.mapboxgl-ctrl-logo, .mapboxgl-ctrl.mapboxgl-ctrl-attrib {
 .mapCircle {
 	fill: white;
 }
+.mapLabel {
+	fill: black;
+	font-weight: 800;
+}

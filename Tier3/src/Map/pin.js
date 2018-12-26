@@ -26,6 +26,7 @@ export default class CityPin extends PureComponent {
             value
         } = this.props;
 
+
         const size = Math.pow(zoom, easing('exponential')[0] * 2);
 
         return (
@@ -51,7 +52,7 @@ export default class CityPin extends PureComponent {
                             y="50%"
                             textAnchor="middle"
                             dy="0.3em"
-                            stroke="black"
+                            className="mapLabel"
                         >
                             {value}
                         </text>
@@ -92,7 +93,7 @@ export default class CityPin extends PureComponent {
                 {/*<TwoLevelPieChart />*/}
                 </foreignObject>
                 {/*<    )}*/}
-                {/*<</Transition>*/}
+                {/*</Transition>*/}
                 <text
                     className="locationName"
                     textAnchor="middle"

@@ -50,8 +50,7 @@ function* composeDisplayData( dataParam ) {
     if (childNM.type === 'facility_selected') {
         return null;
     }
-
-    // Columns
+    // ### Columns
     let columns = [];
 
     const getColumn = (id) => {
@@ -65,9 +64,20 @@ function* composeDisplayData( dataParam ) {
 
     columns.push(getColumn(metric));
     columns.push(getColumn(childNM.map));
-    columns.push(getColumn('Devices'));
+    columns.push(getColumn('Manufacturers'));
 
-    // Rows
+    if (tier === 'COUNTRY_LEVEL') {
+        columns.push(getColumn('Country Data'));
+    }
+    if (tier === 'STATE_LEVEL') {
+        columns.push(getColumn('State Data'));
+    }
+    if (tier === 'LGA_LEVEL') {
+        columns.push(getColumn('LGA Data'));
+    }
+
+
+    // ### Rows
     let data = getGeoJson(childNM.type);
     let rows;
 
@@ -75,14 +85,14 @@ function* composeDisplayData( dataParam ) {
         rows = data.filter(f => f.properties[curNM.code] === navigation[curNM.type]);
     }
 
-    // Cells
+    // ### Cells
     // TODO: Data sorting/filtering by DataParams will happen here...
 
     let cells = rows.reduce((acc, cur) => {
         let name = cur.properties[childNM.code];
         acc.push({
             [childNM.map]: name,
-            // For tsting:
+            // For testing:
             ['Alarms']: _.random(0, 30),
             ['Holdover']: _.random(0, 10),
             ['chart']: Math.random() >= 0.7,
