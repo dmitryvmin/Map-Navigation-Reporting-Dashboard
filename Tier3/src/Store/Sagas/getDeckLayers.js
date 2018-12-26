@@ -29,7 +29,7 @@ function* renderLayers() {
     const tier = yield select(tierSelector);
     const hover = yield select(hoverSelector);
 
-    const makeActiveGeoLayer = function (map, data, hover) {
+    const makeGeoLayer = function (map, data, hover) {
         let val = hover ? hover.value : null;
         let id = (val) ? `${map.tier}_hover_${val}` : `${map.tier}`;
 
@@ -71,13 +71,13 @@ function* renderLayers() {
             let parentNM = getNMapParent(type, 'type');
             if (parentNM) data = data.filter(f => f.properties[parentNM.code] === nav[parentNM.type]);
 
-            makeActiveGeoLayer(NM, data, hover);
+            makeGeoLayer(NM, data, hover);
         }
         // else {
         //     data = data.filter(f => {
         //         return ( f.properties[NM.code] !== selected );
         //     });
-        //     layer = makeInactiveGeoLayer(NM, data, hover);
+        //     layer = makeGeoLayer(NM, data, hover);
         // }
     }
 
@@ -112,32 +112,3 @@ function* renderLayers() {
 }
 
 export default renderLayers;
-
-
-
-
-export const makeInactiveGeoLayer = function (map, data, hover) {
-    return new GeoJsonLayer({
-        id: `${map.tier}-inactive-${hover && hover.value}`,
-        data,
-        opacity: 0.1,
-        stroked: true,
-        filled: true,
-        extruded: false,
-        wireframe: true,
-        fp64: true,
-        lineWidthMinPixels: 1.5,
-        getLineColor: [100, 100, 100],
-        // getFilterValue: f => f.properties[map.code],
-        getFillColor: f => {
-            return (f.properties[map.code] === hover.value) ? [50, 50, 50] : [105, 105, 105]
-        },
-        updateTrigger: {
-            getFillColor: hover.value
-        },
-        // If we want inactive layers to be interactive uncomment below
-        pickable: true,
-        onHover: onLayerHover,
-        onClick: onLayerClick,
-    });
-}

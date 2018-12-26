@@ -16,11 +16,12 @@ import {
     getNMapParent,
 } from './../Utils';
 
-import {setMapViewport} from './../Store/Actions';
 import {
-    makeActiveGeoLayer,
-    makeInactiveGeoLayer,
-} from './../Store/Sagas/getDeckLayers';
+    setMapViewport,
+    saveMapRef,
+} from './../Store/Actions';
+
+import {addToGL} from './MapUtils';
 
 import IconClusterLayer from './IconClusterLayer';
 import iconMapping from '../Data/location-icon-mapping.json';
@@ -30,45 +31,57 @@ import POITooltip from './Tooltip';
 class Map extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            shouldUpdateGLContext: false
+        }
     }
-    // componentDidMount() {
-    //     window.addEventListener('resize', this.resize);
-    //     this.resize();
-    // }
-    // componentWillUnmount() {
-    //     window.removeEventListener('resize', this.resize);
-    // }
-    // resize = () => {
-    //     const {map_viewport} = this.props;
-    //
-    //     this.props.setMapViewport({
-    //         ...map_viewport,
-    //         width: map_viewport.width || window.innerWidth,
-    //         height: map_viewport.height || window.innerHeight
-    //     });
-    // }
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.hover && (prevState.hover && prevState.hover.value) !== (nextProps.hover && nextProps.hover.value)) {
+            return {
+                shouldUpdateGLContext: true
+            };
+        } else {
+            return {
+                shouldUpdateGLContext: false
+            };
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (prevState.shouldUpdateGLContext) {
+            this.updateGLContext();
+        }
+    }
+
     onViewStateChange = ({viewState}) => {
-        this.props.setMapViewport({...viewState});
+        this.props.setMapViewport({...viewState, transitionDuration: 0});
     }
+
     // DeckGL and mapbox will both draw into this WebGL context
     onWebGLInitialized = (gl) => {
         this.setState({gl});
     }
-    addToGL = () => {
-        const map = this._map;
-        const deck = this._deck;
-        const layers = this.renderLayers();
 
-        if (map && deck && layers) {
-            layers.forEach(layer => {
-                let id = layer.id;
-                map.addLayer(new MapboxLayer({id, deck}), 'water');
-            });
+    updateGLContext = () => {
+        const {
+            map_ref: {
+                mapbox,
+                deck,
+            } = {}
+        } = this.props;
+
+        const layers = this.renderLayers(this.props, this.onLayerChange);
+
+        if (mapbox && deck && layers.length) {
+            addToGL(mapbox, deck, layers);
         }
     }
-    // Add deck layer to mapbox
-    onMapLoad = () => this.addToGL();
+
+    // Add Deck layer to mapbox
+    onMapLoad = () => {
+        this.updateGLContext();
+    }
 
     onLayerChange = (info, ui) => {
         const {x, y, object} = info;
@@ -76,6 +89,8 @@ class Map extends Component {
             return null;
         }
 
+        // ###
+        // TODO: optimize
         const {tier} = this.props;
         const NMchild = getNMapChild(tier, 'tier');
 
@@ -89,19 +104,19 @@ class Map extends Component {
             value = object.properties[NMparent.code];
             type = NMparent.type;
         }
+        // ###
 
         if (!value) {
             console.log(`%c something wrong with the hovered location: ${value}`, 'background: #c50018; color: white; display: block;');
         } else {
 
             if (ui === 'hover') {
+                // TODO: might need mouseOut/mouseLeave support for when user is not hovering over the map
                 this.props.navHovered({value, x, y});
             }
             else if (ui === 'click') {
                 this.props.updateNav(type, value);
             }
-
-            this.addToGL();
         }
     }
 
@@ -110,12 +125,15 @@ class Map extends Component {
         const {
             navigation,
             tier,
-            hover
+            hover,
         } = this.props;
 
-        const makeGeoLayer = (map, data, hover) => {
+        const makeGeoLayer = (layerType, map, data, hover) => {
             let val = hover ? hover.value : null;
             let id = (val) ? `${map.tier}_hover_${val}` : `${map.tier}`;
+
+            const activeColor = (layerType === 'active') ? [139, 195, 74] : [50, 50, 50];
+            const inactiveColor = (layerType === 'active') ? [255, 154, 0] : [105, 105, 105];
 
             return new GeoJsonLayer({
                 id,
@@ -128,7 +146,7 @@ class Map extends Component {
                 fp64: true,
                 lineWidthMinPixels: 1.5,
                 getLineColor: [100, 100, 100],
-                getFillColor: f => (f.properties[map.code] === val) ? [235, 78, 120] : [199, 233, 180],
+                getFillColor: f => (f.properties[map.code] === val) ? activeColor : inactiveColor,
                 updateTrigger: {getFillColor: val},
                 pickable: true,
                 onHover: info => this.onLayerChange(info, 'hover'),
@@ -153,15 +171,16 @@ class Map extends Component {
                 let parentNM = getNMapParent(type, 'type');
                 if (parentNM) data = data.filter(f => f.properties[parentNM.code] === navigation[parentNM.type]);
 
-                const activeLayer =  makeGeoLayer(NM, data, hover);
+                const activeLayer = makeGeoLayer('active', NM, data, hover);
                 return activeLayer;
             }
-            // else {
-            //     data = data.filter(f => {
-            //         return ( f.properties[NM.code] !== selected );
-            //     });
-            //     layer = makeInactiveGeoLayer(NM, data, hover);
-            // }
+            else {
+                data = data.filter(f => {
+                    return ( f.properties[NM.code] !== selected );
+                });
+                const inactiveLayer = makeGeoLayer('inactive', NM, data, hover);
+                return inactiveLayer;
+            }
         }
 
         const layers = _.toArray(navigationMap).reduce((acc, cur) => {
@@ -178,7 +197,9 @@ class Map extends Component {
             viewState,
             mapStyle,
             markers,
-            active_layers,
+            saveMapRef,
+            map_ref,
+            hover,
         } = this.props;
 
         const {gl} = this.state;
@@ -190,14 +211,19 @@ class Map extends Component {
                     controller={true}
                     onViewStateChange={this.onViewStateChange}
                     ref={(ref) => {
-                        this._deck = ref && ref.deck  // reference to the Deck instance
+                        this._deck = ref && ref.deck;  // reference to the Deck instance
                     }}
                     layers={this.renderLayers()}
                     onWebGLInitialized={this.onWebGLInitialized}
                 >
                     {gl && <StaticMap
                         ref={ref => {
-                            this._map = ref && ref.getMap(); // reference to the mapboxgl.Map instance
+                            if (this._deck && ref) {
+                                saveMapRef({
+                                    deck: this._deck,
+                                    mapbox: ref.getMap(), // reference to the mapboxgl.Map instance
+                                });
+                            }
                         }}
                         preventStyleDiffing={true}
                         reuse
@@ -221,7 +247,7 @@ class Map extends Component {
                         )}
                     </StaticMap>
                     }
-                    <POITooltip />
+                    {hover && <POITooltip hover={hover}/>}
                 </DeckGL>
             </MapContainer>
         );
@@ -233,6 +259,7 @@ const mapStateToProps = state => {
         viewState: state.mapReducer.map_viewport,
         mapStyle: state.mapReducer.map_style,
         layers: state.mapReducer.map_layers,
+        map_ref: state.mapReducer.map_ref,
         country_selected: state.navigationReducer.country_selected,
         state_selected: state.navigationReducer.state_selected,
         lga_selected: state.navigationReducer.lga_selected,
@@ -249,6 +276,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         setMapViewport: (map_viewport) => dispatch(setMapViewport(map_viewport)),
+        saveMapRef: (map_ref) => dispatch(saveMapRef(map_ref)),
         navHovered: (nav_hover) => dispatch({type: GGConsts.NAV_HOVER, nav_hover}),
         updateNav: (navType, navVal) => dispatch({type: GGConsts.UPDATE_NAV, [navType]: navVal}),
     }
@@ -258,6 +286,5 @@ const MapContainer = styled.div`
     width: 100%; 
     height: 100%; 
 `;
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(Map);

@@ -143,7 +143,8 @@ class RTTable extends React.Component {
                 <TableWrapper>
                     <Table
                         className="table"
-                        aria-labelledby="tableTitle">
+                        aria-labelledby="tableTitle"
+                    >
                         <EnhancedTableHead
                             columns={columns}
                             tableCols={columns}
@@ -151,7 +152,8 @@ class RTTable extends React.Component {
                             order={order}
                             orderBy={orderBy}
                             onRequestSort={this.handleRequestSort}
-                            rowCount={cells.length}/>
+                            rowCount={cells.length}
+                        />
                         <TableBody>
                             {stableSort(cells, getSorting(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -161,7 +163,8 @@ class RTTable extends React.Component {
                                         key={`${d}-${i}`}
                                         columns={columns}
                                         handleRowHover={this.handleRowHover}
-                                        handleRowClick={this.handleRowClick}/>
+                                        handleRowClick={this.handleRowClick}
+                                    />
                                 )}
                             {/*{emptyRows > 0 && (*/}
                             {/*<TableRow style={{height: 49 * emptyRows}}>*/}

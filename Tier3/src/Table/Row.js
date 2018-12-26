@@ -63,12 +63,13 @@ class Row extends Component {
         const {selected} = this.state;
 
         return (
-            <TableRow onClick={handleRowClick(data)}
-                      onMouseEnter={handleRowHover(data)}
-                      tabIndex={-1}
-                      key={data.id}
-                      selected={selected}
-                      aria-checked={selected}
+            <TableRow
+                onClick={handleRowClick(data)}
+                onMouseEnter={handleRowHover(data)}
+                tabIndex={-1}
+                key={data.id}
+                selected={selected}
+                aria-checked={selected}
             >
 
                 {columns.map(c => {
@@ -76,7 +77,10 @@ class Row extends Component {
                     let value = data[id];
 
                     return (
-                        <TableCell key={`cell-${id}-${value}`} align="center">
+                        <TableCell
+                            key={`cell-${id}-${value}`}
+                            align="center"
+                        >
                             {/*<Tooltip title={id} placement="bottom-start" enterDelay={300}>*/}
                             <StyledCell>{value}</StyledCell>
                             {/*</Tooltip>*/}

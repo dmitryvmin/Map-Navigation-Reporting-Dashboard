@@ -23,22 +23,25 @@ const interruptionStyles = [
 ];
 
 // const transitionInterpolator = new LinearInterpolator(['bearing']);
-// const transitionInterpolator = new LinearInterpolator();
-// const transitionInterpolator = new FlyToInterpolator();
+const transitionInterpolator = new FlyToInterpolator();
 
 const initState = {
     map_style: getMapStyle(),
     map_viewport: {
-        // transitionDuration: 5000,
-        // transitionInterpolator,
-        // transitionEasing: d3.easeCubic,
-        // transitionInterruption: TRANSITION_EVENTS.BREAK,
+        transitionDuration: 1000,
+        transitionInterpolator,
+        transitionEasing: d3.easeCubic,
+        transitionInterruption: TRANSITION_EVENTS.BREAK,
         latitude: 9.077751,
         longitude: 8.6774567,
         zoom: 6,
         pitch: 0, // controls view angle
         bearing: 0, // controls map rotation
-    }
+    },
+    map_ref: {
+        mapbox: null,
+        deck: null,
+    },
 }
 
 function mapReducer(state = initState, action) {
@@ -48,7 +51,7 @@ function mapReducer(state = initState, action) {
                 latitude,
                 longitude,
                 // transitionInterpolator,
-                // transitionDuration,
+                transitionDuration,
                 zoom,
             } = action.map_viewport;
 
@@ -58,11 +61,21 @@ function mapReducer(state = initState, action) {
                     ...state.map_viewport,
                     latitude: latitude ? latitude : state.map_viewport.latitude,
                     longitude: longitude ? longitude : state.map_viewport.longitude,
-                    // transitionInterpolator,
+                    transitionInterpolator,
                     // transitionInterpolator: new FlyToInterpolator(),
                     // transitionInterpolator: transitionInterpolator ? transitionInterpolator : transitionInterpolator,
-                    // transitionDuration,
+                    transitionDuration,
                     zoom,
+                }
+            }
+
+        case GGConsts.MAP_REF:
+            return {
+                ...state,
+                map_ref: {
+                    ...state.map_ref,
+                    mapbox: action.map_ref.mapbox ? action.map_ref.mapbox : state.map_ref.mapbox,
+                    deck: action.map_ref.deck ? action.map_ref.deck : state.map_ref.deck,
                 }
             }
 

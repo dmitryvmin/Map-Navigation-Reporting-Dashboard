@@ -2,7 +2,11 @@ import GGConsts from '../../Constants';
 
 const initState = {
     nav_tier: null,
-    nav_hover: null,
+    nav_hover: {
+        value: null,
+        x: null,
+        y: null,
+    },
     nav_updating: false,
     navigation: {
         country_selected: 'Nigeria',

@@ -106,7 +106,13 @@ const UPDATE_LAYERS = "UPDATE_LAYERS";
 const ACTIVE_LAYERS = "ACTIVE_LAYERS";
 const INACTIVE_LAYERS = "INACTIVE_LAYERS";
 
+const MAP_REF = "MAP_REF";
+
 export default class GGConsts {
+
+    static get MAP_REF() {
+        return MAP_REF;
+    }
 
     static get UPDATE_LAYERS() {
         return UPDATE_LAYERS;

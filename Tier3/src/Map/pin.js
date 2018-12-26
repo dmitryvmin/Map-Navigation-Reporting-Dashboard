@@ -34,8 +34,8 @@ export default class CityPin extends PureComponent {
                 {/*<circle cx="10" cy="10" r="10"/>*/}
 
                 <foreignObject
-                    x="0"
-                    y="50"
+                    x="25"
+                    y="60"
                     width="50"
                     height="50"
                 >

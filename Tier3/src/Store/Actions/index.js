@@ -23,3 +23,10 @@ export const navHovered = nav_hover => {
         nav_hover,
     }
 }
+
+export const saveMapRef = ( map_ref) => {
+    return {
+        type: GGConsts.MAP_REF,
+        map_ref,
+    }
+}

@@ -31,7 +31,7 @@ export function* watcherSaga() {
         takeLatest(GGConsts.UPDATE_METRIC, updateMetric),
 
         takeLatest(GGConsts.NAV_HOVER, updateHover),
-        // yield throttle(50, GGConsts.NAV_HOVER, updateHover),
+        // yield throttle(100, GGConsts.NAV_HOVER, updateHover),
     ]);
 }
 

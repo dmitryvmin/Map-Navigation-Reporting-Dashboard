@@ -32,7 +32,7 @@ function* getViewport(tier, navigation) {
         ...currentVP,
         longitude: coordinates ? Math.abs(coordinates.lng) : currentVP.longitude,
         latitude: coordinates ? Math.abs(coordinates.lat) : currentVP.latitude,
-        // transitionDuration: 2000,
+        transitionDuration: 1000,
         // transitionInterpolator: new FlyToInterpolator(),
         zoom,
     };

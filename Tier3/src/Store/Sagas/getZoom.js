@@ -8,6 +8,7 @@ import GGConsts from '../../Constants';
 function getZoom(tier) {
     // const tier = yield select(tierSelector);
 
+    // TODO: use mapbox's fitBounds to scale better
     const zoomMap = {
         [GGConsts.COUNTRY_LEVEL]: 5.5,
         [GGConsts.STATE_LEVEL]: 7.5,
