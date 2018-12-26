@@ -9,9 +9,9 @@ Here is a good [primer][primer] on the this stack.
 
 Before switching to geojson polygons to style geographic regions, the map view processed vector tiles served by Mapbox. The switch was made because geojson is more performant, with the tradeoff being that there are no open geojson providers - that data needs to be stored in the app. The app contains legacy code that supports vector tile fetching/styling (see: Map/VectorTileUtils). 
 
-To view and edit vector tiles use [Mapbox Studio][MS]. 
-Login info: 
-u/n: dmitrymin@gmail.com
+To view and edit vector tiles use [Mapbox Studio][MS]. <br/>
+Login info: <br/>
+u/n: dmitrymin@level11.com <br />
 pass: #1L****r 
 
 ### Libraries
