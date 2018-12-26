@@ -104,3 +104,7 @@ a.mapboxgl-ctrl-logo, .mapboxgl-ctrl.mapboxgl-ctrl-attrib {
 	z-index: 10;
 	pointer-events: none;
 }
+
+.mapCircle {
+	fill: white;
+}

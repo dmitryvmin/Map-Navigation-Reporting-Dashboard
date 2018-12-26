@@ -41,13 +41,13 @@ function* updateNav(action) {
     const display_data = yield call(composeDisplayData);
     yield put({type: GGConsts.DISPLAY_DATA, display_data });
 
-    // ## Update Markers
-    const markers = yield call(getMarkers);
-    yield put({type: GGConsts.MARKERS, markers});
-
     // ## Update Map position, zoom
     const map_viewport = yield call(getViewport, nav_tier, navigation);
     yield put({type: GGConsts.MAP_VIEWPORT, map_viewport});
+
+    // ## Update Markers
+    const markers = yield call(getMarkers);
+    yield put({type: GGConsts.MARKERS, markers});
 
     // Update Map style
     // const map_style = updateMapboxStyle(nav_tier, navigation);
