@@ -46,10 +46,50 @@ function* composeDisplayData( dataParam ) {
     const curNM = getNMap(tier, 'tier'); // current navigation map
     const childNM = getNMapChild(tier, 'tier'); // child navigation map
 
+
+
+    let rows;
+
     // Temporary
     if (childNM.type === 'facility_selected') {
-        return null;
+
+        // TODO: this is random data..
+        rows = [
+
+            {
+                geometry: {type: "MultiPolygon", coordinates: Array(1)},
+                properties: {
+                    admin1Name: "Abia",
+                    admin1Pcod: "NG001",
+                    admin1RefN: "Abia",
+                    admin1AltN: null,
+                    admin1Al_1: null
+                },
+                type: "Feature"
+            },
+            {
+                geometry: {type: "MultiPolygon", coordinates: Array(1)},
+                properties: {
+                    admin1Name: "Abia",
+                    admin1Pcod: "NG001",
+                    admin1RefN: "Abia",
+                    admin1AltN: null,
+                    admin1Al_1: null
+                },
+                type: "Feature"
+            }
+        ]
+
+    } else {
+
+        // ### Rows
+        let data = getGeoJson(childNM.type);
+
+        if (curNM.type !== 'All') {
+            rows = data.filter(f => f.properties[curNM.code] === navigation[curNM.type]);
+        }
     }
+
     // ### Columns
     let columns = [];
 
@@ -77,13 +117,7 @@ function* composeDisplayData( dataParam ) {
     }
 
 
-    // ### Rows
-    let data = getGeoJson(childNM.type);
-    let rows;
 
-    if (curNM.type !== 'All') {
-        rows = data.filter(f => f.properties[curNM.code] === navigation[curNM.type]);
-    }
 
     // ### Cells
     // TODO: Data sorting/filtering by DataParams will happen here...

@@ -65,16 +65,21 @@ class Map extends Component {
 
     updateGLContext = () => {
         const {
+            tier,
             map_ref: {
                 mapbox,
                 deck,
             } = {}
         } = this.props;
 
-        const layers = this.renderLayers(this.props, this.onLayerChange);
+        // TODO: more quick error handling for LGA tier, pretty up
+        if (tier !== 'LGA_LEVEL') {
 
-        if (mapbox && deck && layers.length) {
-            addToGL(mapbox, deck, layers);
+            const layers = this.renderLayers(this.props, this.onLayerChange);
+
+            if (mapbox && deck && layers.length) {
+                addToGL(mapbox, deck, layers);
+            }
         }
     }
 
@@ -92,6 +97,12 @@ class Map extends Component {
         // ###
         // TODO: optimize - tag each geojson polygon with a `tier - location` ID for fast look up
         const {tier} = this.props;
+
+        // TODO: ignore events at LGA tier ...quick fix for now
+        if (tier === 'LGA_LEVEL') {
+            return;
+        }
+
         const NMchild = getNMapChild(tier, 'tier');
 
         let value = object.properties[NMchild.code]
