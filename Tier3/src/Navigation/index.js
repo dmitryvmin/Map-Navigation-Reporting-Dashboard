@@ -63,6 +63,14 @@ class Navigation extends Component {
         }
     }
 
+    toggleFilterConnected = () => (e) => {
+        this.props.updateConnected(this.props.selected_connected);
+    }
+
+    toggleFilterUploaded = () => (e) => {
+        this.props.updateUploaded(this.props.selected_uploaded);
+    }
+
     render() {
         const {
             classes,
@@ -72,7 +80,9 @@ class Navigation extends Component {
             geo_map,
             // updateMetric,
             metric_selected,
-            device_type_selected,
+            // device_type_selected,
+            selected_connected,
+            selected_uploaded,
             navigation,
             // navigation: {
             //     // country_selected,
@@ -146,13 +156,13 @@ class Navigation extends Component {
                         <Header>Devices Type:</Header>
                         <ChipContainer>
                             <StyledChip
-                                active={(device_type_selected === GGConsts.DEVICE_TYPE_CONNECTED) ? 'active' : undefined}
-                                onClick={this.handleDeviceFilter(GGConsts.DEVICE_TYPE_CONNECTED)}
+                                active={(selected_connected === true) ? 'active' : undefined}
+                                onClick={this.toggleFilterConnected()}
                                 label={_.last(GGConsts.DEVICE_TYPE_CONNECTED.split('_'))}
                             />
                             <StyledChip
-                                active={(device_type_selected === GGConsts.DEVICE_TYPE_UPLOADED) ? 'active' : undefined}
-                                onClick={this.handleDeviceFilter(GGConsts.DEVICE_TYPE_UPLOADED)}
+                                active={(selected_uploaded === true) ? 'active' : undefined}
+                                onClick={this.toggleFilterUploaded()}
                                 label={_.last(GGConsts.DEVICE_TYPE_UPLOADED.split('_'))}
                             />
                         </ChipContainer>
@@ -249,6 +259,8 @@ const mapStateToProps = state => {
         navigation: state.navigationReducer.navigation,
         metric_selected: state.metricReducer.metric_selected,
         device_type_selected: state.deviceReducer.device_type_selected,
+        selected_connected: state.deviceReducer.selected_connected,
+        selected_uploaded: state.deviceReducer.selected_uploaded,
     };
 };
 
@@ -258,6 +270,8 @@ const mapDispatchToProps = dispatch => {
         updateNav: (navType, navVal) => dispatch({type: GGConsts.UPDATE_NAV, [navType]: navVal}),
         updateMetric: (metric_selected) => dispatch({type: GGConsts.UPDATE_METRIC, metric_selected}),
         updateDevice: (device_type_selected) => dispatch({type: GGConsts.UPDATE_DEVICE_TYPE, device_type_selected}),
+        updateConnected: (selected_connected) => dispatch({type: GGConsts.DEVICE_TYPE_CONNECTED, selected_connected}),
+        updateUploaded: (selected_uploaded) => dispatch({type: GGConsts.DEVICE_TYPE_UPLOADED, selected_uploaded}),
     };
 };
 
