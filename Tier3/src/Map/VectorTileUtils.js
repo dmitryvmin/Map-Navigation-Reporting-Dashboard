@@ -1,4 +1,4 @@
-import {fromJS} from 'immutable';
+// import {fromJS} from 'immutable';
 import GGConsts from './../Constants';
 import MAP_STYLE from '../Data/style.json';
 
@@ -12,6 +12,8 @@ const getSourceLayer = type => {
             return 'ne_10m_admin_1_states_provinc-5n804v';
         case 'lga_selected':
             return 'ngaadmbndaadm2osgof-4e7vz7';
+        default:
+            return '';
     }
 }
 
@@ -23,6 +25,8 @@ const getSourceUrl = type => {
             return 'mapbox://dmitrymin.d5bqzgth';
         case 'lga_selected':
             return 'mapbox://dmitrymin.ak86ozz1';
+        default:
+            return 'mapbox://dmitrymin.1tmjkbs7';
     }
 }
 

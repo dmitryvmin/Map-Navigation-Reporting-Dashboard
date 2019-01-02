@@ -1,20 +1,20 @@
 import React, {PureComponent} from 'react';
 import PieChart from 'react-minimal-pie-chart';
-import Transition from 'react-transition-group/Transition';
+// import Transition from 'react-transition-group/Transition';
 import * as easing from 'easing';
 
-import TwoLevelPieChart from './Pie.js';
+// import TwoLevelPieChart from './Pie.js';
 
 const pinStyle = {
     fill: '#d00',
     stroke: 'none'
 };
 
-const duration = 2000;
-const transitionStyles = {
-    entering: {opacity: 0},
-    entered: {opacity: 1},
-};
+// const duration = 2000;
+// const transitionStyles = {
+//     entering: {opacity: 0},
+//     entered: {opacity: 1},
+// };
 
 export default class CityPin extends PureComponent {
 

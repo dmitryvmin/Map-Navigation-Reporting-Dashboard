@@ -1,6 +1,6 @@
 import _ from 'lodash';
-import GGConsts from '../../Constants';
-import {fetchData} from './fetch';
+// import GGConsts from '../../Constants';
+// import {fetchData} from './fetch';
 import {navigationMap} from './../../Utils';
 
 // for Local
@@ -9,12 +9,12 @@ import statesData from '../../Data/statesData.json';
 import lgasData from '../../Data/lgasData.json';
 
 // for REST
-const countries_endpoint = 'https://restcountries.eu/rest/v2/all';
-const states_endpoint = `${'https://cors-anywhere.herokuapp.com/'}https://countryrestapi.herokuapp.com`; // got Nigeria only
-const lgas_endpoint = `http://locationsng-api.herokuapp.com/api/v1/states`;
+// const countries_endpoint = 'https://restcountries.eu/rest/v2/all';
+// const states_endpoint = `${'https://cors-anywhere.herokuapp.com/'}https://countryrestapi.herokuapp.com`; // got Nigeria only
+// const lgas_endpoint = `http://locationsng-api.herokuapp.com/api/v1/states`;
 
 // For fetching live data from an endpoint
-function* getGeo(type, selected = null) {
+function getGeo(type, selected = null) {
 
     switch (type) {
         case 'country_selected': {
@@ -59,6 +59,9 @@ function* getGeo(type, selected = null) {
         }
         case 'facility_selected': {
             return [{properties: {admin3Name: 'facility1'}}];
+        }
+        default: {
+            return null;
         }
     }
 }
@@ -106,30 +109,30 @@ const addAllOption = (type, data) => {
     return d;
 }
 
-const formatCountryMap = arr => {
-    return arr.reduce((acc, cur) => {
-        acc.push(cur.name);
-        return acc;
-    }, []);
-}
+// const formatCountryMap = arr => {
+//     return arr.reduce((acc, cur) => {
+//         acc.push(cur.name);
+//         return acc;
+//     }, []);
+// }
 
 // return Map to the store
-function* getMapData(type, resource, key) {
-    const response = yield fetchData(resource);
-    let data = _.get(response, key);
+// function* getMapData(type, resource, key) {
+//     const response = yield fetchData(resource);
+//     let data = _.get(response, key);
 
-    if (data) {
-        // remove if data is saved locally instead of fetched from the API
-        if (type === GGConsts.COUNTRIES_MAP) data = formatCountryMap(data);
-        // sort alphabetically
-        data.sort();
-        // add an `all` option
-        addAllOption(data);
-        return data;
+//     if (data) {
+//         // remove if data is saved locally instead of fetched from the API
+//         if (type === GGConsts.COUNTRIES_MAP) data = formatCountryMap(data);
+//         // sort alphabetically
+//         data.sort();
+//         // add an `all` option
+//         addAllOption(data);
+//         return data;
 
-    } else {
-        console.warn(`Unable to update ${type}. No ${key} in the response from ${resource}: ${JSON.stringify(response)}`);
-    }
-}
+//     } else {
+//         console.warn(`Unable to update ${type}. No ${key} in the response from ${resource}: ${JSON.stringify(response)}`);
+//     }
+// }
 
 export default getGeo;

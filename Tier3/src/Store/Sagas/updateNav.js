@@ -11,7 +11,7 @@ import getViewport from './getViewport';
 import composeDisplayData from './composeDisplayData';
 import getMarkers from './getMarkers';
 // import updateMapboxStyle from './updateMapboxStyle';
-import getDeckLayers from './getDeckLayers';
+// import getDeckLayers from './getDeckLayers';
 
 /**
  * When the navigation changes, this computes and updates the state

@@ -1,8 +1,6 @@
 import _ from 'lodash';
-import GGConsts from '../../Constants';
 import {
-    select,
-    put
+    select
 } from 'redux-saga/effects';
 
 import {
@@ -127,9 +125,9 @@ function* composeDisplayData( dataParam ) {
         acc.push({
             [childNM.map]: name,
             // For testing:
-            ['Alarms']: _.random(0, 30),
-            ['Holdover']: _.random(0, 10),
-            ['chart']: Math.random() >= 0.7,
+            'Alarms': _.random(0, 30),
+            'Holdover': _.random(0, 10),
+            'chart': Math.random() >= 0.7,
         });
         return acc;
     }, []);

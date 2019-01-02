@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import GGConsts from '../../Constants';
 
 /**

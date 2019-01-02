@@ -1,26 +1,26 @@
 import {
     FlyToInterpolator,
-    LinearInterpolator
+    // LinearInterpolator
 } from 'react-map-gl';
 import * as d3 from 'd3-ease';
 import {TRANSITION_EVENTS} from 'deck.gl';
 import GGConsts from '../../Constants';
 import {getMapStyle} from './../../Map/VectorTileUtils.js';
 
-const interruptionStyles = [
-    {
-        title: 'BREAK',
-        style: TRANSITION_EVENTS.BREAK
-    },
-    {
-        title: 'SNAP_TO_END',
-        style: TRANSITION_EVENTS.SNAP_TO_END
-    },
-    {
-        title: 'IGNORE',
-        style: TRANSITION_EVENTS.IGNORE
-    }
-];
+// const interruptionStyles = [
+//     {
+//         title: 'BREAK',
+//         style: TRANSITION_EVENTS.BREAK
+//     },
+//     {
+//         title: 'SNAP_TO_END',
+//         style: TRANSITION_EVENTS.SNAP_TO_END
+//     },
+//     {
+//         title: 'IGNORE',
+//         style: TRANSITION_EVENTS.IGNORE
+//     }
+// ];
 
 // const transitionInterpolator = new LinearInterpolator(['bearing']);
 const transitionInterpolator = new FlyToInterpolator();

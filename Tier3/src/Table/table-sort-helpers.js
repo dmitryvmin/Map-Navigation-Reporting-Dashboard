@@ -1,5 +1,3 @@
-import React from 'react';
-
 const desc = (a, b, orderBy) => {
   if (b[orderBy] < a[orderBy]) {
     return -1;

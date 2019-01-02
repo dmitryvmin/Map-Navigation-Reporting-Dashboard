@@ -2,8 +2,8 @@ import GGConsts from './Constants';
 
 class Auth {
   authenticate(username, password,cb) {
-    const creds: any = `${username}:${password}`;
-    const header: any = {
+    const creds = `${username}:${password}`;
+    const header = {
         'Accept': 'application/json',
         'Authorization': 'Basic ' + btoa(creds)
     };

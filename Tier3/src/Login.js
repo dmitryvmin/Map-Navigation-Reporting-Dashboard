@@ -8,7 +8,7 @@ import * as React from 'react';
 // } from 'react-router-dom';
 import Auth from './Auth';
 import TextField from 'material-ui-next/TextField';
-import Button from 'material-ui-next/Button';
+// import Button from 'material-ui-next/Button';
 import Card from 'material-ui-next/Card';
 
 export default class Login extends React.Component {
@@ -36,7 +36,7 @@ export default class Login extends React.Component {
   };
 
    keyPress = (e) => {
-      if(e.keyCode == 13){
+      if(e.keyCode === 13){
          Auth.authenticate(this.state.username, this.state.password, this.authCallback());
       }
    }
@@ -61,7 +61,7 @@ export default class Login extends React.Component {
 					value={this.state.username}
 					onChange={this.handleChange('username')}
           onKeyDown={this.keyPress}
-					margin="normal"/>
+					/>
 				<TextField
 					id="password"
 					label="Password"
@@ -72,7 +72,7 @@ export default class Login extends React.Component {
 					value={this.state.password}
 					onChange={this.handleChange('password')}
           onKeyDown={this.keyPress}
-					margin="normal" />
+					/>
 			</form>
 			<button style={{backgroundColor: '#7cd33b',padding: '8px 16px', margin: '0 auto', display: 'inherit', marginTop: '20px', color: 'white'}} onClick={this.login}>Log in</button>
       </Card>

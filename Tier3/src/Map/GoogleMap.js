@@ -8,7 +8,7 @@ import {
     OverlayView,
 } from "react-google-maps";
 
-import {getGeoJson} from './../Utils';
+// import {getGeoJson} from './../Utils';
 
 // Set your mapbox token here
 const MALE_COLOR = [0, 128, 255];
@@ -17,16 +17,16 @@ const FEMALE_COLOR = [255, 0, 128];
 // Source data CSV
 const DATA_URL = 'https://raw.githubusercontent.com/uber-common/deck.gl-data/master/examples/scatterplot/manhattan.json';  // eslint-disable-line
 
-const STYLES = {
-    mapContainer: {
-        height: `100%`,
-    },
-    overlayView: {
-        background: `white`,
-        border: `1px solid #ccc`,
-        padding: 15,
-    },
-};
+// const STYLES = {
+//     mapContainer: {
+//         height: `100%`,
+//     },
+//     overlayView: {
+//         background: `white`,
+//         border: `1px solid #ccc`,
+//         padding: 15,
+//     },
+// };
 
 function getPixelPositionOffset(width, height) {
     return { x: -(width / 2), y: -(height / 2) };
@@ -131,7 +131,7 @@ class GMap extends Component {
 
 
     render() {
-        const {viewport, data} = this.state;
+        // const {viewport, data} = this.state;
         const {markers, map_viewport} = this.props;
 
         // let geo = getGeoJson('state_selected')

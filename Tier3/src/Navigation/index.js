@@ -6,7 +6,7 @@ import {withStyles} from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
 import NativeSelect from '@material-ui/core/NativeSelect';
 import Input from '@material-ui/core/Input';
-import FormHelperText from '@material-ui/core/FormHelperText';
+// import FormHelperText from '@material-ui/core/FormHelperText';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Chip from '@material-ui/core/Chip';
@@ -15,8 +15,8 @@ import GGConsts from '../Constants';
 
 import {
     navigationMap,
-    getFromNavMap,
-    formatLabel
+    // getFromNavMap,
+    // formatLabel
 } from './../Utils';
 
 const config = {
@@ -66,20 +66,20 @@ class Navigation extends Component {
     render() {
         const {
             classes,
-            fetching,
-            sensors,
-            error,
+            // fetching,
+            // sensors,
+            // error,
             geo_map,
-            updateMetric,
+            // updateMetric,
             metric_selected,
             device_type_selected,
             navigation,
-            navigation: {
-                country_selected,
-                state_selected,
-                lga_selected,
-                facility_selected
-            } = {}
+            // navigation: {
+            //     // country_selected,
+            //     // state_selected,
+            //     // lga_selected,
+            //     // facility_selected
+            // } = {}
         } = this.props;
 
         return (
@@ -214,9 +214,9 @@ const ColumnMenu = styled.div`
     display: flex;
     flex-direction: column;
 `;
-const Label = styled(FormHelperText)`
-    color: white !important;
-`;
+// const Label = styled(FormHelperText)`
+//     color: white !important;
+// `;
 const ChipContainer = styled.div`
     display: flex;
 `;
