@@ -11,6 +11,8 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Chip from '@material-ui/core/Chip';
 import Grid from '@material-ui/core/Grid';
+import Home from '@material-ui/icons/Home';
+import IconButton from '@material-ui/core/IconButton';
 import GGConsts from '../Constants';
 
 import {
@@ -39,6 +41,7 @@ class Navigation extends Component {
     }
 
     handleChange = source => e => {
+        debugger;
         if (source === GGConsts.METRIC_SELECTED) {
             const value = e.target.textContent; // can't curry value by e.target.value from Tabs
             this.props.updateMetric(value);
@@ -71,6 +74,11 @@ class Navigation extends Component {
         this.props.updateUploaded(this.props.selected_uploaded);
     }
 
+    goUp = () => (e) => {
+        // get actual "source" which is country_selected, state_selected, or lga_selected
+        this.props.updateNav("state_selected", "All");
+    }
+
     render() {
         const {
             classes,
@@ -99,7 +107,11 @@ class Navigation extends Component {
                     spacing={0}>
                     <Grid item lg={2} md={6} xs={12}>
                         <ColumnMenu>
-                            <Header>Location:</Header>
+                            <Header>Location:
+                                <IconButton>
+                                    <Home style={{color: 'white'}} onClick={this.goUp()}/>
+                                </IconButton>
+                            </Header>
 
                             {Object.entries(navigation).map(nav => {
                                 const [t, v] = nav;
