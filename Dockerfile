@@ -10,9 +10,9 @@ ARG CONT_BUILD_SHA
 LABEL build_commit_sha ${CONT_BUILD_SHA:-unknown}
 LABEL maintainer "Level11, Inc"
 
-COPY --from=builder /code/intchngfe   /usr/share/nginx/intchngfe/
-COPY --from=builder /code/mohfe       /usr/share/nginx/mohfe/
-COPY --from=builder /code/Tier3       /usr/share/nginx/Tier3/
+COPY --from=builder /code/intchngfe/build   /usr/share/nginx/intchngfe/
+COPY --from=builder /code/mohfe/build       /usr/share/nginx/mohfe/
+COPY --from=builder /code/Tier3/build       /usr/share/nginx/Tier3/
 
 COPY nginx/vhost.conf /etc/nginx/conf.d/default.conf
 
