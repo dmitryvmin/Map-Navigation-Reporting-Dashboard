@@ -5,7 +5,7 @@ branches:
 stages:
   - name: docker build
     script:
-      - docker build --tag global-good/report-tools --build-arg CONT_BUILD_SHA=$GIT_HASH build
+      - docker build --tag global-good/report-tools --build-arg CONT_BUILD_SHA=$GIT_HASH .
   - name: tag & push
     script:
       - docker tag global-good/report-tools:latest docker.metaverse.l11.com/global-good/report-tools:$GIT_HASH_SHORT
