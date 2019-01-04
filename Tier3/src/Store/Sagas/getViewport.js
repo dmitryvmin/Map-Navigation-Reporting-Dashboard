@@ -3,10 +3,10 @@ import {
     geocodeByAddress,
     getLatLng
 } from 'react-places-autocomplete';
-import {
-    FlyToInterpolator,
-    LinearInterpolator
-} from 'react-map-gl';
+// import {
+//     FlyToInterpolator,
+//     LinearInterpolator
+// } from 'react-map-gl';
 import {select} from 'redux-saga/effects';
 import getZoom from './getZoom';
 import getLocation from './getLocation';

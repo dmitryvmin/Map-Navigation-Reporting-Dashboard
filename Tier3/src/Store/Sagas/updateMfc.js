@@ -1,6 +1,6 @@
 // TODO: saga that updates the store when manufacturer type has changed
 
-function* updateMfc(action) {
+function updateMfc(action) {
     return;
 }
 

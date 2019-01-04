@@ -1,5 +1,5 @@
 import GGConsts from '../../Constants';
-import {call} from 'redux-saga/effects';
+// import {call} from 'redux-saga/effects';
 import {fetchUpdateData} from './fetch';
 import composeDisplayData from './composeDisplayData';
 

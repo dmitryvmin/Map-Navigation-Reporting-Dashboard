@@ -2,11 +2,7 @@ import GGConsts from '../../Constants';
 import {
     all,
     put,
-    call,
-    fork,
     takeLatest,
-    takeEvery,
-    throttle
 } from 'redux-saga/effects';
 
 import updateNav from './updateNav';
@@ -53,6 +49,6 @@ export function* startupSaga() {
 }
 
 // For any side-effects we want to add to the API calls
-export function* workerSaga() {
+export function workerSaga() {
     return;
 }

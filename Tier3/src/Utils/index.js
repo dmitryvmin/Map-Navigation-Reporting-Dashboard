@@ -1,4 +1,4 @@
-import GGConsts from '../Constants';
+// import GGConsts from '../Constants';
 import _ from 'lodash';
 import cc from 'country-code';
 import countriesData from '../Data/countriesData.json';
@@ -25,6 +25,8 @@ export const getFilterKey = type => {
             return 'gn_name';
         case 'lga_selected':
             return 'admin2Name';
+        default:
+            return null;
     }
 }
 export const getChildFilterKey = type => {
@@ -35,6 +37,8 @@ export const getChildFilterKey = type => {
             return 'admin1Name';
         case 'lga_selected':
             return 'admin2Name';
+        default:
+            return null;
     }
 }
 
@@ -71,7 +75,7 @@ export const getData = (tier, navigation) => {
         let name = cur.properties[childNM.code];
         acc.push({
             [childNM.map]: name,
-            ['alarms']: 0,
+            'alarms': 0,
         });
         return acc;
     }, []);

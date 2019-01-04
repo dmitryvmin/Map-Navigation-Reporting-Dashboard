@@ -1,20 +1,19 @@
 import React from 'react';
-import TableBody from '@material-ui/core/TableBody';
+// import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
+// import TableHead from '@material-ui/core/TableHead';
+// import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
-import { statusDisplay } from './table-display-helpers';
+// import TableSortLabel from '@material-ui/core/TableSortLabel';
+// import { statusDisplay } from './table-display-helpers';
 import Tooltip from '@material-ui/core/Tooltip';
-import { Tooltip as Tippy } from 'react-tippy';
-import ProgressBar from "virtual-progress-bar";
+// import { Tooltip as Tippy } from 'react-tippy';
+// import ProgressBar from "virtual-progress-bar";
 import styled from 'styled-components';
 
 const squaresSparkline = arr => {
 
-	const squares = [];
-	arr.map((temp, i) => {
+	return <BoxesContainer>{arr.map((temp, i) => {
 		let color;
 		if (temp > 8 || (temp < 2 && temp !== null)) {
 			color = 'red';
@@ -24,13 +23,12 @@ const squaresSparkline = arr => {
 			color = 'white';
 		}
 		let label = (i === 29) ? 'yesterday' : `${30 - i} days ago`
-		squares.push(
+		return (
 			<Tooltip title={temp ? `Device temperature ${label}: ${temp} °C` : 'Device temperature not available'} placement="bottom-start" enterDelay={300}>
 				<Box key={`box-${i}`} color={color} />
 			</Tooltip>
 		);
-    })
-	return <BoxesContainer>{squares}</BoxesContainer>
+    })}</BoxesContainer>
 }
 
 const ManualTableRow = props => {

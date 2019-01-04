@@ -2,36 +2,35 @@ import React from 'react';
 import styled from 'styled-components';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
-import TablePagination from '@material-ui/core/TablePagination';
+// import TablePagination from '@material-ui/core/TablePagination';
 import GGConsts from '../Constants';
 import EnhancedTableHead from './EnhancedTableHead';
 import {connect} from "react-redux";
 import Row from './Row';
-import ManualTableRow from './ManualTableRow';
+// import ManualTableRow from './ManualTableRow';
 import {
-    navigationMap,
-    getNMap,
+    // navigationMap,
+    // getNMap,
     getNMapChild,
-    getData
+    // getData
 } from './../Utils';
-import _ from 'lodash';
-import {navHovered} from './../Store/Actions';
+// import {navHovered} from './../Store/Actions';
 
 import {
-    desc,
+    // desc,
     stableSort,
     getSorting
 } from './table-sort-helpers';
 
-import {
-    checkStatus,
-    getLastPingHours,
-    precisionRound,
-    statusDisplay,
-    statusBg,
-    tempuratureShape,
-    timechecker48
-} from './table-display-helpers';
+// import {
+//     checkStatus,
+//     getLastPingHours,
+//     precisionRound,
+//     statusDisplay,
+//     statusBg,
+//     tempuratureShape,
+//     timechecker48
+// } from './table-display-helpers';
 
 class RTTable extends React.Component {
     constructor(props) {
@@ -116,7 +115,7 @@ class RTTable extends React.Component {
     render() {
         const {
             nav_tier,
-            navigation,
+            // navigation,
             display_data,
         } = this.props;
 

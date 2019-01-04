@@ -1,6 +1,0 @@
-# Ignore everything except what's in the build/ directory
-*
-!intchngfe/build/*
-!mohfe/build/*
-!Tier3/build/*
-!nginx/*

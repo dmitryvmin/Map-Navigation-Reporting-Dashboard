@@ -1,10 +1,10 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
-import Tooltip from '@material-ui/core/Tooltip';
+// import Tooltip from '@material-ui/core/Tooltip';
 
 class EnhancedTableHead extends React.Component {
   createSortHandler = property => event => {
@@ -12,11 +12,11 @@ class EnhancedTableHead extends React.Component {
   };
 
   render() {
-    const { onSelectAllClick,
+    const {   // onSelectAllClick,
             order,
             orderBy,
-            numSelected,
-            rowCount,
+            // numSelected,
+            // rowCount,
             tableCols } = this.props;
 
     return (

@@ -1,22 +1,22 @@
 import {createStore, combineReducers, applyMiddleware, compose} from 'redux';
 import createSagaMiddleware from 'redux-saga'
-import loggerMiddleware from 'redux-logger';
-import {composeWithDevTools} from 'redux-devtools-extension/developmentOnly';
+// import loggerMiddleware from 'redux-logger';
+// import {composeWithDevTools} from 'redux-devtools-extension/developmentOnly';
 import reducers from './Reducers/index.js';
 import {
     startupSaga,
     watcherSaga
 } from './Sagas';
-import {persistStore, persistReducer, persistCombineReducers} from 'redux-persist';
-import storage from 'redux-persist/lib/storage' // defaults to localStorage for web and AsyncStorage for react-native
-import localforage from 'localforage';
+// import {persistStore, persistReducer, persistCombineReducers} from 'redux-persist';
+// import storage from 'redux-persist/lib/storage' // defaults to localStorage for web and AsyncStorage for react-native
+// import localforage from 'localforage';
 
-const persistConfig = {
-    key: 'root',
-    storage,
-    // storage: localforage,
-    blacklist: ['fetching'],
-}
+// const persistConfig = {
+//     key: 'root',
+//     storage,
+//     // storage: localforage,
+//     blacklist: ['fetching'],
+// }
 
 // create the saga middleware
 const sagaMiddleware = createSagaMiddleware();

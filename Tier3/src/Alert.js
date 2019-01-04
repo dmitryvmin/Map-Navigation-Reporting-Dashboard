@@ -2,8 +2,8 @@ import * as React from 'react';
 // import Avatar from 'material-ui/Avatar';
 // import Close from 'material-ui/svg-icons/navigation/close';
 // import IconButton from 'material-ui/IconButton';
-import Dialog from 'material-ui/Dialog';
-import AppContext from './Services/Context';
+// import Dialog from 'material-ui/Dialog';
+// import AppContext from './Services/Context';
 import {connect} from "react-redux";
 
 class Alert extends React.Component {
@@ -34,20 +34,20 @@ class Alert extends React.Component {
         if (!this.state.showAlert) {
             return null;
         }
-        const {errors} = this.props;
-        const errorKeys = (errors && Object.keys(errors)) || null;
-        const errorsNum = errorKeys ? errorKeys.length : null;
+        // const {errors} = this.props;
+        // const errorKeys = (errors && Object.keys(errors)) || null;
+        // const errorsNum = errorKeys ? errorKeys.length : null;
 
-        const actions = [
-            <button label="Cancel"
-                    primary={true}
-                    onClick={this.handleClose}
-            />,
-            <button label="Submit"
-                    primary={true}
-                    onClick={this.handleClose}
-            />
-        ];
+        // const actions = [
+        //     <button label="Cancel"
+        //             primary={true}
+        //             onClick={this.handleClose}
+        //     />,
+        //     <button label="Submit"
+        //             primary={true}
+        //             onClick={this.handleClose}
+        //     />
+        // ];
 
         return (
             <div style={{backgroundColor: "#C50018"}}>

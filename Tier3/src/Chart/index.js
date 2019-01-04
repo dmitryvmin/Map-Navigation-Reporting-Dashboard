@@ -7,15 +7,15 @@ import Tab from '@material-ui/core/Tab';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
-import _ from 'lodash';
+//import _ from 'lodash';
 import GGConsts from '../Constants';
 import {
     BarChart,
     Bar,
     Brush,
-    ReferenceLine,
+//    ReferenceLine,
     XAxis,
-    YAxis,
+//    YAxis,
     Tooltip,
     LineChart,
     Line,
@@ -65,7 +65,7 @@ class Chart extends Component {
         const {
             nav_tier,
             classes,
-            navigation,
+//            navigation,
             timeframe_selected,
             metric_selected,
             display_data,
@@ -77,7 +77,7 @@ class Chart extends Component {
         }
 
         const {
-            columns,
+//            columns,
             cells,
         } = display_data || null;
 

@@ -1,8 +1,6 @@
 import _ from 'lodash';
-import GGConsts from '../../Constants';
 import {
-    select,
-    put
+    select
 } from 'redux-saga/effects';
 
 import {
@@ -17,6 +15,8 @@ import {
     getNMapChild,
     getGeoJson,
 } from './../../Utils';
+
+import alarmsData from '../../Data/alarms.json';
 
 /**
  *  Saga responsible for formatting data for the Map / Table views
@@ -127,9 +127,9 @@ function* composeDisplayData( dataParam ) {
         acc.push({
             [childNM.map]: name,
             // For testing:
-            ['Alarms']: _.random(0, 30),
-            ['Holdover']: _.random(0, 10),
-            ['chart']: Math.random() >= 0.7,
+            'Alarms': _.random(0, 30),
+            'Holdover': _.random(0, 10),
+            'chart': Math.random() >= 0.7,
         });
         return acc;
     }, []);

@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import * as turf from '@turf/turf';
-import GGConsts from '../../Constants';
 import {select} from 'redux-saga/effects';
 
 import {
@@ -13,7 +12,7 @@ import {
 import {
     getGeoJson,
     getNMapChild,
-    getNMap,
+    // getNMap,
 } from './../../Utils';
 
 function* getMarkers()  {
@@ -23,7 +22,7 @@ function* getMarkers()  {
     const navigation = yield select(navSelector);
     const metric = yield select(metricSelector);
 
-    const curNM = getNMap(tier, 'tier');
+    // const curNM = getNMap(tier, 'tier');
     const childNM = getNMapChild(tier, 'tier');
 
     const geoJson = getGeoJson(childNM.type);

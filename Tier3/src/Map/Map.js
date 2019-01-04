@@ -3,9 +3,9 @@ import React, {Component} from 'react';
 import {connect} from "react-redux";
 import styled from 'styled-components';
 import _ from 'lodash';
-import ReactMapGL, {StaticMap, Marker} from 'react-map-gl';
-import {MapboxLayer} from '@deck.gl/mapbox';
-import DeckGLOverlay from './deckgl-overlay.js';
+import {StaticMap, Marker} from 'react-map-gl';
+// import {MapboxLayer} from '@deck.gl/mapbox';
+// import DeckGLOverlay from './deckgl-overlay.js';
 import DeckGL, {GeoJsonLayer} from 'deck.gl';
 
 import {
@@ -23,8 +23,8 @@ import {
 
 import {addToGL} from './MapUtils';
 
-import IconClusterLayer from './IconClusterLayer';
-import iconMapping from '../Data/location-icon-mapping.json';
+// import IconClusterLayer from './IconClusterLayer';
+// import iconMapping from '../Data/location-icon-mapping.json';
 import CityPin from './Pin';
 import POITooltip from './Tooltip';
 
@@ -135,7 +135,7 @@ class Map extends Component {
 
         const {
             navigation,
-            tier,
+            // tier,
             hover,
         } = this.props;
 
@@ -206,10 +206,10 @@ class Map extends Component {
     render() {
         const {
             viewState,
-            mapStyle,
+            // mapStyle,
             markers,
             saveMapRef,
-            map_ref,
+            // map_ref,
             hover,
         } = this.props;
 
