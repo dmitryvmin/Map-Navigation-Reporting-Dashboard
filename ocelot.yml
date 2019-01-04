@@ -1,22 +1,11 @@
-image: onelouder/alpine-nodejs-docker
+image: docker
 buildTool: docker
 branches:
   - ALL
 stages:
-  - name: build
-    script:
-      - bash npm_build.sh intchngfe
-      - bash npm_build.sh mohfe
-      - bash npm_build.sh Tier3
   - name: docker build
     script:
-      - mkdir -p build
-      - cp Dockerfile build
-      - cp -R nginx build
-      - cp -R intchngfe/build build/intchngfe
-      - cp -R mohfe/build build/mohfe
-      - cp -R Tier3/build build/Tier3
-      - docker build --tag global-good/report-tools --build-arg CONT_BUILD_SHA=11111 build
+      - docker build --tag global-good/report-tools --build-arg CONT_BUILD_SHA=$GIT_HASH build
   - name: tag & push
     script:
       - docker tag global-good/report-tools:latest docker.metaverse.l11.com/global-good/report-tools:$GIT_HASH_SHORT
