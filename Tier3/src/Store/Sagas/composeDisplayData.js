@@ -16,6 +16,8 @@ import {
     getGeoJson,
 } from './../../Utils';
 
+import alarmsData from '../../Data/alarms.json';
+
 /**
  *  Saga responsible for formatting data for the Map / Table views
  *  @param { object } dataParam - if a dataParam is provided we can assume other params haven't changed

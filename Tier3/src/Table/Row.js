@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from "react-redux";
-// import _ from 'lodash';
+import _ from 'lodash';
 import styled from 'styled-components';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
@@ -12,12 +12,26 @@ import {
     getNMapChild
 } from './../Utils';
 
+const times = x => f => {
+    if (x > 0) {
+      f()
+      times (x - 1) (f)
+    }
+}
+const redBox = {display:'inline-block',width:2,height:2,margin: '1px 0 1px 2px',background:'#d00'};
+const greenBox = {display:'inline-block',width:2,height:2,margin: '1px 0 1px 2px',background:'#0d0'};
+
 class Row extends Component {
     constructor(props) {
         super(props);
         this.state = {
             selected: false,
+            boolLeds: [],
         };
+    }
+
+    componentDidMount() {
+        
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -25,6 +39,12 @@ class Row extends Component {
             return {nav_hover: nextProps.nav_hover};
         }
         else return null;
+    }
+
+    drawBoolLEDs() {
+        const xo = [];
+        times(30) ( () => ((_.random(0, 1)) ? xo.push(<div style={redBox}></div>) : xo.push(<div style={greenBox}></div>)));
+        this.state.boolLeds.push( <span style={{display: 'inline-block', margin: '0 0 0 7px', width: '42px', height: '20px', lineHeight: '2px'}}>{xo}</span> );
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -56,6 +76,15 @@ class Row extends Component {
             columns,
         } = this.props;
 
+        if (this.state.boolLeds.length === 0) {
+            this.props.columns.map((c, idx) => {
+                let id = c.id;
+                let value = this.props.data[id];  
+                if (!isNaN(value)) { this.drawBoolLEDs(); }
+                return 0;
+            });
+        }
+
         if (!data || !columns.length) {
             return null;
         }
@@ -72,9 +101,9 @@ class Row extends Component {
                 aria-checked={selected}
             >
 
-                {columns.map(c => {
+                {columns.map((c, idx) => {
                     let id = c.id;
-                    let value = data[id];
+                    let value = data[id];                    
 
                     return (
                         <TableCell
@@ -82,7 +111,7 @@ class Row extends Component {
                             align="center"
                         >
                             {/*<Tooltip title={id} placement="bottom-start" enterDelay={300}>*/}
-                            <StyledCell>{value}</StyledCell>
+                            <StyledCell>{value}{(!isNaN(value)) ? this.state.boolLeds[idx] : ''}</StyledCell>
                             {/*</Tooltip>*/}
                         </TableCell>
                     )

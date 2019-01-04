@@ -41,7 +41,6 @@ class Navigation extends Component {
     }
 
     handleChange = source => e => {
-        debugger;
         if (source === GGConsts.METRIC_SELECTED) {
             const value = e.target.textContent; // can't curry value by e.target.value from Tabs
             this.props.updateMetric(value);
