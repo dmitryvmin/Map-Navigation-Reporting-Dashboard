@@ -30,9 +30,15 @@ stages:
       - docker push l11gg.azurecr.io/reporting/report-tools:$GIT_HASH_SHORT
       - docker push l11gg.azurecr.io/reporting/report-tools:latest
   - name: deploy!
+    trigger:
+      branches:
+        - master 
     script:
       - ssh -i ~/.ssh/GG_SSH_KEY level11@20.36.19.106 ./do-deploy.sh
   - name: bvt test
+    trigger:
+      branches:
+        - master 
     script:
       - apk update; apk add openssh
       - ssh -i ~/.ssh/pe_id_rsa leveler@10.1.73.141 -tt "docker exec -it v8-server sh -c \"./valid8.sh --project=1 --test_plan=271 --configurations='bvt,chrome,remote_on\&65'\""
