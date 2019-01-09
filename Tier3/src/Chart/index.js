@@ -123,14 +123,8 @@ class Chart extends Component {
                         ? <BarChart
                             data={cells}
                             margin={{top: 20, right: 20, left: 20, bottom: 40}}>
-                            <XAxis
-                                dataKey={label}
-                                tick={<CustomizedTick/>}
-                                interval={0}/>
-                            {/*<YAxis/>*/}
                             <Tooltip/>
-                            {/*<ReferenceLine y={0} stroke='#000'/>*/}
-                            {/*<Brush dataKey='alarms' height={30} stroke="#dbdbdb"/>*/}
+                            <Brush dataKey='alarms' height={30} stroke="#dbdbdb"/>
                             <Bar
                                 dataKey={metric_selected}
                                 fill="#ff9900"/>

@@ -16,33 +16,6 @@ import {
     getGeoJson,
 } from './../../Utils';
 
-// const fridges = [
-//     { 
-//       "manufacturer": "Dulas",
-//       "models": [
-//         "VC150 SDD"
-//       ]
-//     },
-//     { 
-//       "manufacturer": "Dometic",
-//       "models": [
-//         "TCW40 SDD",
-//         "TCW2000 SDD"
-//       ]
-//     },
-//     { 
-//       "manufacturer": "Sun Frost",
-//       "models": [
-//         "917667"
-//       ]
-//     }, 
-//     {
-//       "manufacturer": "Sundanzer",
-//       "models": [
-//         "13930007"
-//       ]
-//     }
-// ];
 
 const getRandomFridge = () => {
     const x = _.random(0, 100);
@@ -163,51 +136,6 @@ function* composeDisplayData( dataParam ) {
     // ### Cells
     // TODO: Data sorting/filtering by DataParams will happen here...
 
-/* basis of data structure...  use this format and generate a realistic random bunch of data so system more ready for real data...
-{
-    "fridges": [
-    {
-      "id": "aff33bcb-8afa-4049-84bb-dee058b4186d"
-      "manufacturer": "Dometic",
-      "model": "TCW40 SDD",
-      "location": "VR53+WMX",
-      "metrics": {
-        "start_time": "2008-09-15T15:53:00+05:00",
-        "end_time": "2008-16-15T15:53:00+05:00",
-        "alarm_count": 24,
-        "alarm_median_day": 2, 
-        "alarm_over_seconds": 40002,
-        "alarm_under_seconds": 30042,
-        "temp_min": 1.4,
-        "temp_mean": 2.3,
-        "temp_max": 11,
-        "uptime_percent": 0.94,
-        "unknown_time_percent": 0.42,
-        "holdover_min": 2,
-        "holdover_mean": 5.12,
-        "holdover_max": 7.3
-      },
-      "temperature_data_logger": {
-        "id": "aa04ff56-085d-4c97-9a07-39d31d4d0d1f"
-        "manufacturer": "Berlinger",
-        "model": "Fridgetag 2L",
-        "serial": "AAABCE22"
-      },
-      "facility": {
-        "id": "aa04ff56-085d-4c97-9a07-39d31d4d0d1f"
-        "name": "PHC Bauchi",
-        "country": "Nigeria",
-        "location": "VR53+WM"
-        "regions": {
-          "0": "Bauchi",
-          "1": "Ningi"
-        }
-      }
-    }
-    ]
-  }
-  */
-
 
     let cells = rows.reduce((acc, cur) => {
         let name = cur.properties[childNM.code];
@@ -222,41 +150,7 @@ function* composeDisplayData( dataParam ) {
             // these cells don't respect this structure.  Will maybe have to create this 'random' data separately 
             // and amalgamate it here in a proper method.
             "id": crypto.getRandomValues(new Uint32Array(4)).join('-'),
-            "manufacturer": fridge.manufacturer,
-            "model": fridge.model,
-            "location": "VR53+WMX",  // still have to get this ? not sure what exactly this references
-            "metrics": {
-                "start_time": "2008-09-15T15:53:00+05:00",
-                "end_time": "2008-16-15T15:53:00+05:00",
-                "alarm_count": 24,
-                "alarm_median_day": 2, 
-                "alarm_over_seconds": 40002,
-                "alarm_under_seconds": 30042,
-                "temp_min": 1.4,
-                "temp_mean": 2.3,
-                "temp_max": 11,
-                "uptime_percent": 0.94,
-                "unknown_time_percent": 0.42,
-                "holdover_min": 2,
-                "holdover_mean": 5.12,
-                "holdover_max": 7.3
-              },
-              "temperature_data_logger": {
-                "id": "aa04ff56-085d-4c97-9a07-39d31d4d0d1f",
-                "manufacturer": "Berlinger",
-                "model": "Fridgetag 2L",
-                "serial": "AAABCE22"
-              },
-              "facility": {
-                "id": "aa04ff56-085d-4c97-9a07-39d31d4d0d1f",
-                "name": "PHC Bauchi",
-                "country": "Nigeria",
-                "location": "VR53+WM",   // still have to get this ? not sure what exactly this references
-                "regions": {
-                  "0": "Bauchi",
-                  "1": "Ningi"
-                }
-              }
+            "Manufacturers": fridge.manufacturer,
         });
         return acc;
     }, []);
