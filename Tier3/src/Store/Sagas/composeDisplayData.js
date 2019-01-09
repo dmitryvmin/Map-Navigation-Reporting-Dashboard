@@ -123,15 +123,15 @@ function* composeDisplayData( dataParam ) {
     columns.push(getColumn(childNM.map));
     columns.push(getColumn('Manufacturers'));
 
-    if (tier === 'COUNTRY_LEVEL') {
-        columns.push(getColumn('Country Data'));
-    }
-    if (tier === 'STATE_LEVEL') {
-        columns.push(getColumn('State Data'));
-    }
-    if (tier === 'LGA_LEVEL') {
-        columns.push(getColumn('LGA Data'));
-    }
+    // if (tier === 'COUNTRY_LEVEL') {
+    //     columns.push(getColumn('Country Data'));
+    // }
+    // if (tier === 'STATE_LEVEL') {
+    //     columns.push(getColumn('State Data'));
+    // }
+    // if (tier === 'LGA_LEVEL') {
+    //     columns.push(getColumn('LGA Data'));
+    // }
 
     // ### Cells
     // TODO: Data sorting/filtering by DataParams will happen here...
