@@ -7,6 +7,7 @@ import {StaticMap, Marker} from 'react-map-gl';
 // import {MapboxLayer} from '@deck.gl/mapbox';
 // import DeckGLOverlay from './deckgl-overlay.js';
 import DeckGL, {GeoJsonLayer} from 'deck.gl';
+import {MapboxLayer} from '@deck.gl/mapbox';
 
 import {
     navigationMap,
@@ -63,13 +64,26 @@ class Map extends Component {
         this.setState({gl});
     }
 
+    addToGL = (layers) => {
+
+        const loaded = this._map.isStyleLoaded();
+
+        if (loaded) {
+            layers.forEach(layer => {
+                let id = layer.id;
+                // https://www.mapbox.com/mapbox-gl-js/api/#map#addlayer
+                // Doesn't seem to add deck layers properly
+                // if a before arg is not provided
+                let deck = this._deck;
+
+                this._map.addLayer(new MapboxLayer({id, deck}), 'water');
+            });
+        }
+    }
+
     updateGLContext = () => {
         const {
-            tier,
-            map_ref: {
-                mapbox,
-                deck,
-            } = {}
+            tier
         } = this.props;
 
         // TODO: more quick error handling for LGA tier, pretty up
@@ -77,8 +91,8 @@ class Map extends Component {
 
             const layers = this.renderLayers(this.props, this.onLayerChange);
 
-            if (mapbox && deck && layers.length) {
-                addToGL(mapbox, deck, layers);
+            if (this._map && this._deck && layers.length) {
+                this.addToGL(layers);
             }
         }
     }
@@ -222,19 +236,14 @@ class Map extends Component {
                     controller={true}
                     onViewStateChange={this.onViewStateChange}
                     ref={(ref) => {
-                        this._deck = ref && ref.deck;  // reference to the Deck instance
+                        this._deck = ref && ref.deck  // reference to the Deck instance
                     }}
                     layers={this.renderLayers()}
                     onWebGLInitialized={this.onWebGLInitialized}
                 >
                     {gl && <StaticMap
                         ref={ref => {
-                            if (this._deck && ref) {
-                                saveMapRef({
-                                    deck: this._deck,
-                                    mapbox: ref.getMap(), // reference to the mapboxgl.Map instance
-                                });
-                            }
+                            this._map = ref && ref.getMap(); // reference to the mapboxgl.Map instance
                         }}
                         preventStyleDiffing={true}
                         reuse
@@ -270,7 +279,7 @@ const mapStateToProps = state => {
         viewState: state.mapReducer.map_viewport,
         mapStyle: state.mapReducer.map_style,
         layers: state.mapReducer.map_layers,
-        map_ref: state.mapReducer.map_ref,
+        // map_ref: state.mapReducer.map_ref,
         country_selected: state.navigationReducer.country_selected,
         state_selected: state.navigationReducer.state_selected,
         lga_selected: state.navigationReducer.lga_selected,
@@ -287,7 +296,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         setMapViewport: (map_viewport) => dispatch(setMapViewport(map_viewport)),
-        saveMapRef: (map_ref) => dispatch(saveMapRef(map_ref)),
+        // saveMapRef: (map_ref) => dispatch(saveMapRef(map_ref)),
         navHovered: (nav_hover) => dispatch({type: GGConsts.NAV_HOVER, nav_hover}),
         updateNav: (navType, navVal) => dispatch({type: GGConsts.UPDATE_NAV, [navType]: navVal}),
     }

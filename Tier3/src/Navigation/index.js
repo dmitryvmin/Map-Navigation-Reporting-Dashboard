@@ -138,7 +138,7 @@ class Navigation extends Component {
                                 const m = geo_map[r.map];
 
                                 if (m && v) {
-                                    return (<><FormControl key={`${t}-${v}`}>
+                                    return (<FormControl key={`${t}-${v}`}>
                                         <StyledSelect
                                             value={v}
                                             onChange={this.handleChange(t)}
@@ -157,7 +157,7 @@ class Navigation extends Component {
                                             })}
                                         </StyledSelect>
                                         {/*<Label>{formatLabel(t)}</Label>*/}
-                                    </FormControl></>)
+                                    </FormControl>)
                                 } else {
                                     return null;
                                 }

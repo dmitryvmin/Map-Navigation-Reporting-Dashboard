@@ -14,7 +14,7 @@ import {
 
 const times = x => f => {
     if (x > 0) {
-      f()
+      f(x)
       times (x - 1) (f)
     }
 }
@@ -43,7 +43,7 @@ class Row extends Component {
 
     drawBoolLEDs() {
         const xo = [];
-        times(30) ( () => ((_.random(0, 1)) ? xo.push(<div style={redBox}></div>) : xo.push(<div style={greenBox}></div>)));
+        times(30) ( (x) => ((_.random(0, 1)) ? xo.push(<div key={`box-${x}`} style={redBox}></div>) : xo.push(<div key={`box-${x}`} style={greenBox}></div>)));
         this.state.boolLeds.push( <span style={{display: 'inline-block', margin: '0 0 0 7px', width: '42px', height: '20px', lineHeight: '2px'}}>{xo}</span> );
     }
 
