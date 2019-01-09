@@ -26,8 +26,7 @@ export default class CityPin extends PureComponent {
             value
         } = this.props;
 
-
-        const size = Math.pow(zoom, easing('exponential')[0] * 2);
+        const size = zoom * 5;
 
         return (
             <svg
