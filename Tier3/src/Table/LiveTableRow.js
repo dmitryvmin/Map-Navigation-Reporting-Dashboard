@@ -65,8 +65,8 @@ const LiveTableRow = props => {
 	        </Tooltip>
 	      </TableCell>
 	      <TableCell style={styles.cell}>
-	        <Tooltip title={d.brand} placement="bottom-start" enterDelay={300}>
-	          <div>{d.brand}</div>
+	        <Tooltip title={d.manufacturer} placement="bottom-start" enterDelay={300}>
+	          <div>{d.manufacturer}</div>
 	        </Tooltip>
 	      </TableCell>
 	      <TableCell style={styles.cell}>
