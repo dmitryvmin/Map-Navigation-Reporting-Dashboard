@@ -26,6 +26,7 @@ stages:
       branches:
         - master
     script:
+      - apk update; apk add openssh
       - ssh -i ~/.ssh/GG_SSH_KEY level11@20.36.19.106 ./do-deploy.sh
   - name: bvt test
     trigger:
