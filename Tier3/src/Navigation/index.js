@@ -12,6 +12,7 @@ import Tab from '@material-ui/core/Tab';
 import Chip from '@material-ui/core/Chip';
 import Grid from '@material-ui/core/Grid';
 import Home from '@material-ui/icons/Home';
+import KeyboardArrowUp from '@material-ui/icons/KeyboardArrowUp';
 import IconButton from '@material-ui/core/IconButton';
 import GGConsts from '../Constants';
 
@@ -73,9 +74,28 @@ class Navigation extends Component {
         this.props.updateUploaded(this.props.selected_uploaded);
     }
 
-    goUp = () => (e) => {
+    goHome = () => (e) => {
         // get actual "source" which is country_selected, state_selected, or lga_selected
         this.props.updateNav("state_selected", "All");
+    }
+
+    goUp = () => (e) => {
+        const {
+            updateNav,
+            navigation
+        } = this.props;
+        console.log("The Navigation level:", navigation);
+        // get actual "source" which is country_selected, state_selected, or lga_selected
+        if (navigation.lga_selected === 'All' || navigation.lga_selected === false) {
+            if (navigation.state_selected === 'All' || navigation.state_selected === false) {
+                    // could need to do something here too. Hold please. :)
+            } else {
+                updateNav("state_selected", "All");
+            }
+        } else {
+            updateNav("lga_selected", "All");
+        }
+        
     }
 
     render() {
@@ -108,7 +128,7 @@ class Navigation extends Component {
                         <ColumnMenu>
                             <Header>Location:
                                 <IconButton>
-                                    <Home style={{color: 'white'}} onClick={this.goUp()}/>
+                                    <Home style={{color: 'white'}} onClick={this.goHome()}/>
                                 </IconButton>
                             </Header>
 
@@ -118,7 +138,7 @@ class Navigation extends Component {
                                 const m = geo_map[r.map];
 
                                 if (m && v) {
-                                    return (<FormControl key={`${t}-${v}`}>
+                                    return (<><FormControl key={`${t}-${v}`}>
                                         <StyledSelect
                                             value={v}
                                             onChange={this.handleChange(t)}
@@ -137,12 +157,20 @@ class Navigation extends Component {
                                             })}
                                         </StyledSelect>
                                         {/*<Label>{formatLabel(t)}</Label>*/}
-                                    </FormControl>)
+                                    </FormControl></>)
                                 } else {
                                     return null;
                                 }
 
                             })}
+                            { ((navigation.lga_selected !== 'All' && navigation.lga_selected !== false) || (navigation.state_selected !== 'All' && navigation.state_selected !== false)) ?
+                            <div style={{display: 'inline-flex',width:'20%', height:'33px', fontSize: '10px', margin: 0, padding:0}}>
+                                <IconButton>
+                                    <KeyboardArrowUp style={{color: 'white'}} onClick={this.goUp()}/>
+                                </IconButton>
+                            </div>
+                            : ''
+                            }
                         </ColumnMenu>
                     </Grid>
                     <Grid item lg={5} md={6} xs={12}>
