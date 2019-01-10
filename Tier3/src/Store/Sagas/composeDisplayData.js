@@ -151,6 +151,40 @@ function* composeDisplayData( dataParam ) {
             // and amalgamate it here in a proper method.
             "id": crypto.getRandomValues(new Uint32Array(4)).join('-'),
             "Manufacturers": fridge.manufacturer,
+            "Model": fridge.model,
+            "location": "VR53+WMX",  // still have to get this, give lat / long to google system... get this code.
+            "metrics": {
+                "start_time": "2008-09-15T15:53:00+05:00",
+                "end_time": "2008-16-15T15:53:00+05:00",
+                "alarm_count": 24,
+                "alarm_median_day": 2, 
+                "alarm_over_seconds": 40002,
+                "alarm_under_seconds": 30042,
+                "temp_min": 1.4,
+                "temp_mean": 2.3,
+                "temp_max": 11,
+                "uptime_percent": 0.94,
+                "unknown_time_percent": 0.42,
+                "holdover_min": 2,
+                "holdover_mean": 5.12,
+                "holdover_max": 7.3
+              },
+              "temperature_data_logger": {
+                "id": "aa04ff56-085d-4c97-9a07-39d31d4d0d1f",
+                "manufacturer": "Berlinger",
+                "model": "Fridgetag 2L",
+                "serial": "AAABCE22"
+              },
+              "facility": {
+                "id": "aa04ff56-085d-4c97-9a07-39d31d4d0d1f",
+                "name": "PHC Bauchi",
+                "country": "Nigeria",
+                "location": "VR53+WM",   // still have to get this ? not sure what exactly this references
+                "regions": {
+                  "0": "Bauchi",
+                  "1": "Ningi"
+                }
+              }
         });
         return acc;
     }, []);
