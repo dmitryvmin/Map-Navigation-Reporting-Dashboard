@@ -3,8 +3,8 @@ import GGConsts from '../../Constants';
 const initState = {
     device_type_selected: GGConsts.DEVICE_TYPE_ALL,
     device_type_updating: false,
-    selected_connected: false,
-    selected_uploaded: false,
+    selected_connected: true,
+    selected_uploaded: true,
 }
 
 function deviceReducer(state = initState, action) {
