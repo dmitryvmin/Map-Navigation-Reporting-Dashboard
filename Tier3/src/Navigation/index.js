@@ -67,11 +67,20 @@ class Navigation extends Component {
     }
 
     toggleFilterConnected = () => (e) => {
-        this.props.updateConnected(this.props.selected_connected);
+        
+        if ( this.props.selected_connected && !this.props.selected_uploaded ) {
+            return;
+        } else {
+            this.props.updateConnected(this.props.selected_connected);
+        }
     }
 
     toggleFilterUploaded = () => (e) => {
-        this.props.updateUploaded(this.props.selected_uploaded);
+        if ( !this.props.selected_connected && this.props.selected_uploaded ) {
+            return;
+        } else {
+            this.props.updateUploaded(this.props.selected_uploaded);
+        }
     }
 
     goHome = () => (e) => {
@@ -205,6 +214,7 @@ class Navigation extends Component {
                                 label={_.last(GGConsts.DEVICE_TYPE_UPLOADED.split('_'))}
                             />
                         </ChipContainer>
+
                     </Grid>
                     <Grid item lg={2} md={6} xs={6}>
                         <ColumnMenu>
