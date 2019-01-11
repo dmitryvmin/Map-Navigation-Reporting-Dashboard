@@ -16,6 +16,24 @@ export const getCountryObjByName = (data, name) => {
     return _.first(data.filter(country => country.name === name));
 }
 
+export const getRandomFridge = () => {
+    const x = _.random(0, 100);
+    switch (true) {
+        case (x < 30):
+            return {manufacturer: "Dulas", model: "VC150 SDD"};
+        case (x < 60):
+            return {manufacturer: "Dometic", model: "TCW40 SDD"};
+        case (x < 90):
+            return {manufacturer: "Dometic", model: "TCW2000 SDD"};
+        case (x < 95):
+            return {manufacturer: "Sun Frost", model: "917667"};
+        case (x  < 100):
+            return {manufacturer: "Sundanzer", model: "13930007"}
+        default:
+            return {manufacturer: "Dometic", model: "TCW40 SDD"};
+    }
+}
+
 // getFilterKey and getChildFilterKey are for working mapbox shapefiles
 export const getFilterKey = type => {
     switch (type) {

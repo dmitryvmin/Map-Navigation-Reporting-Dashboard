@@ -26,7 +26,7 @@ export default class CityPin extends PureComponent {
             value
         } = this.props;
 
-        const size = zoom * 5;
+        const size = (Math.pow(zoom, 1.85));
 
         return (
             <svg
@@ -50,7 +50,7 @@ export default class CityPin extends PureComponent {
                             x="50%"
                             y="50%"
                             textAnchor="middle"
-                            dy="0.3em"
+                            dy="0.25em"
                             className="mapLabel"
                         >
                             {value}
@@ -98,7 +98,7 @@ export default class CityPin extends PureComponent {
                     textAnchor="middle"
                     y={chart ? 120 : 130}
                     x="50"
-                    fontSize={'1.5em'}
+                    fontSize={'20'}
                     fill={'black'}>{name}</text>
             </svg>
 

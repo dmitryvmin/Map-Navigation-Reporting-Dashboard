@@ -110,7 +110,10 @@ class Map extends Component {
 
         // ###
         // TODO: optimize - tag each geojson polygon with a `tier - location` ID for fast look up
-        const {tier} = this.props;
+        const {
+            tier,
+            hover
+        } = this.props;
 
         // TODO: ignore events at LGA tier ...quick fix for now
         if (tier === 'LGA_LEVEL') {
@@ -137,7 +140,9 @@ class Map extends Component {
 
             if (ui === 'hover') {
                 // TODO: might need mouseOut/mouseLeave support for when user is not hovering over the map
-                this.props.navHovered({value, x, y});
+                if (!hover.value || hover.value !== value) {
+                    this.props.navHovered({value, x, y});
+                }
             }
             else if (ui === 'click') {
                 this.props.updateNav(type, value);
@@ -220,7 +225,7 @@ class Map extends Component {
     render() {
         const {
             viewState,
-            // mapStyle,
+            mapStyle,
             markers,
             saveMapRef,
             // map_ref,
@@ -245,18 +250,21 @@ class Map extends Component {
                         ref={ref => {
                             this._map = ref && ref.getMap(); // reference to the mapboxgl.Map instance
                         }}
-                        preventStyleDiffing={true}
+                        // preventStyleDiffing={true}
                         reuse
                         gl={gl}
-                        mapStyle="mapbox://styles/mapbox/light-v9" // mapStyle={mapStyle}
+                        // mapStyle="mapbox://styles/mapbox/light-v9"
+                        mapStyle={mapStyle}
                         onLoad={this.onMapLoad}
-                        mapboxApiAccessToken={GGConsts.MAPBOX_TOKEN}>
+                        mapboxApiAccessToken={GGConsts.MAPBOX_TOKEN}
+                    >
                         {!_.isEmpty(markers) && markers.map((m, i) =>
                             <Marker
                                 gl={gl}
                                 key={`marker-${i}`}
                                 longitude={m.longitude}
-                                latitude={m.latitude}>
+                                latitude={m.latitude}
+                            >
                                 <CityPin
                                     value={m.value}
                                     chart={m.chart}

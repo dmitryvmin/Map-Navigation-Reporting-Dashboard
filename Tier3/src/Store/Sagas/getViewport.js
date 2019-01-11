@@ -18,7 +18,7 @@ import {viewportSelector} from './../Selectors';
  * @param
  */
 function* getViewport(tier, navigation) {
-    const zoom = getZoom(tier);
+    const zoom = yield getZoom(tier);
     const location = getLocation(navigation);
     const currentVP = yield select(viewportSelector, {key: 'map_viewport'});
 

@@ -23,6 +23,8 @@ const metricSelector = state => state.metricReducer.metric_selected;
 
 const displaySelector = state => state.displayReducer.display_data;
 
+const markersSelector = state => state.markersReducer.markers;
+
 export {
     navSelector,
     tierSelector,
@@ -33,4 +35,5 @@ export {
     uriSelector,
     metricSelector,
     displaySelector,
+    markersSelector,
 }

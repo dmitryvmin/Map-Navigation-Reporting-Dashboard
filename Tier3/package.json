@@ -6,6 +6,7 @@
     "@deck.gl/mapbox": "^6.3.2",
     "@material-ui/core": "^3.6.0",
     "@material-ui/icons": "^3.0.1",
+    "@turf/bbox": "^6.0.1",
     "@turf/centroid": "^6.0.2",
     "@turf/random": "^6.0.2",
     "@turf/turf": "^5.1.6",

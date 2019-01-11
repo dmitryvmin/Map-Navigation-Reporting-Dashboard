@@ -48,21 +48,6 @@ class RTTable extends React.Component {
         this.intervalId = null;
     }
 
-    // async componentDidMount() {
-    //     this.loadData();
-    //     if ( !this.state.selectedDevice ) {
-    //         this.intervalId = setInterval( this.loadData, 10000 );
-    //     }
-    // }
-    //
-    // componentWillUnmount() {
-    //     clearInterval(this.intervalId);
-    //     this.selectedDevice = null;
-    // }
-    //
-    // loadData = async () => {
-    // }
-
     mapPropsToTableColumns = (data) => {
         const device_info = [];
 
@@ -115,7 +100,6 @@ class RTTable extends React.Component {
     render() {
         const {
             nav_tier,
-            // navigation,
             display_data,
         } = this.props;
 
@@ -158,6 +142,7 @@ class RTTable extends React.Component {
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((d, i) =>
                                     <Row
+                                        tier={nav_tier}
                                         data={d}
                                         key={`${d}-${i}`}
                                         columns={columns}

@@ -1,7 +1,5 @@
 import _ from 'lodash';
-import {
-    select
-} from 'redux-saga/effects';
+import {select} from 'redux-saga/effects';
 
 import {
     sensorsSelector,
@@ -14,27 +12,8 @@ import {
     getNMap,
     getNMapChild,
     getGeoJson,
+    getRandomFridge,
 } from './../../Utils';
-
-
-const getRandomFridge = () => {
-    const x = _.random(0, 100);
-    switch (true) {
-        case (x < 30):
-            return {manufacturer: "Dulas", model: "VC150 SDD"};
-        case (x < 60):
-            return {manufacturer: "Dometic", model: "TCW40 SDD"};
-        case (x < 90):
-            return {manufacturer: "Dometic", model: "TCW2000 SDD"};
-        case (x < 95):
-            return {manufacturer: "Sun Frost", model: "917667"};
-        case (x  < 100):
-            return {manufacturer: "Sundanzer", model: "13930007"}
-        default:
-            return {manufacturer: "Dometic", model: "TCW40 SDD"};
-    }
-}
-
 // import alarmsData from '../../Data/alarms.json';
 
 /**
@@ -50,56 +29,41 @@ function* composeDisplayData( dataParam ) {
     // 1. Location
     const navigation = yield select(navSelector);
     const tier = yield select(tierSelector);
+    const curNM = getNMap(tier, 'tier'); // current navigation map
+    const curLocation = navigation[curNM.type];
+    const childNM = getNMapChild(tier, 'tier'); // child navigation map
 
     // 2. Metric
     const metric = yield select(metricSelector);
 
     // 3. Filter - Device Type
-    // 4. Filter - Device Manufacturer
+    // 4. Filter - Device MFC
     // 5. Timeframe
 
     if (!sensors || !navigation || !tier || !metric) {
         return;
     }
 
-    const curNM = getNMap(tier, 'tier'); // current navigation map
-    const childNM = getNMapChild(tier, 'tier'); // child navigation map
+    let filterData;
 
+    // 1. Filter sensors by location
+    filterData = sensors.filter(f => f.facility.regions[curNM.index] === curLocation);
+
+    // 2. Filter by device type
+    // 3. Filter by MFC
+    // 4. Filter by Timeframe
+
+
+    // ### Rows
+    // True? rows don't necessarily depend on the sensors data - we still want to display all the possible regions even if there are no sensors therein
     let rows;
 
-    // Temporary
     if (childNM.type === 'facility_selected') {
 
-        // TODO: this is random data..
-        rows = [
-
-            {
-                geometry: {type: "MultiPolygon", coordinates: Array(1)},
-                properties: {
-                    admin1Name: "Abia",
-                    admin1Pcod: "NG001",
-                    admin1RefN: "Abia",
-                    admin1AltN: null,
-                    admin1Al_1: null
-                },
-                type: "Feature"
-            },
-            {
-                geometry: {type: "MultiPolygon", coordinates: Array(1)},
-                properties: {
-                    admin1Name: "Abia",
-                    admin1Pcod: "NG001",
-                    admin1RefN: "Abia",
-                    admin1AltN: null,
-                    admin1Al_1: null
-                },
-                type: "Feature"
-            }
-        ]
+        rows = filterData;
 
     } else {
 
-        // ### Rows
         let data = getGeoJson(childNM.type);
 
         if (curNM.type !== 'All') {
@@ -108,6 +72,7 @@ function* composeDisplayData( dataParam ) {
     }
 
     // ### Columns
+    // Columnds depend on the Tier and the Metric
     let columns = [];
 
     const getColumn = (id) => {
@@ -119,31 +84,40 @@ function* composeDisplayData( dataParam ) {
         }
     };
 
-    columns.push(getColumn(metric));
     columns.push(getColumn(childNM.map));
+    columns.push(getColumn(metric));
     columns.push(getColumn('Manufacturers'));
 
-    // if (tier === 'COUNTRY_LEVEL') {
-    //     columns.push(getColumn('Country Data'));
-    // }
-    // if (tier === 'STATE_LEVEL') {
+    if (tier === 'COUNTRY_LEVEL') {
+        columns.push(getColumn('Total Devices'));
+    }
+    if (tier === 'STATE_LEVEL') {
+        columns.push(getColumn('Total Devices'));
+    }
+    // if (tier === 'LGA_LEVEL') {
     //     columns.push(getColumn('State Data'));
     // }
-    // if (tier === 'LGA_LEVEL') {
-    //     columns.push(getColumn('LGA Data'));
+    // if (tier === 'FACILITY_LEVEL') {
+    //     columns.push(getColumn('State Data'));
     // }
 
+
+    // debugger;
     // ### Cells
-    // TODO: Data sorting/filtering by DataParams will happen here...
-
-
     let cells = rows.reduce((acc, cur) => {
+
+        // TODO: reduce children sensors...
+
         let name = cur.properties[childNM.code];
         const fridge = getRandomFridge();
         acc.push({
             [childNM.map]: name,
             // For testing:
             'Alarms': _.random(0, 30), // original Random data :)
+
+            // TODO: temp...
+            'AlarmsByDay': Array.from({length: 40}, () => Math.floor(Math.random() * 2)),
+
             'Holdover': _.random(0, 10), // original Random data :)
             'chart': Math.random() >= 0.7, // original Random boolean
             // start of new Random but more real data (structure wise)
@@ -155,7 +129,7 @@ function* composeDisplayData( dataParam ) {
         return acc;
     }, []);
 
-    return {columns, rows, cells};
+    return {columns, cells};
 
 }
 

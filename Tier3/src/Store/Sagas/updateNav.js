@@ -48,6 +48,7 @@ function* updateNav(action) {
     // ## Update Markers
     const markers = yield call(getMarkers);
     yield put({type: GGConsts.MARKERS, markers});
+    // yield put({type: GGConsts.MARKERS, markers: {[nav_tier]: {[navValue]: markers}} });
 
     // Update Map style
     // const map_style = updateMapboxStyle(nav_tier, navigation);

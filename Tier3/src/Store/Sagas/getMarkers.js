@@ -33,7 +33,6 @@ function* getMarkers()  {
 
     const markers = [];
 
-    // TODO: use DisplayData state info here...
     data.cells.forEach(c => {
         const marker = {};
         const name = c[childNM.map];

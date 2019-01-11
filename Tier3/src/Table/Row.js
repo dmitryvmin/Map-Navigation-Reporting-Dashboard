@@ -4,68 +4,58 @@ import _ from 'lodash';
 import styled from 'styled-components';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
-// import Tooltip from '@material-ui/core/Tooltip';
-// import {Tooltip as Tippy} from 'react-tippy';
-// import ProgressBar from "virtual-progress-bar";
-import {
-    // navigationMap,
-    getNMapChild
-} from './../Utils';
+import {getNMapChild} from './../Utils';
 
-const times = x => f => {
-    if (x > 0) {
-      f(x)
-      times (x - 1) (f)
-    }
-}
-const redBox = {display:'inline-block',width:2,height:2,margin: '1px 0 1px 2px',background:'#d00'};
-const greenBox = {display:'inline-block',width:2,height:2,margin: '1px 0 1px 2px',background:'#0d0'};
+const drawBoolLEDs = (days, id) => (
+    <AlarmChart>
+        {days.map((d, i) => <AlarmCell key={`alarmchart-${id}-${d}-${i}`} alarm={d}/>)}
+    </AlarmChart>
+)
 
 class Row extends Component {
     constructor(props) {
         super(props);
         this.state = {
             selected: false,
-            boolLeds: [],
+            nav_hover: this.getHover(),
         };
     }
 
-    componentDidMount() {
-        
-    }
-
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.nav_hover !== prevState.nav_hover) {
-            return {nav_hover: nextProps.nav_hover};
-        }
-        else return null;
-    }
-
-    drawBoolLEDs() {
-        const xo = [];
-        times(30) ( (x) => ((_.random(0, 1)) ? xo.push(<div key={`box-${x}`} style={redBox}></div>) : xo.push(<div key={`box-${x}`} style={greenBox}></div>)));
-        this.state.boolLeds.push( <span style={{display: 'inline-block', margin: '0 0 0 7px', width: '42px', height: '20px', lineHeight: '2px'}}>{xo}</span> );
-    }
-
-    componentDidUpdate(prevProps, prevState) {
+    getHover = () => {
         const {
-            nav_tier,
+            tier,
             data
         } = this.props;
 
-        const {
-            nav_hover,
-            selected
-        } = this.state;
+        const childNav = getNMapChild(tier, 'tier');
+        const hover = data[childNav.map];
 
-        const childNav = getNMapChild(nav_tier, 'tier');
+        return hover;
+    }
 
-        if (data[childNav.map] === nav_hover && nav_hover.value && !selected) {
-            this.setState({selected: true});
-
-        } else if (data[childNav.map] !== nav_hover && nav_hover.value && selected) {
-            this.setState({selected: false});
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (
+            nextProps.nav_hover &&
+            nextProps.nav_hover.value &&
+            nextProps.nav_hover.value === prevState.nav_hover
+        ) {
+            return {
+                selected: true
+            };
+        } else {
+            return {
+                selected: false
+            };
         }
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        let shouldUpdate = (
+            (this.state.nav_hover === nextProps.nav_hover.value && !this.state.selected) ||
+            (this.state.nav_hover !== nextProps.nav_hover.value && this.state.selected)
+        );
+
+        return shouldUpdate;
     }
 
     render() {
@@ -75,15 +65,6 @@ class Row extends Component {
             handleRowHover,
             columns,
         } = this.props;
-
-        if (this.state.boolLeds.length === 0) {
-            this.props.columns.map((c, idx) => {
-                let id = c.id;
-                let value = this.props.data[id];  
-                if (!isNaN(value)) { this.drawBoolLEDs(); }
-                return 0;
-            });
-        }
 
         if (!data || !columns.length) {
             return null;
@@ -101,21 +82,22 @@ class Row extends Component {
                 aria-checked={selected}
             >
 
-                {columns.map((c, idx) => {
+                {columns.map(c => {
                     let id = c.id;
-                    let value = data[id];                    
+                    let value = data[id];
 
                     return (
                         <TableCell
                             key={`cell-${id}-${value}`}
                             align="center"
                         >
-                            {/*<Tooltip title={id} placement="bottom-start" enterDelay={300}>*/}
-                            <StyledCell>{value}{(!isNaN(value)) ? this.state.boolLeds[idx] : ''}</StyledCell>
-                            {/*</Tooltip>*/}
+                            <StyledCell>
+                                {value}
+                                {c.id === 'Alarms' && drawBoolLEDs(data.AlarmsByDay, id)}
+                            </StyledCell>
                         </TableCell>
-                    )
-                })}
+                    )}
+                )}
 
             </TableRow>
         )
@@ -124,21 +106,26 @@ class Row extends Component {
 
 const mapStateToProps = state => {
     return {
-        nav_tier: state.navigationReducer.nav_tier,
         nav_hover: state.navigationReducer.nav_hover,
     }
 }
 
-// const mapDispatchToProps = dispatch => {
-//     return {
-//         setMapViewport: (map_viewport) => dispatch(setMapViewport(map_viewport)),
-//         navigateTo: (navState) => dispatch({ type: GGConsts.UPDATE_NAV, navState }),
-//         mapClicked: (prop) => dispatch(mapClicked(prop)),
-//     }
-// }
-
 const StyledCell = styled.div`
     text-align: center; 
+`;
+const AlarmChart = styled.div`
+     margin: 0 0 0 7px;
+     width: 52px;
+     height: 20px;
+     line-height: 2px;
+     float: right; 
+`;
+const AlarmCell = styled.div`
+    display: inline-block;
+    width: 3px;
+    height: 3px
+    margin: 1px 0 1px 2px
+    background-color: ${props => props.alarm ? '#d00' : '#0d0'}
 `;
 
 export default connect(mapStateToProps, null)(Row);

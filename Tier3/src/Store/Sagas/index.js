@@ -5,11 +5,13 @@ import {
     takeLatest,
 } from 'redux-saga/effects';
 
+import composeDisplayData from './composeDisplayData';
 import updateNav from './updateNav';
 import getGeo from './getGeo';
 import updateHover from './updateHover';
 import updateMetric from './updateMetric';
 import loadSensors from './loadSensors';
+import loadFake from './loadFake';
 import updateTimeframe from './updateTimeframe';
 import updateDevice from './updateDevice';
 import updateMfc from './updateMfc';
@@ -45,7 +47,12 @@ export function* startupSaga() {
     yield updateNav({'country_selected': 'Nigeria'});
 
     // Sensor data is fetched, save to store, formatted for visualization views
-    yield loadSensors();
+    //yield loadSensors();
+
+    // Load fake data....
+    yield loadFake();
+
+    yield composeDisplayData();
 }
 
 // For any side-effects we want to add to the API calls
