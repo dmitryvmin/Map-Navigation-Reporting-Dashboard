@@ -16,9 +16,19 @@ import {
 } from './../../Utils';
 // import alarmsData from '../../Data/alarms.json';
 
-const filterSensors = (sensors, index, location) => {
+const filterSensorsByLoc = (sensors, index, location) => {
     const filtered = [...sensors].filter(f => f.facility.regions[index] === location);
+
     return filtered;
+}
+
+const reduceSensorsByFilter = (sensors, metric) => {
+    const reduced = sensors.reduce((a, c) => {
+        a.push(_.get(c, metric));
+        return a;
+    }, []);
+
+    return reduced;
 }
 
 /**
@@ -52,7 +62,7 @@ function* composeDisplayData( dataParam ) {
     let filterData;
 
     // 1. Filter sensors by location
-    // filterData = filterSensors(sensors, curNM.index, curLocation);
+    // filterData = filterSensorsByLoc(sensors, curNM.index, curLocation);
     // 2. Filter by device type
     // 3. Filter by MFC
     // 4. Filter by Timeframe
@@ -63,7 +73,7 @@ function* composeDisplayData( dataParam ) {
 
     if (childNM.type === 'facility_selected') {
 
-        rows = filterSensors(sensors, curNM.index, curLocation);
+        rows = filterSensorsByLoc(sensors, curNM.index, curLocation);
 
     } else {
 
@@ -106,34 +116,56 @@ function* composeDisplayData( dataParam ) {
     let cells = rows.reduce((acc, cur) => {
 
         // TODO: reduce children sensors...
-        const location = cur.properties[childNM.code];
-        const sensorsFiltered = filterSensors(sensors, childNM.index, location);
-        const sensorsReduced = sensorsFiltered.length ? sensorsFiltered.reduce((a,c) => {
-            a.push(c.metrics.alarm_count);
-            return a;
-        }, []) : 0;
+        let alarms;
+        let holdover;
+        let regionType;
+        let regionName;
+        let fridge = getRandomFridge();
+        let location;
 
-        console.log('@@sensorsFiltered',_.first(sensorsReduced));
+        if (tier !== 'LGA_LEVEL') {
 
-        let name = cur.properties[childNM.code];
-        const fridge = getRandomFridge();
+            location = cur.properties[childNM.code];
+            const sensorsFiltered = filterSensorsByLoc(sensors, childNM.index, location);
+
+            if (sensorsFiltered.length) {
+
+                alarms = reduceSensorsByFilter(sensorsFiltered, 'metrics.alarm_count');
+                holdover = reduceSensorsByFilter(sensorsFiltered, 'metrics.holdover_mean');
+
+            } else {
+                alarms = '-';
+                holdover = '-';
+            }
+
+            regionType = childNM.map;
+            regionName = cur.properties[childNM.code];
+
+        } else {
+
+            regionType = 'facilities';
+            regionName = cur.facility.name;
+            location = cur.location;
+
+        }
+
         acc.push({
-            [childNM.map]: name,
-
-            'Alarms': sensorsReduced,
-
+            [regionType]: regionName,
+            'Alarms': alarms,
             // TODO: temp... will pull from sensors endpoint once timeline buckets are added
             'AlarmsByDay': Array.from({length: 40}, () => Math.floor(Math.random() * 2)),
-
-            'Holdover': _.random(0, 10), // original Random data :)
-            'chart': sensorsReduced,
-            "id": crypto.getRandomValues(new Uint32Array(4)).join('-'),
-            "Manufacturers": fridge.manufacturer,
+            'Holdover': holdover,
+            'id': crypto.getRandomValues(new Uint32Array(4)).join('-'),
+            'Manufacturers': fridge.manufacturer,
+            'chart': (alarms !== '-'),
+            'location': location,
         });
+
         return acc;
+
     }, []);
 
-    return {columns, cells};
+    return {columns, cells, rows};
 
 }
 
