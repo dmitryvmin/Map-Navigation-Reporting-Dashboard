@@ -16,6 +16,11 @@ import {
 } from './../../Utils';
 // import alarmsData from '../../Data/alarms.json';
 
+const filterSensors = (sensors, index, location) => {
+    const filtered = [...sensors].filter(f => f.facility.regions[index] === location);
+    return filtered;
+}
+
 /**
  *  Saga responsible for formatting data for the Map / Table views
  *  @param { object } dataParam - if a dataParam is provided we can assume other params haven't changed
@@ -47,12 +52,10 @@ function* composeDisplayData( dataParam ) {
     let filterData;
 
     // 1. Filter sensors by location
-    filterData = sensors.filter(f => f.facility.regions[curNM.index] === curLocation);
-
+    // filterData = filterSensors(sensors, curNM.index, curLocation);
     // 2. Filter by device type
     // 3. Filter by MFC
     // 4. Filter by Timeframe
-
 
     // ### Rows
     // True? rows don't necessarily depend on the sensors data - we still want to display all the possible regions even if there are no sensors therein
@@ -60,7 +63,7 @@ function* composeDisplayData( dataParam ) {
 
     if (childNM.type === 'facility_selected') {
 
-        rows = filterData;
+        rows = filterSensors(sensors, curNM.index, curLocation);
 
     } else {
 
@@ -72,7 +75,6 @@ function* composeDisplayData( dataParam ) {
     }
 
     // ### Columns
-    // Columnds depend on the Tier and the Metric
     let columns = [];
 
     const getColumn = (id) => {
@@ -84,42 +86,47 @@ function* composeDisplayData( dataParam ) {
         }
     };
 
-    columns.push(getColumn(childNM.map));
     columns.push(getColumn(metric));
     columns.push(getColumn('Manufacturers'));
 
     if (tier === 'COUNTRY_LEVEL') {
+        columns.push(getColumn(childNM.map));
         columns.push(getColumn('Total Devices'));
     }
     if (tier === 'STATE_LEVEL') {
+        columns.push(getColumn(childNM.map));
         columns.push(getColumn('Total Devices'));
     }
-    // if (tier === 'LGA_LEVEL') {
-    //     columns.push(getColumn('State Data'));
-    // }
-    // if (tier === 'FACILITY_LEVEL') {
-    //     columns.push(getColumn('State Data'));
-    // }
+    if (tier === 'LGA_LEVEL') {
+        columns.push(getColumn(childNM.map));
+        columns.push(getColumn('State Data'));
+    }
 
-
-    // debugger;
     // ### Cells
     let cells = rows.reduce((acc, cur) => {
 
         // TODO: reduce children sensors...
+        const location = cur.properties[childNM.code];
+        const sensorsFiltered = filterSensors(sensors, childNM.index, location);
+        const sensorsReduced = sensorsFiltered.length ? sensorsFiltered.reduce((a,c) => {
+            a.push(c.metrics.alarm_count);
+            return a;
+        }, []) : 0;
+
+        console.log('@@sensorsFiltered',_.first(sensorsReduced));
 
         let name = cur.properties[childNM.code];
         const fridge = getRandomFridge();
         acc.push({
             [childNM.map]: name,
 
-            'Alarms': _.random(0, 30), // original Random data :)
+            'Alarms': sensorsReduced,
 
             // TODO: temp... will pull from sensors endpoint once timeline buckets are added
             'AlarmsByDay': Array.from({length: 40}, () => Math.floor(Math.random() * 2)),
 
             'Holdover': _.random(0, 10), // original Random data :)
-            'chart': Math.random() >= 0.7, // original Random boolean
+            'chart': sensorsReduced,
             "id": crypto.getRandomValues(new Uint32Array(4)).join('-'),
             "Manufacturers": fridge.manufacturer,
         });

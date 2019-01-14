@@ -156,7 +156,8 @@ class Navigation extends Component {
                                                 id={`${m}-native-helper`}/>}
                                         >
                                             {m.map((n, i) => {
-                                                const name = n.properties[r.code];
+                                                // if facility selected - no code is used
+                                                const name = r.code ? n.properties[r.code] : n;
                                                 return (
                                                     <Option
                                                         key={`nav-${name}-${i}`}

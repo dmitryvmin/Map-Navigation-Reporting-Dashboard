@@ -83,7 +83,7 @@ class Chart extends Component {
 
         const {chartType} = this.state;
 
-        let label = getNMapChild(nav_tier, 'tier').map;
+        // const label = (nav_tier !== 'FACILITY_LEVEL') ? getNMapChild(nav_tier, 'tier').map : null;
 
         return (
             <React.Fragment>

@@ -58,7 +58,7 @@ function getGeo(type, selected = null) {
             return data;
         }
         case 'facility_selected': {
-            return [{properties: {admin3Name: 'facility1'}}];
+            return ['All', 'facility A', 'facility B', 'facility C'];
         }
         default: {
             return null;
