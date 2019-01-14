@@ -96,7 +96,7 @@ class Row extends Component {
                         >
                             <StyledCell>
                                 {
-                                    c.id === 'Alarms'
+                                    (c.id === 'Alarms' && data.AlarmsByDay !== '-')
                                     ? drawBoolLEDs(value, data.AlarmsByDay, id)
                                     : value
                                 }

@@ -96,20 +96,28 @@ function* composeDisplayData( dataParam ) {
         }
     };
 
-    columns.push(getColumn(metric));
-    columns.push(getColumn('Manufacturers'));
-
     if (tier === 'COUNTRY_LEVEL') {
         columns.push(getColumn(childNM.map));
+        columns.push(getColumn(metric));
+        columns.push(getColumn('Manufacturers'));
         columns.push(getColumn('Total Devices'));
     }
-    if (tier === 'STATE_LEVEL') {
+    else if (tier === 'STATE_LEVEL') {
         columns.push(getColumn(childNM.map));
+        columns.push(getColumn(metric));
+        columns.push(getColumn('Manufacturers'));
         columns.push(getColumn('Total Devices'));
     }
-    if (tier === 'LGA_LEVEL') {
+    else if (tier === 'LGA_LEVEL') {
         columns.push(getColumn(childNM.map));
+        columns.push(getColumn(metric));
+        columns.push(getColumn('Manufacturers'));
         columns.push(getColumn('State Data'));
+    }
+    else if (tier === 'FACILITY_LEVEL') {
+        columns.push(getColumn(metric));
+        columns.push(getColumn('Manufacturers'));
+        columns.push(getColumn('Facility Data'));
     }
 
     // ### Cells
@@ -151,9 +159,9 @@ function* composeDisplayData( dataParam ) {
 
         acc.push({
             [regionType]: regionName,
-            'Alarms': alarms,
+            'Alarms': _.first(alarms),
             // TODO: temp... will pull from sensors endpoint once timeline buckets are added
-            'AlarmsByDay': Array.from({length: 40}, () => Math.floor(Math.random() * 2)),
+            'AlarmsByDay': (alarms !== '-') ? Array.from({length: 40}, () => Math.floor(Math.random() * 2)) : '-',
             'Holdover': holdover,
             'id': crypto.getRandomValues(new Uint32Array(4)).join('-'),
             'Manufacturers': fridge.manufacturer,

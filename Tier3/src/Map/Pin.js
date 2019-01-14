@@ -98,7 +98,7 @@ export default class CityPin extends PureComponent {
                     textAnchor="middle"
                     y={chart ? 120 : 130}
                     x="50"
-                    fontSize={'20'}
+                    fontSize={'18'}
                     fill={'black'}>{name}</text>
             </svg>
 

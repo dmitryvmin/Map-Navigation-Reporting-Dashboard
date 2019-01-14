@@ -12,16 +12,15 @@ const styles = {
         width: '100%',
         display: 'flex',
         justifyContent: 'space-between',
-        paddingTop: '14px',
-        paddingBottom: '14px',
         backgroundColor: 'white',
+        margin: '0.5em 0'
     },
     avatarFlag: {
-        margin: '12px',
+        margin: '0 1em 0 2em',
         objectFit: 'cover'
     },
     avatarUser: {
-        margin: '12px',
+        margin: '0 2em',
     },
     titleArea: {
         fontWeight: '400',
@@ -59,7 +58,7 @@ export default class TopHead extends Component {
                         style={styles.avatarFlag}
                         alt="flag icon"
                     />
-                    Master Reporting Tool
+                    <span>Nigeria Reporting Tool</span>
                 </div>
                 <div style={styles.userArea}>
                     <Avatar style={styles.avatarUser}>

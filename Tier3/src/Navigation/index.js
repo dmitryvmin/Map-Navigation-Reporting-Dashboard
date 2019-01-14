@@ -6,20 +6,20 @@ import {withStyles} from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
 import NativeSelect from '@material-ui/core/NativeSelect';
 import Input from '@material-ui/core/Input';
-// import FormHelperText from '@material-ui/core/FormHelperText';
+import FormHelperText from '@material-ui/core/FormHelperText';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Chip from '@material-ui/core/Chip';
 import Grid from '@material-ui/core/Grid';
 import Home from '@material-ui/icons/Home';
-import KeyboardArrowUp from '@material-ui/icons/KeyboardArrowUp';
+import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import IconButton from '@material-ui/core/IconButton';
 import GGConsts from '../Constants';
 
 import {
     navigationMap,
     // getFromNavMap,
-    // formatLabel
+    formatLabel
 } from './../Utils';
 
 const config = {
@@ -133,57 +133,67 @@ class Navigation extends Component {
                 <Grid
                     container
                     spacing={0}>
-                    <Grid item lg={2} md={6} xs={12}>
+                    <Grid item lg={3} md={6} xs={12}>
                         <ColumnMenu>
-                            <Header>Location:
+                            <Header>Location:</Header>
+
+                            <LocContainer>
                                 <IconButton>
-                                    <Home style={{color: 'white'}} onClick={this.goHome()}/>
+                                    <HomeStyled onClick={this.goHome()}/>
                                 </IconButton>
-                            </Header>
 
-                            {Object.entries(navigation).map(nav => {
-                                const [t, v] = nav;
-                                const r = _.first(navigationMap.filter(m => m.type === t));
-                                const m = geo_map[r.map];
-
-                                if (m && v) {
-                                    return (<FormControl key={`${t}-${v}`}>
-                                        <StyledSelect
-                                            value={v}
-                                            onChange={this.handleChange(t)}
-                                            input={<StyledIn
-                                                name={`${m}`}
-                                                id={`${m}-native-helper`}/>}
-                                        >
-                                            {m.map((n, i) => {
-                                                // if facility selected - no code is used
-                                                const name = r.code ? n.properties[r.code] : n;
-                                                return (
-                                                    <Option
-                                                        key={`nav-${name}-${i}`}
-                                                        value={name}>{name}
-                                                    </Option>
-                                                )
-                                            })}
-                                        </StyledSelect>
-                                        {/*<Label>{formatLabel(t)}</Label>*/}
-                                    </FormControl>)
-                                } else {
-                                    return null;
+                                { ((navigation.lga_selected !== 'All' && navigation.lga_selected !== false) || (navigation.state_selected !== 'All' && navigation.state_selected !== false)) ?
+                                    <Back>
+                                        <IconButton>
+                                            <KeyboardArrowLeft style={{color: 'white'}} onClick={this.goUp()}/>
+                                        </IconButton>
+                                    </Back>
+                                    : ''
                                 }
 
-                            })}
-                            { ((navigation.lga_selected !== 'All' && navigation.lga_selected !== false) || (navigation.state_selected !== 'All' && navigation.state_selected !== false)) ?
-                            <div style={{display: 'inline-flex',width:'20%', height:'33px', fontSize: '10px', margin: 0, padding:0}}>
-                                <IconButton>
-                                    <KeyboardArrowUp style={{color: 'white'}} onClick={this.goUp()}/>
-                                </IconButton>
-                            </div>
-                            : ''
-                            }
+                                <LocMenu>
+                                    {Object.entries(navigation).map(nav => {
+                                        const [t, v] = nav;
+                                        const r = _.first(navigationMap.filter(m => m.type === t));
+                                        const m = geo_map[r.map];
+
+                                        if (t === 'country_selected') {
+                                            return;
+                                        }
+
+                                        if (m && v) {
+                                            return (<StyledFormControl key={`${t}-${v}`}>
+                                                <Label>{formatLabel(t)}:</Label>
+                                                <StyledSelect
+                                                    value={v}
+                                                    onChange={this.handleChange(t)}
+                                                    input={<StyledIn
+                                                        name={`${m}`}
+                                                        id={`${m}-native-helper`}/>}
+                                                >
+                                                    {m.map((n, i) => {
+                                                        // if facility selected - no code is used
+                                                        const name = r.code ? n.properties[r.code] : n;
+                                                        return (
+                                                            <Option
+                                                                key={`nav-${name}-${i}`}
+                                                                value={name}>{name}
+                                                            </Option>
+                                                        )
+                                                    })}
+                                                </StyledSelect>
+                                                {/*<Label>{formatLabel(t)}</Label>*/}
+                                            </StyledFormControl>)
+                                        } else {
+                                            return null;
+                                        }
+                                    })}
+                                </LocMenu>
+                            </LocContainer>
+
                         </ColumnMenu>
                     </Grid>
-                    <Grid item lg={5} md={6} xs={12}>
+                    <Grid item lg={4} md={6} xs={12}>
                         <Header>Metric:</Header>
                         <Tabs
                             value={metric_selected}
@@ -247,10 +257,34 @@ class Navigation extends Component {
     }
 }
 
+const StyledFormControl = styled(FormControl)`
+    display: flex !important;
+    flex-direction: row !important;
+`;
+const Label = styled.span`
+    text-transform: uppercase;
+    font-size: 0.75em;
+    color: #dbdbdb;
+    margin: 0 1em 0 0.5em;
+`;
+const HomeStyled = styled(Home)`
+    color: white; 
+`;
+const Back = styled.div`
+    display: flex;
+`;
+const LocContainer = styled.div`
+    display: flex;
+`;
+const LocMenu = styled.div`
+    display: flex;
+    flex-direction: column;
+    margin-left: 0.5em;
+`;
 const NavBar = styled.div`
     display: flex;
     justify-content: space-between;
-    margin: 0 4em;
+    margin: 0 2em;
 `;
 const StyledSelect = styled(NativeSelect)`
     color: white;
