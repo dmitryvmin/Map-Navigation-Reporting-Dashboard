@@ -13,14 +13,17 @@ const styles = {
         display: 'flex',
         justifyContent: 'space-between',
         backgroundColor: 'white',
-        margin: '0.5em 0'
+        height: '5vh',
+    },
+    avatarUser: {
+        width: '30px',
+        height: '30px',
     },
     avatarFlag: {
         margin: '0 1em 0 2em',
-        objectFit: 'cover'
-    },
-    avatarUser: {
-        margin: '0 2em',
+        objectFit: 'cover',
+        width: '30px',
+        height: '30px',
     },
     titleArea: {
         fontWeight: '400',
@@ -30,6 +33,9 @@ const styles = {
     },
     userArea: {
         fontSize: '18px',
+        margin: '0px 2em',
+        alignItems: 'center',
+        display: 'flex',
     },
 };
 

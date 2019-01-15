@@ -103,7 +103,7 @@ class Chart extends Component {
                                 value={t}/>
                         )}
                     </Tabs>
-                    <FormGroup row>
+
                         <FormControlLabel
                             control={
                                 <Switch
@@ -113,17 +113,17 @@ class Chart extends Component {
                             }
                             label="Line / Bar"
                         />
-                    </FormGroup>
+
                 </Controls>
 
 
                 <ResponsiveContainer
                     width="100%"
-                    height={150}>
+                    height={180}>
                     {(chartType === 'Bar')
                         ? <BarChart
                             data={data}
-                            margin={{top: 20, right: 20, left: 20, bottom: 0}}>
+                            margin={{top: 20, right: 20, left: 20, bottom: 20}}>
                             <Tooltip/>
                             {/*<Brush dataKey='alarms' height={30} stroke="#dbdbdb"/>*/}
                             <Bar
@@ -133,7 +133,7 @@ class Chart extends Component {
 
                         : <LineChart
                             data={data}
-                            margin={{top: 20, right: 20, left: 20, bottom: 0}}>
+                            margin={{top: 20, right: 20, left: 20, bottom: 20}}>
                             <Tooltip/>
                             <Line
                                 type="step"
@@ -168,6 +168,7 @@ const mapDispatchToProps = dispatch => {
 };
 
 const Controls = styled.div`
+    height: 100px; 
     display: flex; 
     justify-content: space-between;
 `;

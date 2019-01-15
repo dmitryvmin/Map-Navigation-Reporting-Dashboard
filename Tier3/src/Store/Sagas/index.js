@@ -49,6 +49,8 @@ export function* startupSaga() {
     // Load fake data....
     yield loadFake();
 
+    yield updateMfc();
+
     // Update navigation
     yield updateNav({'country_selected': 'Nigeria'});
 }

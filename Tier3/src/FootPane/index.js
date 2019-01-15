@@ -5,17 +5,16 @@ const styles = {
     footerwrap: {
         width: '100%',
         backgroundColor: 'white',
-        bottom: 0,
-        left: 0,
-        paddingBottom: '1em'
+        display: 'flex',
+        alignContent: 'center',
+        height: '5vh',
     },
     ggfooter: {
-        // width: '80vw',
         margin: '0 2em',
-        paddingTop: '1em',
         display: 'flex',
         justifyContent: 'space-between',
-        alignItems: 'center'
+        alignItems: 'center',
+        width: '100%'
     },
     footerHeader: {
         marginTop: 0,

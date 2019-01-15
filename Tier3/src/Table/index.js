@@ -196,13 +196,11 @@ const mapDispatchToProps = dispatch => {
 };
 
 const Container = styled.div`
-    margin: 0px auto;
     background-color: white;
-    height: 340px;
     overflow-y: scroll;
 `;
 const TableWrapper = styled.div`
-    overflow-x: auto;
+    // overflow-x: auto;
 `;
 
 export default connect(mapStateToProps, mapDispatchToProps)(RTTable);
