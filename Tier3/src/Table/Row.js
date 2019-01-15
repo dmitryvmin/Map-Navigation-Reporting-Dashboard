@@ -43,19 +43,23 @@ class Row extends Component {
             nextProps.nav_hover.value === prevState.nav_hover
         ) {
             return {
-                selected: true
+                selected: true,
+                data: nextProps.data,
             };
         } else {
             return {
-                selected: false
+                selected: false,
+                data: nextProps.data,
             };
         }
     }
 
     shouldComponentUpdate(nextProps, nextState) {
+
         let shouldUpdate = (
             (this.state.nav_hover === nextProps.nav_hover.value && !this.state.selected) ||
-            (this.state.nav_hover !== nextProps.nav_hover.value && this.state.selected)
+            (this.state.nav_hover !== nextProps.nav_hover.value && this.state.selected) ||
+            (!_.isEqual(this.state.data, nextProps.data))
         );
 
         return shouldUpdate;
@@ -105,6 +109,11 @@ class Row extends Component {
                     )}
                 )}
 
+                {/*{*/}
+                    {/*<TableCell>*/}
+                        {/*<div>{data.states}</div>*/}
+                    {/*</TableCell>*/}
+                {/*}*/}
             </TableRow>
         )
     }

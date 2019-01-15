@@ -79,9 +79,7 @@ function* composeDisplayData( dataParam ) {
 
         let data = getGeoJson(childNM.type);
 
-        if (curNM.type !== 'All') {
-            rows = data.filter(f => f.properties[curNM.code] === navigation[curNM.type]);
-        }
+        rows = data.filter(f => f.properties[curNM.code] === navigation[curNM.type]);
     }
 
     // ### Columns
@@ -145,7 +143,7 @@ function* composeDisplayData( dataParam ) {
             } else {
                 alarms = '-';
                 holdover = '-';
-                mfc = '-';
+                mfc = '-'
             }
 
             regionType = childNM.map;

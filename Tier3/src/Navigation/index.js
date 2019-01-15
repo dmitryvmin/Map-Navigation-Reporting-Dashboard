@@ -155,6 +155,15 @@ class Navigation extends Component {
                                     <HomeStyled onClick={this.goHome()}/>
                                 </IconButton>
 
+                                { ((navigation.lga_selected !== 'All' && navigation.lga_selected !== false) ||
+                                (navigation.state_selected !== 'All' && navigation.state_selected !== false)) &&
+                                <Back>
+                                    <IconButton>
+                                        <KeyboardArrowLeft style={{color: 'white'}} onClick={this.goUp()}/>
+                                    </IconButton>
+                                </Back>
+                                }
+
                                 <LocContainer>
                                     {Object.entries(navigation).map(nav => {
                                         const [t, v] = nav;
@@ -193,15 +202,6 @@ class Navigation extends Component {
                                         }
                                     })}
                             </LocContainer>
-
-                            { ((navigation.lga_selected !== 'All' && navigation.lga_selected !== false) ||
-                            (navigation.state_selected !== 'All' && navigation.state_selected !== false)) &&
-                            <Back>
-                                <IconButton>
-                                    <KeyboardArrowLeft style={{color: 'white'}} onClick={this.goUp()}/>
-                                </IconButton>
-                            </Back>
-                            }
 
                         </LocMenu>
                     </Grid>

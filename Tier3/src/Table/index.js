@@ -2,11 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
-// import TablePagination from '@material-ui/core/TablePagination';
+import TablePagination from '@material-ui/core/TablePagination';
 import GGConsts from '../Constants';
 import EnhancedTableHead from './EnhancedTableHead';
 import {connect} from "react-redux";
 import Row from './Row';
+import TableCell from '@material-ui/core/TableCell';
+import TableRow from '@material-ui/core/TableRow';
 // import ManualTableRow from './ManualTableRow';
 import {
     // navigationMap,
@@ -42,10 +44,14 @@ class RTTable extends React.Component {
             page: 0,
             rowsPerPage: 50,
             isDetailOpen: false,
-            selectedDevice: null
+            selectedDevice: null,
         }
 
         this.intervalId = null;
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        return true;
     }
 
     mapPropsToTableColumns = (data) => {
@@ -103,14 +109,14 @@ class RTTable extends React.Component {
             display_data,
         } = this.props;
 
-        if (!nav_tier || !display_data) {
-            return null;
-        }
-
         const {
             columns,
             cells,
         } = display_data || null;
+
+        if (!nav_tier || !display_data || !columns || !cells) {
+            return null;
+        }
 
         const {
             order,
@@ -119,7 +125,7 @@ class RTTable extends React.Component {
             page,
         } = this.state;
 
-        // const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
+        // const emptyRows = rowsPerPage - Math.min(rowsPerPage, cells.length - page * rowsPerPage);
 
         return (
             <Container>
@@ -152,25 +158,25 @@ class RTTable extends React.Component {
                                 )}
                             {/*{emptyRows > 0 && (*/}
                             {/*<TableRow style={{height: 49 * emptyRows}}>*/}
-                            {/*<TableCell colSpan={6}/>*/}
+                                {/*<TableCell colSpan={6}/>*/}
                             {/*</TableRow>*/}
                             {/*)}*/}
                         </TableBody>
                     </Table>
                 </TableWrapper>
                 {/*<TablePagination component="div"*/}
-                {/*rowsPerPageOptions={[8, 20, 50]}*/}
-                {/*count={data.length}*/}
-                {/*rowsPerPage={rowsPerPage}*/}
-                {/*page={page}*/}
-                {/*backIconButtonProps={{*/}
-                {/*'aria-label': 'Previous Page',*/}
-                {/*}}*/}
-                {/*nextIconButtonProps={{*/}
-                {/*'aria-label': 'Next Page',*/}
-                {/*}}*/}
-                {/*onChangePage={this.handleChangePage}*/}
-                {/*onChangeRowsPerPage={this.handleChangeRowsPerPage}/>*/}
+                                 {/*rowsPerPageOptions={[8, 20, 50]}*/}
+                                 {/*count={cells.length}*/}
+                                 {/*rowsPerPage={rowsPerPage}*/}
+                                 {/*page={page}*/}
+                                 {/*backIconButtonProps={{*/}
+                                     {/*'aria-label': 'Previous Page',*/}
+                                 {/*}}*/}
+                                 {/*nextIconButtonProps={{*/}
+                                     {/*'aria-label': 'Next Page',*/}
+                                 {/*}}*/}
+                                 {/*onChangePage={this.handleChangePage}*/}
+                                 {/*onChangeRowsPerPage={this.handleChangeRowsPerPage}/>*/}
             </Container>
         );
     }
