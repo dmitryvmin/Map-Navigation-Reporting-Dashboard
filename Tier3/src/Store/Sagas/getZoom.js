@@ -1,12 +1,12 @@
 import GGConsts from '../../Constants';
-import {displaySelector} from './../Selectors';
-import {select} from 'redux-saga/effects';
+// import {displaySelector} from './../Selectors';
+// import {select} from 'redux-saga/effects';
 
 /**
  * Get the zoom leve for the current tier state
  * @returns {number} zoom
  */
-function* getZoom(tier) {
+function getZoom(tier) {
     // const tier = yield select(tierSelector);
 
     // TODO: use mapbox's fitBounds to scale based on the size of the region

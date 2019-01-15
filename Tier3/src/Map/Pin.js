@@ -1,7 +1,7 @@
 import React, {PureComponent} from 'react';
 import PieChart from 'react-minimal-pie-chart';
 // import Transition from 'react-transition-group/Transition';
-import * as easing from 'easing';
+// import * as easing from 'easing';
 
 // import TwoLevelPieChart from './Pie.js';
 

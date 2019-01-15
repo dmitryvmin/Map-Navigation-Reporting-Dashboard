@@ -19,10 +19,10 @@ import {
 
 import {
     setMapViewport,
-    saveMapRef,
+    // saveMapRef,
 } from './../Store/Actions';
 
-import {addToGL} from './MapUtils';
+// import {addToGL} from './MapUtils';
 
 // import IconClusterLayer from './IconClusterLayer';
 // import iconMapping from '../Data/location-icon-mapping.json';
@@ -227,7 +227,7 @@ class Map extends Component {
             viewState,
             mapStyle,
             markers,
-            saveMapRef,
+            // saveMapRef,
             // map_ref,
             hover,
         } = this.props;

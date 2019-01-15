@@ -67,7 +67,6 @@ class Navigation extends Component {
     }
 
     toggleFilterConnected = () => (e) => {
-        
         if ( this.props.selected_connected && !this.props.selected_uploaded ) {
             return;
         } else {

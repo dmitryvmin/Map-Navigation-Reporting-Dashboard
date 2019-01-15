@@ -14,7 +14,7 @@ import {
     Bar,
     Brush,
 //    ReferenceLine,
-    XAxis,
+    // XAxis,
 //    YAxis,
     Tooltip,
     LineChart,
@@ -22,7 +22,7 @@ import {
     ResponsiveContainer
 } from 'recharts';
 
-import {getNMapChild} from './../Utils';
+// import {getNMapChild} from './../Utils';
 
 const styles = theme => ({
     indicator: {
@@ -33,16 +33,16 @@ const styles = theme => ({
     }
 })
 
-const CustomizedTick = props => {
-    const {payload, x, y} = props;
+// const CustomizedTick = props => {
+//     const {payload, x, y} = props;
 
-    return (
-        <g transform={`translate(${x},${y})`}>
-            <text x={0} y={0} dy={2} fontSize="8" textAnchor="end" fill="#666"
-                  transform="rotate(-45)">{payload.value}</text>
-        </g>
-    )
-}
+//     return (
+//         <g transform={`translate(${x},${y})`}>
+//             <text x={0} y={0} dy={2} fontSize="8" textAnchor="end" fill="#666"
+//                   transform="rotate(-45)">{payload.value}</text>
+//         </g>
+//     )
+// }
 
 class Chart extends Component {
     constructor(props) {
@@ -83,7 +83,7 @@ class Chart extends Component {
 
         const {chartType} = this.state;
 
-        let label = getNMapChild(nav_tier, 'tier').map;
+        // let label = getNMapChild(nav_tier, 'tier').map;
 
         return (
             <React.Fragment>

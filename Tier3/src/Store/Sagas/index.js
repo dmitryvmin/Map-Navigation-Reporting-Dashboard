@@ -10,7 +10,7 @@ import updateNav from './updateNav';
 import getGeo from './getGeo';
 import updateHover from './updateHover';
 import updateMetric from './updateMetric';
-import loadSensors from './loadSensors';
+// import loadSensors from './loadSensors';
 import loadFake from './loadFake';
 import updateTimeframe from './updateTimeframe';
 import updateDevice from './updateDevice';

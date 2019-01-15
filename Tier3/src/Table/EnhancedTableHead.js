@@ -20,7 +20,7 @@ class EnhancedTableHead extends React.Component {
             tableCols } = this.props;
 
     return (
-      <TableHead>
+      <TableHead >
         <TableRow>
           {tableCols.map(col => {
             return (
@@ -45,7 +45,10 @@ class EnhancedTableHead extends React.Component {
 
 const styles = {
   cell: {
-    textAlign: 'center'
+    textAlign: 'center',
+    position: 'sticky',
+    top: 0,
+    zIndex: 1000
   }
 }
 
