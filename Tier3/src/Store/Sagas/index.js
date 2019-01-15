@@ -14,7 +14,10 @@ import loadSensors from './loadSensors';
 import loadFake from './loadFake';
 import updateTimeframe from './updateTimeframe';
 import updateDevice from './updateDevice';
-import updateMfc from './updateMfc';
+import {
+    loadMfcs,
+    updateMfc
+} from './updateMfc';
 
 // Watches for Saga actions
 export function* watcherSaga() {
@@ -31,6 +34,8 @@ export function* watcherSaga() {
 
         takeLatest(GGConsts.NAV_HOVER, updateHover),
         // yield throttle(100, GGConsts.NAV_HOVER, updateHover),
+
+        takeLatest(GGConsts.MFC_UPDATING, updateMfc),
     ]);
 }
 
@@ -49,7 +54,7 @@ export function* startupSaga() {
     // Load fake data....
     yield loadFake();
 
-    yield updateMfc();
+    yield loadMfcs();
 
     // Update navigation
     yield updateNav({'country_selected': 'Nigeria'});

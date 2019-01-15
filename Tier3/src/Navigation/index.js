@@ -223,7 +223,7 @@ class Navigation extends Component {
                             )}
                         </Tabs>
                     </Grid>
-                    <Grid item lg={3} md={6} xs={6}>
+                    <Grid item lg={2} md={6} xs={6}>
                         <Header>Devices Type:</Header>
                         <ChipContainer>
                             <StyledChip
@@ -239,7 +239,7 @@ class Navigation extends Component {
                         </ChipContainer>
 
                     </Grid>
-                    <Grid item lg={2} md={6} xs={6}>
+                    <Grid item lg={3} md={6} xs={6}>
                         <ColumnMenu>
                             <Header>Manufacturer:</Header>
 
@@ -255,7 +255,7 @@ class Navigation extends Component {
                                 )
                             })}
                             <MfcDialog open={mfcDialog} toggle={this.toggleMfcDialog} />
-                            <Button onClick={this.toggleMfcDialog} style={{color: '#23a5e2'}}>Edit</Button>
+                            <span onClick={this.toggleMfcDialog} style={{color: '#23a5e2'}}>Edit</span>
 
                             </MfcContainer>
                         </ColumnMenu>
@@ -268,9 +268,10 @@ class Navigation extends Component {
 
 const MfcPill = styled.span`
     display: inline; 
+    margin-right: 1em; 
 `;
 const MfcContainer = styled.div`
-    
+    display: flex; 
 `;
 const StyledFormControl = styled(FormControl)`
     display: flex !important;
@@ -331,6 +332,10 @@ const ColumnMenu = styled.div`
 // `;
 const ChipContainer = styled.div`
     display: flex;
+    
+    & > div {
+        height: 1.75em;
+    }
 `;
 const StyledChip = styled(Chip)`
     color: white !important;

@@ -114,6 +114,9 @@ const IdBar = styled.div`
     line-height: 30px;
     color: white;
     height: 10vh; 
+    @media (max-width: 1286px) {
+        height: 100%;
+    }
 `;
 // const IdBarHeader = styled.h1`
 //     font-weight: 500;

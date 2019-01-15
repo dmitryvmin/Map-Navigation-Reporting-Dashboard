@@ -128,8 +128,8 @@ function* composeDisplayData( dataParam ) {
         let holdover;
         let regionType;
         let regionName;
-        let fridge = getRandomFridge();
         let location;
+        let mfc;
 
         if (tier !== 'LGA_LEVEL') {
 
@@ -140,10 +140,12 @@ function* composeDisplayData( dataParam ) {
 
                 alarms = reduceSensorsByFilter(sensorsFiltered, 'metrics.alarm_count');
                 holdover = reduceSensorsByFilter(sensorsFiltered, 'metrics.holdover_mean');
+                mfc = reduceSensorsByFilter(sensorsFiltered, 'manufacturer');
 
             } else {
                 alarms = '-';
                 holdover = '-';
+                mfc = '-';
             }
 
             regionType = childNM.map;
@@ -164,7 +166,7 @@ function* composeDisplayData( dataParam ) {
             'AlarmsByDay': (alarms !== '-') ? Array.from({length: 40}, () => Math.floor(Math.random() * 2)) : '-',
             'Holdover': holdover,
             'id': crypto.getRandomValues(new Uint32Array(4)).join('-'),
-            'Manufacturers': fridge.manufacturer,
+            'Manufacturers': mfc,
             'chart': (alarms !== '-'),
             'location': location,
         });
