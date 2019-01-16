@@ -108,7 +108,7 @@ const RightViewContainer = styled.div`
     flex-direction: column;
 `;
 const IdBar = styled.div`
-    background-color: #51326c;
+    background-color: ${GGConsts.COLOR_PURPLE};
     width: 100%;
     text-align: center;
     line-height: 30px;

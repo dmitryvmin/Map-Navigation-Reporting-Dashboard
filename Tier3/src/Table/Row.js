@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from "react-redux";
+import GGConsts from '../Constants';
 import _ from 'lodash';
 import styled from 'styled-components';
 import TableCell from '@material-ui/core/TableCell';
@@ -8,7 +9,9 @@ import {getNMapChild} from './../Utils';
 
 const drawBoolLEDs = (value, days, id) => (
     <Alarm>
-        {value}
+        <AlarmVal>
+            {value}
+        </AlarmVal>
         <AlarmChart>
             {days.map((d, i) => <AlarmCell key={`alarmchart-${id}-${d}-${i}`} alarm={d}/>)}
         </AlarmChart>
@@ -128,6 +131,9 @@ const mapStateToProps = state => {
 const StyledCell = styled.div`
     text-align: center; 
 `;
+const AlarmVal = styled.span`
+    // margin-left: 2em;
+`;
 const Alarm = styled.div`
     display: flex; 
     align-items: center;
@@ -144,7 +150,7 @@ const AlarmCell = styled.div`
     width: 3px;
     height: 3px
     margin: 1px 0 1px 2px
-    background-color: ${props => props.alarm ? '#d00' : '#0d0'}
+    background-color: ${props => props.alarm ? GGConsts.COLOR_GREEN : GGConsts.COLOR_RED}
 `;
 
 export default connect(mapStateToProps, null)(Row);

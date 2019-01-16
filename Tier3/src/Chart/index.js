@@ -109,6 +109,7 @@ class Chart extends Component {
                                 <Switch
                                     checked={(chartType === 'Bar')}
                                     onChange={this.toggle}
+                                    color="secondary"
                                 />
                             }
                             label="Line / Bar"
@@ -128,7 +129,7 @@ class Chart extends Component {
                             {/*<Brush dataKey='alarms' height={30} stroke="#dbdbdb"/>*/}
                             <Bar
                                 dataKey={metric_selected}
-                                fill="#ff9900"/>
+                                fill={GGConsts.COLOR_BLUE} />
                         </BarChart>
 
                         : <LineChart
@@ -138,7 +139,7 @@ class Chart extends Component {
                             <Line
                                 type="step"
                                 dataKey={metric_selected}
-                                stroke="#ff9900"
+                                stroke={GGConsts.COLOR_BLUE}
                                 strokeWidth={2}/>
                             <Brush
                                 dataKey='alarms'

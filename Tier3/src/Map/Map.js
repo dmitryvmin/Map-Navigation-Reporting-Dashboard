@@ -162,20 +162,20 @@ class Map extends Component {
             let val = hover ? hover.value : null;
             let id = (val) ? `${map.tier}_hover_${val}` : `${map.tier}`;
 
-            const activeColor = (layerType === 'active') ? [139, 195, 74] : [125, 125, 125];
-            const inactiveColor = (layerType === 'active') ? [255, 255, 255] : [150, 150, 150];
+            const activeColor = (layerType === 'active') ? GGConsts.COLOR_SELECTED : [175, 175, 175];
+            const inactiveColor = (layerType === 'active') ? [255, 255, 255] : [200, 200, 200];
 
             return new GeoJsonLayer({
                 id,
                 data,
-                opacity: 0.5,
+                opacity: 0.8,
                 stroked: true,
                 filled: true,
                 extruded: false,
                 wireframe: false,
                 fp64: true,
-                lineWidthMinPixels: 2,
-                getLineColor: [150, 150, 150],
+                lineWidthMinPixels: 1,
+                getLineColor: [175, 175, 175],
                 getFillColor: f => (f.properties[map.code] === val) ? activeColor : inactiveColor,
                 updateTrigger: {getFillColor: val},
                 pickable: true,
