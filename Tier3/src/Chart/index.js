@@ -119,11 +119,11 @@ class Chart extends Component {
 
                 <ResponsiveContainer
                     width="100%"
-                    height={180}>
+                    height={150}>
                     {(chartType === 'Bar')
                         ? <BarChart
                             data={data}
-                            margin={{top: 20, right: 20, left: 20, bottom: 20}}>
+                            margin={{top: 50, right: 20, left: 20, bottom: 20}}>
                             <Tooltip/>
                             {/*<Brush dataKey='alarms' height={30} stroke="#dbdbdb"/>*/}
                             <Bar
@@ -133,7 +133,7 @@ class Chart extends Component {
 
                         : <LineChart
                             data={data}
-                            margin={{top: 20, right: 20, left: 20, bottom: 20}}>
+                            margin={{top: 50, right: 20, left: 20, bottom: 20}}>
                             <Tooltip/>
                             <Line
                                 type="step"

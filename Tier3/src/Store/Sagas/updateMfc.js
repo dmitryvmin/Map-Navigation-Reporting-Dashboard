@@ -1,9 +1,13 @@
 import GGConsts from '../../Constants';
 import _ from 'lodash';
+import composeDisplayData from './composeDisplayData';
+
 import {
     select,
-    put
+    put,
+    call,
 } from 'redux-saga/effects';
+
 import {
     sensorsSelector,
     mfcSelector
@@ -33,6 +37,10 @@ export function* updateMfc(action) {
     }
 
     yield put({type: GGConsts.MFC_SELECTED, mfc_selected: new_selected });
+
+    // ## Update Data
+    const display_data = yield call(composeDisplayData); // TODO: pass the type of update as the second arg - dataParam
+    yield put({type: GGConsts.DISPLAY_DATA, display_data });
 
 }
 

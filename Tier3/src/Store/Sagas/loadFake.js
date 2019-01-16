@@ -8,7 +8,7 @@ const data = [
         "id": "aff33bcb-8afa-4049-84bb-dee058b4186d",
         "manufacturer": "Dometic",
         "model": "TCW40 SDD",
-        "location": "VR53+WMX",
+        "location": "8R3F+WX",
         "metrics": {
             "start_time": "2008-09-15T15:53:00+05:00",
             "end_time": "2008-16-15T15:53:00+05:00",
@@ -41,7 +41,7 @@ const data = [
         "id": "aff33bcb-8afa-4049-84bb-dee058b41844",
         "manufacturer": "Sundanzer",
         "model": "TCW40 SDD",
-        "location": "VR53+WMX",
+        "location": "HJ2P+FG",
         "metrics": {
             "start_time": "2008-09-15T15:53:00+05:00",
             "end_time": "2008-16-15T15:53:00+05:00",
@@ -74,7 +74,7 @@ const data = [
         "id": "aff33bcb-8afa-4049-84bb-dee058b41844",
         "manufacturer": "Sundanzer",
         "model": "TCW40 SDD",
-        "location": "VR53+WMX",
+        "location": "V4GQ+FR",
         "metrics": {
             "start_time": "2008-09-15T15:53:00+05:00",
             "end_time": "2008-16-15T15:53:00+05:00",
