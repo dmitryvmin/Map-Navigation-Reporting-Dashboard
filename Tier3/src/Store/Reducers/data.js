@@ -7,7 +7,8 @@ const initState = {
         states: [],
         lgas: [],
         facilities: [],
-    }
+    },
+    mfc_map: [],
 }
 
 function dataReducer(state = initState, action) {
@@ -34,7 +35,16 @@ function dataReducer(state = initState, action) {
             }
 
         case GGConsts.SENSORS_MAP:
-            return { ...state, sensors_map: action.data }
+            return {
+                ...state,
+                sensors_map: action.data
+            }
+
+        case GGConsts.MFC_MAP:
+            return {
+                ...state,
+                mfc_map: action.data
+            }
 
         default:
             return state;

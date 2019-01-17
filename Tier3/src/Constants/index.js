@@ -102,6 +102,10 @@ const DISPLAY_DATA = "DISPLAY_DATA";
 
 const MARKERS = "MARKERS";
 
+const MFC_MAP = 'MFC_MAP';
+const MFC_UPDATING = 'MFC_UPDATING';
+const MFC_SELECTED = 'MFC_SELECTED';
+
 const UPDATE_LAYERS = "UPDATE_LAYERS";
 const ACTIVE_LAYERS = "ACTIVE_LAYERS";
 const INACTIVE_LAYERS = "INACTIVE_LAYERS";
@@ -112,6 +116,16 @@ export default class GGConsts {
 
     static get MAP_REF() {
         return MAP_REF;
+    }
+
+    static get MFC_MAP() {
+        return MFC_MAP;
+    }
+    static get MFC_UPDATING() {
+        return MFC_UPDATING;
+    }
+    static get MFC_SELECTED() {
+        return MFC_SELECTED;
     }
 
     static get UPDATE_LAYERS() {

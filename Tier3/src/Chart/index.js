@@ -83,7 +83,8 @@ class Chart extends Component {
 
         const {chartType} = this.state;
 
-        // let label = getNMapChild(nav_tier, 'tier').map;
+        const data = cells.filter(f => f[metric_selected] !== '-');
+        // const label = (nav_tier !== 'FACILITY_LEVEL') ? getNMapChild(nav_tier, 'tier').map : null;
 
         return (
             <React.Fragment>
@@ -102,7 +103,7 @@ class Chart extends Component {
                                 value={t}/>
                         )}
                     </Tabs>
-                    <FormGroup row>
+
                         <FormControlLabel
                             control={
                                 <Switch
@@ -112,27 +113,27 @@ class Chart extends Component {
                             }
                             label="Line / Bar"
                         />
-                    </FormGroup>
+
                 </Controls>
 
 
                 <ResponsiveContainer
                     width="100%"
-                    height={200}>
+                    height={180}>
                     {(chartType === 'Bar')
                         ? <BarChart
-                            data={cells}
-                            margin={{top: 20, right: 20, left: 20, bottom: 40}}>
+                            data={data}
+                            margin={{top: 20, right: 20, left: 20, bottom: 20}}>
                             <Tooltip/>
-                            <Brush dataKey='alarms' height={30} stroke="#dbdbdb"/>
+                            {/*<Brush dataKey='alarms' height={30} stroke="#dbdbdb"/>*/}
                             <Bar
                                 dataKey={metric_selected}
                                 fill="#ff9900"/>
                         </BarChart>
 
                         : <LineChart
-                            data={cells}
-                            margin={{top: 20, right: 20, left: 20, bottom: 40}}>
+                            data={data}
+                            margin={{top: 20, right: 20, left: 20, bottom: 20}}>
                             <Tooltip/>
                             <Line
                                 type="step"
@@ -167,6 +168,7 @@ const mapDispatchToProps = dispatch => {
 };
 
 const Controls = styled.div`
+    height: 100px; 
     display: flex; 
     justify-content: space-between;
 `;

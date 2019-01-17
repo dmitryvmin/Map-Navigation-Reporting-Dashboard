@@ -1,39 +1,40 @@
 import React from 'react';
 import 'typeface-roboto';
-
-const styles = {
-    footerwrap: {
-        width: '100%',
-        backgroundColor: 'white',
-        bottom: 0,
-        left: 0,
-        padding: '2em 0',
-    },
-    ggfooter: {
-        width: '80vw',
-        margin: '0 auto',
-        paddingTop: '24px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center'
-    },
-    footerHeader: {
-        marginTop: 0,
-        fontWeight: 700,
-    },
-    footerUL: {
-        listStyle: 'none',
-        paddingLeft: '0',
-    },
-};
+import styled from 'styled-components';
 
 const FootPane = () => (
-    <div style={styles.footerwrap}>
-        <footer style={styles.ggfooter}>
-            <div><img src="/img/gg-logo.png" alt="Global Good"/></div>
-            <div>&copy; 2018 globalgood All Rights Reserved.</div>
-        </footer>
-    </div>
+    <Wrapper>
+        <Footer>
+            <Icon
+                src="/img/gg-logo.png"
+                alt="Global Good"
+            />
+            <Copyright>
+                &copy; 2018 globalgood All Rights Reserved.
+            </Copyright>
+        </Footer>
+    </Wrapper>
 )
+
+const Copyright = styled.div`
+    font-size: 0.75em;
+`;
+const Wrapper = styled.div`
+    width: 100%;
+    background-color: white;
+    display: flex;
+    align-content: center;
+    height: 5vh;
+`;
+const Footer = styled.div`
+    margin: 0 2em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+`;
+const Icon = styled.img`
+    height: 30px; 
+`;
 
 export default FootPane;

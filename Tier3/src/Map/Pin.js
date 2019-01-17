@@ -21,13 +21,18 @@ export default class CityPin extends PureComponent {
     render() {
         const {
             chart,
-            zoom,
+            zoom,   // level of map zoom  !  use it !!  in conjunction with the font size...and other things
             name,
             value
         } = this.props;
 
         const size = (Math.pow(zoom, 1.85));
 
+        const a1 = 7;
+        // Witch of Agnesi formula
+        const witch = 2.4* (8 * Math.pow(a1, 3)) / (Math.pow(zoom, 2) + (4*Math.pow(a1,2))) - 3;
+        //20.0 / ( zoom * zoom + 1) * 20;
+console.log("zoom ", zoom, " Witch ", witch);
         return (
             <svg
                 height={size}
@@ -98,7 +103,7 @@ export default class CityPin extends PureComponent {
                     textAnchor="middle"
                     y={chart ? 120 : 130}
                     x="50"
-                    fontSize={'20'}
+                    fontSize={witch}
                     fill={'black'}>{name}</text>
             </svg>
 

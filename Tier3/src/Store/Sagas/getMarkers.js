@@ -27,7 +27,7 @@ function* getMarkers()  {
 
     const geoJson = getGeoJson(childNM.type);
 
-    if (!data || !tier || !navigation || !metric || !geoJson) {
+    if (!data || !tier || !navigation || !metric) {
         return;
     }
 
@@ -35,15 +35,24 @@ function* getMarkers()  {
 
     data.cells.forEach(c => {
         const marker = {};
-        const name = c[childNM.map];
-        const geo = _.first(geoJson.filter(f => f.properties[childNM.code] === name));
+        let name;
+        let geo;
 
-        // If this is a cohort - not a single location - need to find the center for the marker
-        if (geo && childNM.index > -1) {
-            // Calculate the centeroid for each geojson multipolygon
-            const coordinates = turf.centroid(geo).geometry.coordinates;
-            marker.longitude = coordinates[0];
-            marker.latitude = coordinates[1];
+        if (tier !== 'LGA_LEVEL') {
+            name = c[childNM.map];
+            geo = _.first(geoJson.filter(f => f.properties[childNM.code] === name));
+
+            // If this is a cohort - not a single location - need to find the center for the marker
+            if (geo && childNM.index > -1) {
+                // Calculate the centeroid for each geojson multipolygon
+                const coordinates = turf.centroid(geo).geometry.coordinates;
+                marker.longitude = coordinates[0];
+                marker.latitude = coordinates[1];
+            }
+        } else {
+            marker.longitude = 0;
+            marker.latitude = 0;
+            name = c.facilities;
         }
 
         marker.name = name;

@@ -6,10 +6,13 @@ import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import {getNMapChild} from './../Utils';
 
-const drawBoolLEDs = (days, id) => (
-    <AlarmChart>
-        {days.map((d, i) => <AlarmCell key={`alarmchart-${id}-${d}-${i}`} alarm={d}/>)}
-    </AlarmChart>
+const drawBoolLEDs = (value, days, id) => (
+    <Alarm>
+        {value}
+        <AlarmChart>
+            {days.map((d, i) => <AlarmCell key={`alarmchart-${id}-${d}-${i}`} alarm={d}/>)}
+        </AlarmChart>
+    </Alarm>
 )
 
 class Row extends Component {
@@ -92,8 +95,11 @@ class Row extends Component {
                             align="center"
                         >
                             <StyledCell>
-                                {value}
-                                {c.id === 'Alarms' && drawBoolLEDs(data.AlarmsByDay, id)}
+                                {
+                                    (c.id === 'Alarms' && data.AlarmsByDay !== '-')
+                                    ? drawBoolLEDs(value, data.AlarmsByDay, id)
+                                    : value
+                                }
                             </StyledCell>
                         </TableCell>
                     )}
@@ -112,6 +118,10 @@ const mapStateToProps = state => {
 
 const StyledCell = styled.div`
     text-align: center; 
+`;
+const Alarm = styled.div`
+    display: flex; 
+    align-items: center;
 `;
 const AlarmChart = styled.div`
      margin: 0 0 0 7px;

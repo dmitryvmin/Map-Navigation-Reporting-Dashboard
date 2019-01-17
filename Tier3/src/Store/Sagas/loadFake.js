@@ -69,6 +69,39 @@ const data = [
                 "2": "Bende"
             }
         }
+    },
+    {
+        "id": "aff33bcb-8afa-4049-84bb-dee058b41844",
+        "manufacturer": "Sundanzer",
+        "model": "TCW40 SDD",
+        "location": "VR53+WMX",
+        "metrics": {
+            "start_time": "2008-09-15T15:53:00+05:00",
+            "end_time": "2008-16-15T15:53:00+05:00",
+            "alarm_count": 30,
+            "alarm_over_seconds": 50002,
+            "alarm_under_seconds": 20042,
+            "temp_mean": 3.5,
+            "uptime_percent": 0.64,
+            "unknown_time_percent": 0.62,
+            "holdover_mean": 1
+        },
+        "temperature_data_logger": {
+            "id": "aa04ff56-085d-4c97-9a07-39d31d4d0d1g",
+            "manufacturer": "Berlinger",
+            "model": "Fridgetag 2L",
+            "serial": "AAABCE22"
+        },
+        "facility": {
+            "id": "aa04ff56-085d-4c97-9a07-39d31d4d0d1g",
+            "name": "PHC Abia",
+            "location": "VR53+WM",
+            "regions": {
+                "0": "Nigeria",
+                "1": "Kwara",
+                "2": "Edu"
+            }
+        }
     }
 ];
 

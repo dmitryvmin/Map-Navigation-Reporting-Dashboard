@@ -10,6 +10,7 @@ import timeframeReducer from './timeframe';
 import deviceReducer from './device';
 import markersReducer from './markers';
 import layersReducer from './layers';
+import mfcReducer from './mfc';
 
 const reducers = {
     errorsReducer,
@@ -24,6 +25,7 @@ const reducers = {
     deviceReducer,
     markersReducer,
     layersReducer,
+    mfcReducer,
 };
 
 export default reducers;

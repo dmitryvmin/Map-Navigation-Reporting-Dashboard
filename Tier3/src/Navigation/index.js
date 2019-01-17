@@ -1,27 +1,30 @@
 import React, {Component} from 'react';
 import {connect} from "react-redux";
 import _ from 'lodash';
+import GGConsts from '../Constants';
 import styled from 'styled-components';
 import {withStyles} from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
 import NativeSelect from '@material-ui/core/NativeSelect';
 import Input from '@material-ui/core/Input';
-// import FormHelperText from '@material-ui/core/FormHelperText';
+import FormHelperText from '@material-ui/core/FormHelperText';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Chip from '@material-ui/core/Chip';
 import Grid from '@material-ui/core/Grid';
 import Home from '@material-ui/icons/Home';
-import KeyboardArrowUp from '@material-ui/icons/KeyboardArrowUp';
+import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import IconButton from '@material-ui/core/IconButton';
-import GGConsts from '../Constants';
+import Button from '@material-ui/core/Button';
+import MfcDialog from './MfcDialog';
 
 import {
     navigationMap,
     // getFromNavMap,
-    // formatLabel
+    formatLabel
 } from './../Utils';
 
+// TODO: move API logic to Sagas...
 const config = {
     headers: {'Authorization': `Basic ${GGConsts.HEADER_AUTH}`}
 }
@@ -37,6 +40,10 @@ const styles = theme => ({
 })
 
 class Navigation extends Component {
+    state = {
+        mfcDialog: false
+    }
+
     onRequestData = () => {
         this.props.onRequestData(uri, config, GGConsts.SENSORS_MAP);
     }
@@ -64,6 +71,10 @@ class Navigation extends Component {
         } else {
             updateDevice(device_type);
         }
+    }
+
+    toggleMfcDialog = () => {
+        this.setState({ mfcDialog: !this.state.mfcDialog });
     }
 
     toggleFilterConnected = () => (e) => {
@@ -107,6 +118,8 @@ class Navigation extends Component {
     }
 
     render() {
+        const {mfcDialog} = this.state;
+
         const {
             classes,
             // fetching,
@@ -125,6 +138,7 @@ class Navigation extends Component {
             //     // lga_selected,
             //     // facility_selected
             // } = {}
+            mfc_selected,
         } = this.props;
 
         return (
@@ -132,56 +146,65 @@ class Navigation extends Component {
                 <Grid
                     container
                     spacing={0}>
-                    <Grid item lg={2} md={6} xs={12}>
-                        <ColumnMenu>
-                            <Header>Location:
+                    <Grid item lg={3} md={6} xs={12}>
+                        <LocMenu>
+                            {/*<Header>Location:</Header>*/}
+
                                 <IconButton>
-                                    <Home style={{color: 'white'}} onClick={this.goHome()}/>
+                                    <HomeStyled onClick={this.goHome()}/>
                                 </IconButton>
-                            </Header>
 
-                            {Object.entries(navigation).map(nav => {
-                                const [t, v] = nav;
-                                const r = _.first(navigationMap.filter(m => m.type === t));
-                                const m = geo_map[r.map];
+                                <LocContainer>
+                                    {Object.entries(navigation).map(nav => {
+                                        const [t, v] = nav;
+                                        const r = _.first(navigationMap.filter(m => m.type === t));
+                                        const m = geo_map[r.map];
 
-                                if (m && v) {
-                                    return (<FormControl key={`${t}-${v}`}>
-                                        <StyledSelect
-                                            value={v}
-                                            onChange={this.handleChange(t)}
-                                            input={<StyledIn
-                                                name={`${m}`}
-                                                id={`${m}-native-helper`}/>}
-                                        >
-                                            {m.map((n, i) => {
-                                                const name = n.properties[r.code];
-                                                return (
-                                                    <Option
-                                                        key={`nav-${name}-${i}`}
-                                                        value={name}>{name}
-                                                    </Option>
-                                                )
-                                            })}
-                                        </StyledSelect>
-                                        {/*<Label>{formatLabel(t)}</Label>*/}
-                                    </FormControl>)
-                                } else {
-                                    return null;
-                                }
+                                        if (t === 'country_selected') {
+                                            return;
+                                        }
 
-                            })}
-                            { ((navigation.lga_selected !== 'All' && navigation.lga_selected !== false) || (navigation.state_selected !== 'All' && navigation.state_selected !== false)) ?
-                            <div style={{display: 'inline-flex',width:'20%', height:'33px', fontSize: '10px', margin: 0, padding:0}}>
+                                        if (m && v) {
+                                            return (<StyledFormControl key={`${t}-${v}`}>
+                                                <Label>{formatLabel(t)}:</Label>
+                                                <StyledSelect
+                                                    value={v}
+                                                    onChange={this.handleChange(t)}
+                                                    input={<StyledIn
+                                                        name={`${m}`}
+                                                        id={`${m}-native-helper`}/>}
+                                                >
+                                                    {m.map((n, i) => {
+                                                        // if facility selected - no code is used
+                                                        const name = r.code ? n.properties[r.code] : n;
+                                                        return (
+                                                            <Option
+                                                                key={`nav-${name}-${i}`}
+                                                                value={name}>{name}
+                                                            </Option>
+                                                        )
+                                                    })}
+                                                </StyledSelect>
+                                                {/*<Label>{formatLabel(t)}</Label>*/}
+                                            </StyledFormControl>)
+                                        } else {
+                                            return null;
+                                        }
+                                    })}
+                            </LocContainer>
+
+                            { ((navigation.lga_selected !== 'All' && navigation.lga_selected !== false) ||
+                            (navigation.state_selected !== 'All' && navigation.state_selected !== false)) &&
+                            <Back>
                                 <IconButton>
-                                    <KeyboardArrowUp style={{color: 'white'}} onClick={this.goUp()}/>
+                                    <KeyboardArrowLeft style={{color: 'white'}} onClick={this.goUp()}/>
                                 </IconButton>
-                            </div>
-                            : ''
+                            </Back>
                             }
-                        </ColumnMenu>
+
+                        </LocMenu>
                     </Grid>
-                    <Grid item lg={5} md={6} xs={12}>
+                    <Grid item lg={4} md={6} xs={12}>
                         <Header>Metric:</Header>
                         <Tabs
                             value={metric_selected}
@@ -199,7 +222,7 @@ class Navigation extends Component {
                             )}
                         </Tabs>
                     </Grid>
-                    <Grid item lg={3} md={6} xs={6}>
+                    <Grid item lg={2} md={6} xs={6}>
                         <Header>Devices Type:</Header>
                         <ChipContainer>
                             <StyledChip
@@ -215,28 +238,25 @@ class Navigation extends Component {
                         </ChipContainer>
 
                     </Grid>
-                    <Grid item lg={2} md={6} xs={6}>
+                    <Grid item lg={3} md={6} xs={6}>
                         <ColumnMenu>
                             <Header>Manufacturer:</Header>
-                            {<FormControl>
-                                <StyledSelect
-                                    onChange={this.handleChange('Manufacturer')}
-                                    input={
-                                        <StyledIn
-                                            name="manufacturer"
-                                            id="state-native-helper"
-                                        />}
-                                >
-                                    {['All', 'm1', 'm2', 'm3'].map((mfc, index) => {
-                                        return (
-                                            <Option
-                                                key={`nav-${mfc}-${index}`}
-                                                value={mfc}>{mfc}</Option>
-                                        )
-                                    })}
-                                </StyledSelect>
-                                {/*<Label>Manufacturer</Label>*/}
-                            </FormControl>}
+
+                            <MfcContainer>
+                            {mfc_selected.map((mfc, index) => {
+                                return (
+                                    <MfcPill
+                                        key={`nav-${mfc}-${index}`}
+                                        value={mfc}
+                                    >
+                                        {mfc}
+                                    </MfcPill>
+                                )
+                            })}
+                            <MfcDialog open={mfcDialog} toggle={this.toggleMfcDialog} />
+                            <span onClick={this.toggleMfcDialog} style={{color: '#23a5e2'}}>Edit</span>
+
+                            </MfcContainer>
                         </ColumnMenu>
                     </Grid>
                 </Grid>
@@ -245,10 +265,44 @@ class Navigation extends Component {
     }
 }
 
+const MfcPill = styled.span`
+    display: inline; 
+    margin-right: 1em; 
+`;
+const MfcContainer = styled.div`
+    display: flex; 
+`;
+const StyledFormControl = styled(FormControl)`
+    display: flex !important;
+    flex-direction: row !important;
+`;
+const Label = styled.span`
+    text-transform: uppercase;
+    font-size: 0.75em;
+    color: #dbdbdb;
+    margin: 0 1em 0 0.5em;
+`;
+const HomeStyled = styled(Home)`
+    color: white; 
+`;
+const Back = styled.div`
+    display: flex;
+`;
+const LocContainer = styled.div`
+    display: flex;
+    flex-direction: column; 
+    justify-content: center;
+`;
+const LocMenu = styled.div`
+    display: flex;
+    flex-direction: row; 
+    height: 100%;
+`;
 const NavBar = styled.div`
     display: flex;
     justify-content: space-between;
-    margin: 0 4em;
+    margin: 0 2em;
+    height: 100%;
 `;
 const StyledSelect = styled(NativeSelect)`
     color: white;
@@ -277,6 +331,10 @@ const ColumnMenu = styled.div`
 // `;
 const ChipContainer = styled.div`
     display: flex;
+    
+    & > div {
+        height: 1.75em;
+    }
 `;
 const StyledChip = styled(Chip)`
     color: white !important;
@@ -293,7 +351,7 @@ const Header = styled.h4`
     text-align: left;
     font-weight: 100;
     font-size: 12px;
-    margin: 0;
+    margin: 0.5em 0 0;
     text-transform: uppercase;
     color: #dbdbdb;
 `;
@@ -309,6 +367,7 @@ const mapStateToProps = state => {
         device_type_selected: state.deviceReducer.device_type_selected,
         selected_connected: state.deviceReducer.selected_connected,
         selected_uploaded: state.deviceReducer.selected_uploaded,
+        mfc_selected: state.mfcReducer.mfc_selected,
     };
 };
 

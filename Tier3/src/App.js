@@ -71,8 +71,10 @@ class App extends Component {
                                         {/*<GMap />*/}
                                     </Grid>
                                     <Grid item xs={12} md={6}>
-                                        <Chart />
-                                        <RTTable />
+                                        <RightViewContainer>
+                                            <Chart />
+                                            <RTTable />
+                                        </RightViewContainer>
                                     </Grid>
                                 </Grid>
                             </StickyFootCon>
@@ -87,7 +89,7 @@ class App extends Component {
 }
 
 const StickyFootWrap = styled.div`
-    flex: 1;
+    // flex: 1;
 `;
 const StickyFootCon = styled.div`
     // margin: 0 auto;
@@ -98,15 +100,23 @@ const StickyFootCon = styled.div`
 //     font-weight: 500;
 // `;
 const MiddlePane = styled.div`
-    flex: 1;
+    // flex: 1;
+`;
+const RightViewContainer = styled.div`
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
 `;
 const IdBar = styled.div`
     background-color: #51326c;
     width: 100%;
     text-align: center;
-    padding: 0.5em 0; 
     line-height: 30px;
     color: white;
+    height: 10vh; 
+    @media (max-width: 1286px) {
+        height: 100%;
+    }
 `;
 // const IdBarHeader = styled.h1`
 //     font-weight: 500;

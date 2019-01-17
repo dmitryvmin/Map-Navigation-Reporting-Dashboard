@@ -16,6 +16,21 @@ import {
 } from './../../Utils';
 // import alarmsData from '../../Data/alarms.json';
 
+const filterSensorsByLoc = (sensors, index, location) => {
+    const filtered = [...sensors].filter(f => f.facility.regions[index] === location);
+
+    return filtered;
+}
+
+const reduceSensorsByFilter = (sensors, metric) => {
+    const reduced = sensors.reduce((a, c) => {
+        a.push(_.get(c, metric));
+        return a;
+    }, []);
+
+    return reduced;
+}
+
 /**
  *  Saga responsible for formatting data for the Map / Table views
  *  @param { object } dataParam - if a dataParam is provided we can assume other params haven't changed
@@ -47,12 +62,10 @@ function* composeDisplayData( dataParam ) {
     let filterData;
 
     // 1. Filter sensors by location
-    filterData = sensors.filter(f => f.facility.regions[curNM.index] === curLocation);
-
+    // filterData = filterSensorsByLoc(sensors, curNM.index, curLocation);
     // 2. Filter by device type
     // 3. Filter by MFC
     // 4. Filter by Timeframe
-
 
     // ### Rows
     // True? rows don't necessarily depend on the sensors data - we still want to display all the possible regions even if there are no sensors therein
@@ -60,7 +73,7 @@ function* composeDisplayData( dataParam ) {
 
     if (childNM.type === 'facility_selected') {
 
-        rows = filterData;
+        rows = filterSensorsByLoc(sensors, curNM.index, curLocation);
 
     } else {
 
@@ -72,7 +85,6 @@ function* composeDisplayData( dataParam ) {
     }
 
     // ### Columns
-    // Columnds depend on the Tier and the Metric
     let columns = [];
 
     const getColumn = (id) => {
@@ -84,49 +96,86 @@ function* composeDisplayData( dataParam ) {
         }
     };
 
-    columns.push(getColumn(childNM.map));
-    columns.push(getColumn(metric));
-    columns.push(getColumn('Manufacturers'));
-
     if (tier === 'COUNTRY_LEVEL') {
+        columns.push(getColumn(childNM.map));
+        columns.push(getColumn(metric));
+        columns.push(getColumn('Manufacturers'));
         columns.push(getColumn('Total Devices'));
     }
-    if (tier === 'STATE_LEVEL') {
+    else if (tier === 'STATE_LEVEL') {
+        columns.push(getColumn(childNM.map));
+        columns.push(getColumn(metric));
+        columns.push(getColumn('Manufacturers'));
         columns.push(getColumn('Total Devices'));
     }
-    // if (tier === 'LGA_LEVEL') {
-    //     columns.push(getColumn('State Data'));
-    // }
-    // if (tier === 'FACILITY_LEVEL') {
-    //     columns.push(getColumn('State Data'));
-    // }
+    else if (tier === 'LGA_LEVEL') {
+        columns.push(getColumn(childNM.map));
+        columns.push(getColumn(metric));
+        columns.push(getColumn('Manufacturers'));
+        columns.push(getColumn('State Data'));
+    }
+    else if (tier === 'FACILITY_LEVEL') {
+        columns.push(getColumn(metric));
+        columns.push(getColumn('Manufacturers'));
+        columns.push(getColumn('Facility Data'));
+    }
 
-
-    // debugger;
     // ### Cells
     let cells = rows.reduce((acc, cur) => {
 
         // TODO: reduce children sensors...
+        let alarms;
+        let holdover;
+        let regionType;
+        let regionName;
+        let location;
+        let mfc;
 
-        let name = cur.properties[childNM.code];
-        const fridge = getRandomFridge();
+        if (tier !== 'LGA_LEVEL') {
+
+            location = cur.properties[childNM.code];
+            const sensorsFiltered = filterSensorsByLoc(sensors, childNM.index, location);
+
+            if (sensorsFiltered.length) {
+
+                alarms = reduceSensorsByFilter(sensorsFiltered, 'metrics.alarm_count');
+                holdover = reduceSensorsByFilter(sensorsFiltered, 'metrics.holdover_mean');
+                mfc = reduceSensorsByFilter(sensorsFiltered, 'manufacturer');
+
+            } else {
+                alarms = '-';
+                holdover = '-';
+                mfc = '-';
+            }
+
+            regionType = childNM.map;
+            regionName = cur.properties[childNM.code];
+
+        } else {
+
+            regionType = 'facilities';
+            regionName = cur.facility.name;
+            location = cur.location;
+
+        }
+
         acc.push({
-            [childNM.map]: name,
-
-            'Alarms': _.random(0, 30), // original Random data :)
-
+            [regionType]: regionName,
+            'Alarms': _.first(alarms),
             // TODO: temp... will pull from sensors endpoint once timeline buckets are added
-            'AlarmsByDay': Array.from({length: 40}, () => Math.floor(Math.random() * 2)),
-
-            'Holdover': _.random(0, 10), // original Random data :)
-            'chart': Math.random() >= 0.7, // original Random boolean
-            "id": crypto.getRandomValues(new Uint32Array(4)).join('-'),
-            "Manufacturers": fridge.manufacturer,
+            'AlarmsByDay': (alarms !== '-') ? Array.from({length: 40}, () => Math.floor(Math.random() * 2)) : '-',
+            'Holdover': holdover,
+            'id': crypto.getRandomValues(new Uint32Array(4)).join('-'),
+            'Manufacturers': mfc,
+            'chart': (alarms !== '-'),
+            'location': location,
         });
+
         return acc;
+
     }, []);
 
-    return {columns, cells};
+    return {columns, cells, rows};
 
 }
 

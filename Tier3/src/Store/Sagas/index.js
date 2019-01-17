@@ -14,7 +14,10 @@ import updateMetric from './updateMetric';
 import loadFake from './loadFake';
 import updateTimeframe from './updateTimeframe';
 import updateDevice from './updateDevice';
-import updateMfc from './updateMfc';
+import {
+    loadMfcs,
+    updateMfc
+} from './updateMfc';
 
 // Watches for Saga actions
 export function* watcherSaga() {
@@ -31,6 +34,8 @@ export function* watcherSaga() {
 
         takeLatest(GGConsts.NAV_HOVER, updateHover),
         // yield throttle(100, GGConsts.NAV_HOVER, updateHover),
+
+        takeLatest(GGConsts.MFC_UPDATING, updateMfc),
     ]);
 }
 
@@ -43,16 +48,16 @@ export function* startupSaga() {
     const data = yield getGeo('country_selected');
     yield put({type: GGConsts.GEO_MAP, data: {'countries': data}});
 
-    // Update navigation
-    yield updateNav({'country_selected': 'Nigeria'});
-
     // Sensor data is fetched, save to store, formatted for visualization views
     //yield loadSensors();
 
     // Load fake data....
     yield loadFake();
 
-    yield composeDisplayData();
+    yield loadMfcs();
+
+    // Update navigation
+    yield updateNav({'country_selected': 'Nigeria'});
 }
 
 // For any side-effects we want to add to the API calls

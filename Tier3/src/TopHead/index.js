@@ -6,33 +6,7 @@ import Person from '@material-ui/icons/PersonOutline';
 // import MenuItem from '@material-ui/core/MenuItem';
 // import IconButton from '@material-ui/core/IconButton';
 import 'typeface-roboto';
-
-const styles = {
-    topHeader: {
-        width: '100%',
-        display: 'flex',
-        justifyContent: 'space-between',
-        paddingTop: '14px',
-        paddingBottom: '14px',
-        backgroundColor: 'white',
-    },
-    avatarFlag: {
-        margin: '12px',
-        objectFit: 'cover'
-    },
-    avatarUser: {
-        margin: '12px',
-    },
-    titleArea: {
-        fontWeight: '400',
-        fontSize: '22px',
-        display: 'flex',
-        alignItems: 'center',
-    },
-    userArea: {
-        fontSize: '18px',
-    },
-};
+import styled from 'styled-components';
 
 export default class TopHead extends Component {
     constructor(props, context) {
@@ -43,38 +17,63 @@ export default class TopHead extends Component {
         }
     }
 
-    testclick(e, content) {
-        e.preventDefault();
-        console.log(content);
-        this.props.contentChange(content);
-    }
-
     render() {
         return (
-            <header style={styles.topHeader}>
-                <div style={styles.titleArea}>
+            <Header>
+                <TitleArea>
                     <Avatar
                         src="/img/flag.jpg"
                         size={60}
-                        style={styles.avatarFlag}
                         alt="flag icon"
                     />
-                    Master Reporting Tool
-                </div>
-                <div style={styles.userArea}>
-                    <Avatar style={styles.avatarUser}>
+                    <span>
+                        Nigeria Reporting Tool
+                    </span>
+                </TitleArea>
+                <UserArea>
+                    <StyledAvatar>
                         <Person />
-                    </Avatar>
-
+                    </StyledAvatar>
                     {/*<IconMenu*/}
-                        {/*iconButtonElement={<IconButton style={styles.downArrow}><KeyboardArrowDown /></IconButton>}*/}
-                        {/*anchorOrigin={{horizontal: 'right', vertical: 'top'}}*/}
-                        {/*targetOrigin={{horizontal: 'right', vertical: 'top'}}*/}
+                    {/*iconButtonElement={<IconButton style={styles.downArrow}><KeyboardArrowDown /></IconButton>}*/}
+                    {/*anchorOrigin={{horizontal: 'right', vertical: 'top'}}*/}
+                    {/*targetOrigin={{horizontal: 'right', vertical: 'top'}}*/}
                     {/*>*/}
-                        {/*<MenuItem primaryText="Sign out" onClick={(e) => this.props.authenticate(false)}/>*/}
+                    {/*<MenuItem primaryText="Sign out" onClick={(e) => this.props.authenticate(false)}/>*/}
                     {/*</IconMenu>*/}
-                </div>
-            </header>
+                </UserArea>
+            </Header>
         )
     }
 }
+
+const Header = styled.header`
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    background-color: white;
+    height: 5vh;
+`;
+const TitleArea = styled.div`
+    font-weight: 400;
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    
+    & > div {
+        margin: 0 1em 0 2em;
+        object-fit: cover;
+        width: 30px;
+        height: 30px;
+    }
+`;
+const StyledAvatar = styled(Avatar)`
+    width: 30px;
+    height: 30px;
+`;
+const UserArea = styled.div`
+    font-size: 18px;
+    margin: 0px 2em;
+    align-items: center;
+    display: flex;
+`;
