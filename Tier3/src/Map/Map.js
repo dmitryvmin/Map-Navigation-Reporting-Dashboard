@@ -250,7 +250,7 @@ class Map extends Component {
                         ref={ref => {
                             this._map = ref && ref.getMap(); // reference to the mapboxgl.Map instance
                         }}
-                        // preventStyleDiffing={true}
+                        preventStyleDiffing={true}
                         reuse
                         gl={gl}
                         // mapStyle="mapbox://styles/mapbox/light-v9"

@@ -7,15 +7,15 @@ import {
     tierSelector,
     metricSelector,
     mfcSelector,
+    deviceTypeSelector,
+    timeframeSelector,
 } from './../Selectors';
 
 import {
     getNMap,
     getNMapChild,
     getGeoJson,
-    getRandomFridge,
 } from './../../Utils';
-// import alarmsData from '../../Data/alarms.json';
 
 const filterSensorsByLoc = (sensors, index, location) => {
     const filtered = sensors.filter(f => f.facility.regions[index] === location);
@@ -57,29 +57,29 @@ function* composeDisplayData( dataParam ) {
     const metricSelected = yield select(metricSelector);
 
     // 3. Filter - Device Type
+    const deviceType = yield select(deviceTypeSelector);
 
     // 4. Filter - Device MFC
     const mfcSelected = yield select(mfcSelector);
 
     // 5. Timeframe
+    let timeframe = yield select(timeframeSelector);
+    timeframe = (timeframe === 'All') ? 'All' : timeframe.match(/\d+/)[0];
 
     if (!sensors || !navigation || !tier || !metricSelected) {
         return;
     }
 
     // ### Rows
-    // True? rows don't necessarily depend on the sensors data - we still want to display all the possible regions even if there are no sensors therein
     let rows;
 
     if (childNM.type === 'facility_selected') {
-
         rows = filterSensorsByLoc(sensors, curNM.index, curLocation);
 
     } else {
-
         let data = getGeoJson(childNM.type);
-
         rows = data.filter(f => f.properties[curNM.code] === navigation[curNM.type]);
+
     }
 
     // ### Columns
@@ -121,7 +121,7 @@ function* composeDisplayData( dataParam ) {
     // ### Cells
     let cells = rows.reduce((acc, cur) => {
 
-        // TODO: reduce children sensors...
+        let id = crypto.getRandomValues(new Uint32Array(4)).join('-');
         let alarms;
         let holdover;
         let regionType;
@@ -130,30 +130,14 @@ function* composeDisplayData( dataParam ) {
         let mfc;
         let sensorsFiltered = [...sensors];
 
-        if (tier !== 'FACILITY_LEVEL') {
+        if (tier === 'COUNTRY_LEVEL' || tier === 'STATE_LEVEL') {
 
-            if (tier !== 'LGA_LEVEL') {
-                location = cur.properties[childNM.code];
-                sensorsFiltered = filterSensorsByLoc(sensorsFiltered, childNM.index, location);
-                sensorsFiltered = filterSensorsByMfc(sensorsFiltered, mfcSelected);
+            location = cur.properties[childNM.code];
+            sensorsFiltered = filterSensorsByLoc(sensorsFiltered, childNM.index, location);
+            sensorsFiltered = filterSensorsByMfc(sensorsFiltered, mfcSelected);
 
-                regionType = childNM.map;
-                regionName = cur.properties[childNM.code];
-
-            } else {
-
-                location = cur.facility.location;
-
-                if (mfcSelected.includes(mfcSelected)) {
-                    sensorsFiltered = cur;
-                } else {
-                    sensorsFiltered = [];
-                }
-
-                regionType = curNM.map;
-                regionName = cur.facility.name
-
-            }
+            regionType = childNM.map;
+            regionName = cur.properties[childNM.code];
 
             if (sensorsFiltered.length) {
 
@@ -169,21 +153,47 @@ function* composeDisplayData( dataParam ) {
 
             }
 
-        } else {
+        }
+        else if (tier === 'LGA_LEVEL') {
+
+            location = cur.facility.location;
+
+            if (mfcSelected.includes(mfcSelected)) {
+                sensorsFiltered = cur;
+            } else {
+                sensorsFiltered = [];
+            }
+
+            regionType = curNM.map;
+            regionName = cur.facility.name;
+
+            alarms = cur.metrics.alarm_count;
+            holdover = cur.metrics.holdover_mean;
+            mfc = cur.manufacturer;
+            id = cur.id;
+
+            debugger;
+        }
+        // TODO: remove ...shouldn't reach facility_level
+        else if (tier === 'FACILITY_LEVEL') {
 
             regionType = 'facilities';
             regionName = cur.facility.name;
             location = cur.location;
 
+            // TODO: needs to be updated
+            alarms = '-';
+            holdover = '-';
+            mfc = '-';
+
         }
 
         acc.push({
             [regionType]: regionName,
-            'Alarms': _.first(alarms),
-            // TODO: temp... will pull from sensors endpoint once timeline buckets are added
-            'AlarmsByDay': (alarms !== '-') ? Array.from({length: 40}, () => Math.floor(Math.random() * 2)) : '-',
-            'Holdover': holdover,
-            'id': crypto.getRandomValues(new Uint32Array(4)).join('-'),
+            'Alarms': _.isArray(alarms) ? _.sum(alarms) : alarms,
+            'AlarmsByDay': (alarms === '-' || timeframe === 'All') ? '-' : Array.from({length: timeframe}, () => Math.floor(Math.random() * 2)),
+            'Holdover': _.isArray(holdover) ? _.mean(holdover) : holdover,
+            'id': id,
             'Manufacturers': mfc,
             'chart': (alarms !== '-'),
             'location': location,

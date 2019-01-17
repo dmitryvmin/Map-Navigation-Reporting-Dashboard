@@ -91,11 +91,10 @@ const METRICS = [METRIC_ALARMS, METRIC_UPTIME, METRIC_REPORTING, METRIC_HOLDOVER
 const UPDATE_METRIC = "UPDATE_METRIC";
 const METRIC_SELECTED = "METRIC_SELECTED"
 
-const TIMEFRAME_1 = "7 Days";
-const TIMEFRAME_2 = "30 Days";
-const TIMEFRAME_3 = "60 Days";
-const TIMEFRAME_4 = "All";
-const TIMEFRAMES = [TIMEFRAME_1, TIMEFRAME_2, TIMEFRAME_3, TIMEFRAME_4];
+const TIMEFRAME_1 = "30 Days";
+const TIMEFRAME_2 = "60 Days";
+const TIMEFRAME_3 = "All";
+const TIMEFRAMES = [TIMEFRAME_1, TIMEFRAME_2, TIMEFRAME_3];
 const TIMEFRAME_SELECTED = "TIMEFRAME_SELECTED";
 const UPDATE_TIMEFRAME = "UPDATE_TIMEFRAME";
 
@@ -175,10 +174,6 @@ export default class GGConsts {
 
     static get TIMEFRAME_3() {
         return TIMEFRAME_3;
-    }
-
-    static get TIMEFRAME_4() {
-        return TIMEFRAME_4;
     }
 
     static get TIMEFRAMES() {

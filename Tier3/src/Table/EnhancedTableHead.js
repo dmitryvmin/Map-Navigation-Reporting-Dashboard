@@ -40,7 +40,7 @@ class EnhancedTableHead extends React.Component {
                     {tableCols.map(col => {
                         return (
                             <StyledTableCell
-                                total={(col.label === 'Total Devices')}
+                                total={(col.label === 'Total Devices') ? "true" : "false"}
                                 key={col.id}
                                 numeric={col.numeric}
                                 padding={col.disablePadding ? 'none' : 'default'}
@@ -63,7 +63,7 @@ class EnhancedTableHead extends React.Component {
 }
 
 const StyledTableCell = styled(TableCell)`
-    background-color: #fafafa;
+    background-color: #fafafa; 
     position: sticky;
     top: 0;
     text-align: center !important; 
@@ -76,8 +76,8 @@ const StyledTableCell = styled(TableCell)`
 const StyledTableHead = styled(TableHead)`
     text-transform: uppercase;
     background-color: #fafafa;
-    border-top: 1px solid #e0e0e0;
-    border-bottom: 1px solid #e0e0e0;
+    // border-top: 1px solid #e0e0e0;
+    // border-bottom: 1px solid #e0e0e0;
 `;
 
 export default EnhancedTableHead; 

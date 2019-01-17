@@ -36,13 +36,15 @@ class Row extends Component {
 
     shouldComponentUpdate(nextProps, nextState) {
 
-        let shouldUpdate = (
-            (this.state.selected !== nextProps.selected) ||
-            (this.state.order !== nextProps.order) ||
-            (this.state.orderBy !== nextProps.orderBy)
-        );
+        // let shouldUpdate = (
+        //     (this.state.selected !== nextProps.selected) ||
+        //     (this.state.order !== nextProps.order) ||
+        //     (this.state.orderBy !== nextProps.orderBy)
+        // );
 
-        return shouldUpdate;
+        // return shouldUpdate;
+
+        return true;
     }
 
     render() {
@@ -70,10 +72,14 @@ class Row extends Component {
                 selected={selected}
                 aria-checked={selected}
             >
-
                 {columns.map(c => {
                     let id = c.id;
                     let value = data[id];
+
+
+                    // if (c.id === 'Alarms') {
+                    //     debugger;
+                    // }
 
                     return (
                         <TableCell
@@ -110,19 +116,19 @@ const AlarmVal = styled.span`
 const Alarm = styled.div`
     display: flex; 
     align-items: center;
+    justify-content: center;
 `;
 const AlarmChart = styled.div`
      margin: 0 0 0 7px;
-     width: 52px;
-     height: 20px;
+     width: 105px;
      line-height: 2px;
      float: right; 
 `;
 const AlarmCell = styled.div`
     display: inline-block;
-    width: 3px;
-    height: 3px
-    margin: 1px 0 1px 2px
+    width: 5px;
+    height: 5px;
+    margin: 1px;
     background-color: ${props => props.alarm ? GGConsts.COLOR_GREEN : GGConsts.COLOR_RED}
 `;
 

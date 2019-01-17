@@ -61,6 +61,10 @@ class Chart extends Component {
         this.setState({chartType: (chartType === 'Bar') ? 'Line' : 'Bar'});
     };
 
+    getTrendData = () => {
+        const {timeframe_selected} = this.props;
+    }
+
     render() {
         const {
             nav_tier,
@@ -116,7 +120,7 @@ class Chart extends Component {
                                 color="secondary"
                             />
                         }
-                        label="Line / Bar"
+                        label="Trend / Rank"
                     />
                 </Controls>
 
@@ -139,7 +143,7 @@ class Chart extends Component {
                             </BarChart>
                             :
                             <LineChart
-                                data={data}
+                                data={this.getTrendData}
                                 margin={{top: 50, right: 20, left: 20, bottom: 20}}
                             >
                                 <Tooltip/>
