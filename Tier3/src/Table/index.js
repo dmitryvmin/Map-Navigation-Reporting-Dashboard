@@ -2,11 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
-// import TablePagination from '@material-ui/core/TablePagination';
+import TablePagination from '@material-ui/core/TablePagination';
 import GGConsts from '../Constants';
 import EnhancedTableHead from './EnhancedTableHead';
 import {connect} from "react-redux";
 import Row from './Row';
+import TableCell from '@material-ui/core/TableCell';
+import TableRow from '@material-ui/core/TableRow';
 // import ManualTableRow from './ManualTableRow';
 import {
     // navigationMap,
@@ -36,17 +38,34 @@ class RTTable extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            order: 'asc',
-            orderBy: 'states',
+            order: 'desc',
+            orderBy: this.props.metric_selected,
             errors: [],
             page: 0,
             rowsPerPage: 50,
             isDetailOpen: false,
-            selectedDevice: null
+            selectedDevice: null,
+            hover: false,
         }
 
         this.intervalId = null;
     }
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        return {
+            hover: nextProps.nav_hover.value
+        }
+    }
+
+    // shouldComponentUpdate(nextProps, nextState) {
+    //
+    //     let shouldUpdate = (
+    //         (!this.state.hover && this.state.hover === nextProps.nav_hover.value) ||
+    //         (this.state.hover && this.state.hover !== nextProps.nav_hover.value)
+    //     );
+    //
+    //     return shouldUpdate;
+    // }
 
     mapPropsToTableColumns = (data) => {
         const device_info = [];
@@ -97,20 +116,30 @@ class RTTable extends React.Component {
         this.setState({rowsPerPage: event.target.value});
     };
 
+    getHover = (cell) => {
+        const {nav_tier} = this.props;
+        const {hover} = this.state;
+
+        const childNM = getNMapChild(nav_tier, 'tier');
+        const selected = cell[childNM.map] === hover;
+
+        return selected;
+    }
+
     render() {
         const {
             nav_tier,
             display_data,
         } = this.props;
 
-        if (!nav_tier || !display_data) {
-            return null;
-        }
-
         const {
             columns,
             cells,
         } = display_data || null;
+
+        if (!nav_tier || !display_data || !columns || !cells) {
+            return null;
+        }
 
         const {
             order,
@@ -119,7 +148,7 @@ class RTTable extends React.Component {
             page,
         } = this.state;
 
-        // const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
+        // const emptyRows = rowsPerPage - Math.min(rowsPerPage, cells.length - page * rowsPerPage);
 
         return (
             <Container>
@@ -140,11 +169,14 @@ class RTTable extends React.Component {
                         <TableBody>
                             {stableSort(cells, getSorting(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map((d, i) =>
+                                .map((c, i) =>
                                     <Row
+                                        selected={this.getHover(c)}
+                                        order={order}
+                                        orderBy={orderBy}
                                         tier={nav_tier}
-                                        data={d}
-                                        key={`${d}-${i}`}
+                                        data={c}
+                                        key={`cell-${c}-${i}`}
                                         columns={columns}
                                         handleRowHover={this.handleRowHover}
                                         handleRowClick={this.handleRowClick}
@@ -159,18 +191,18 @@ class RTTable extends React.Component {
                     </Table>
                 </TableWrapper>
                 {/*<TablePagination component="div"*/}
-                {/*rowsPerPageOptions={[8, 20, 50]}*/}
-                {/*count={data.length}*/}
-                {/*rowsPerPage={rowsPerPage}*/}
-                {/*page={page}*/}
-                {/*backIconButtonProps={{*/}
-                {/*'aria-label': 'Previous Page',*/}
-                {/*}}*/}
-                {/*nextIconButtonProps={{*/}
-                {/*'aria-label': 'Next Page',*/}
-                {/*}}*/}
-                {/*onChangePage={this.handleChangePage}*/}
-                {/*onChangeRowsPerPage={this.handleChangeRowsPerPage}/>*/}
+                                 {/*rowsPerPageOptions={[8, 20, 50]}*/}
+                                 {/*count={cells.length}*/}
+                                 {/*rowsPerPage={rowsPerPage}*/}
+                                 {/*page={page}*/}
+                                 {/*backIconButtonProps={{*/}
+                                     {/*'aria-label': 'Previous Page',*/}
+                                 {/*}}*/}
+                                 {/*nextIconButtonProps={{*/}
+                                     {/*'aria-label': 'Next Page',*/}
+                                 {/*}}*/}
+                                 {/*onChangePage={this.handleChangePage}*/}
+                                 {/*onChangeRowsPerPage={this.handleChangeRowsPerPage}/>*/}
             </Container>
         );
     }
@@ -179,12 +211,14 @@ class RTTable extends React.Component {
 const mapStateToProps = state => {
     return {
         nav_tier: state.navigationReducer.nav_tier,
+        nav_hover: state.navigationReducer.nav_hover,
         country_selected: state.navigationReducer.country_selected,
         state_selected: state.navigationReducer.state_selected,
         lga_selected: state.navigationReducer.lga_selected,
         facility_selected: state.navigationReducer.facility_selected,
         navigation: state.navigationReducer.navigation,
         display_data: state.displayReducer.display_data,
+        metric_selected: state.metricReducer.metric_selected,
     }
 }
 

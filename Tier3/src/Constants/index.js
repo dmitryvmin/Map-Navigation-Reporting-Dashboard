@@ -1,13 +1,25 @@
 import {createMuiTheme} from '@material-ui/core/styles';
 import indigo from 'material-ui/colors/indigo';
 
+// Colors
+const COLOR_SELECTED = [216, 200, 229];
+const COLOR_UNSELECTED = [213, 213, 213];
+const COLOR_GRAY = "#6b6b6b";
+const COLOR_BLUE = '#9AC7EA';
+const COLOR_RED = '#EF000A';
+const COLOR_YELLOW = '#FFAC00';
+const COLOR_GREEN = '#00B300';
+const COLOR_PURPLE = '#51326c';
+
 // Theme
-const THEME_COLOR = '#51326c';
 const MUI_THEME = createMuiTheme({
     palette: {
         primary: {
-            main: indigo[500],
+            main: COLOR_PURPLE,
         },
+        secondary: {
+            main: COLOR_BLUE,
+        }
     },
     typography: {
         fontFamily: [
@@ -21,11 +33,6 @@ const MUI_THEME = createMuiTheme({
         useNextVariants: true
     }
 });
-
-// Colors
-const SELECTED_COLOR = "#f5f5f5";
-const DESELECTED_COLOR = "#bcbcbc";
-const OFF_COLOR = "#6b6b6b";
 
 // API Creds
 const GG_CREDS = 'demo:Change is good!';
@@ -238,16 +245,29 @@ export default class GGConsts {
         return MAP_STYLE;
     }
 
-    static get SELECTED_COLOR() {
-        return SELECTED_COLOR;
+    static get COLOR_SELECTED() {
+        return COLOR_SELECTED;
     }
-
-    static get DESELECTED_COLOR() {
-        return DESELECTED_COLOR;
+    static get COLOR_UNSELECTED() {
+        return COLOR_UNSELECTED;
     }
-
-    static get OFF_COLOR() {
-        return OFF_COLOR;
+    static get COLOR_GRAY() {
+        return COLOR_GRAY;
+    }
+    static get COLOR_BLUE() {
+        return COLOR_BLUE;
+    }
+    static get COLOR_RED() {
+        return COLOR_RED;
+    }
+    static get COLOR_YELLOW() {
+        return COLOR_YELLOW;
+    }
+    static get COLOR_GREEN() {
+        return COLOR_GREEN;
+    }
+    static get COLOR_PURPLE() {
+        return COLOR_PURPLE;
     }
 
     static get API_CALL_SUCCESS() {
@@ -360,10 +380,6 @@ export default class GGConsts {
 
     static get OWNER_ID() {
         return OWNER_ID;
-    }
-
-    static get THEME_COLOR() {
-        return THEME_COLOR;
     }
 
     static get UPLOADED_DEVICES() {

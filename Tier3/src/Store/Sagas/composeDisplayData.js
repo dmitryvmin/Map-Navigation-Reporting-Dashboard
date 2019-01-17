@@ -5,7 +5,8 @@ import {
     sensorsSelector,
     navSelector,
     tierSelector,
-    metricSelector
+    metricSelector,
+    mfcSelector,
 } from './../Selectors';
 
 import {
@@ -17,8 +18,12 @@ import {
 // import alarmsData from '../../Data/alarms.json';
 
 const filterSensorsByLoc = (sensors, index, location) => {
-    const filtered = [...sensors].filter(f => f.facility.regions[index] === location);
+    const filtered = sensors.filter(f => f.facility.regions[index] === location);
+    return filtered;
+}
 
+const filterSensorsByMfc = (sensors, mfc) => {
+    const filtered = sensors.filter(f => mfc.includes(f.manufacturer));
     return filtered;
 }
 
@@ -49,23 +54,18 @@ function* composeDisplayData( dataParam ) {
     const childNM = getNMapChild(tier, 'tier'); // child navigation map
 
     // 2. Metric
-    const metric = yield select(metricSelector);
+    const metricSelected = yield select(metricSelector);
 
     // 3. Filter - Device Type
+
     // 4. Filter - Device MFC
+    const mfcSelected = yield select(mfcSelector);
+
     // 5. Timeframe
 
-    if (!sensors || !navigation || !tier || !metric) {
+    if (!sensors || !navigation || !tier || !metricSelected) {
         return;
     }
-
-    let filterData;
-
-    // 1. Filter sensors by location
-    // filterData = filterSensorsByLoc(sensors, curNM.index, curLocation);
-    // 2. Filter by device type
-    // 3. Filter by MFC
-    // 4. Filter by Timeframe
 
     // ### Rows
     // True? rows don't necessarily depend on the sensors data - we still want to display all the possible regions even if there are no sensors therein
@@ -79,9 +79,7 @@ function* composeDisplayData( dataParam ) {
 
         let data = getGeoJson(childNM.type);
 
-        if (curNM.type !== 'All') {
-            rows = data.filter(f => f.properties[curNM.code] === navigation[curNM.type]);
-        }
+        rows = data.filter(f => f.properties[curNM.code] === navigation[curNM.type]);
     }
 
     // ### Columns
@@ -98,24 +96,24 @@ function* composeDisplayData( dataParam ) {
 
     if (tier === 'COUNTRY_LEVEL') {
         columns.push(getColumn(childNM.map));
-        columns.push(getColumn(metric));
+        columns.push(getColumn(metricSelected));
         columns.push(getColumn('Manufacturers'));
         columns.push(getColumn('Total Devices'));
     }
     else if (tier === 'STATE_LEVEL') {
         columns.push(getColumn(childNM.map));
-        columns.push(getColumn(metric));
+        columns.push(getColumn(metricSelected));
         columns.push(getColumn('Manufacturers'));
         columns.push(getColumn('Total Devices'));
     }
     else if (tier === 'LGA_LEVEL') {
         columns.push(getColumn(childNM.map));
-        columns.push(getColumn(metric));
+        columns.push(getColumn(metricSelected));
         columns.push(getColumn('Manufacturers'));
         columns.push(getColumn('State Data'));
     }
     else if (tier === 'FACILITY_LEVEL') {
-        columns.push(getColumn(metric));
+        columns.push(getColumn(metricSelected));
         columns.push(getColumn('Manufacturers'));
         columns.push(getColumn('Facility Data'));
     }
@@ -130,11 +128,32 @@ function* composeDisplayData( dataParam ) {
         let regionName;
         let location;
         let mfc;
+        let sensorsFiltered = [...sensors];
 
-        if (tier !== 'LGA_LEVEL') {
+        if (tier !== 'FACILITY_LEVEL') {
 
-            location = cur.properties[childNM.code];
-            const sensorsFiltered = filterSensorsByLoc(sensors, childNM.index, location);
+            if (tier !== 'LGA_LEVEL') {
+                location = cur.properties[childNM.code];
+                sensorsFiltered = filterSensorsByLoc(sensorsFiltered, childNM.index, location);
+                sensorsFiltered = filterSensorsByMfc(sensorsFiltered, mfcSelected);
+
+                regionType = childNM.map;
+                regionName = cur.properties[childNM.code];
+
+            } else {
+
+                location = cur.facility.location;
+
+                if (mfcSelected.includes(mfcSelected)) {
+                    sensorsFiltered = cur;
+                } else {
+                    sensorsFiltered = [];
+                }
+
+                regionType = curNM.map;
+                regionName = cur.facility.name
+
+            }
 
             if (sensorsFiltered.length) {
 
@@ -143,13 +162,12 @@ function* composeDisplayData( dataParam ) {
                 mfc = reduceSensorsByFilter(sensorsFiltered, 'manufacturer');
 
             } else {
+
                 alarms = '-';
                 holdover = '-';
                 mfc = '-';
-            }
 
-            regionType = childNM.map;
-            regionName = cur.properties[childNM.code];
+            }
 
         } else {
 

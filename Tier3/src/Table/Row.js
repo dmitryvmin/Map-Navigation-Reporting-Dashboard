@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from "react-redux";
-// import _ from 'lodash';
+import GGConsts from '../Constants';
+import _ from 'lodash';
 import styled from 'styled-components';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
@@ -8,7 +9,9 @@ import {getNMapChild} from './../Utils';
 
 const drawBoolLEDs = (value, days, id) => (
     <Alarm>
-        {value}
+        <AlarmVal>
+            {value}
+        </AlarmVal>
         <AlarmChart>
             {days.map((d, i) => <AlarmCell key={`alarmchart-${id}-${d}-${i}`} alarm={d}/>)}
         </AlarmChart>
@@ -20,42 +23,23 @@ class Row extends Component {
         super(props);
         this.state = {
             selected: false,
-            nav_hover: this.getHover(),
         };
     }
 
-    getHover = () => {
-        const {
-            tier,
-            data
-        } = this.props;
-
-        const childNav = getNMapChild(tier, 'tier');
-        const hover = data[childNav.map];
-
-        return hover;
-    }
-
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (
-            nextProps.nav_hover &&
-            nextProps.nav_hover.value &&
-            nextProps.nav_hover.value === prevState.nav_hover
-        ) {
-            return {
-                selected: true
-            };
-        } else {
-            return {
-                selected: false
-            };
+        return {
+            selected: nextProps.selected,
+            order: nextProps.order,
+            orderBy: nextProps.orderBy,
         }
     }
 
     shouldComponentUpdate(nextProps, nextState) {
+
         let shouldUpdate = (
-            (this.state.nav_hover === nextProps.nav_hover.value && !this.state.selected) ||
-            (this.state.nav_hover !== nextProps.nav_hover.value && this.state.selected)
+            (this.state.selected !== nextProps.selected) ||
+            (this.state.order !== nextProps.order) ||
+            (this.state.orderBy !== nextProps.orderBy)
         );
 
         return shouldUpdate;
@@ -64,9 +48,11 @@ class Row extends Component {
     render() {
         const {
             data,
+            tier,
             handleRowClick,
             handleRowHover,
             columns,
+            // selected,
         } = this.props;
 
         if (!data || !columns.length) {
@@ -105,19 +91,21 @@ class Row extends Component {
                     )}
                 )}
 
+                {/*{*/}
+                    {/*<TableCell>*/}
+                        {/*<div>{data.states}</div>*/}
+                    {/*</TableCell>*/}
+                {/*}*/}
             </TableRow>
         )
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        nav_hover: state.navigationReducer.nav_hover,
-    }
-}
-
 const StyledCell = styled.div`
     text-align: center; 
+`;
+const AlarmVal = styled.span`
+    // margin-left: 2em;
 `;
 const Alarm = styled.div`
     display: flex; 
@@ -135,7 +123,7 @@ const AlarmCell = styled.div`
     width: 3px;
     height: 3px
     margin: 1px 0 1px 2px
-    background-color: ${props => props.alarm ? '#d00' : '#0d0'}
+    background-color: ${props => props.alarm ? GGConsts.COLOR_GREEN : GGConsts.COLOR_RED}
 `;
 
-export default connect(mapStateToProps, null)(Row);
+export default Row;

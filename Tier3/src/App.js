@@ -103,17 +103,17 @@ const MiddlePane = styled.div`
     // flex: 1;
 `;
 const RightViewContainer = styled.div`
-    height: 80vh;
+    height: calc(100vh - 200px);
     display: flex;
     flex-direction: column;
 `;
 const IdBar = styled.div`
-    background-color: #51326c;
+    background-color: ${GGConsts.COLOR_PURPLE};
     width: 100%;
     text-align: center;
     line-height: 30px;
     color: white;
-    height: 10vh; 
+    height: 100px; 
     @media (max-width: 1286px) {
         height: 100%;
     }

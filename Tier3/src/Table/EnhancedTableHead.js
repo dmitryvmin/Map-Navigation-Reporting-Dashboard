@@ -1,16 +1,29 @@
 import React from 'react';
-// import PropTypes from 'prop-types';
+import GGConsts from '../Constants';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
-import styled from 'styled-components';
+import styled, { css } from "styled-components";
 // import Tooltip from '@material-ui/core/Tooltip';
 
 class EnhancedTableHead extends React.Component {
     createSortHandler = property => event => {
         this.props.onRequestSort(event, property);
     };
+
+    formatLabel = (label) => {
+        if (
+            label === 'states' ||
+            label === 'lgas' ||
+            label === 'facilities'
+        ) {
+            return label.substring(0, label.length - 1);
+        } else {
+            return label
+        }
+
+    }
 
     render() {
         const {   // onSelectAllClick,
@@ -22,11 +35,12 @@ class EnhancedTableHead extends React.Component {
         } = this.props;
 
         return (
-            <TableHead>
+            <StyledTableHead>
                 <TableRow>
                     {tableCols.map(col => {
                         return (
                             <StyledTableCell
+                                total={(col.label === 'Total Devices')}
                                 key={col.id}
                                 numeric={col.numeric}
                                 padding={col.disablePadding ? 'none' : 'default'}
@@ -37,30 +51,33 @@ class EnhancedTableHead extends React.Component {
                                     direction={order}
                                     onClick={this.createSortHandler(col.id)}
                                 >
-                                    {col.label}
+                                    {this.formatLabel(col.label)}
                                 </TableSortLabel>
                             </StyledTableCell>
                         );
                     }, this)}
                 </TableRow>
-            </TableHead>
+            </StyledTableHead>
         );
     }
 }
 
 const StyledTableCell = styled(TableCell)`
-    background-color: #fff;
+    background-color: #fafafa;
     position: sticky;
     top: 0;
     text-align: center !important; 
+    
+    ${props => 
+        props.total && css`
+            width: 25%; 
+    `}
 `;
-// EnhancedTableHead.propTypes = {
-//   numSelected: PropTypes.number.isRequired,
-//   onRequestSort: PropTypes.func.isRequired,
-//   onSelectAllClick: PropTypes.func.isRequired,
-//   order: PropTypes.string.isRequired,
-//   orderBy: PropTypes.string.isRequired,
-//   rowCount: PropTypes.number.isRequired,
-// };
+const StyledTableHead = styled(TableHead)`
+    text-transform: uppercase;
+    background-color: #fafafa;
+    border-top: 1px solid #e0e0e0;
+    border-bottom: 1px solid #e0e0e0;
+`;
 
 export default EnhancedTableHead; 

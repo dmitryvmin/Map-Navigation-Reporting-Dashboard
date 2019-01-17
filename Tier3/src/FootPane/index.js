@@ -10,7 +10,7 @@ const FootPane = () => (
                 alt="Global Good"
             />
             <Copyright>
-                &copy; 2018 globalgood All Rights Reserved.
+                &copy; 2019 globalgood All Rights Reserved.
             </Copyright>
         </Footer>
     </Wrapper>
@@ -24,7 +24,7 @@ const Wrapper = styled.div`
     background-color: white;
     display: flex;
     align-content: center;
-    height: 5vh;
+    height: 50px;
 `;
 const Footer = styled.div`
     margin: 0 2em;

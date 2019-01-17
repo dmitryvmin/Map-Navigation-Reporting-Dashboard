@@ -10,12 +10,21 @@ body {
 	flex-direction: column;
 }
 
-.MuiTableRow-root-3.MuiTableRow-hover-5:hover {
-    background: #f7f7f7 !important;
-    cursor: pointer;
+thead tr {
+	height: 30px !important;
 }
-[class^="MuiTableRow-"]:hover {
-	background-color: rgba(0, 0, 0, 0.02) !important;
+
+tbody tr {
+	height: 40px !important;
+}
+
+/*.MuiTableRow-root-3.MuiTableRow-hover-5:hover {*/
+    /*background: #f1e0ff !important;*/
+    /*cursor: pointer;*/
+/*}*/
+
+[class^="MuiTableBody-"]>[class^="MuiTableRow-"]:hover {
+	background-color: #f1e0ff !important;
 }
 
 .current-value {
@@ -95,8 +104,7 @@ a.mapboxgl-ctrl-logo, .mapboxgl-ctrl.mapboxgl-ctrl-attrib {
 
 /*IMPORTANT */
 #deckgl-wrapper {
-	min-height: 80vh;
-	/*max-height: 70vh;*/
+	height: calc(100vh - 200px);
 	width: 100% !important;
 	position: relative !important;
 }
