@@ -242,7 +242,6 @@ class Navigation extends Component {
                     <Grid item lg={3} md={6} xs={6}>
                         <ColumnMenu>
                             <Header>Manufacturer:</Header>
-
                             <MfcContainer>
                             {mfc_selected.map((mfc, index) => {
                                 return (
@@ -255,8 +254,7 @@ class Navigation extends Component {
                                 )
                             })}
                             <MfcDialog open={mfcDialog} toggle={this.toggleMfcDialog} />
-                            <span onClick={this.toggleMfcDialog} style={{color: '#23a5e2'}}>Edit</span>
-
+                            <Edit onClick={this.toggleMfcDialog}>Edit</Edit>
                             </MfcContainer>
                         </ColumnMenu>
                     </Grid>
@@ -288,6 +286,9 @@ const HomeStyled = styled(Home)`
 `;
 const Back = styled.div`
     display: flex;
+`;
+const Edit = styled.span`
+    color: ${GGConsts.COLOR_BLUE};
 `;
 const LocContainer = styled.div`
     display: flex;

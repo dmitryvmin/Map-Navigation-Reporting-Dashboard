@@ -1,8 +1,22 @@
 const desc = (a, b, orderBy) => {
-    if (b[orderBy] < a[orderBy]) {
+    let cellA, cellB;
+    if (
+        orderBy === 'Alarms' ||
+        orderBy === 'Uptime' ||
+        orderBy === 'Reporting' ||
+        orderBy === 'Holdover'
+    ) {
+        cellA = (a[orderBy] === '-') ? 0 : a[orderBy];
+        cellB = (b[orderBy] === '-') ? 0 : b[orderBy];
+    } else {
+        cellA = a[orderBy];
+        cellB = b[orderBy];
+    }
+
+    if (cellB < cellA) {
         return -1;
     }
-    if (b[orderBy] > a[orderBy]) {
+    if (cellB > cellA) {
         return 1;
     }
 

@@ -10,7 +10,7 @@ const FootPane = () => (
                 alt="Global Good"
             />
             <Copyright>
-                &copy; 2018 globalgood All Rights Reserved.
+                &copy; 2019 globalgood All Rights Reserved.
             </Copyright>
         </Footer>
     </Wrapper>

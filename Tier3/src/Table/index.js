@@ -38,21 +38,34 @@ class RTTable extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            order: 'asc',
-            orderBy: 'states',
+            order: 'desc',
+            orderBy: this.props.metric_selected,
             errors: [],
             page: 0,
             rowsPerPage: 50,
             isDetailOpen: false,
             selectedDevice: null,
+            hover: false,
         }
 
         this.intervalId = null;
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return true;
+    static getDerivedStateFromProps(nextProps, prevState) {
+        return {
+            hover: nextProps.nav_hover.value
+        }
     }
+
+    // shouldComponentUpdate(nextProps, nextState) {
+    //
+    //     let shouldUpdate = (
+    //         (!this.state.hover && this.state.hover === nextProps.nav_hover.value) ||
+    //         (this.state.hover && this.state.hover !== nextProps.nav_hover.value)
+    //     );
+    //
+    //     return shouldUpdate;
+    // }
 
     mapPropsToTableColumns = (data) => {
         const device_info = [];
@@ -103,6 +116,16 @@ class RTTable extends React.Component {
         this.setState({rowsPerPage: event.target.value});
     };
 
+    getHover = (cell) => {
+        const {nav_tier} = this.props;
+        const {hover} = this.state;
+
+        const childNM = getNMapChild(nav_tier, 'tier');
+        const selected = cell[childNM.map] === hover;
+
+        return selected;
+    }
+
     render() {
         const {
             nav_tier,
@@ -146,11 +169,14 @@ class RTTable extends React.Component {
                         <TableBody>
                             {stableSort(cells, getSorting(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map((d, i) =>
+                                .map((c, i) =>
                                     <Row
+                                        selected={this.getHover(c)}
+                                        order={order}
+                                        orderBy={orderBy}
                                         tier={nav_tier}
-                                        data={d}
-                                        key={`${d}-${i}`}
+                                        data={c}
+                                        key={`cell-${c}-${i}`}
                                         columns={columns}
                                         handleRowHover={this.handleRowHover}
                                         handleRowClick={this.handleRowClick}
@@ -158,7 +184,7 @@ class RTTable extends React.Component {
                                 )}
                             {/*{emptyRows > 0 && (*/}
                             {/*<TableRow style={{height: 49 * emptyRows}}>*/}
-                                {/*<TableCell colSpan={6}/>*/}
+                            {/*<TableCell colSpan={6}/>*/}
                             {/*</TableRow>*/}
                             {/*)}*/}
                         </TableBody>
@@ -185,12 +211,14 @@ class RTTable extends React.Component {
 const mapStateToProps = state => {
     return {
         nav_tier: state.navigationReducer.nav_tier,
+        nav_hover: state.navigationReducer.nav_hover,
         country_selected: state.navigationReducer.country_selected,
         state_selected: state.navigationReducer.state_selected,
         lga_selected: state.navigationReducer.lga_selected,
         facility_selected: state.navigationReducer.facility_selected,
         navigation: state.navigationReducer.navigation,
         display_data: state.displayReducer.display_data,
+        metric_selected: state.metricReducer.metric_selected,
     }
 }
 

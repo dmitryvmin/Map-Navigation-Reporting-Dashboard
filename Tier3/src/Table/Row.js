@@ -23,46 +23,23 @@ class Row extends Component {
         super(props);
         this.state = {
             selected: false,
-            nav_hover: this.getHover(),
         };
     }
 
-    getHover = () => {
-        const {
-            tier,
-            data
-        } = this.props;
-
-        const childNav = getNMapChild(tier, 'tier');
-        const hover = data[childNav.map];
-
-        return hover;
-    }
-
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (
-            nextProps.nav_hover &&
-            nextProps.nav_hover.value &&
-            nextProps.nav_hover.value === prevState.nav_hover
-        ) {
-            return {
-                selected: true,
-                data: nextProps.data,
-            };
-        } else {
-            return {
-                selected: false,
-                data: nextProps.data,
-            };
+        return {
+            selected: nextProps.selected,
+            order: nextProps.order,
+            orderBy: nextProps.orderBy,
         }
     }
 
     shouldComponentUpdate(nextProps, nextState) {
 
         let shouldUpdate = (
-            (this.state.nav_hover === nextProps.nav_hover.value && !this.state.selected) ||
-            (this.state.nav_hover !== nextProps.nav_hover.value && this.state.selected) ||
-            (!_.isEqual(this.state.data, nextProps.data))
+            (this.state.selected !== nextProps.selected) ||
+            (this.state.order !== nextProps.order) ||
+            (this.state.orderBy !== nextProps.orderBy)
         );
 
         return shouldUpdate;
@@ -71,9 +48,11 @@ class Row extends Component {
     render() {
         const {
             data,
+            tier,
             handleRowClick,
             handleRowHover,
             columns,
+            // selected,
         } = this.props;
 
         if (!data || !columns.length) {
@@ -122,12 +101,6 @@ class Row extends Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        nav_hover: state.navigationReducer.nav_hover,
-    }
-}
-
 const StyledCell = styled.div`
     text-align: center; 
 `;
@@ -153,4 +126,4 @@ const AlarmCell = styled.div`
     background-color: ${props => props.alarm ? GGConsts.COLOR_GREEN : GGConsts.COLOR_RED}
 `;
 
-export default connect(mapStateToProps, null)(Row);
+export default Row;
