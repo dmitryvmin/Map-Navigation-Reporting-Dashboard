@@ -89,13 +89,13 @@ export default class CityPin extends PureComponent {
                 </foreignObject>
                 {/*<    )}*/}
                 {/*</Transition>*/}
-                {/*<text*/}
-                    {/*className="locationName"*/}
-                    {/*textAnchor="middle"*/}
-                    {/*y={chart ? 120 : 130}*/}
-                    {/*x="50"*/}
-                    {/*fontSize={'20'}*/}
-                    {/*fill={'black'}>{name}</text>*/}
+                {chart && <text
+                    className="locationName"
+                    textAnchor="middle"
+                    y={chart ? 130 : 130}
+                    x="50"
+                    fontSize={'26'}
+                    fill={'black'}>{name}</text>}
             </svg>
 
         );
