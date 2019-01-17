@@ -4,7 +4,7 @@ import indigo from 'material-ui/colors/indigo';
 // Colors
 const COLOR_SELECTED = [216, 200, 229];
 const COLOR_UNSELECTED = [213, 213, 213];
-const COLOR_OFF = "#6b6b6b";
+const COLOR_GRAY = "#6b6b6b";
 const COLOR_BLUE = '#9AC7EA';
 const COLOR_RED = '#EF000A';
 const COLOR_YELLOW = '#FFAC00';
@@ -251,8 +251,8 @@ export default class GGConsts {
     static get COLOR_UNSELECTED() {
         return COLOR_UNSELECTED;
     }
-    static get COLOR_OFF() {
-        return COLOR_OFF;
+    static get COLOR_GRAY() {
+        return COLOR_GRAY;
     }
     static get COLOR_BLUE() {
         return COLOR_BLUE;

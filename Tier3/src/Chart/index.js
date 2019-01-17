@@ -182,6 +182,7 @@ const Controls = styled.div`
     // height: 100px; 
     // display: flex; 
     // justify-content: space-between;
+    margin: 0 1em;
 `;
 const StyledFormControlLabel = styled(FormControlLabel)`
     float: right; 
