@@ -24,7 +24,7 @@ const Wrapper = styled.div`
     background-color: white;
     display: flex;
     align-content: center;
-    height: 5vh;
+    height: 50px;
 `;
 const Footer = styled.div`
     margin: 0 2em;

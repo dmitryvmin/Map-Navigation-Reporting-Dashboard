@@ -52,7 +52,7 @@ const Header = styled.header`
     display: flex;
     justify-content: space-between;
     background-color: white;
-    height: 5vh;
+    height: 50px;
 `;
 const TitleArea = styled.div`
     font-weight: 400;

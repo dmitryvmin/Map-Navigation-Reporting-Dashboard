@@ -95,8 +95,7 @@ a.mapboxgl-ctrl-logo, .mapboxgl-ctrl.mapboxgl-ctrl-attrib {
 
 /*IMPORTANT */
 #deckgl-wrapper {
-	min-height: 80vh;
-	/*max-height: 70vh;*/
+	height: calc(100vh - 200px);
 	width: 100% !important;
 	position: relative !important;
 }
