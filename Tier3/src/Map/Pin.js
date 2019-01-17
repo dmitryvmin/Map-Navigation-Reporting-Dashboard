@@ -101,6 +101,7 @@ console.log("zoom ", zoom, " Witch ", witch);
                     x="50"
                     fontSize={witch}
                     fill={'black'}>{name}</text>
+                }
             </svg>
 
         );
