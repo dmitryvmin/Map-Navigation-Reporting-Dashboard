@@ -146,24 +146,23 @@ class Navigation extends Component {
             <NavBar>
                 <Grid
                     container
-                    spacing={0}>
+                    spacing={0}
+                >
                     <Grid item lg={3} md={6} xs={12}>
                         <LocMenu>
-                            {/*<Header>Location:</Header>*/}
-
                                 <IconButton>
                                     <HomeStyled onClick={this.goHome()}/>
                                 </IconButton>
-
                                 { ((navigation.lga_selected !== 'All' && navigation.lga_selected !== false) ||
                                 (navigation.state_selected !== 'All' && navigation.state_selected !== false)) &&
                                 <Back>
                                     <IconButton>
-                                        <KeyboardArrowLeft style={{color: 'white'}} onClick={this.goUp()}/>
+                                        <KeyboardArrowLeft style={{color: 'white'}}
+                                                           onClick={this.goUp()}
+                                        />
                                     </IconButton>
                                 </Back>
                                 }
-
                                 <LocContainer>
                                     {Object.entries(navigation).map(nav => {
                                         const [t, v] = nav;
@@ -202,17 +201,17 @@ class Navigation extends Component {
                                         }
                                     })}
                             </LocContainer>
-
                         </LocMenu>
                     </Grid>
                     <Grid item lg={4} md={6} xs={12}>
                         <Header>Metric:</Header>
-                        <Tabs
+                        <StyledTabs
                             value={metric_selected}
                             classes={{
                                 indicator: classes.indicator
                             }}
-                            onChange={this.handleChange(GGConsts.METRIC_SELECTED)}>
+                            onChange={this.handleChange(GGConsts.METRIC_SELECTED)}
+                        >
                             {GGConsts.METRICS.map(m =>
                                 <StyledTab
                                     key={`metric-${m}`}
@@ -221,7 +220,7 @@ class Navigation extends Component {
                                     value={m}
                                 />
                             )}
-                        </Tabs>
+                        </StyledTabs>
                     </Grid>
                     <Grid item lg={2} md={6} xs={6}>
                         <Header>Devices Type:</Header>
@@ -237,7 +236,6 @@ class Navigation extends Component {
                                 label={_.last(GGConsts.DEVICE_TYPE_UPLOADED.split('_'))}
                             />
                         </ChipContainer>
-
                     </Grid>
                     <Grid item lg={3} md={6} xs={6}>
                         <ColumnMenu>
@@ -253,8 +251,12 @@ class Navigation extends Component {
                                     </MfcPill>
                                 )
                             })}
-                            <MfcDialog open={mfcDialog} toggle={this.toggleMfcDialog} />
-                            <Edit onClick={this.toggleMfcDialog}>Edit</Edit>
+                            <MfcDialog open={mfcDialog}
+                                       toggle={this.toggleMfcDialog}
+                            />
+                            <Edit onClick={this.toggleMfcDialog}>
+                                Edit
+                            </Edit>
                             </MfcContainer>
                         </ColumnMenu>
                     </Grid>
@@ -314,6 +316,9 @@ const StyledSelect = styled(NativeSelect)`
     &:before {
         border - bottom: none !important;
     }
+`;
+const StyledTabs = styled(Tabs)`
+    margin-top: -0.75em;
 `;
 const StyledTab = styled(Tab)`
     text-transform: capitalize !important;

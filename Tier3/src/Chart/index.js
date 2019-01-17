@@ -29,7 +29,7 @@ const styles = theme => ({
         backgroundColor: '#979797',
     },
     tabRoot: {
-        minWidth: 70
+        minWidth: 70,
     }
 })
 
@@ -89,63 +89,73 @@ class Chart extends Component {
         return (
             <React.Fragment>
                 <Controls>
-                    <Tabs
+                    <StyledTabs
                         value={timeframe_selected}
                         classes={{
-                            indicator: classes.indicator
+                            root: classes.tabsRoot,
+                            indicator: classes.indicator,
                         }}
-                        onChange={this.handleChange}>
+                        onChange={this.handleChange}
+                    >
                         {GGConsts.TIMEFRAMES.map(t =>
                             <Tab
                                 key={`timeframe-${t}`}
-                                classes={{root: classes.tabRoot}}
+                                classes={{
+                                    root: classes.tabRoot
+                                }}
                                 label={t}
-                                value={t}/>
+                                value={t}
+                            />
                         )}
-                    </Tabs>
-
-                        <FormControlLabel
-                            control={
-                                <Switch
-                                    checked={(chartType === 'Bar')}
-                                    onChange={this.toggle}
-                                    color="secondary"
-                                />
-                            }
-                            label="Line / Bar"
-                        />
-
+                    </StyledTabs>
+                    <StyledFormControlLabel
+                        control={
+                            <Switch
+                                checked={(chartType === 'Bar')}
+                                onChange={this.toggle}
+                                color="secondary"
+                            />
+                        }
+                        label="Line / Bar"
+                    />
                 </Controls>
-
 
                 <ResponsiveContainer
                     width="100%"
                     height={150}>
-                    {(chartType === 'Bar')
-                        ? <BarChart
-                            data={data}
-                            margin={{top: 50, right: 20, left: 20, bottom: 20}}>
-                            <Tooltip/>
-                            {/*<Brush dataKey='alarms' height={30} stroke="#dbdbdb"/>*/}
-                            <Bar
-                                dataKey={metric_selected}
-                                fill={GGConsts.COLOR_BLUE} />
-                        </BarChart>
-
-                        : <LineChart
-                            data={data}
-                            margin={{top: 50, right: 20, left: 20, bottom: 20}}>
-                            <Tooltip/>
-                            <Line
-                                type="step"
-                                dataKey={metric_selected}
-                                stroke={GGConsts.COLOR_BLUE}
-                                strokeWidth={2}/>
-                            <Brush
-                                dataKey='alarms'
-                                height={30}
-                                stroke="#dbdbdb"/>
-                        </LineChart>}
+                    {
+                        (chartType === 'Bar')
+                            ?
+                            <BarChart
+                                data={data}
+                                margin={{top: 50, right: 20, left: 20, bottom: 20}}
+                            >
+                                <Tooltip/>
+                                {/*<Brush dataKey='alarms' height={30} stroke="#dbdbdb"/>*/}
+                                <Bar
+                                    dataKey={metric_selected}
+                                    fill={GGConsts.COLOR_BLUE}
+                                />
+                            </BarChart>
+                            :
+                            <LineChart
+                                data={data}
+                                margin={{top: 50, right: 20, left: 20, bottom: 20}}
+                            >
+                                <Tooltip/>
+                                <Line
+                                    type="step"
+                                    dataKey={metric_selected}
+                                    stroke={GGConsts.COLOR_BLUE}
+                                    strokeWidth={2}
+                                />
+                                <Brush
+                                    dataKey='alarms'
+                                    height={30}
+                                    stroke="#dbdbdb"
+                                />
+                            </LineChart>
+                    }
                 </ResponsiveContainer>
             </React.Fragment>
         )
@@ -169,9 +179,15 @@ const mapDispatchToProps = dispatch => {
 };
 
 const Controls = styled.div`
-    height: 100px; 
-    display: flex; 
-    justify-content: space-between;
+    // height: 100px; 
+    // display: flex; 
+    // justify-content: space-between;
+`;
+const StyledFormControlLabel = styled(FormControlLabel)`
+    float: right; 
+`;
+const StyledTabs = styled(Tabs)`
+    float: left; 
 `;
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Chart));
