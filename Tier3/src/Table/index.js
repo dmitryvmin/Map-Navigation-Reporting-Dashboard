@@ -104,6 +104,11 @@ class RTTable extends React.Component {
     }
 
     handleRowClick = location => e => {
+        const {nav_tier} = this.props;
+        if (nav_tier === 'LGA_LEVEL') {
+            return;
+        }
+
         const NM = this.getNewNav(location);
         this.props.updateNav(NM.type, NM.value);
     }
@@ -149,7 +154,7 @@ class RTTable extends React.Component {
         } = this.state;
 
         // const emptyRows = rowsPerPage - Math.min(rowsPerPage, cells.length - page * rowsPerPage);
-
+        console.log('@@@', columns);
         return (
             <Container>
                 <TableWrapper>

@@ -49,9 +49,8 @@ export function* startupSaga() {
     yield put({type: GGConsts.GEO_MAP, data: {'countries': data}});
 
     // Sensor data is fetched, save to store, formatted for visualization views
-    //yield loadSensors();
+    // yield loadSensors();
 
-    // Load fake data....
     yield loadFake();
 
     yield loadMfcs();

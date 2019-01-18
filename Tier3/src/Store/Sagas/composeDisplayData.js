@@ -165,27 +165,13 @@ function* composeDisplayData( dataParam ) {
                 sensorsFiltered = [];
             }
 
-            regionType = curNM.map;
+            regionType = 'facilities';
             regionName = cur.facility.name;
-
             alarms = cur.metrics.alarm_count;
             holdover = cur.metrics.holdover_mean;
             mfc = cur.manufacturer;
             id = cur.id;
             name = cur.facility.name;
-
-        }
-        // TODO: remove ...shouldn't reach facility_level
-        else if (tier === 'FACILITY_LEVEL') {
-
-            regionType = 'facilities';
-            regionName = cur.facility.name;
-            location = cur.location;
-
-            // TODO: needs to be updated
-            alarms = '-';
-            holdover = '-';
-            mfc = '-';
 
         }
 

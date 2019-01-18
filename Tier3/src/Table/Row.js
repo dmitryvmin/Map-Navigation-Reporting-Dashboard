@@ -76,11 +76,6 @@ class Row extends Component {
                     let id = c.id;
                     let value = data[id];
 
-
-                    // if (c.id === 'Alarms') {
-                    //     debugger;
-                    // }
-
                     return (
                         <TableCell
                             key={`cell-${id}-${value}`}
