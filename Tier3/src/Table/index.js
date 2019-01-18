@@ -187,27 +187,9 @@ class RTTable extends React.Component {
                                         handleRowClick={this.handleRowClick}
                                     />
                                 )}
-                            {/*{emptyRows > 0 && (*/}
-                            {/*<TableRow style={{height: 49 * emptyRows}}>*/}
-                            {/*<TableCell colSpan={6}/>*/}
-                            {/*</TableRow>*/}
-                            {/*)}*/}
                         </TableBody>
                     </Table>
                 </TableWrapper>
-                {/*<TablePagination component="div"*/}
-                                 {/*rowsPerPageOptions={[8, 20, 50]}*/}
-                                 {/*count={cells.length}*/}
-                                 {/*rowsPerPage={rowsPerPage}*/}
-                                 {/*page={page}*/}
-                                 {/*backIconButtonProps={{*/}
-                                     {/*'aria-label': 'Previous Page',*/}
-                                 {/*}}*/}
-                                 {/*nextIconButtonProps={{*/}
-                                     {/*'aria-label': 'Next Page',*/}
-                                 {/*}}*/}
-                                 {/*onChangePage={this.handleChangePage}*/}
-                                 {/*onChangeRowsPerPage={this.handleChangeRowsPerPage}/>*/}
             </Container>
         );
     }
