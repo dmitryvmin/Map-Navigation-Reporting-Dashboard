@@ -2,13 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
-import TablePagination from '@material-ui/core/TablePagination';
+// import TablePagination from '@material-ui/core/TablePagination';
 import GGConsts from '../Constants';
 import EnhancedTableHead from './EnhancedTableHead';
 import {connect} from "react-redux";
 import Row from './Row';
-import TableCell from '@material-ui/core/TableCell';
-import TableRow from '@material-ui/core/TableRow';
+// import TableCell from '@material-ui/core/TableCell';
+// import TableRow from '@material-ui/core/TableRow';
 // import ManualTableRow from './ManualTableRow';
 import {
     // navigationMap,

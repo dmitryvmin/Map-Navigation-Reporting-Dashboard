@@ -1,5 +1,5 @@
 import {createMuiTheme} from '@material-ui/core/styles';
-import indigo from 'material-ui/colors/indigo';
+// import indigo from 'material-ui/colors/indigo';
 
 // Colors
 const COLOR_SELECTED = [216, 200, 229];

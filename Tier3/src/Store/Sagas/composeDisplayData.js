@@ -13,7 +13,7 @@ import {
     getNMap,
     getNMapChild,
     getGeoJson,
-    getRandomFridge,
+    //getRandomFridge,
 } from './../../Utils';
 // import alarmsData from '../../Data/alarms.json';
 

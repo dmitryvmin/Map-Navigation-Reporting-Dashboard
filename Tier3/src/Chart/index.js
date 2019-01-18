@@ -4,7 +4,7 @@ import {withStyles} from '@material-ui/core/styles';
 import styled from 'styled-components';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import FormGroup from '@material-ui/core/FormGroup';
+// import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 //import _ from 'lodash';
