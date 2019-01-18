@@ -153,8 +153,6 @@ class RTTable extends React.Component {
             page,
         } = this.state;
 
-        // const emptyRows = rowsPerPage - Math.min(rowsPerPage, cells.length - page * rowsPerPage);
-        console.log('@@@', columns);
         return (
             <Container>
                 <TableWrapper>

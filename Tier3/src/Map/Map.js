@@ -23,7 +23,6 @@ import {
 } from './../Store/Actions';
 
 // import {addToGL} from './MapUtils';
-
 // import IconClusterLayer from './IconClusterLayer';
 // import iconMapping from '../Data/location-icon-mapping.json';
 import CityPin from './Pin';
@@ -73,7 +72,7 @@ class Map extends Component {
                 let id = layer.id;
                 // https://www.mapbox.com/mapbox-gl-js/api/#map#addlayer
                 // Doesn't seem to add deck layers properly
-                // if a before arg is not provided
+                // if a `before` arg is not provided
                 let deck = this._deck;
 
                 this._map.addLayer(new MapboxLayer({id, deck}), 'water');
@@ -109,20 +108,16 @@ class Map extends Component {
         }
 
         // ###
-        // TODO: optimize - tag each geojson polygon with a `tier - location` ID for fast look up
-        const {
-            tier,
-            hover
-        } = this.props;
+        // TODO: optimize - tag each geojson polygon with a `tier - location` ID for faster look up
+        const {tier} = this.props;
 
-        // TODO: ignore events at LGA tier ...quick fix for now
         if (tier === 'LGA_LEVEL') {
             return;
         }
 
         const NMchild = getNMapChild(tier, 'tier');
 
-        let value = object.properties[NMchild.code]
+        let value = object.properties[NMchild.code];
         let type;
 
         if (value) {
@@ -139,7 +134,8 @@ class Map extends Component {
         } else {
 
             if (ui === 'hover') {
-                // TODO: might need mouseOut/mouseLeave support for when user is not hovering over the map
+                const {hover} = this.props;
+
                 if (!hover.value || hover.value !== value) {
                     this.props.navHovered({value, x, y});
                 }
@@ -227,8 +223,6 @@ class Map extends Component {
             viewState,
             mapStyle,
             markers,
-            // saveMapRef,
-            // map_ref,
             hover,
         } = this.props;
 

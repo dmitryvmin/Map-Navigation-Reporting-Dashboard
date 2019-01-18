@@ -33,17 +33,6 @@ const styles = theme => ({
     }
 })
 
-// const CustomizedTick = props => {
-//     const {payload, x, y} = props;
-
-//     return (
-//         <g transform={`translate(${x},${y})`}>
-//             <text x={0} y={0} dy={2} fontSize="8" textAnchor="end" fill="#666"
-//                   transform="rotate(-45)">{payload.value}</text>
-//         </g>
-//     )
-// }
-
 class Chart extends Component {
     constructor(props) {
         super(props);
@@ -112,16 +101,19 @@ class Chart extends Component {
                             />
                         )}
                     </StyledTabs>
-                    <StyledFormControlLabel
-                        control={
-                            <Switch
-                                checked={(chartType === 'Bar')}
-                                onChange={this.toggle}
-                                color="secondary"
-                            />
-                        }
-                        label="Trend / Rank"
-                    />
+                    <SwitchContainer>
+                        <span>Trend</span>
+                        <StyledFormControlLabel
+                            control={
+                                <Switch
+                                    checked={(chartType === 'Bar')}
+                                    onChange={this.toggle}
+                                    color="secondary"
+                                />
+                            }
+                        />
+                        <span>Rank</span>
+                    </SwitchContainer>
                 </Controls>
 
                 <ResponsiveContainer
@@ -189,10 +181,16 @@ const Controls = styled.div`
     margin: 0 1em;
 `;
 const StyledFormControlLabel = styled(FormControlLabel)`
-    float: right; 
+    // float: right; 
+    margin: 0 !important;
 `;
 const StyledTabs = styled(Tabs)`
     float: left; 
+`;
+const SwitchContainer = styled.div`
+    display: flex; 
+    float: right; 
+    align-items: center;
 `;
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Chart));
