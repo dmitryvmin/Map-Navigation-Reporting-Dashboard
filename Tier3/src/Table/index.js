@@ -105,7 +105,7 @@ class RTTable extends React.Component {
 
     handleRowClick = location => e => {
         const {nav_tier} = this.props;
-        if (nav_tier === 'LGA_LEVEL') {
+        if (nav_tier === 'FACILITY_LEVEL') {
             return;
         }
 

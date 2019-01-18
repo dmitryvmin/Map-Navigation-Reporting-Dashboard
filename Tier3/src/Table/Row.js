@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 // import {connect} from "react-redux";
 import GGConsts from '../Constants';
-// import _ from 'lodash';
+import _ from 'lodash';
 import styled from 'styled-components';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
@@ -13,7 +13,10 @@ const drawBoolLEDs = (value, days, id) => (
             {value}
         </AlarmVal>
         <AlarmChart>
-            {days.map((d, i) => <AlarmCell key={`alarmchart-${id}-${d}-${i}`} alarm={d}/>)}
+            {days.map((d, i) => <AlarmCell
+                key={`alarmchart-${id}-${d}-${i}`}
+                alarm={d}
+            />)}
         </AlarmChart>
     </Alarm>
 )
@@ -47,14 +50,38 @@ class Row extends Component {
         return true;
     }
 
+    getCell = (data, col) => {
+        let id = col.id;
+        let value = data[id];
+
+        if (id === 'Alarms') {
+            if (data.AlarmsByDay === '-') {
+                return value;
+            }
+            else {
+                let cell = drawBoolLEDs(value, data.AlarmsByDay, id);
+                return cell;
+            }
+        }
+        else if (id === 'Manufacturers') {
+            if (_.isArray(value) && value.length > 1) {
+                let cell = value.join(', ');
+                return cell;
+            } else {
+                return value;
+            }
+        }
+        else {
+            return value;
+        }
+    }
+
     render() {
         const {
             data,
-            // tier,
             handleRowClick,
             handleRowHover,
             columns,
-            // selected,
         } = this.props;
 
         if (!data || !columns.length) {
@@ -72,31 +99,16 @@ class Row extends Component {
                 selected={selected}
                 aria-checked={selected}
             >
-                {columns.map(c => {
-                    let id = c.id;
-                    let value = data[id];
-
-                    return (
-                        <TableCell
-                            key={`cell-${id}-${value}`}
-                            align="center"
-                        >
-                            <StyledCell>
-                                {
-                                    (c.id === 'Alarms' && data.AlarmsByDay !== '-')
-                                    ? drawBoolLEDs(value, data.AlarmsByDay, id)
-                                    : value
-                                }
-                            </StyledCell>
-                        </TableCell>
-                    )}
+                {columns.map((col, index) =>
+                    <TableCell
+                        key={`cell-${col.id}-${index}`}
+                        align="center"
+                    >
+                        <StyledCell>
+                            {this.getCell(data, col)}
+                        </StyledCell>
+                    </TableCell>
                 )}
-
-                {/*{*/}
-                    {/*<TableCell>*/}
-                        {/*<div>{data.states}</div>*/}
-                    {/*</TableCell>*/}
-                {/*}*/}
             </TableRow>
         )
     }

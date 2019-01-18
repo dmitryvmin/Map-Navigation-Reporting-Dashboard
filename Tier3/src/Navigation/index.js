@@ -35,7 +35,8 @@ const styles = theme => ({
         backgroundColor: '#fff',
     },
     tabRoot: {
-        minWidth: 40
+        minWidth: 40,
+        minHeight: 40,
     }
 })
 
@@ -373,9 +374,6 @@ const ColumnMenu = styled.div`
     display: flex;
     flex-direction: column;
 `;
-// const Label = styled(FormHelperText)`
-//     color: white !important;
-// `;
 const ChipContainer = styled.div`
     display: flex;
     

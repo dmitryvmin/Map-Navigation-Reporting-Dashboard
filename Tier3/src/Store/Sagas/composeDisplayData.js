@@ -110,12 +110,12 @@ function* composeDisplayData( dataParam ) {
         columns.push(getColumn(childNM.map));
         columns.push(getColumn(metricSelected));
         columns.push(getColumn('Manufacturers'));
-        columns.push(getColumn('State Data'));
+        columns.push(getColumn('Total Devices'));
     }
     else if (tier === 'FACILITY_LEVEL') {
         columns.push(getColumn(metricSelected));
         columns.push(getColumn('Manufacturers'));
-        columns.push(getColumn('Facility Data'));
+        columns.push(getColumn('Device Info'));
     }
 
     // ### Cells
@@ -173,6 +173,23 @@ function* composeDisplayData( dataParam ) {
             id = cur.id;
             name = cur.facility.name;
 
+        }
+        else if (tier === 'FACILITY_LEVEL') {
+            location = cur.facility.location;
+
+            if (mfcSelected.includes(mfcSelected)) {
+                sensorsFiltered = cur;
+            } else {
+                sensorsFiltered = [];
+            }
+
+            regionType = 'device';
+            regionName = cur.facility.name;
+            alarms = cur.metrics.alarm_count;
+            holdover = cur.metrics.holdover_mean;
+            mfc = cur.manufacturer;
+            id = cur.id;
+            name = cur.facility.name;
         }
 
         acc.push({
