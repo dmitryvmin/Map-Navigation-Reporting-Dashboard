@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
-import {connect} from "react-redux";
+// import {connect} from "react-redux";
 import GGConsts from '../Constants';
-import _ from 'lodash';
+// import _ from 'lodash';
 import styled from 'styled-components';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
-import {getNMapChild} from './../Utils';
+// import {getNMapChild} from './../Utils';
 
 const drawBoolLEDs = (value, days, id) => (
     <Alarm>
@@ -50,7 +50,7 @@ class Row extends Component {
     render() {
         const {
             data,
-            tier,
+            // tier,
             handleRowClick,
             handleRowHover,
             columns,

@@ -5,7 +5,7 @@ import {
     takeLatest,
 } from 'redux-saga/effects';
 
-import composeDisplayData from './composeDisplayData';
+// import composeDisplayData from './composeDisplayData';
 import updateNav from './updateNav';
 import getGeo from './getGeo';
 import updateHover from './updateHover';
