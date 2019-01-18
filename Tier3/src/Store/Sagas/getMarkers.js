@@ -13,7 +13,7 @@ import {
 import {
     getGeoJson,
     getNMapChild,
-    asyncForEach,
+    // asyncForEach,
     // getNMap,
 } from './../../Utils';
 

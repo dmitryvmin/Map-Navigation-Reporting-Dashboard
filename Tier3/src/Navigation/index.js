@@ -5,15 +5,15 @@ import GGConsts from '../Constants';
 import styled from 'styled-components';
 import {withStyles} from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
-import NativeSelect from '@material-ui/core/NativeSelect';
-import Input from '@material-ui/core/Input';
+// import NativeSelect from '@material-ui/core/NativeSelect';
+// import Input from '@material-ui/core/Input';
 //import FormHelperText from '@material-ui/core/FormHelperText';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Chip from '@material-ui/core/Chip';
 import Grid from '@material-ui/core/Grid';
 import Home from '@material-ui/icons/Home';
-import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
+// import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import IconButton from '@material-ui/core/IconButton';
 //import Button from '@material-ui/core/Button';
 import MfcDialog from './MfcDialog';
@@ -35,7 +35,8 @@ const styles = theme => ({
         backgroundColor: '#fff',
     },
     tabRoot: {
-        minWidth: 40
+        minWidth: 35,
+        maxWidth: 70,
     }
 })
 
@@ -99,12 +100,11 @@ class Navigation extends Component {
                     loc = 'Facilitie';
                     break;
                 default:
-                    loc = loc;
             }
             return <em style={{marginLeft: '9px', textTransform: 'none'}}>{`${specific} ${loc}s`}</em>;
         } else {
             if ( loc === 'lga' || loc === 'Lga' || loc === 'LGA') {
-                if ( curLevel == 'lga') {
+                if ( curLevel === 'lga') {
                     return <strong style={{color: 'white'}}>{specific}</strong>;
                 } else {
                     return <strong>{specific}</strong>;
@@ -189,7 +189,7 @@ class Navigation extends Component {
                     container
                     spacing={0}
                 >
-                    <Grid item lg={3} md={6} xs={12}>
+                    <Grid item lg={5} md={6} xs={12}>
                         <LocMenu>
                                 <IconButton>
                                     <HomeStyled onClick={this.goHome()}/>
@@ -243,7 +243,7 @@ class Navigation extends Component {
                             </LocContainer>
                         </LocMenu>
                     </Grid>
-                    <Grid item lg={4} md={6} xs={12}>
+                    <Grid item lg={3} md={6} xs={12}>
                         <Header>Metric:</Header>
                         <StyledTabs
                             value={metric_selected}
@@ -277,7 +277,7 @@ class Navigation extends Component {
                             />
                         </ChipContainer>
                     </Grid>
-                    <Grid item lg={3} md={6} xs={6}>
+                    <Grid item lg={2} md={6} xs={6}>
                         <ColumnMenu>
                             <Header>Manufacturer:</Header>
                             <MfcContainer>
@@ -312,6 +312,7 @@ const MfcPill = styled.span`
 `;
 const MfcContainer = styled.div`
     display: flex; 
+    flex-wrap: wrap;
 `;
 const StyledFormControl = styled(FormControl)`
     display: flex !important;
@@ -326,9 +327,9 @@ const Label = styled.span`
 const HomeStyled = styled(Home)`
     color: white; 
 `;
-const Back = styled.div`
-    display: flex;
-`;
+// const Back = styled.div`
+//     display: flex;
+// `;
 const Edit = styled.span`
     color: ${GGConsts.COLOR_BLUE};
 `;
@@ -348,27 +349,32 @@ const NavBar = styled.div`
     margin: 0 2em;
     height: 100%;
 `;
-const StyledSelect = styled(NativeSelect)`
-    color: white;
-    width: 160px;
-    margin-right: 1em;
+// const StyledSelect = styled(NativeSelect)`
+//     color: white;
+//     width: 160px;
+//     margin-right: 1em;
 
-    &:before {
-        border - bottom: none !important;
-    }
-`;
+//     &:before {
+//         border - bottom: none !important;
+//     }
+// `;
 const StyledTabs = styled(Tabs)`
     margin-top: -0.75em;
 `;
 const StyledTab = styled(Tab)`
     text-transform: capitalize !important;
+    @media (min-width: 960px) {
+        span {
+            padding: 6px 4px;
+        ]
+    }
 `;
-const Option = styled.option`
-    color: white !important;
-`;
-const StyledIn = styled(Input)`
-    color: white !important;
-`;
+// const Option = styled.option`
+//     color: white !important;
+// `;
+// const StyledIn = styled(Input)`
+//     color: white !important;
+// `;
 const ColumnMenu = styled.div`
     display: flex;
     flex-direction: column;
