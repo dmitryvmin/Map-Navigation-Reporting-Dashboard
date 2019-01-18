@@ -21,7 +21,7 @@ import MfcDialog from './MfcDialog';
 import {
     navigationMap,
     // getFromNavMap,
-    formatLabel
+    formatLabel,
 } from './../Utils';
 
 // TODO: move API logic to Sagas...
@@ -75,6 +75,35 @@ class Navigation extends Component {
 
     toggleMfcDialog = () => {
         this.setState({ mfcDialog: !this.state.mfcDialog });
+    }
+
+    locFunction = (nav, specific, loc) => {
+        let curLevel = 'country';
+        if (nav.state_selected !== 'All' && nav.state_selected !== false) {
+            curLevel = 'state';
+        }
+    
+        if (nav.lga_selected !== 'All' && nav.lga_selected !== false) {
+            curLevel = 'lga';
+        }
+    
+        if ( specific === 'all' || specific === 'ALL' || specific === 'All') {
+            return <em>{`${specific} ${loc}s`}</em>;
+        } else {
+            if ( loc === 'lga' || loc === 'Lga' || loc === 'LGA') {
+                if ( curLevel == 'lga') {
+                    return <strong style={{color: 'white'}}>{specific}</strong>;
+                } else {
+                    return <strong>{specific}</strong>;
+                }
+            } else {
+                if ( curLevel === 'state') {
+                    return <strong style={{color: 'white'}}>{`${specific} ${loc}`}</strong>;
+                } else {
+                    return <span style={{cursor: 'pointer'}} onClick={this.goUp()}>{`${specific} ${loc}`}</span>;
+                }
+            }
+        }
     }
 
     toggleFilterConnected = () => (e) => {
@@ -152,7 +181,7 @@ class Navigation extends Component {
                                 <IconButton>
                                     <HomeStyled onClick={this.goHome()}/>
                                 </IconButton>
-                                { ((navigation.lga_selected !== 'All' && navigation.lga_selected !== false) ||
+                                {/* { ((navigation.lga_selected !== 'All' && navigation.lga_selected !== false) ||
                                 (navigation.state_selected !== 'All' && navigation.state_selected !== false)) &&
                                 <Back>
                                     <IconButton>
@@ -161,7 +190,7 @@ class Navigation extends Component {
                                         />
                                     </IconButton>
                                 </Back>
-                                }
+                                } */}
                                 <LocContainer>
                                     {Object.entries(navigation).map(nav => {
                                         const [t, v] = nav;
@@ -171,11 +200,10 @@ class Navigation extends Component {
                                         if (t === 'country_selected') {
                                             return null;
                                         }
-
                                         if (m && v) {
                                             return (<StyledFormControl key={`${t}-${v}`}>
-                                                <Label>{formatLabel(t)}:</Label>
-                                                <StyledSelect
+                                                
+                                                {/* <StyledSelect
                                                     value={v}
                                                     onChange={this.handleChange(t)}
                                                     input={<StyledIn
@@ -192,8 +220,8 @@ class Navigation extends Component {
                                                             </Option>
                                                         )
                                                     })}
-                                                </StyledSelect>
-                                                {/*<Label>{formatLabel(t)}</Label>*/}
+                                                </StyledSelect> */}
+                                                <Label style={{lineHeight: '18px'}}>{this.locFunction(navigation, v, formatLabel(t))}</Label>
                                             </StyledFormControl>)
                                         } else {
                                             return null;
