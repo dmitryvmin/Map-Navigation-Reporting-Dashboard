@@ -8,7 +8,7 @@ const data = [
         "id": "aff33bcb-8afa-4049-84bb-dee058b4186d",
         "manufacturer": "Dometic",
         "model": "TCW40 SDD",
-        "location": "8R3F+WX",
+        "location": "3H8C+97",
         "metrics": {
             "start_time": "2008-09-15T15:53:00+05:00",
             "end_time": "2008-16-15T15:53:00+05:00",
@@ -29,7 +29,40 @@ const data = [
         "facility": {
             "id": "aa04ff56-085d-4c97-9a07-39d31d4d0d1f",
             "name": "PHC Bauchi",
-            "location": "VR53+WM",
+            "location": "3HMJ+C6",
+            "regions": {
+                "0": "Nigeria",
+                "1": "Bauchi",
+                "2": "Ningi"
+            }
+        }
+    },
+    {
+        "id": "aff33bcb-8afa-4049-84bb-dee058b4186z",
+        "manufacturer": "Aucma",
+        "model": "TCW40 SDD",
+        "location": "WVF3+8C",
+        "metrics": {
+            "start_time": "2008-09-15T15:53:00+05:00",
+            "end_time": "2008-16-15T15:53:00+05:00",
+            "alarm_count": 5,
+            "alarm_over_seconds": 34000,
+            "alarm_under_seconds": 21000,
+            "temp_mean": 8.3,
+            "uptime_percent": 0.24,
+            "unknown_time_percent": 0.12,
+            "holdover_mean": 2.12
+        },
+        "temperature_data_logger": {
+            "id": "aa04ff56-085d-4c97-9a07-39d31d4d0d1z",
+            "manufacturer": "Berlinger",
+            "model": "Fridgetag 2L",
+            "serial": "AAABCE22"
+        },
+        "facility": {
+            "id": "aa04ff56-085d-4c97-9a07-39d31d4d0d1z",
+            "name": "EFG Bauchi",
+            "location": "WVF3+8C",
             "regions": {
                 "0": "Nigeria",
                 "1": "Bauchi",

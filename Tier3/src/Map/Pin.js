@@ -32,7 +32,7 @@ export default class CityPin extends PureComponent {
         // Witch of Agnesi formula
         const witch = 2.4* (8 * Math.pow(a1, 3)) / (Math.pow(zoom, 2) + (4*Math.pow(a1,2))) - 3;
         //20.0 / ( zoom * zoom + 1) * 20;
-console.log("zoom ", zoom, " Witch ", witch);
+// console.log("zoom ", zoom, " Witch ", witch);
         return (
             <svg
                 height={size}

@@ -27,6 +27,10 @@ const markersSelector = state => state.markersReducer.markers;
 
 const mfcSelector = state => state.mfcReducer.mfc_selected;
 
+const deviceTypeSelector = state => state.deviceReducer.device_type_selected;
+
+const timeframeSelector = state => state.timeframeReducer.timeframe_selected;
+
 export {
     navSelector,
     tierSelector,
@@ -39,4 +43,6 @@ export {
     displaySelector,
     markersSelector,
     mfcSelector,
+    deviceTypeSelector,
+    timeframeSelector,
 }
