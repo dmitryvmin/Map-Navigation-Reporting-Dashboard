@@ -122,6 +122,7 @@ function* composeDisplayData( dataParam ) {
     let cells = rows.reduce((acc, cur) => {
 
         let id = crypto.getRandomValues(new Uint32Array(4)).join('-');
+        let name = '-';
         let alarms;
         let holdover;
         let regionType;
@@ -171,8 +172,8 @@ function* composeDisplayData( dataParam ) {
             holdover = cur.metrics.holdover_mean;
             mfc = cur.manufacturer;
             id = cur.id;
+            name = cur.facility.name;
 
-            debugger;
         }
         // TODO: remove ...shouldn't reach facility_level
         else if (tier === 'FACILITY_LEVEL') {
@@ -197,6 +198,7 @@ function* composeDisplayData( dataParam ) {
             'Manufacturers': mfc,
             'chart': (alarms !== '-'),
             'location': location,
+            'name': name
         });
 
         return acc;

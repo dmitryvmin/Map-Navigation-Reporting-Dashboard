@@ -8,7 +8,7 @@ const data = [
         "id": "aff33bcb-8afa-4049-84bb-dee058b4186d",
         "manufacturer": "Dometic",
         "model": "TCW40 SDD",
-        "location": "3HFC+9W",
+        "location": "3H8C+97",
         "metrics": {
             "start_time": "2008-09-15T15:53:00+05:00",
             "end_time": "2008-16-15T15:53:00+05:00",
@@ -29,7 +29,7 @@ const data = [
         "facility": {
             "id": "aa04ff56-085d-4c97-9a07-39d31d4d0d1f",
             "name": "PHC Bauchi",
-            "location": "VR53+WM",
+            "location": "3HMJ+C6",
             "regions": {
                 "0": "Nigeria",
                 "1": "Bauchi",
@@ -41,7 +41,7 @@ const data = [
         "id": "aff33bcb-8afa-4049-84bb-dee058b4186z",
         "manufacturer": "Aucma",
         "model": "TCW40 SDD",
-        "location": "3H8F+6M",
+        "location": "WVF3+8C",
         "metrics": {
             "start_time": "2008-09-15T15:53:00+05:00",
             "end_time": "2008-16-15T15:53:00+05:00",
@@ -61,8 +61,8 @@ const data = [
         },
         "facility": {
             "id": "aa04ff56-085d-4c97-9a07-39d31d4d0d1z",
-            "name": "PHC Bauchi",
-            "location": "VR53+WM",
+            "name": "EFG Bauchi",
+            "location": "WVF3+8C",
             "regions": {
                 "0": "Nigeria",
                 "1": "Bauchi",

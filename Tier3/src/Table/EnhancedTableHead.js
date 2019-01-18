@@ -15,12 +15,13 @@ class EnhancedTableHead extends React.Component {
     formatLabel = (label) => {
         if (
             label === 'states' ||
-            label === 'lgas' ||
-            label === 'facilities'
+            label === 'lgas'
         ) {
             return label.substring(0, label.length - 1);
+        } else if (label === 'facilities') {
+            return 'facility';
         } else {
-            return label
+            return label;
         }
 
     }

@@ -56,16 +56,14 @@ function* getMarkers()  {
 
             // https://github.com/google/open-location-code/wiki/Plus-codes-API
             const country = '7F2F';
+            
             const code = `${country}${c.location}`;
             const OLC = new OpenLocationCode(code);
             const geo = OLC.decode(code);
 
             marker.longitude = geo.longitudeCenter;
             marker.latitude = geo.latitudeCenter;
-
-            var test = data.cells
-            debugger;
-            name = c.facilities;
+            name = c.name;
 
         }
 
