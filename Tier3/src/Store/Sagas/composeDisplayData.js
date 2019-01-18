@@ -7,7 +7,7 @@ import {
     tierSelector,
     metricSelector,
     mfcSelector,
-    deviceTypeSelector,
+    // deviceTypeSelector,
     timeframeSelector,
 } from './../Selectors';
 
@@ -57,7 +57,7 @@ function* composeDisplayData( dataParam ) {
     const metricSelected = yield select(metricSelector);
 
     // 3. Filter - Device Type
-    const deviceType = yield select(deviceTypeSelector);
+    // const deviceType = yield select(deviceTypeSelector);
 
     // 4. Filter - Device MFC
     const mfcSelected = yield select(mfcSelector);
