@@ -88,7 +88,20 @@ class Navigation extends Component {
         }
     
         if ( specific === 'all' || specific === 'ALL' || specific === 'All') {
-            return <em>{`${specific} ${loc}s`}</em>;
+            switch(loc) {
+                case 'lga':
+                    loc = 'LGA';
+                    break;
+                case 'state':
+                    loc = 'State';
+                    break;
+                case 'facility':
+                    loc = 'Facilitie';
+                    break;
+                default:
+                    loc = loc;
+            }
+            return <em style={{marginLeft: '9px', textTransform: 'none'}}>{`${specific} ${loc}s`}</em>;
         } else {
             if ( loc === 'lga' || loc === 'Lga' || loc === 'LGA') {
                 if ( curLevel == 'lga') {
