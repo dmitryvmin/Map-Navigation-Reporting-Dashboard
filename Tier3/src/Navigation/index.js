@@ -182,8 +182,8 @@ class Navigation extends Component {
             //     // facility_selected
             // } = {}
             mfc_selected,
+            mfc_map,
         } = this.props;
-
         return (
             <NavBar>
                 <Grid
@@ -282,8 +282,30 @@ class Navigation extends Component {
                         <ColumnMenu>
                             <Header>Manufacturer:</Header>
                             <MfcContainer>
-                            {mfc_selected.map((mfc, index) => {
+                            { (mfc_selected.length === mfc_map.length) 
+                                ?
+                                    <MfcPill
+                                        key={`nav-mfc-all`}
+                                        value={'All'}
+                                    >
+                                        All
+                                    </MfcPill>
+                                :
+                                mfc_selected.map((mfc, index) => {
                                 return (
+                                    (index > 1)
+                                    ?
+                                        (index > 2)
+                                        ?
+                                        ''
+                                        :
+                                        <MfcPill
+                                            key={`nav-${mfc}-${index}`}
+                                            value={mfc}
+                                        >
+                                            {`+${mfc_selected.length - index} more`}
+                                        </MfcPill>
+                                    :
                                     <MfcPill
                                         key={`nav-${mfc}-${index}`}
                                         value={mfc}
@@ -291,7 +313,8 @@ class Navigation extends Component {
                                         {mfc}
                                     </MfcPill>
                                 )
-                            })}
+                            })
+                            }
                             <MfcDialog open={mfcDialog}
                                        toggle={this.toggleMfcDialog}
                             />
@@ -419,6 +442,7 @@ const mapStateToProps = state => {
         selected_connected: state.deviceReducer.selected_connected,
         selected_uploaded: state.deviceReducer.selected_uploaded,
         mfc_selected: state.mfcReducer.mfc_selected,
+        mfc_map: state.dataReducer.mfc_map,
     };
 };
 
