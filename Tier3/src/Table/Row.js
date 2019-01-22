@@ -102,7 +102,7 @@ class Row extends Component {
                 {columns.map((col, index) =>
                     <TableCell
                         key={`cell-${col.id}-${index}`}
-                        align="center"
+                        
                     >
                         <StyledCell>
                             {this.getCell(data, col)}
@@ -115,7 +115,7 @@ class Row extends Component {
 }
 
 const StyledCell = styled.div`
-    text-align: center; 
+    // text-align: left; 
 `;
 const AlarmVal = styled.span`
     // margin-left: 2em;

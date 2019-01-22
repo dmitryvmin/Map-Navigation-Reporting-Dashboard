@@ -67,7 +67,7 @@ const StyledTableCell = styled(TableCell)`
     background-color: #fafafa; 
     position: sticky;
     top: 0;
-    text-align: center !important; 
+    text-align: left !important; 
     
     ${props => 
         props.total && css`
