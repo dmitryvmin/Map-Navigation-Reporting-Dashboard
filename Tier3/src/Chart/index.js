@@ -51,7 +51,7 @@ class Chart extends Component {
     };
 
     getTrendData = () => {
-        const {timeframe_selected} = this.props;
+        //const {timeframe_selected} = this.props;
     }
 
     render() {
