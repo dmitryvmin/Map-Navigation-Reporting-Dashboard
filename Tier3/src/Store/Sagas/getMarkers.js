@@ -23,8 +23,8 @@ function* getMarkers()  {
     const navigation = yield select(navSelector);
     const metric = yield select(metricSelector);
 
-    // const NM = getNMap(tier, 'tier');
     const childNM = getNMapChild(tier, 'tier');
+    const curNM = getNMap(tier, 'tier');
     const geoJson = getGeoJson(childNM.type);
 
     if (!data || !tier || !navigation || !metric) {
@@ -39,8 +39,14 @@ function* getMarkers()  {
         let geo;
 
         if (tier !== 'LGA_LEVEL') {
+            
             name = c[childNM.map];
-            geo = _.first(geoJson.filter(f => f.properties[childNM.code] === name));
+            
+            if (navigation.state_selected === 'All' || navigation.state_selected === false ) {
+                geo = _.first(geoJson.filter(f => f.properties[childNM.code] === name));   //  && f.properties[curNM.code] === navigation.state_selected) 
+            } else {
+                geo = _.first(geoJson.filter(f => f.properties[childNM.code] === name && f.properties[curNM.code] === navigation.state_selected));   //   
+            }
 
             // If this is a cohort - not a single location - need to find the center for the marker
             if (geo && childNM.index > -1) {

@@ -34,7 +34,7 @@ function getBBox(nav_tier, navigation) {
 
     // const layer = L.geoJson(_.first(selected));
     // const bounds = layer.getBounds();
-    
+
     const polygon = L.polygon(selected[0].geometry['coordinates']);
 
     // [SWNE]
