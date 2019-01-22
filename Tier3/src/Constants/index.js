@@ -12,6 +12,7 @@ const COLOR_GREEN = '#00B300';
 const COLOR_PURPLE = '#51326c';
 
 const CONSOLE_ERROR = 'background: #c50018; color: white; display: block';
+const CONSOLE_WARN = 'background: #FFAC00; color: white; display: block';
 
 // Theme
 const MUI_THEME = createMuiTheme({
@@ -127,6 +128,9 @@ export default class GGConsts {
 
     static get CONSOLE_ERROR() {
         return CONSOLE_ERROR;
+    }
+    static get CONSOLE_WARN() {
+        return CONSOLE_WARN;
     }
 
     static get MAP_REF() {

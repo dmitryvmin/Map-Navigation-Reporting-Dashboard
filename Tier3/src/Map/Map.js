@@ -113,7 +113,7 @@ class Map extends Component {
         // TODO: optimize - tag each geojson polygon with a `tier - location` ID for faster look up
         const {tier} = this.props;
 
-        if (tier === GGConsts.LGA_LEVEL) {
+        if (tier === GGConsts.LGA_LEVEL || tier === GGConsts.FACILITY_LEVEL) {
             return;
         }
 

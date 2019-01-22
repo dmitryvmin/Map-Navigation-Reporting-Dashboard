@@ -38,6 +38,39 @@ const data = [
         }
     },
     {
+        "id": "aff33bcb-8afa-4049-84bb-dee058b4186d",
+        "manufacturer": "Dometic",
+        "model": "ACW90 EEE",
+        "location": "3H8C+97",
+        "metrics": {
+            "start_time": "2008-09-15T15:53:00+05:00",
+            "end_time": "2008-16-15T15:53:00+05:00",
+            "alarm_count": 1,
+            "alarm_over_seconds": 102,
+            "alarm_under_seconds": 142,
+            "temp_mean": 7,
+            "uptime_percent": 0.99,
+            "unknown_time_percent": 0.02,
+            "holdover_mean": 7
+        },
+        "temperature_data_logger": {
+            "id": "aa04ff56-085d-4c97-9a07-39d31d4d0d1f",
+            "manufacturer": "Berlinger",
+            "model": "Fridgetag 2L",
+            "serial": "AAABCE22"
+        },
+        "facility": {
+            "id": "aa04ff56-085d-4c97-9a07-39d31d4d0d1f",
+            "name": "PHC Bauchi",
+            "location": "3HMJ+C6",
+            "regions": {
+                "0": "Nigeria",
+                "1": "Bauchi",
+                "2": "Ningi"
+            }
+        }
+    },
+    {
         "id": "aff33bcb-8afa-4049-84bb-dee058b4186z",
         "manufacturer": "Aucma",
         "model": "TCW40 SDD",

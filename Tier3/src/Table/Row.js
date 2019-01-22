@@ -18,10 +18,12 @@ const drawBoolLEDs = (value, days, id) => {
             <AlarmChart>
                 {chuncks.map((chunk, i) =>
                     <AlarmRow key={`alarmrow-${id}-${i}`}>
-                        {chunk.map((d, i) => <AlarmCell
-                            key={`alarmcell-${id}-${d}-${i}`}
-                            alarm={d}
-                        />)}
+                        {chunk.map((d, i) =>
+                            <AlarmCell
+                                key={`alarmcell-${id}-${d}-${i}`}
+                                alarm={d}
+                            />
+                        )}
                     </AlarmRow>
                 )}
             </AlarmChart>

@@ -41,7 +41,7 @@ function* updateNav(action) {
     yield put({type: GGConsts.DISPLAY_DATA, display_data});
 
     // If facility tier, don't need to update the map or the markers
-    if (navType !== 'facilities') {
+    if (nav_tier !== 'FACILITY_LEVEL') {
 
         // ## Update Map position, zoom
         const map_viewport = yield call(getViewport, nav_tier, navigation);

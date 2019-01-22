@@ -92,7 +92,7 @@ function* renderLayers() {
 
     const layers = _.toArray(navigationMap).reduce((acc, cur) => {
         let layer = getGeoLayers(cur.type);
-        debugger;
+
         if (layer) acc.push(layer);
         return acc;
     }, []);

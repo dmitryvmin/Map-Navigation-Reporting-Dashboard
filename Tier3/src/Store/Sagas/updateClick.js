@@ -16,7 +16,7 @@ import {
 
 // TODO: refactor - same as hover
 function* onLayerClick({x, y, object}) {
-    debugger;
+
     if (!object) {
         return null;
     }
