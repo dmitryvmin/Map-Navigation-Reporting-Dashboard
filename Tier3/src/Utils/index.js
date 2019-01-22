@@ -85,10 +85,6 @@ export const getData = (tier, navigation) => {
     const curNM = getNMap(tier, 'tier'); // current navigation map
     const childNM = getNMapChild(tier, 'tier'); // child navigation map
 
-    if (childNM.type === 'facility_selected') {
-        return null;
-    }
-
     let data = getGeoJson(childNM.type);
 
     if (curNM.type !== 'All') {
@@ -211,4 +207,17 @@ export const getGeoJson = (type) => {
     }
     let data = geoJsonDataMap[type].features;
     return data;
+}
+
+export const chunkArray = (arr, size) => {
+    let index = 0;
+    let arrayLength = arr.length;
+    let tempArray = [];
+
+    for (index = 0; index < arrayLength; index += size) {
+        let chunk = arr.slice(index, index + size);
+        tempArray.push(chunk);
+    }
+
+    return tempArray;
 }

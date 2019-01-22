@@ -11,6 +11,8 @@ const COLOR_YELLOW = '#FFAC00';
 const COLOR_GREEN = '#00B300';
 const COLOR_PURPLE = '#51326c';
 
+const CONSOLE_ERROR = 'background: #c50018; color: white; display: block';
+
 // Theme
 const MUI_THEME = createMuiTheme({
     palette: {
@@ -76,6 +78,9 @@ const STATES_MAP = "STATES_MAP";
 const LGAS_MAP = "LGAS_MAP";
 const FACILITIES_MAP = "FACILITIES_MAP";
 
+const BBOX_UPDATING = "BBOX_UPDATING";
+const BBOX = "BBOX";
+
 const SENSORS_MAP = "SENSORS_MAP";
 const GEO_MAP = "GEO_MAP";
 
@@ -119,6 +124,10 @@ const INACTIVE_LAYERS = "INACTIVE_LAYERS";
 const MAP_REF = "MAP_REF";
 
 export default class GGConsts {
+
+    static get CONSOLE_ERROR() {
+        return CONSOLE_ERROR;
+    }
 
     static get MAP_REF() {
         return MAP_REF;
@@ -238,6 +247,13 @@ export default class GGConsts {
 
     static get MAP_STYLE() {
         return MAP_STYLE;
+    }
+
+    static get BBOX_UPDATING() {
+        return BBOX_UPDATING;
+
+    } static get BBOX() {
+        return BBOX;
     }
 
     static get COLOR_SELECTED() {

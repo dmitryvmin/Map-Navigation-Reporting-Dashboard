@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 
 const viewportSelector = createSelector(
-    (state, props) => state[props.key],
+    (state, props) => state.mapReducer[props.key],
     viewport => viewport
 );
 

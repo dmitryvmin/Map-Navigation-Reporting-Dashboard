@@ -11,6 +11,7 @@ import deviceReducer from './device';
 import markersReducer from './markers';
 import layersReducer from './layers';
 import mfcReducer from './mfc';
+import bboxReducer from './bbox';
 
 const reducers = {
     errorsReducer,
@@ -26,6 +27,7 @@ const reducers = {
     markersReducer,
     layersReducer,
     mfcReducer,
+    bboxReducer,
 };
 
 export default reducers;

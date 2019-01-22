@@ -13,8 +13,7 @@ import {
 import {
     getGeoJson,
     getNMapChild,
-    // asyncForEach,
-    // getNMap,
+    getNMap,
 } from './../../Utils';
 
 function* getMarkers()  {
@@ -24,9 +23,8 @@ function* getMarkers()  {
     const navigation = yield select(navSelector);
     const metric = yield select(metricSelector);
 
-    // const curNM = getNMap(tier, 'tier');
+    // const NM = getNMap(tier, 'tier');
     const childNM = getNMapChild(tier, 'tier');
-
     const geoJson = getGeoJson(childNM.type);
 
     if (!data || !tier || !navigation || !metric) {

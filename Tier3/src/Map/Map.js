@@ -49,6 +49,8 @@ class Map extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
+        const {bbox} = this.props;
+
         if (prevState.shouldUpdateGLContext) {
             this.updateGLContext();
         }
@@ -86,7 +88,7 @@ class Map extends Component {
         } = this.props;
 
         // TODO: more quick error handling for LGA tier, pretty up
-        if (tier !== 'LGA_LEVEL') {
+        if (tier !== GGConsts.LGA_LEVEL) {
 
             const layers = this.renderLayers(this.props, this.onLayerChange);
 
@@ -111,7 +113,7 @@ class Map extends Component {
         // TODO: optimize - tag each geojson polygon with a `tier - location` ID for faster look up
         const {tier} = this.props;
 
-        if (tier === 'LGA_LEVEL') {
+        if (tier === GGConsts.LGA_LEVEL) {
             return;
         }
 
@@ -130,7 +132,7 @@ class Map extends Component {
         // ###
 
         if (!value) {
-            console.log(`%c something wrong with the hovered location: ${value}`, 'background: #c50018; color: white; display: block;');
+            console.log(`%c something wrong with the hovered location: ${value}`, GGConsts.CONSOLE_ERROR);
         } else {
 
             if (ui === 'hover') {
@@ -146,71 +148,72 @@ class Map extends Component {
         }
     }
 
+    makeGeoLayer = (layerType, map, data, hover) => {
+        let val = hover ? hover.value : null;
+        let id = (val) ? `${map.tier}_hover_${val}` : `${map.tier}`;
+
+        const activeColor = (layerType === 'active') ? GGConsts.COLOR_SELECTED : [175, 175, 175];
+        const inactiveColor = (layerType === 'active') ? [255, 255, 255] : [200, 200, 200];
+
+        return new GeoJsonLayer({
+            id,
+            data,
+            opacity: 0.8,
+            stroked: true,
+            filled: true,
+            extruded: false,
+            wireframe: false,
+            fp64: true,
+            lineWidthMinPixels: 1,
+            getLineColor: [175, 175, 175],
+            getFillColor: f => (f.properties[map.code] === val) ? activeColor : inactiveColor,
+            updateTrigger: {getFillColor: val},
+            pickable: true,
+            onHover: info => this.onLayerChange(info, 'hover'),
+            onClick: info => this.onLayerChange(info, 'click')
+        })
+    }
+
+    getGeoLayers = (navigation, type, hover) => {
+        const selected = navigation[type];
+        if (!selected || type === 'facility_selected') {
+            return;
+        }
+
+        const NM = getNMap(type, 'type');
+        let data = getGeoJson(NM.type);
+        if (!data) {
+            return;
+        }
+
+        if (selected === 'All') {
+            // filter by parent
+            let parentNM = getNMapParent(type, 'type');
+            if (parentNM) {
+                data = data.filter(f => f.properties[parentNM.code] === navigation[parentNM.type]);
+            }
+
+            const activeLayer = this.makeGeoLayer('active', NM, data, hover);
+
+            return activeLayer;
+        }
+        else {
+            data = data.filter(f => f.properties[NM.code] !== selected);
+            const inactiveLayer = this.makeGeoLayer('inactive', NM, data, hover);
+
+            return inactiveLayer;
+        }
+    }
+
     renderLayers = () => {
 
         const {
             navigation,
-            // tier,
             hover,
         } = this.props;
 
-        const makeGeoLayer = (layerType, map, data, hover) => {
-            let val = hover ? hover.value : null;
-            let id = (val) ? `${map.tier}_hover_${val}` : `${map.tier}`;
-
-            const activeColor = (layerType === 'active') ? GGConsts.COLOR_SELECTED : [175, 175, 175];
-            const inactiveColor = (layerType === 'active') ? [255, 255, 255] : [200, 200, 200];
-
-            return new GeoJsonLayer({
-                id,
-                data,
-                opacity: 0.8,
-                stroked: true,
-                filled: true,
-                extruded: false,
-                wireframe: false,
-                fp64: true,
-                lineWidthMinPixels: 1,
-                getLineColor: [175, 175, 175],
-                getFillColor: f => (f.properties[map.code] === val) ? activeColor : inactiveColor,
-                updateTrigger: {getFillColor: val},
-                pickable: true,
-                onHover: info => this.onLayerChange(info, 'hover'),
-                onClick: info => this.onLayerChange(info, 'click')
-            })
-        }
-
-        const getGeoLayers = (type) => {
-            const selected = navigation[type];
-            if (!selected || type === 'facility_selected') {
-                return;
-            }
-
-            const NM = getNMap(type, 'type');
-            let data = getGeoJson(NM.type);
-            if (!data) {
-                return;
-            }
-
-            if (selected === 'All') {
-                // filter by parent
-                let parentNM = getNMapParent(type, 'type');
-                if (parentNM) data = data.filter(f => f.properties[parentNM.code] === navigation[parentNM.type]);
-
-                const activeLayer = makeGeoLayer('active', NM, data, hover);
-                return activeLayer;
-            }
-            else {
-                data = data.filter(f => {
-                    return ( f.properties[NM.code] !== selected );
-                });
-                const inactiveLayer = makeGeoLayer('inactive', NM, data, hover);
-                return inactiveLayer;
-            }
-        }
-
         const layers = _.toArray(navigationMap).reduce((acc, cur) => {
-            let layer = getGeoLayers(cur.type);
+            let layer = this.getGeoLayers(navigation, cur.type, hover);
             if (layer) acc.push(layer);
             return acc;
         }, []);
@@ -292,6 +295,7 @@ const mapStateToProps = state => {
         metric_selected: state.metricReducer.metric_selected,
         markers: state.markersReducer.markers,
         active_layers: state.layersReducer.active_layers,
+        bbox: state.bboxReducer.bbox,
     }
 }
 

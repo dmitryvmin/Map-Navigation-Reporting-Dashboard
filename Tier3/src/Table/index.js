@@ -105,12 +105,14 @@ class RTTable extends React.Component {
 
     handleRowClick = location => e => {
         const {nav_tier} = this.props;
-        if (nav_tier === 'FACILITY_LEVEL') {
-            return;
-        }
 
-        const NM = this.getNewNav(location);
-        this.props.updateNav(NM.type, NM.value);
+        if (nav_tier === 'LGA_LEVEL') {
+            this.props.updateNav('facilities', location.facilities);
+        }
+        else {
+            const NM = this.getNewNav(location);
+            this.props.updateNav(NM.type, NM.value);
+        }
     }
 
     handleChangePage = (event, page) => {

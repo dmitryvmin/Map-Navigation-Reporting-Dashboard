@@ -5,21 +5,29 @@ import _ from 'lodash';
 import styled from 'styled-components';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
-// import {getNMapChild} from './../Utils';
+import {chunkArray} from './../Utils';
 
-const drawBoolLEDs = (value, days, id) => (
-    <Alarm>
-        <AlarmVal>
-            {value}
-        </AlarmVal>
-        <AlarmChart>
-            {days.map((d, i) => <AlarmCell
-                key={`alarmchart-${id}-${d}-${i}`}
-                alarm={d}
-            />)}
-        </AlarmChart>
-    </Alarm>
-)
+const drawBoolLEDs = (value, days, id) => {
+    let chuncks = chunkArray(days, 10);
+
+    return (
+        <Alarm>
+            <AlarmVal>
+                {value}
+            </AlarmVal>
+            <AlarmChart>
+                {chuncks.map((chunk, i) =>
+                    <AlarmRow key={`alarmrow-${id}-${i}`}>
+                        {chunk.map((d, i) => <AlarmCell
+                            key={`alarmcell-${id}-${d}-${i}`}
+                            alarm={d}
+                        />)}
+                    </AlarmRow>
+                )}
+            </AlarmChart>
+        </Alarm>
+    )
+}
 
 class Row extends Component {
     constructor(props) {
@@ -127,14 +135,16 @@ const Alarm = styled.div`
 `;
 const AlarmChart = styled.div`
      margin: 0 0 0 7px;
-     width: 105px;
+     width: 125px;
      line-height: 2px;
      float: right; 
 `;
+const AlarmRow = styled.div`
+`;
 const AlarmCell = styled.div`
     display: inline-block;
-    width: 5px;
-    height: 5px;
+    width: 10px;
+    height: 10px;
     margin: 1px;
     background-color: ${props => props.alarm ? GGConsts.COLOR_GREEN : GGConsts.COLOR_RED}
 `;
