@@ -1,7 +1,7 @@
 import GGConsts from './Constants';
 
 class Auth {
-  authenticate(username, password,cb) {
+  static authenticate(username, password,cb) {
     const creds = `${username}:${password}`;
     const header = {
         'Accept': 'application/json',
@@ -19,11 +19,6 @@ class Auth {
     }).catch(function(err) {
       console.warn('Auth error', err)
     });
-  }
-
-  signout(cb) {
-    this.isAuthenticated = false
-    setTimeout(cb, 100)
   }
 }
 
