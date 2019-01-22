@@ -31,8 +31,9 @@ export default class CityPin extends PureComponent {
         const a1 = 7;
         // Witch of Agnesi formula
         const witch = 2.4* (8 * Math.pow(a1, 3)) / (Math.pow(zoom, 2) + (4*Math.pow(a1,2))) - 3;
-        //20.0 / ( zoom * zoom + 1) * 20;
-// console.log("zoom ", zoom, " Witch ", witch);
+
+        const pieSize = 50;
+
         return (
             <svg
                 height={size}
@@ -64,16 +65,17 @@ export default class CityPin extends PureComponent {
                 }
 
                 <foreignObject
-                    x={chart ? 25 : 0}
-                    y="50"
-                    width="50"
-                    height="50"
+                    x={chart ? pieSize*0.5 : 0}
+                    y={pieSize}
+                    width={pieSize}
+                    height={pieSize}
                 >
                 {chart
                     ?
                     <PieChart
                         lineWidth={50}
                         radius={50}
+                        startAngle={-90}
                         // rounded={true}
                         animate={true}
                         // totalValue={value}
