@@ -1,7 +1,3 @@
-import _ from 'lodash';
-import geojsonExtent from 'geojson-extent';
-import GGConsts from '../../Constants';
-import * as turf from '@turf/turf';
 import L from 'leaflet';
 import {
     getGeoJson,
@@ -10,13 +6,12 @@ import {
 
 /**
  * Gets the bounding box object from the selected geojson multipolygon
- * https://www.npmjs.com/package/@mapbox/geojson-extent
  * https://docs.mapbox.com/mapbox-gl-js/api/#lnglatboundslike
  * http://turfjs.org/docs/
  *
  * @param {string} nav_tier
  * @param {object} navigation
- * @returns {object} - bbox - [SW, NE]
+ * @returns {object} - bbox
  */
 function getBBox(nav_tier, navigation) {
 
@@ -27,13 +22,6 @@ function getBBox(nav_tier, navigation) {
     if (selected && !selected.length) {
         return null;
     }
-
-    // const bounds = geojsonExtent(_.first(selected).geometry);
-    // [WSEN]
-    // const bbox = [[ bounds[1], bounds[0] ], [ bounds[3], bounds[2] ]];
-
-    // const layer = L.geoJson(_.first(selected));
-    // const bounds = layer.getBounds();
 
     const polygon = L.polygon(selected[0].geometry['coordinates']);
 
