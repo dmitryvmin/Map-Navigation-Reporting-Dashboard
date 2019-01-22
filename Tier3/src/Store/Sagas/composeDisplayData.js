@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import {select} from 'redux-saga/effects';
+import GGConsts from './../../Constants';
 
 import {
     sensorsSelector,
@@ -51,7 +52,7 @@ function* composeDisplayData( dataParam ) {
     const tier = yield select(tierSelector);
     const curNM = getNMap(tier, 'tier'); // current navigation map
     const curLocation = navigation[curNM.type];
-    const childNM = getNMapChild(tier, 'tier'); // child navigation map
+    const childNM = getNMapChild(tier, 'tier');
 
     // 2. Metric
     const metricSelected = yield select(metricSelector);
@@ -73,13 +74,17 @@ function* composeDisplayData( dataParam ) {
     // ### Rows
     let rows;
 
-    if (childNM.type === 'facility_selected') {
-        rows = filterSensorsByLoc(sensors, curNM.index, curLocation);
-
-    } else {
+    if (tier === GGConsts.COUNTRY_LEVEL || tier === GGConsts.STATE_LEVEL) {
         let data = getGeoJson(childNM.type);
         rows = data.filter(f => f.properties[curNM.code] === navigation[curNM.type]);
+    }
+    else if (tier === GGConsts.LGA_LEVEL) {
+        const filtered = filterSensorsByLoc(sensors, curNM.index, curLocation);
+        rows = _.uniqBy(filtered, 'manufacturer');
+    }
 
+    else if (tier === GGConsts.FACILITY_LEVEL) {
+        rows = sensors.filter(f => f.facility.name === curLocation);
     }
 
     // ### Columns
@@ -94,28 +99,28 @@ function* composeDisplayData( dataParam ) {
         }
     };
 
-    if (tier === 'COUNTRY_LEVEL') {
+    if (tier === GGConsts.COUNTRY_LEVEL) {
         columns.push(getColumn(childNM.map));
         columns.push(getColumn(metricSelected));
         columns.push(getColumn('Manufacturers'));
         columns.push(getColumn('Total Devices'));
     }
-    else if (tier === 'STATE_LEVEL') {
+    else if (tier === GGConsts.STATE_LEVEL) {
         columns.push(getColumn(childNM.map));
         columns.push(getColumn(metricSelected));
         columns.push(getColumn('Manufacturers'));
         columns.push(getColumn('Total Devices'));
     }
-    else if (tier === 'LGA_LEVEL') {
+    else if (tier === GGConsts.LGA_LEVEL) {
         columns.push(getColumn(childNM.map));
         columns.push(getColumn(metricSelected));
         columns.push(getColumn('Manufacturers'));
         columns.push(getColumn('Total Devices'));
     }
-    else if (tier === 'FACILITY_LEVEL') {
+    else if (tier === GGConsts.FACILITY_LEVEL) {
         columns.push(getColumn(metricSelected));
         columns.push(getColumn('Manufacturers'));
-        columns.push(getColumn('Device Info'));
+        columns.push(getColumn('model'));
     }
 
     // ### Cells
@@ -123,6 +128,7 @@ function* composeDisplayData( dataParam ) {
 
         let id = crypto.getRandomValues(new Uint32Array(4)).join('-');
         let name = '-';
+        let model = '-';
         let alarms;
         let holdover;
         let regionType;
@@ -131,7 +137,7 @@ function* composeDisplayData( dataParam ) {
         let mfc;
         let sensorsFiltered = [...sensors];
 
-        if (tier === 'COUNTRY_LEVEL' || tier === 'STATE_LEVEL') {
+        if (tier === GGConsts.COUNTRY_LEVEL || tier === GGConsts.STATE_LEVEL) {
 
             location = cur.properties[childNM.code];
             sensorsFiltered = filterSensorsByLoc(sensorsFiltered, childNM.index, location);
@@ -155,7 +161,7 @@ function* composeDisplayData( dataParam ) {
             }
 
         }
-        else if (tier === 'LGA_LEVEL') {
+        else if (tier === GGConsts.LGA_LEVEL) {
 
             location = cur.facility.location;
 
@@ -174,7 +180,7 @@ function* composeDisplayData( dataParam ) {
             name = cur.facility.name;
 
         }
-        else if (tier === 'FACILITY_LEVEL') {
+        else if (tier === GGConsts.FACILITY_LEVEL) {
             location = cur.facility.location;
 
             if (mfcSelected.includes(mfcSelected)) {
@@ -190,6 +196,7 @@ function* composeDisplayData( dataParam ) {
             mfc = cur.manufacturer;
             id = cur.id;
             name = cur.facility.name;
+            model = cur.model;
         }
 
         acc.push({
@@ -201,7 +208,8 @@ function* composeDisplayData( dataParam ) {
             'Manufacturers': mfc,
             'chart': (alarms !== '-'),
             'location': location,
-            'name': name
+            'name': name,
+            'model': model,
         });
 
         return acc;

@@ -14,7 +14,7 @@ import getMarkers from './getMarkers';
 // import getDeckLayers from './getDeckLayers';
 
 /**
- * When the navigation changes, this computes and updates the state
+ * When a setting is changed (navigation, map, or table), this function computes and updates the state
  * @param {object}
  */
 function* updateNav(action) {
@@ -23,10 +23,9 @@ function* updateNav(action) {
     const navValue = _.first(_.values(nav));
 
     if (!navValue || !navType) {
-        console.log(`%c something wrong with the update action: ${action}`, 'background: #c50018; color: white; display: block;');
+        console.log(`%c something wrong with the update action: ${action}`, GGConsts.CONSOLE_ERROR);
     }
 
-    // ## The update action properties can be found in the navObj map
     const NM = getNMap(navType, 'type');
 
     // ## Set Tier
@@ -39,16 +38,20 @@ function* updateNav(action) {
 
     // ## Update Data
     const display_data = yield call(composeDisplayData);
-    yield put({type: GGConsts.DISPLAY_DATA, display_data });
+    yield put({type: GGConsts.DISPLAY_DATA, display_data});
 
-    // ## Update Map position, zoom
-    const map_viewport = yield call(getViewport, nav_tier, navigation);
-    yield put({type: GGConsts.MAP_VIEWPORT, map_viewport});
+    // If facility tier, don't need to update the map or the markers
+    if (nav_tier !== 'FACILITY_LEVEL') {
 
-    // ## Update Markers
-    const markers = yield call(getMarkers);
-    yield put({type: GGConsts.MARKERS, markers});
-    // yield put({type: GGConsts.MARKERS, markers: {[nav_tier]: {[navValue]: markers}} });
+        // ## Update Map position, zoom
+        const map_viewport = yield call(getViewport, nav_tier, navigation);
+        yield put({type: GGConsts.MAP_VIEWPORT, map_viewport});
+
+        // ## Update Markers
+        const markers = yield call(getMarkers);
+        yield put({type: GGConsts.MARKERS, markers});
+
+    }
 
     // Update Map style
     // const map_style = updateMapboxStyle(nav_tier, navigation);

@@ -37,6 +37,9 @@ const initState = {
         zoom: 6,
         pitch: 0, // controls view angle
         bearing: 0, // controls map rotation
+        // TODO: borderline anti-pattern, but we're not touching the DOM
+        width: window.innerWidth / 2,
+        height: window.innerHeight - 200,
     },
     map_ref: {
         mapbox: null,

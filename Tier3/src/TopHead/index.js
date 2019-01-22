@@ -8,44 +8,32 @@ import Person from '@material-ui/icons/PersonOutline';
 import 'typeface-roboto';
 import styled from 'styled-components';
 
-export default class TopHead extends Component {
-    constructor(props, context) {
-        super(props, context);
-
-        this.state = {
-            moh: 'Kenya'
-        }
-    }
-
-    render() {
-        return (
-            <Header>
-                <TitleArea>
-                    <Avatar
-                        src="/img/flag.jpg"
-                        size={60}
-                        alt="flag icon"
-                    />
-                    <span>
-                        Nigeria Reporting Tool
-                    </span>
-                </TitleArea>
-                <UserArea>
-                    <StyledAvatar>
-                        <Person />
-                    </StyledAvatar>
-                    {/*<IconMenu*/}
-                    {/*iconButtonElement={<IconButton style={styles.downArrow}><KeyboardArrowDown /></IconButton>}*/}
-                    {/*anchorOrigin={{horizontal: 'right', vertical: 'top'}}*/}
-                    {/*targetOrigin={{horizontal: 'right', vertical: 'top'}}*/}
-                    {/*>*/}
-                    {/*<MenuItem primaryText="Sign out" onClick={(e) => this.props.authenticate(false)}/>*/}
-                    {/*</IconMenu>*/}
-                </UserArea>
-            </Header>
-        )
-    }
-}
+const TopHead = () => (
+    <Header>
+        <TitleArea>
+            <StyledAvatar
+                src="/img/flag.png"
+                size={60}
+                alt="flag icon"
+            />
+            <span>
+                CCE Explorer Nigeria
+            </span>
+        </TitleArea>
+        <UserArea>
+            <StyledAvatar>
+                <Person />
+            </StyledAvatar>
+            {/*<IconMenu*/}
+            {/*iconButtonElement={<IconButton style={styles.downArrow}><KeyboardArrowDown /></IconButton>}*/}
+            {/*anchorOrigin={{horizontal: 'right', vertical: 'top'}}*/}
+            {/*targetOrigin={{horizontal: 'right', vertical: 'top'}}*/}
+            {/*>*/}
+            {/*<MenuItem primaryText="Sign out" onClick={(e) => this.props.authenticate(false)}/>*/}
+            {/*</IconMenu>*/}
+        </UserArea>
+    </Header>
+);
 
 const Header = styled.header`
     width: 100%;
@@ -68,8 +56,9 @@ const TitleArea = styled.div`
     }
 `;
 const StyledAvatar = styled(Avatar)`
-    width: 30px;
-    height: 30px;
+    & > img {
+        height: 150% !important;
+    }
 `;
 const UserArea = styled.div`
     font-size: 18px;
@@ -77,3 +66,5 @@ const UserArea = styled.div`
     align-items: center;
     display: flex;
 `;
+
+export default TopHead;

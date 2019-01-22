@@ -99,18 +99,30 @@ class RTTable extends React.Component {
     }
 
     handleRowHover = location => e => {
-        const NM = this.getNewNav(location);
-        this.props.navHovered({value: NM.value});
+        const {
+            nav_tier,
+            navHovered
+        } = this.props;
+
+        if (nav_tier !== GGConsts.FACILITY_LEVEL) {
+            const NM = this.getNewNav(location);
+            navHovered({value: NM.value});
+        }
     }
 
     handleRowClick = location => e => {
         const {nav_tier} = this.props;
-        if (nav_tier === 'FACILITY_LEVEL') {
-            return;
-        }
 
-        const NM = this.getNewNav(location);
-        this.props.updateNav(NM.type, NM.value);
+        if (nav_tier === GGConsts.LGA_LEVEL) {
+            this.props.updateNav('facility_selected', location.facilities);
+        }
+        else if (nav_tier === GGConsts.COUNTRY_LEVEL || nav_tier === GGConsts.STATE_LEVEL) {
+            const NM = this.getNewNav(location);
+            this.props.updateNav(NM.type, NM.value);
+        }
+        else if (nav_tier === GGConsts.FACILITY_LEVEL) {
+            console.log(`%c bottom tier reached`, GGConsts.CONSOLE_WARN);
+        }
     }
 
     handleChangePage = (event, page) => {
@@ -125,10 +137,15 @@ class RTTable extends React.Component {
         const {nav_tier} = this.props;
         const {hover} = this.state;
 
-        const childNM = getNMapChild(nav_tier, 'tier');
-        const selected = cell[childNM.map] === hover;
+        if (nav_tier !== GGConsts.FACILITY_LEVEL) {
+            const childNM = getNMapChild(nav_tier, 'tier');
+            const selected = cell[childNM.map] === hover;
 
-        return selected;
+            return selected;
+
+        } else {
+            return null;
+        }
     }
 
     render() {

@@ -5,8 +5,6 @@ import lgasData from '../../Data/lgasData.json';
 
 const getMapLayers = (tier, navigation) => {
 
-        debugger;
-
         const layers = [];
 
         let selected = null;

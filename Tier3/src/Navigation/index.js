@@ -269,12 +269,12 @@ class Navigation extends Component {
                             <StyledChip
                                 active={(selected_connected === true) ? 'active' : undefined}
                                 onClick={this.toggleFilterConnected()}
-                                label={_.last(GGConsts.DEVICE_TYPE_CONNECTED.split('_'))}
+                                label={_.capitalize(_.last(GGConsts.DEVICE_TYPE_CONNECTED.split('_')))}
                             />
                             <StyledChip
                                 active={(selected_uploaded === true) ? 'active' : undefined}
                                 onClick={this.toggleFilterUploaded()}
-                                label={_.last(GGConsts.DEVICE_TYPE_UPLOADED.split('_'))}
+                                label={_.capitalize(_.last(GGConsts.DEVICE_TYPE_UPLOADED.split('_')))}
                             />
                         </ChipContainer>
                     </Grid>
@@ -315,12 +315,13 @@ class Navigation extends Component {
                                 )
                             })
                             }
-                            <MfcDialog open={mfcDialog}
-                                       toggle={this.toggleMfcDialog}
+                            <MfcDialog
+                                open={mfcDialog}
+                                toggle={this.toggleMfcDialog}
                             />
-                            <Edit onClick={this.toggleMfcDialog}>
-                                Edit
-                            </Edit>
+                                <Edit onClick={this.toggleMfcDialog}>
+                                    Edit
+                                </Edit>
                             </MfcContainer>
                         </ColumnMenu>
                     </Grid>
@@ -333,10 +334,13 @@ class Navigation extends Component {
 const MfcPill = styled.span`
     display: inline; 
     margin-right: 1em; 
+    font-size: 0.8125rem;
+    font-weight: 500;
 `;
 const MfcContainer = styled.div`
     display: flex; 
     flex-wrap: wrap;
+    margin-top: 3px;
 `;
 const StyledFormControl = styled(FormControl)`
     display: flex !important;
@@ -356,6 +360,7 @@ const HomeStyled = styled(Home)`
 // `;
 const Edit = styled.span`
     color: ${GGConsts.COLOR_BLUE};
+    font-size: 0.8125rem;
 `;
 const LocContainer = styled.div`
     display: flex;
@@ -383,7 +388,7 @@ const NavBar = styled.div`
 //     }
 // `;
 const StyledTabs = styled(Tabs)`
-    margin-top: -0.75em;
+    margin-top: -0.25em;
 `;
 const StyledTab = styled(Tab)`
     text-transform: capitalize !important;
@@ -414,6 +419,7 @@ const StyledChip = styled(Chip)`
     color: white !important;
     background-color: #6a4f82 !important;
     margin: 0.5em 1em 0 0;
+    font-weight: 500;
 
     ${({active}) => {
     return (active && `

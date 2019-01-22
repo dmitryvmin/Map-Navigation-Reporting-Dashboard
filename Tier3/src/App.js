@@ -35,10 +35,11 @@ class App extends Component {
             authenticated: false
         }
 
-        this.handleContentChange = this.handleContentChange.bind(this);
+        // TODO: mapContainerRef needs to be saved to the store so the viewport can be calibrated on load and on resize
+        this.mapContainerRef = React.createRef();
     }
 
-    handleContentChange(contentChange) {
+    handleContentChange = (contentChange) => {
         this.setState({content: contentChange});
     }
 
@@ -55,8 +56,11 @@ class App extends Component {
         return (
             <Provider store={store}>
                 <MuiThemeProvider theme={GGConsts.MUI_THEME}>
-                    <TopHead content={this.state.content} authenticate={this.authenticate}
-                             contentChange={this.handleContentChange}/>
+                    <TopHead
+                        content={this.state.content}
+                        authenticate={this.authenticate}
+                        contentChange={this.handleContentChange}
+                    />
                     <StickyFootWrap>
                         {/*<Alert />*/}
                         <MiddlePane>
@@ -65,12 +69,23 @@ class App extends Component {
                                 <Navigation />
                             </IdBar>
                             <StickyFootCon>
-                                <Grid container spacing={0}>
-                                    <Grid item xs={12} md={6}>
-                                        <Map />
+                                <Grid
+                                    container
+                                    spacing={0}
+                                >
+                                    <Grid item
+                                          xs={12}
+                                          md={6}
+                                    >
+                                        <div ref={this.mapContainerRef}>
+                                            <Map />
+                                        </div>
                                         {/*<GMap />*/}
                                     </Grid>
-                                    <Grid item xs={12} md={6}>
+                                    <Grid item
+                                          xs={12}
+                                          md={6}
+                                    >
                                         <RightViewContainer>
                                             <Chart />
                                             <RTTable />
