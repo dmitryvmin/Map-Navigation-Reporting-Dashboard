@@ -3,7 +3,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import TopHead from './TopHead';
 import FootPane from './FootPane';
 import 'typeface-roboto' // Font
-// import Login from './Login';
+import Login from './Login';
 import GGConsts from './Constants';
 import RTTable from './Table';
 // import Alert from './Alert';
@@ -47,56 +47,57 @@ class App extends Component {
         this.setState({authenticated: bool})
     }
 
-    reset = () => {
-        this.setState({resetData: true}, () => this.setState({resetData: false}));
-    }
-
     render() {
-        // const {classes} = this.props;
+        const {authenticated} = this.state;
+
         return (
             <Provider store={store}>
                 <MuiThemeProvider theme={GGConsts.MUI_THEME}>
-                    <TopHead
-                        content={this.state.content}
-                        authenticate={this.authenticate}
-                        contentChange={this.handleContentChange}
-                    />
-                    <StickyFootWrap>
-                        {/*<Alert />*/}
-                        <MiddlePane>
-                            <IdBar>
-                                {/*<IdBarHeader>Reporting Tool</IdBarHeader>*/}
-                                <Navigation />
-                            </IdBar>
-                            <StickyFootCon>
-                                <Grid
-                                    container
-                                    spacing={0}
-                                >
-                                    <Grid item
-                                          xs={12}
-                                          md={6}
-                                    >
-                                        <div ref={this.mapContainerRef}>
-                                            <Map />
-                                        </div>
-                                        {/*<GMap />*/}
-                                    </Grid>
-                                    <Grid item
-                                          xs={12}
-                                          md={6}
-                                    >
-                                        <RightViewContainer>
-                                            <Chart />
-                                            <RTTable />
-                                        </RightViewContainer>
-                                    </Grid>
-                                </Grid>
-                            </StickyFootCon>
-                        </MiddlePane>
-                    </StickyFootWrap>
-                    <FootPane reset={this.reset}/>
-
+                    {authenticated
+                        ?
+                        <>
+                            <TopHead
+                                content={this.state.content}
+                                authenticate={this.authenticate}
+                                contentChange={this.handleContentChange}
+                            />
+                            <StickyFootWrap>
+                                {/*<Alert />*/}
+                                <MiddlePane>
+                                    <IdBar>
+                                        {/*<IdBarHeader>Reporting Tool</IdBarHeader>*/}
+                                        <Navigation />
+                                    </IdBar>
+                                    <StickyFootCon>
+                                        <Grid
+                                            container
+                                            spacing={0}
+                                        >
+                                            <Grid item
+                                                  xs={12}
+                                                  md={6}
+                                            >
+                                                <div ref={this.mapContainerRef}>
+                                                    <Map />
+                                                </div>
+                                                {/*<GMap />*/}
+                                            </Grid>
+                                            <Grid item
+                                                  xs={12}
+                                                  md={6}
+                                            >
+                                                <RightViewContainer>
+                                                    <Chart />
+                                                    <RTTable />
+                                                </RightViewContainer>
+                                            </Grid>
+                                        </Grid>
+                                    </StickyFootCon>
+                                </MiddlePane>
+                            </StickyFootWrap>
+                            <FootPane />
+                        </>
+                        : <Login authenticate={this.authenticate}/>}
                 </MuiThemeProvider>
             </Provider>
         )
@@ -118,7 +119,7 @@ const MiddlePane = styled.div`
     // flex: 1;
 `;
 const RightViewContainer = styled.div`
-    height: calc(100vh - 200px);
+    height: calc(100vh - 190px);
     display: flex;
     flex-direction: column;
 `;
@@ -128,7 +129,7 @@ const IdBar = styled.div`
     text-align: center;
     line-height: 30px;
     color: white;
-    height: 100px; 
+    height: 90px; 
     @media (max-width: 1286px) {
         height: 100%;
     }

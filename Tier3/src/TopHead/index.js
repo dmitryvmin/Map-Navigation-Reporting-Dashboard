@@ -1,39 +1,56 @@
 import React from 'react';
-
 import Avatar from '@material-ui/core/Avatar';
 import Person from '@material-ui/icons/PersonOutline';
-// import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down';
-// import MenuItem from '@material-ui/core/MenuItem';
-// import IconButton from '@material-ui/core/IconButton';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 import 'typeface-roboto';
 import styled from 'styled-components';
 
-const TopHead = () => (
-    <Header>
-        <TitleArea>
-            <StyledAvatarFlag
-                src="/img/flag.png"
-                size={60}
-                alt="flag icon"
-            />
-            <span>
+function TopHead({authenticate}) {
+    const [anchorEl, setAnchorEl] = React.useState(null);
+
+    function handleClick(event) {
+        setAnchorEl(event.currentTarget);
+    }
+
+    function handleClose() {
+        setAnchorEl(null);
+    }
+
+    function logOut() {
+        setAnchorEl(null);
+        authenticate(false);
+    }
+
+    return (
+        <Header>
+            <TitleArea>
+                <StyledAvatarFlag
+                    src="/img/flag.png"
+                    size={60}
+                    alt="flag icon"
+                />
+                <span>
                 CCE Explorer Nigeria
             </span>
-        </TitleArea>
-        <UserArea>
-            <StyledAvatar>
-                <Person />
-            </StyledAvatar>
-            {/*<IconMenu*/}
-            {/*iconButtonElement={<IconButton style={styles.downArrow}><KeyboardArrowDown /></IconButton>}*/}
-            {/*anchorOrigin={{horizontal: 'right', vertical: 'top'}}*/}
-            {/*targetOrigin={{horizontal: 'right', vertical: 'top'}}*/}
-            {/*>*/}
-            {/*<MenuItem primaryText="Sign out" onClick={(e) => this.props.authenticate(false)}/>*/}
-            {/*</IconMenu>*/}
-        </UserArea>
-    </Header>
-);
+            </TitleArea>
+            <UserArea onClick={handleClick}>
+                <StyledAvatar>
+                    <Person />
+                </StyledAvatar>
+            </UserArea>
+            <Menu
+                id="simple-menu"
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+            >
+                <MenuItem onClick={handleClose}>Settings</MenuItem>
+                <MenuItem onClick={logOut}>Logout</MenuItem>
+            </Menu>
+        </Header>
+    )
+};
 
 const Header = styled.header`
     width: 100%;

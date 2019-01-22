@@ -2,11 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Card from '@material-ui/core/Card';
 
-const POITooltip = ({hover}) => {
-
-    if (!hover.value) {
-        return null;
-    }
+function POITooltip({hover}) {
 
     return (
         <Tooltip>

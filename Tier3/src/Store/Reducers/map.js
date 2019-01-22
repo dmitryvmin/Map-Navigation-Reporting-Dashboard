@@ -39,7 +39,7 @@ const initState = {
         bearing: 0, // controls map rotation
         // TODO: borderline anti-pattern, but we're not touching the DOM
         width: window.innerWidth / 2,
-        height: window.innerHeight - 200,
+        height: window.innerHeight - 190,
     },
     map_ref: {
         mapbox: null,
