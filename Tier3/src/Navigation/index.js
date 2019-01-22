@@ -329,7 +329,7 @@ class Navigation extends Component {
                                 open={mfcDialog}
                                 toggle={this.toggleMfcDialog}
                             />
-                                <br/><Edit onClick={this.toggleMfcDialog}>
+                                <Edit onClick={this.toggleMfcDialog}>
                                     Edit
                                 </Edit>
                             </MfcContainer>

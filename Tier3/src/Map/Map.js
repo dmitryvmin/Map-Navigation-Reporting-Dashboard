@@ -49,7 +49,7 @@ class Map extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        const {bbox} = this.props;
+        //const {bbox} = this.props;
 
         if (prevState.shouldUpdateGLContext) {
             this.updateGLContext();

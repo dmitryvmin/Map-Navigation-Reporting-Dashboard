@@ -66,23 +66,27 @@ class Row extends Component {
 
         if (id === 'Alarms') {
             if (data.AlarmsByDay === '-') {
-                return value;
+                return <StyledCell>{value}</StyledCell>;
             }
             else {
                 let cell = drawBoolLEDs(value, data.AlarmsByDay, id);
-                return cell;
+                return <StyledCell>{cell}</StyledCell>;
             }
         }
         else if (id === 'Manufacturers') {
             if (_.isArray(value) && value.length > 1) {
                 let cell = value.join(', ');
-                return cell;
+                return <StyledCell>{cell}</StyledCell>;
             } else {
-                return value;
+                return <StyledCell>{value}</StyledCell>;
             }
         }
-        else {
-            return value;
+        else if (id === 'Holdover') {
+            return <StyledCellRight>{ !isNaN(value) ? parseFloat(Math.round(value * 100) / 100).toFixed(2) : value }</StyledCellRight>;
+        } else if ( id === 'Total Devices') {
+            return <StyledCellRight>{ value }</StyledCellRight>;
+        } else {
+            return <StyledCell>{value}</StyledCell>;
         }
     }
 
@@ -114,9 +118,9 @@ class Row extends Component {
                         key={`cell-${col.id}-${index}`}
                         
                     >
-                        <StyledCell>
+                        
                             {this.getCell(data, col)}
-                        </StyledCell>
+                        
                     </TableCell>
                 )}
             </TableRow>
@@ -126,6 +130,9 @@ class Row extends Component {
 
 const StyledCell = styled.div`
     // text-align: left; 
+`;
+const StyledCellRight = styled.div`
+    text-align: right; 
 `;
 const AlarmVal = styled.span`
     // margin-left: 2em;
