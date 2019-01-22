@@ -90,7 +90,7 @@ const StyledCard = styled(Card)`
     padding: 30px;
     margin-top: 30px; 
     margin: 50px auto 0;
-    display: initial;
+    display: initial !important;
 `;
 const Title = styled.p`
     text-align: center;
