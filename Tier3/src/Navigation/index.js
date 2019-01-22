@@ -102,7 +102,7 @@ class Navigation extends Component {
                     break;
                 default:
             }
-            return <em style={{marginLeft: '9px', textTransform: 'none'}}>{`${specific} ${loc}s`}</em>;
+            return <em style={{textTransform: 'none'}}>{`${specific} ${loc}s`}</em>;
         } else {
             if ( loc === 'lga' || loc === 'Lga' || loc === 'LGA') {
                 if ( curLevel === 'lga') {
@@ -235,7 +235,7 @@ class Navigation extends Component {
                                                         )
                                                     })}
                                                 </StyledSelect> */}
-                                                <Label style={{lineHeight: '18px'}}>{this.locFunction(navigation, v, formatLabel(t))}</Label>
+                                                <Label style={{marginLeft: '13px', lineHeight: '18px'}}>{this.locFunction(navigation, v, formatLabel(t))}</Label>
                                             </StyledFormControl>)
                                         } else {
                                             return null;
