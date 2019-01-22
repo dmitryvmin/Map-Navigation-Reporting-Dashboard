@@ -1,5 +1,4 @@
-import React, {Component} from 'react';
-
+import React from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Person from '@material-ui/icons/PersonOutline';
 import Menu from '@material-ui/core/Menu';
@@ -7,7 +6,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import 'typeface-roboto';
 import styled from 'styled-components';
 
-function TopHead(props) {
+function TopHead({authenticate}) {
     const [anchorEl, setAnchorEl] = React.useState(null);
 
     function handleClick(event) {
@@ -20,7 +19,7 @@ function TopHead(props) {
 
     function logOut() {
         setAnchorEl(null);
-        props.authenticate(false);
+        authenticate(false);
     }
 
     return (
