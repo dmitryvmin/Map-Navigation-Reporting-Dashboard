@@ -129,6 +129,7 @@ const StyledCell = styled.div`
 `;
 const AlarmVal = styled.span`
     // margin-left: 2em;
+    width: 30px; 
 `;
 const Alarm = styled.div`
     display: flex; 
@@ -145,8 +146,8 @@ const AlarmRow = styled.div`
 `;
 const AlarmCell = styled.div`
     display: inline-block;
-    width: 10px;
-    height: 10px;
+    width: 7px;
+    height: 7px;
     margin: 1px;
     background-color: ${props => props.alarm ? GGConsts.COLOR_GREEN : GGConsts.COLOR_RED}
 `;
