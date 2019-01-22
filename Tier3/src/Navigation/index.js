@@ -88,6 +88,10 @@ class Navigation extends Component {
         if (nav.lga_selected !== 'All' && nav.lga_selected !== false) {
             curLevel = 'lga';
         }
+
+        if (nav.facility_selected !== 'All' && nav.facility_selected !== false) {
+            curLevel = 'facility';
+        }
     
         if ( specific === 'all' || specific === 'ALL' || specific === 'All') {
             switch(loc) {
@@ -104,7 +108,13 @@ class Navigation extends Component {
             }
             return <em style={{textTransform: 'none'}}>{`${specific} ${loc}s`}</em>;
         } else {
-            if ( loc === 'lga' || loc === 'Lga' || loc === 'LGA') {
+            if (loc === 'facility' || loc === 'Facility' || loc === 'FACILITY' ) { 
+                if ( curLevel === 'facility') {
+                    return <strong style={{color: 'white'}}>{specific}</strong>;
+                } else {
+                    return <strong>{specific}</strong>;
+                }
+            } else if ( loc === 'lga' || loc === 'Lga' || loc === 'LGA' ) {
                 if ( curLevel === 'lga') {
                     return <strong style={{color: 'white'}}>{specific}</strong>;
                 } else {
@@ -112,7 +122,7 @@ class Navigation extends Component {
                 }
             } else {
                 if ( curLevel === 'state') {
-                    return <strong style={{color: 'white'}}>{`${specific} ${loc}`}</strong>;
+                    return <strong style={{color: 'white'}}>{`${specific} ${loc}`}</strong>;                
                 } else {
                     return <span style={{cursor: 'pointer'}} onClick={this.goUp()}>{`${specific} ${loc}`}</span>;
                 }
@@ -319,7 +329,7 @@ class Navigation extends Component {
                                 open={mfcDialog}
                                 toggle={this.toggleMfcDialog}
                             />
-                                <Edit onClick={this.toggleMfcDialog}>
+                                <br/><Edit onClick={this.toggleMfcDialog}>
                                     Edit
                                 </Edit>
                             </MfcContainer>
