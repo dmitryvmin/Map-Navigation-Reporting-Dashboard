@@ -25,7 +25,7 @@ function TopHead({authenticate}) {
     return (
         <Header>
             <TitleArea>
-                <StyledAvatar
+                <StyledAvatarFlag
                     src="/img/flag.png"
                     size={60}
                     alt="flag icon"
@@ -70,6 +70,12 @@ const TitleArea = styled.div`
         object-fit: cover;
         width: 30px;
         height: 30px;
+    }
+`;
+const StyledAvatarFlag = styled(Avatar)`
+    box-shadow: 0 0 0px 3px #00915b;
+    & > img {
+        height: 150% !important;
     }
 `;
 const StyledAvatar = styled(Avatar)`
