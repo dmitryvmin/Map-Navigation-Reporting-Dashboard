@@ -66,7 +66,7 @@ class Row extends Component {
 
         if (id === 'Alarms') {
             if (data.AlarmsByDay === '-') {
-                return <StyledCell>{value}</StyledCell>;
+                return <StyledCell>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{value}</StyledCell>;
             }
             else {
                 let cell = drawBoolLEDs(value, data.AlarmsByDay, id);
@@ -137,6 +137,7 @@ const StyledCellRight = styled.div`
 const AlarmVal = styled.span`
     // margin-left: 2em;
     width: 30px; 
+    text-align: right;
 `;
 const Alarm = styled.div`
     display: flex; 
