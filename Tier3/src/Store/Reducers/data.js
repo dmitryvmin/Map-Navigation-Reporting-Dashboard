@@ -25,7 +25,7 @@ function dataReducer(state = initState, action) {
         case GGConsts.FACILITIES_MAP:
             return { ...state, [GGConsts.FACILITIES_MAP]: action.data }
 
-        case GGConsts.GEO_MAP:
+        case GGConsts.GEO_MAP:  // TODO:  append marker lat long here.!!! 
             return {
                 ...state,
                 geo_map: {

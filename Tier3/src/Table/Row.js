@@ -65,8 +65,14 @@ class Row extends Component {
         let value = data[id];
         let right = false;
 
-        if (id === 'Alarms' && data.AlarmsByDay !== '-') {
-            value = drawBoolLEDs(value, data.AlarmsByDay, id);
+        if (id === 'Alarms') {
+            if (data.AlarmsByDay === '-') {
+                return <StyledCell>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{value}</StyledCell>;
+            }
+            else {
+                let cell = drawBoolLEDs(value, data.AlarmsByDay, id);
+                return <StyledCell>{cell}</StyledCell>;
+            }
         }
         else if (id === 'Manufacturers' && _.isArray(value) && value.length > 1) {
             value = value.join(', ');
@@ -122,6 +128,7 @@ const StyledCell = styled.div`
 `;
 const AlarmVal = styled.span`
     width: 30px; 
+    text-align: right;
 `;
 const Alarm = styled.div`
     display: flex; 

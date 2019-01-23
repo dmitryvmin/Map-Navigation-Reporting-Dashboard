@@ -1,13 +1,15 @@
 import _ from 'lodash';
 import * as turf from '@turf/turf';
-import {select} from 'redux-saga/effects';
+import {select, put} from 'redux-saga/effects';
 import {OpenLocationCode} from 'open-location-code';
 
+import GGConsts from './../../Constants';
 import {
     navSelector,
     tierSelector,
     metricSelector,
     displaySelector,
+    geoSelector,
 } from './../Selectors';
 
 import {
@@ -19,7 +21,10 @@ import {
 function* getMarkers()  {
 
     const data = yield select(displaySelector);
-    const tier = yield select(tierSelector);
+    const tier = yield select(tierSelector);  
+
+    // see if this has marker data saved
+    const geoState = yield select(geoSelector);
     const navigation = yield select(navSelector);
     const metric = yield select(metricSelector);
 
@@ -32,7 +37,11 @@ function* getMarkers()  {
     }
 
     const markers = [];
+    
+    //const iterateMarkers = async () => {
+    //await asyncForEach(data.cells, async (c) => {
 
+    //function* loopMarkers() {
     data.cells.forEach( c => {
         const marker = {};
         let name;
@@ -51,9 +60,13 @@ function* getMarkers()  {
             // If this is a cohort - not a single location - need to find the center for the marker
             if (geo && childNM.index > -1) {
                 // Calculate the centeroid for each geojson multipolygon
+
+                // first now check if the data is already appended to the geoState (add property centroid/coordinates)
+
                 const coordinates = turf.centroid(geo).geometry.coordinates;
                 marker.longitude = coordinates[0];
                 marker.latitude = coordinates[1];
+                
             }
 
         } else {
@@ -80,6 +93,9 @@ function* getMarkers()  {
 
     });
 
+
+    //loopMarkers();
+    yield put({ type: GGConsts.GEO_MAP, data: {[childNM.map]: geoState} });
     return markers;
 
 }
