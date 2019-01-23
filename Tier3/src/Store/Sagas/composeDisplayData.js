@@ -34,7 +34,9 @@ const reduceSensorsByFilter = (sensors, metric) => {
         return a;
     }, []);
 
-    return reduced;
+    const unique = _.uniqBy(reduced)
+
+    return unique;
 }
 
 /**
@@ -129,12 +131,13 @@ function* composeDisplayData( dataParam ) {
         let id = crypto.getRandomValues(new Uint32Array(4)).join('-');
         let name = '-';
         let model = '-';
-        let alarms;
-        let holdover;
+        let devices = '-';
+        let alarms = '-';
+        let holdover = '-';
+        let mfc = '-';
         let regionType;
         let regionName;
         let location;
-        let mfc;
         let sensorsFiltered = [...sensors];
 
         if (tier === GGConsts.COUNTRY_LEVEL || tier === GGConsts.STATE_LEVEL) {
@@ -148,42 +151,37 @@ function* composeDisplayData( dataParam ) {
 
             if (sensorsFiltered.length) {
 
+                devices = sensorsFiltered.length;
                 alarms = reduceSensorsByFilter(sensorsFiltered, 'metrics.alarm_count');
                 holdover = reduceSensorsByFilter(sensorsFiltered, 'metrics.holdover_mean');
                 mfc = reduceSensorsByFilter(sensorsFiltered, 'manufacturer');
 
-            } else {
-
-                alarms = '-';
-                holdover = '-';
-                mfc = '-';
-
             }
-
         }
         else if (tier === GGConsts.LGA_LEVEL) {
 
             location = cur.facility.location;
+            sensorsFiltered = sensorsFiltered.filter(f => f.location === location);
+            sensorsFiltered = filterSensorsByMfc(sensorsFiltered, mfcSelected);
 
-            if (mfcSelected.includes(mfcSelected)) {
-                sensorsFiltered = cur;
-            } else {
-                sensorsFiltered = [];
-            }
-
-            regionType = 'facilities';
+            regionType = childNM.map;
             regionName = cur.facility.name;
-            alarms = cur.metrics.alarm_count;
-            holdover = cur.metrics.holdover_mean;
-            mfc = cur.manufacturer;
-            id = cur.id;
-            name = cur.facility.name;
 
+            if (sensorsFiltered.length) {
+
+                devices = sensorsFiltered.length;
+                alarms = cur.metrics.alarm_count;
+                holdover = cur.metrics.holdover_mean;
+                mfc = cur.manufacturer;
+                id = cur.id;
+                name = cur.facility.name;
+
+            }
         }
         else if (tier === GGConsts.FACILITY_LEVEL) {
             location = cur.facility.location;
 
-            if (mfcSelected.includes(mfcSelected)) {
+            if (mfcSelected.includes(cur.manufacturer)) {
                 sensorsFiltered = cur;
             } else {
                 sensorsFiltered = [];
@@ -210,6 +208,7 @@ function* composeDisplayData( dataParam ) {
             'location': location,
             'name': name,
             'model': model,
+            'Total Devices': devices,
         });
 
         return acc;

@@ -431,11 +431,9 @@ const StyledChip = styled(Chip)`
     margin: 0.5em 1em 0 0;
     font-weight: 500;
 
-    ${({active}) => {
-    return (active && `
-        background: #ffffff50 !important;
-    `)
-}}
+    ${({active}) => (active && `
+            background: #ffffff50 !important;
+        `)}
 `;
 const Header = styled.h4`
     text-align: left;

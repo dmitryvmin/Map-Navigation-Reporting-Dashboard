@@ -7,6 +7,7 @@ import Tab from '@material-ui/core/Tab';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import GGConsts from '../Constants';
+import _ from 'lodash';
 
 import {
     BarChart,
@@ -39,17 +40,19 @@ class CustomTooltip extends Component {
             tier,
         } = this.props;
 
-        if (!active) {
+        if (!active || tier === GGConsts.FACILITY_LEVEL) {
             return null;
         }
 
         const NM = getNMapChild(tier, 'tier');
         const item = payload[0].payload[NM.map];
+        const location = payload[0].name
+        const value = _.round(payload[0].value, 2)
 
         return (
             <div className="custom-tooltip">
                 <h4>{`${item}`}</h4>
-                <p className="label">{`${payload[0].name} : ${payload[0].value}`}</p>
+                <p className="label">{`${location} : ${value}`}</p>
             </div>
         )
     }
@@ -62,6 +65,9 @@ class Chart extends Component {
             chartType: 'Bar',
         };
     }
+
+    // TODO: needs to be optimized, component rerenders on table/map hover
+    // shouldComponentUpdate() {}
 
     handleChange = (e, value) => {
         this.props.updateTimeframe(value);

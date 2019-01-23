@@ -102,7 +102,7 @@ export default class CityPin extends PureComponent {
                     <text
                         className="locationName"
                         textAnchor="middle"
-                        y={containerSize * 1.25}
+                        y={containerSize + size / 3}
                         x={containerSize / 2}
                         fontSize={fontSize}
                         fill={'black'}
