@@ -18,36 +18,41 @@ const data = [
 
 export default class CityPin extends PureComponent {
 
+    getTextSize = (zoom) => {
+        const a1 = 6;
+        const witch = 2.4* (8 * Math.pow(a1, 3)) / (Math.pow(zoom, 2) + (4*Math.pow(a1,2))) - 3;
+
+        return witch;
+    }
+
     render() {
         const {
             chart,
-            zoom,   // level of map zoom  !  use it !!  in conjunction with the font size...and other things
+            zoom,
             name,
             value
         } = this.props;
 
-        const size = (Math.pow(zoom, 1.85));
-
-        const a1 = 7;
-        // Witch of Agnesi formula
-        const witch = 2.4* (8 * Math.pow(a1, 3)) / (Math.pow(zoom, 2) + (4*Math.pow(a1,2))) - 3;
-
-        const pieSize = 50;
+        const size = this.getTextSize(zoom) * zoom / 5;
+        const fontSize = size / 1.5;
+        const pieSize = size * 2;
+        const containerSize = size * 3;
 
         return (
             <svg
-                height={size}
-                viewBox="0 0 50 50"
-                style={{transform: `translate(${-size}px,${-size * 2}px)`, overflow: 'visible'}}>
-                {/*<<Transition*/}
-                {/*<in={true}*/}
-                {/*<   timeout={duration}>*/}
-                {/*<   {(state) => (*/}
-
+                width={containerSize}
+                height={containerSize}
+                viewBox={`0 0 ${containerSize} ${containerSize}`}
+                style={{transform: `translate(${-containerSize/2}px,${-containerSize/2}px)`, overflow: 'visible'}}
+                className={`${name}-marker`}
+            >
                 {chart &&
-                    <svg y="50" x="25">
+                    <svg
+                        width={containerSize}
+                        height={containerSize}
+                    >
                         <circle
-                            r="25px"
+                            r={size}
                             cx="50%"
                             cy="50%"
                             className="mapCircle"
@@ -55,9 +60,10 @@ export default class CityPin extends PureComponent {
                         <text
                             x="50%"
                             y="50%"
+                            fontSize={fontSize}
                             textAnchor="middle"
-                            dy="0.25em"
                             className="mapLabel"
+                            alignmentBaseline="central"
                         >
                             {value}
                         </text>
@@ -65,44 +71,44 @@ export default class CityPin extends PureComponent {
                 }
 
                 <foreignObject
-                    x={chart ? pieSize*0.5 : 0}
-                    y={pieSize}
-                    width={pieSize}
-                    height={pieSize}
+                    width={containerSize}
+                    height={containerSize}
                 >
                 {chart
                     ?
                     <PieChart
-                        lineWidth={50}
-                        radius={50}
+                        lineWidth={pieSize / 1.25}
+                        radius={pieSize - 10}
                         startAngle={-90}
-                        // rounded={true}
                         animate={true}
-                        // totalValue={value}
                         data={data}
                     />
                     :
-                    <svg>
+                    <svg
+                        width={containerSize}
+                        height={containerSize}
+                    >
                         <circle
                             pointerEvents="none"
                             fill={GGConsts.COLOR_GREEN}
-                            r="8"
-                            cx="50"
-                            cy="50"
+                            r={size/5}
+                            cx="50%"
+                            cy="50%"
                         />
                     </svg>
                 }
-                {/*<TwoLevelPieChart />*/}
                 </foreignObject>
-                {/*<    )}*/}
-                {/*</Transition>*/}
-                {chart && <text
-                    className="locationName"
-                    textAnchor="middle"
-                    y={chart ? 130 : 130}
-                    x="50"
-                    fontSize={witch}
-                    fill={'black'}>{name}</text>
+                {chart &&
+                    <text
+                        className="locationName"
+                        textAnchor="middle"
+                        y={containerSize * 1.25}
+                        x={containerSize / 2}
+                        fontSize={fontSize}
+                        fill={'black'}
+                    >
+                        {name}
+                    </text>
                 }
             </svg>
 

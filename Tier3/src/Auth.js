@@ -11,7 +11,7 @@ class Auth {
         .then(function(response) {
       
       if (response.status === 200) {
-        setTimeout(() => {cb(true)}, 100)
+        cb(true);
       } else {
         console.warn('Wrong login creds ', creds);
       }

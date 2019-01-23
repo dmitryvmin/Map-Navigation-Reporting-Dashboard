@@ -32,7 +32,7 @@ class App extends Component {
         super(props, context);
         this.state = {
             content: "dashboard",
-            authenticated: false
+            authenticated: true
         }
 
         // TODO: mapContainerRef needs to be saved to the store so the viewport can be calibrated on load and on resize
