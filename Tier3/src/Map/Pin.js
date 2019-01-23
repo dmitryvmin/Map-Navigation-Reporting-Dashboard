@@ -65,7 +65,7 @@ export default class CityPin extends PureComponent {
                             className="mapLabel"
                             alignmentBaseline="central"
                         >
-                            {value}
+                            {!isNaN(value) ? Math.round(value * 100) / 100 : value}
                         </text>
                     </svg>
                 }
