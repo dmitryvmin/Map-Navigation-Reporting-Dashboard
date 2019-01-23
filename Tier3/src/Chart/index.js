@@ -4,25 +4,21 @@ import {withStyles} from '@material-ui/core/styles';
 import styled from 'styled-components';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-// import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
-//import _ from 'lodash';
 import GGConsts from '../Constants';
+
 import {
     BarChart,
     Bar,
     Brush,
-//    ReferenceLine,
-    // XAxis,
-//    YAxis,
     Tooltip,
     LineChart,
     Line,
     ResponsiveContainer
 } from 'recharts';
 
-// import {getNMapChild} from './../Utils';
+import {getNMapChild} from './../Utils';
 
 const styles = theme => ({
     indicator: {
@@ -32,6 +28,32 @@ const styles = theme => ({
         minWidth: 70,
     }
 })
+
+class CustomTooltip extends Component {
+
+    render() {
+        const {
+            active,
+            payload,
+            label,
+            tier,
+        } = this.props;
+
+        if (!active) {
+            return null;
+        }
+
+        const NM = getNMapChild(tier, 'tier');
+        const item = payload[0].payload[NM.map];
+
+        return (
+            <div className="custom-tooltip">
+                <h4>{`${item}`}</h4>
+                <p className="label">{`${payload[0].name} : ${payload[0].value}`}</p>
+            </div>
+        )
+    }
+}
 
 class Chart extends Component {
     constructor(props) {
@@ -54,6 +76,25 @@ class Chart extends Component {
         //const {timeframe_selected} = this.props;
     }
 
+    onHover = (hoveredEl) => {
+
+        const {
+            nav_tier,
+            hover,
+            navHovered } = this.props;
+
+        if (nav_tier !== GGConsts.FACILITY_LEVEL) {
+
+            const childNM = getNMapChild(nav_tier, 'tier');
+            const value = hoveredEl[childNM.map]
+            const selected = value === hover;
+
+            if (!selected) {
+                navHovered({ value });
+            }
+        }
+    }
+
     render() {
         const {
             nav_tier,
@@ -62,6 +103,7 @@ class Chart extends Component {
             timeframe_selected,
             metric_selected,
             display_data,
+            navHovered,
         } = this.props;
 
 
@@ -80,7 +122,7 @@ class Chart extends Component {
         // const label = (nav_tier !== 'FACILITY_LEVEL') ? getNMapChild(nav_tier, 'tier').map : null;
 
         return (
-            <React.Fragment>
+            <>
                 <Controls>
                     <StyledTabs
                         value={timeframe_selected}
@@ -126,11 +168,14 @@ class Chart extends Component {
                                 data={data}
                                 margin={{top: 50, right: 20, left: 20, bottom: 20}}
                             >
-                                <Tooltip/>
+                                <Tooltip cursor={{ fill: 'none' }} content={
+                                    <CustomTooltip tier={nav_tier} />}
+                                />
                                 {/*<Brush dataKey='alarms' height={30} stroke="#dbdbdb"/>*/}
                                 <Bar
                                     dataKey={metric_selected}
                                     fill={GGConsts.COLOR_BLUE}
+                                    onMouseEnter={this.onHover}
                                 />
                             </BarChart>
                             :
@@ -138,7 +183,9 @@ class Chart extends Component {
                                 data={this.getTrendData}
                                 margin={{top: 50, right: 20, left: 20, bottom: 20}}
                             >
-                                <Tooltip/>
+                                <Tooltip cursor={{ fill: 'none' }} content={
+                                    <CustomTooltip tier={nav_tier}/>}
+                                />
                                 <Line
                                     type="step"
                                     dataKey={metric_selected}
@@ -153,13 +200,14 @@ class Chart extends Component {
                             </LineChart>
                     }
                 </ResponsiveContainer>
-            </React.Fragment>
+            </>
         )
     }
 }
 
 const mapStateToProps = state => {
     return {
+        hover: state.navigationReducer.nav_hover,
         nav_tier: state.navigationReducer.nav_tier,
         navigation: state.navigationReducer.navigation,
         display_data: state.displayReducer.display_data,
@@ -171,6 +219,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         updateTimeframe: (timeframe_selected) => dispatch({type: GGConsts.UPDATE_TIMEFRAME, timeframe_selected}),
+        navHovered: (nav_hover) => dispatch({type: GGConsts.NAV_HOVER, nav_hover}),
     };
 };
 
