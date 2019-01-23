@@ -63,6 +63,7 @@ class Row extends Component {
     getCell = (data, col) => {
         let id = col.id;
         let value = data[id];
+        let right = false;
 
         if (id === 'Alarms') {
             if (data.AlarmsByDay === '-') {
@@ -73,21 +74,18 @@ class Row extends Component {
                 return <StyledCell>{cell}</StyledCell>;
             }
         }
-        else if (id === 'Manufacturers') {
-            if (_.isArray(value) && value.length > 1) {
-                let cell = value.join(', ');
-                return <StyledCell>{cell}</StyledCell>;
-            } else {
-                return <StyledCell>{value}</StyledCell>;
-            }
+        else if (id === 'Manufacturers' && _.isArray(value) && value.length > 1) {
+            value = value.join(', ');
         }
         else if (id === 'Holdover') {
-            return <StyledCellRight>{ !isNaN(value) ? parseFloat(Math.round(value * 100) / 100).toFixed(2) : value }</StyledCellRight>;
-        } else if ( id === 'Total Devices') {
-            return <StyledCellRight>{ value }</StyledCellRight>;
-        } else {
-            return <StyledCell>{value}</StyledCell>;
+            value = (!_.isNaN(value) && value !== '-') ? _.round(value, 2) : value;
+            right = true;
         }
+        else if ( id === 'Total Devices') {
+            right = true;
+        }
+
+        return <StyledCell right={right}>{value}</StyledCell>
     }
 
     render() {
@@ -114,13 +112,8 @@ class Row extends Component {
                 aria-checked={selected}
             >
                 {columns.map((col, index) =>
-                    <TableCell
-                        key={`cell-${col.id}-${index}`}
-                        
-                    >
-                        
-                            {this.getCell(data, col)}
-                        
+                    <TableCell key={`cell-${col.id}-${index}`}>
+                        {this.getCell(data, col)}
                     </TableCell>
                 )}
             </TableRow>
@@ -129,13 +122,11 @@ class Row extends Component {
 }
 
 const StyledCell = styled.div`
-    // text-align: left; 
-`;
-const StyledCellRight = styled.div`
-    text-align: right; 
+    ${({right}) => (right && `
+        text-align: right; 
+    `)}
 `;
 const AlarmVal = styled.span`
-    // margin-left: 2em;
     width: 30px; 
     text-align: right;
 `;
@@ -146,7 +137,7 @@ const Alarm = styled.div`
 `;
 const AlarmChart = styled.div`
      margin: 0 0 0 7px;
-     width: 125px;
+     width: 90px;
      line-height: 2px;
      float: right; 
 `;
@@ -157,7 +148,7 @@ const AlarmCell = styled.div`
     width: 7px;
     height: 7px;
     margin: 1px;
-    background-color: ${props => props.alarm ? GGConsts.COLOR_GREEN : GGConsts.COLOR_RED}
+    background-color: ${props => props.alarm ? GGConsts.COLOR_GREEN : GGConsts.COLOR_RED}; 
 `;
 
 export default Row;

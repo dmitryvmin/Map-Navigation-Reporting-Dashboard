@@ -18,16 +18,21 @@ class EnhancedTableHead extends React.Component {
             label === 'lgas'
         ) {
             return label.substring(0, label.length - 1);
-        } else if (label === 'facilities') {
+        }
+        else if (label === 'facilities') {
             return 'facility';
-        } else {
+        }
+        else {
             return label;
         }
-
     }
 
     alignCheck = (label) => {
-        if (label === 'Holdover' || label === 'Total Devices' || label === 'Uptime') {
+        if (
+            label === 'Holdover' ||
+            label === 'Total Devices' ||
+            label === 'Uptime'
+        ) {
             return 'right';
         }
         return 'left';
@@ -76,10 +81,15 @@ const StyledTableCell = styled(TableCell)`
     background-color: #fafafa; 
     position: sticky;
     top: 0;
+    padding-right: 20px !important;
+    width: 22%;
     
     ${props => 
-        props.total && css`
-            width: 25%; 
+        props.total === 'true' && css`
+            // & > span {
+            //     width: 112px; 
+            // }
+            width: 34%;
     `}
 `;
 const StyledTableHead = styled(TableHead)`

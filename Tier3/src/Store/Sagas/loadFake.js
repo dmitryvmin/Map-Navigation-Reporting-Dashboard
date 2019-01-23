@@ -8,7 +8,7 @@ const data = [
         "id": "aff33bcb-8afa-4049-84bb-dee058b4186d",
         "manufacturer": "Dometic",
         "model": "TCW40 SDD",
-        "location": "3H8C+97",
+        "location": "3HMJ+C6",
         "metrics": {
             "start_time": "2008-09-15T15:53:00+05:00",
             "end_time": "2008-16-15T15:53:00+05:00",
@@ -41,7 +41,7 @@ const data = [
         "id": "aff33bcb-8afa-4049-84bb-dee058b4186d",
         "manufacturer": "Dometic",
         "model": "ACW90 EEE",
-        "location": "3H8C+97",
+        "location": "3HMJ+C6",
         "metrics": {
             "start_time": "2008-09-15T15:53:00+05:00",
             "end_time": "2008-16-15T15:53:00+05:00",

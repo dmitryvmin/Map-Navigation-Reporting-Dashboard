@@ -5,17 +5,12 @@ import GGConsts from '../Constants';
 import styled from 'styled-components';
 import {withStyles} from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
-// import NativeSelect from '@material-ui/core/NativeSelect';
-// import Input from '@material-ui/core/Input';
-//import FormHelperText from '@material-ui/core/FormHelperText';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Chip from '@material-ui/core/Chip';
 import Grid from '@material-ui/core/Grid';
 import Home from '@material-ui/icons/Home';
-// import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import IconButton from '@material-ui/core/IconButton';
-//import Button from '@material-ui/core/Button';
 import MfcDialog from './MfcDialog';
 
 import {
@@ -118,13 +113,13 @@ class Navigation extends Component {
                 if ( curLevel === 'lga') {
                     return <strong style={{color: 'white'}}>{specific}</strong>;
                 } else {
-                    return <strong>{specific}</strong>;
+                    return <strong style={{cursor: 'pointer'}} onClick={this.goLga()}>{specific}</strong>;
                 }
             } else {
                 if ( curLevel === 'state') {
                     return <strong style={{color: 'white'}}>{`${specific} ${loc}`}</strong>;                
                 } else {
-                    return <span style={{cursor: 'pointer'}} onClick={this.goUp()}>{`${specific} ${loc}`}</span>;
+                    return <span style={{cursor: 'pointer'}} onClick={this.goState()}>{`${specific} ${loc}`}</span>;
                 }
             }
         }
@@ -151,6 +146,14 @@ class Navigation extends Component {
         this.props.updateNav("state_selected", "All");
     }
 
+    goState = () => (e) => {
+        this.props.updateNav("lga_selected", "All");
+    }
+
+    goLga = () => (e) => {
+        this.props.updateNav("facility_selected", "All");
+    }
+
     goUp = () => (e) => {
         const {
             updateNav,
@@ -175,22 +178,11 @@ class Navigation extends Component {
 
         const {
             classes,
-            // fetching,
-            // sensors,
-            // error,
             geo_map,
-            // updateMetric,
             metric_selected,
-            // device_type_selected,
             selected_connected,
             selected_uploaded,
             navigation,
-            // navigation: {
-            //     // country_selected,
-            //     // state_selected,
-            //     // lga_selected,
-            //     // facility_selected
-            // } = {}
             mfc_selected,
             mfc_map,
         } = this.props;
@@ -205,16 +197,6 @@ class Navigation extends Component {
                                 <IconButton>
                                     <HomeStyled onClick={this.goHome()}/>
                                 </IconButton>
-                                {/* { ((navigation.lga_selected !== 'All' && navigation.lga_selected !== false) ||
-                                (navigation.state_selected !== 'All' && navigation.state_selected !== false)) &&
-                                <Back>
-                                    <IconButton>
-                                        <KeyboardArrowLeft style={{color: 'white'}}
-                                                           onClick={this.goUp()}
-                                        />
-                                    </IconButton>
-                                </Back>
-                                } */}
                                 <LocContainer>
                                     {Object.entries(navigation).map(nav => {
                                         const [t, v] = nav;
@@ -225,26 +207,7 @@ class Navigation extends Component {
                                             return null;
                                         }
                                         if (m && v) {
-                                            return (<StyledFormControl key={`${t}-${v}`}>
-                                                
-                                                {/* <StyledSelect
-                                                    value={v}
-                                                    onChange={this.handleChange(t)}
-                                                    input={<StyledIn
-                                                        name={`${m}`}
-                                                        id={`${m}-native-helper`}/>}
-                                                >
-                                                    {m.map((n, i) => {
-                                                        // if facility selected - no code is used
-                                                        const name = r.code ? n.properties[r.code] : n;
-                                                        return (
-                                                            <Option
-                                                                key={`nav-${name}-${i}`}
-                                                                value={name}>{name}
-                                                            </Option>
-                                                        )
-                                                    })}
-                                                </StyledSelect> */}
+                                            return (<StyledFormControl key={`${t}-${v}`}>                                            
                                                 <Label style={{marginLeft: '13px', lineHeight: '18px'}}>{this.locFunction(navigation, v, formatLabel(t))}</Label>
                                             </StyledFormControl>)
                                         } else {
@@ -431,11 +394,9 @@ const StyledChip = styled(Chip)`
     margin: 0.5em 1em 0 0;
     font-weight: 500;
 
-    ${({active}) => {
-    return (active && `
-        background: #ffffff50 !important;
-    `)
-}}
+    ${({active}) => (active && `
+            background: #ffffff50 !important;
+        `)}
 `;
 const Header = styled.h4`
     text-align: left;
