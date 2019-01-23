@@ -26,6 +26,13 @@ class EnhancedTableHead extends React.Component {
 
     }
 
+    alignCheck = (label) => {
+        if (label === 'Holdover' || label === 'Total Devices' || label === 'Uptime') {
+            return 'right';
+        }
+        return 'left';
+    }
+
     render() {
         const {   // onSelectAllClick,
             order,
@@ -43,6 +50,8 @@ class EnhancedTableHead extends React.Component {
                             <StyledTableCell
                                 total={(col.label === 'Total Devices') ? "true" : "false"}
                                 key={col.id}
+                                align={this.alignCheck(col.label)}
+                                style={{textAlign: this.alignCheck(col.label)}}
                                 numeric={col.numeric}
                                 padding={col.disablePadding ? 'none' : 'default'}
                                 sortDirection={orderBy === col.id ? order : false}
@@ -67,7 +76,6 @@ const StyledTableCell = styled(TableCell)`
     background-color: #fafafa; 
     position: sticky;
     top: 0;
-    text-align: center !important; 
     
     ${props => 
         props.total && css`

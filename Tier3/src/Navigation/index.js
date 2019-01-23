@@ -88,6 +88,10 @@ class Navigation extends Component {
         if (nav.lga_selected !== 'All' && nav.lga_selected !== false) {
             curLevel = 'lga';
         }
+
+        if (nav.facility_selected !== 'All' && nav.facility_selected !== false) {
+            curLevel = 'facility';
+        }
     
         if ( specific === 'all' || specific === 'ALL' || specific === 'All') {
             switch(loc) {
@@ -102,9 +106,15 @@ class Navigation extends Component {
                     break;
                 default:
             }
-            return <em style={{marginLeft: '9px', textTransform: 'none'}}>{`${specific} ${loc}s`}</em>;
+            return <em style={{textTransform: 'none'}}>{`${specific} ${loc}s`}</em>;
         } else {
-            if ( loc === 'lga' || loc === 'Lga' || loc === 'LGA') {
+            if (loc === 'facility' || loc === 'Facility' || loc === 'FACILITY' ) { 
+                if ( curLevel === 'facility') {
+                    return <strong style={{color: 'white'}}>{specific}</strong>;
+                } else {
+                    return <strong>{specific}</strong>;
+                }
+            } else if ( loc === 'lga' || loc === 'Lga' || loc === 'LGA' ) {
                 if ( curLevel === 'lga') {
                     return <strong style={{color: 'white'}}>{specific}</strong>;
                 } else {
@@ -112,7 +122,7 @@ class Navigation extends Component {
                 }
             } else {
                 if ( curLevel === 'state') {
-                    return <strong style={{color: 'white'}}>{`${specific} ${loc}`}</strong>;
+                    return <strong style={{color: 'white'}}>{`${specific} ${loc}`}</strong>;                
                 } else {
                     return <span style={{cursor: 'pointer'}} onClick={this.goUp()}>{`${specific} ${loc}`}</span>;
                 }
@@ -235,7 +245,7 @@ class Navigation extends Component {
                                                         )
                                                     })}
                                                 </StyledSelect> */}
-                                                <Label style={{lineHeight: '18px'}}>{this.locFunction(navigation, v, formatLabel(t))}</Label>
+                                                <Label style={{marginLeft: '13px', lineHeight: '18px'}}>{this.locFunction(navigation, v, formatLabel(t))}</Label>
                                             </StyledFormControl>)
                                         } else {
                                             return null;
