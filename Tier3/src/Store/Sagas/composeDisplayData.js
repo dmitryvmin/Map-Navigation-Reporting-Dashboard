@@ -208,16 +208,18 @@ function* composeDisplayData( dataParam ) {
             }
         });
 
-        // 1. calculate and save Device percentiles
-        cellsData = updateMetricPercentiles(0.8, cellsData, metricSelected);
+        if (cellsData.length) {
+            // 1. calculate and save Device percentiles
+            cellsData = updateMetricPercentiles(0.8, cellsData, metricSelected);
 
-        // 2. Calculate and save Metric percentiles
-        cellsData = updateDevicePercentiles(cellsData);
+            // 2. Calculate and save Metric percentiles
+            cellsData = updateDevicePercentiles(cellsData);
 
-        // 3. Calculate and save total devices in this cohort
-        const total = cellsData.reduce((total, amount) => total + amount['Total Devices'], 0);
-        storeProp(cellsData, 'devicesPercentileTotal', total);
+            // 3. Calculate and save total devices in this cohort
+            const total = cellsData.reduce((total, amount) => total + amount['Total Devices'], 0);
+            storeProp(cellsData, 'devicesPercentileTotal', total);
 
+        }
         // 4. Merge cells
         cells = [...cellsData, ...cellsEmpty];
 
