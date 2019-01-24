@@ -95,7 +95,7 @@ function* getMarkers(display_data = null)  {
     });
 
     //loopMarkers();
-    yield put({ type: GGConsts.GEO_MAP, data: {[childNM.map]: geoState} });
+    // yield put({ type: GGConsts.GEO_MAP, data: {[childNM.map]: geoState} });
     return markers;
 
 }

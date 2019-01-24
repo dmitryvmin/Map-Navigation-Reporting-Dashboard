@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 
 import GGConsts from './../Constants';
 
@@ -40,10 +41,12 @@ function TopHead({authenticate, dispatch}) {
     }
 
     function handleSlider(event, value) {
+        const metrics_threshold = _.round(value);
+
         setSlider(value);
         dispatch({
             type: GGConsts.SETTINGS_UPDATING,
-            metrics_threshold: value,
+            metrics_threshold,
         });
     }
 
@@ -55,14 +58,17 @@ function TopHead({authenticate, dispatch}) {
             >
                 <StyledDialogContent>
                     <h4>Map Markers Threshold</h4>
-                    <Slider
-                        value={threshold}
-                        aria-labelledby="label"
-                        min={0}
-                        max={1}
-                        step={0.1}
-                        onChange={handleSlider}
-                    />
+                    <Row>
+                        <Slider
+                            value={threshold}
+                            aria-labelledby="label"
+                            min={0}
+                            max={1}
+                            step={0.1}
+                            onChange={handleSlider}
+                        />
+                        <Span>{_.round(threshold * 100)}%</Span>
+                    </Row>
                 </StyledDialogContent>
             </Dialog>
             <TitleArea>
@@ -132,6 +138,13 @@ const UserArea = styled.div`
 `;
 const StyledDialogContent = styled(DialogContent)`
     overflow: hidden;
+`;
+const Row = styled.div`
+    display: flex;
+    align-items: center;
+`;
+const Span = styled.span`
+    margin-left: 1em;
 `;
 
 export default TopHead;
