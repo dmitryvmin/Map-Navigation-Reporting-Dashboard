@@ -41,12 +41,10 @@ function TopHead({authenticate, dispatch}) {
     }
 
     function handleSlider(event, value) {
-        const metrics_threshold = _.round(value);
-
         setSlider(value);
         dispatch({
             type: GGConsts.SETTINGS_UPDATING,
-            metrics_threshold,
+            metrics_threshold: value,
         });
     }
 
@@ -64,7 +62,7 @@ function TopHead({authenticate, dispatch}) {
                             aria-labelledby="label"
                             min={0}
                             max={1}
-                            step={0.1}
+                            step={0.05}
                             onChange={handleSlider}
                         />
                         <Span>{_.round(threshold * 100)}%</Span>
