@@ -34,6 +34,8 @@ class EnhancedTableHead extends React.Component {
             label === 'Uptime'
         ) {
             return 'right';
+        } else if (label === 'Alarms') {
+            return 'center';
         }
         return 'left';
     }
