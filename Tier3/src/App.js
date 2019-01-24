@@ -30,17 +30,10 @@ const styles = theme => ({
 class App extends Component {
     constructor(props, context) {
         super(props, context);
-        this.state = {
-            content: "dashboard",
-            authenticated: false
-        }
+        this.state = {authenticated: true}
 
         // TODO: mapContainerRef needs to be saved to the store so the viewport can be calibrated on load and on resize
         this.mapContainerRef = React.createRef();
-    }
-
-    handleContentChange = (contentChange) => {
-        this.setState({content: contentChange});
     }
 
     authenticate = (bool) => {
@@ -56,11 +49,7 @@ class App extends Component {
                     {authenticated
                         ?
                         <>
-                            <TopHead
-                                content={this.state.content}
-                                authenticate={this.authenticate}
-                                contentChange={this.handleContentChange}
-                            />
+                            <TopHead authenticate={this.authenticate} />
                             <StickyFootWrap>
                                 {/*<Alert />*/}
                                 <MiddlePane>

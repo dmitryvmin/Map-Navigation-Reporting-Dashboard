@@ -18,26 +18,15 @@ import {
     getGeoJson,
 } from './../../Utils';
 
-const filterSensorsByLoc = (sensors, index, location) => {
-    const filtered = sensors.filter(f => f.facility.regions[index] === location);
-    return filtered;
-}
-
-const filterSensorsByMfc = (sensors, mfc) => {
-    const filtered = sensors.filter(f => mfc.includes(f.manufacturer));
-    return filtered;
-}
-
-const reduceSensorsByFilter = (sensors, metric) => {
-    const reduced = sensors.reduce((a, c) => {
-        a.push(_.get(c, metric));
-        return a;
-    }, []);
-
-    const unique = _.uniqBy(reduced)
-
-    return unique;
-}
+import {
+    filterSensorsByLoc,
+    filterSensorsByMfc,
+    reduceSensorsByFilter,
+    makeColumn,
+    updateMetricPercentiles,
+    updateDevicePercentiles,
+    storeProp,
+} from './../../Utils/DataUtils';
 
 /**
  *  Saga responsible for formatting data for the Map / Table views
@@ -45,10 +34,9 @@ const reduceSensorsByFilter = (sensors, metric) => {
 */
 function* composeDisplayData( dataParam ) {
 
-    // The clean data is saved in the SENSORS_MAP (dataReducer)
+    // ### Current State
     const sensors = yield select(sensorsSelector);
 
-    // DataParams that effects how the state should be transformed:
     // 1. Location
     const navigation = yield select(navSelector);
     const tier = yield select(tierSelector);
@@ -70,7 +58,7 @@ function* composeDisplayData( dataParam ) {
     timeframe = (timeframe === 'All') ? 'All' : timeframe.match(/\d+/)[0];
 
     if (!sensors || !navigation || !tier || !metricSelected) {
-        return;
+        return null;
     }
 
     // ### Rows
@@ -84,7 +72,6 @@ function* composeDisplayData( dataParam ) {
         const filtered = filterSensorsByLoc(sensors, curNM.index, curLocation);
         rows = _.uniqBy(filtered, 'manufacturer');
     }
-
     else if (tier === GGConsts.FACILITY_LEVEL) {
         rows = sensors.filter(f => f.facility.name === curLocation);
     }
@@ -92,37 +79,28 @@ function* composeDisplayData( dataParam ) {
     // ### Columns
     let columns = [];
 
-    const getColumn = (id) => {
-        return {
-            id,
-            numeric: false,
-            disablePadding: false,
-            label: id,
-        }
-    };
-
     if (tier === GGConsts.COUNTRY_LEVEL) {
-        columns.push(getColumn(childNM.map));
-        columns.push(getColumn(metricSelected));
-        columns.push(getColumn('Manufacturers'));
-        columns.push(getColumn('Total Devices'));
+        columns.push(makeColumn(childNM.map));
+        columns.push(makeColumn(metricSelected));
+        columns.push(makeColumn('Manufacturers'));
+        columns.push(makeColumn('Total Devices'));
     }
     else if (tier === GGConsts.STATE_LEVEL) {
-        columns.push(getColumn(childNM.map));
-        columns.push(getColumn(metricSelected));
-        columns.push(getColumn('Manufacturers'));
-        columns.push(getColumn('Total Devices'));
+        columns.push(makeColumn(childNM.map));
+        columns.push(makeColumn(metricSelected));
+        columns.push(makeColumn('Manufacturers'));
+        columns.push(makeColumn('Total Devices'));
     }
     else if (tier === GGConsts.LGA_LEVEL) {
-        columns.push(getColumn(childNM.map));
-        columns.push(getColumn(metricSelected));
-        columns.push(getColumn('Manufacturers'));
-        columns.push(getColumn('Total Devices'));
+        columns.push(makeColumn(childNM.map));
+        columns.push(makeColumn(metricSelected));
+        columns.push(makeColumn('Manufacturers'));
+        columns.push(makeColumn('Total Devices'));
     }
     else if (tier === GGConsts.FACILITY_LEVEL) {
-        columns.push(getColumn(metricSelected));
-        columns.push(getColumn('Manufacturers'));
-        columns.push(getColumn('model'));
+        columns.push(makeColumn(metricSelected));
+        columns.push(makeColumn('Manufacturers'));
+        columns.push(makeColumn('model'));
     }
 
     // ### Cells
@@ -202,18 +180,52 @@ function* composeDisplayData( dataParam ) {
             'Alarms': _.isArray(alarms) ? _.sum(alarms) : alarms,
             'AlarmsByDay': (alarms === '-' || timeframe === 'All') ? '-' : Array.from({length: timeframe}, () => Math.floor(Math.random() * 2)),
             'Holdover': _.isArray(holdover) ? _.mean(holdover) : holdover,
-            'id': id,
-            'Manufacturers': mfc,
             'chart': (alarms !== '-'),
-            'location': location,
-            'name': name,
-            'model': model,
+            'Manufacturers': mfc,
             'Total Devices': devices,
+            location,
+            id,
+            name,
+            model,
         });
 
         return acc;
 
     }, []);
+
+    // ## Apply Device and Metric Percentiles
+    const composePercentiles = (cells, metricSelected) => {
+        // separate data into arrays that are filler and ones that have data
+        const cellsEmpty = [];
+        let cellsData = [];
+
+        cells.forEach(cell => {
+            if (cell[metricSelected] !== '-') {
+                cellsData.push(cell);
+            }
+            else {
+                cellsEmpty.push(cell);
+            }
+        });
+
+        // 1. calculate and save Device percentiles
+        cellsData = updateMetricPercentiles(0.8, cellsData, metricSelected);
+
+        // 2. Calculate and save Metric percentiles
+        cellsData = updateDevicePercentiles(cellsData);
+
+        // 3. Calculate and save total devices in this cohort
+        const total = cellsData.reduce((total, amount) => total + amount['Total Devices'], 0);
+        storeProp(cellsData, 'devicesPercentileTotal', total);
+
+        // 4. Merge cells
+        cells = [...cellsData, ...cellsEmpty];
+
+        return cells;
+
+    }
+
+    cells = composePercentiles(cells, metricSelected);
 
     return {columns, cells, rows};
 

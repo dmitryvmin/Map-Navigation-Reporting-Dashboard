@@ -2,7 +2,6 @@ import GGConsts from '../../Constants';
 import {put} from 'redux-saga/effects';
 
 // TODO: build out the fake data here...
-
 const data = [
     {
         "id": "aff33bcb-8afa-4049-84bb-dee058b4186d",

@@ -1,6 +1,5 @@
 // import GGConsts from '../Constants';
 import _ from 'lodash';
-import cc from 'country-code';
 import countriesData from '../Data/countriesData.json';
 import statesData from '../Data/statesData.json';
 import lgasData from '../Data/lgasData.json';
@@ -16,91 +15,6 @@ export const formatLabel = loc => {
     label.splice(-1, 1);
     label = label.join(' ');
     return label;
-}
-
-export const getCountryObjByName = (data, name) => {
-    return _.first(data.filter(country => country.name === name));
-}
-
-export const getRandomFridge = () => {
-    const x = _.random(0, 100);
-    switch (true) {
-        case (x < 30):
-            return {manufacturer: "Dulas", model: "VC150 SDD"};
-        case (x < 60):
-            return {manufacturer: "Dometic", model: "TCW40 SDD"};
-        case (x < 90):
-            return {manufacturer: "Dometic", model: "TCW2000 SDD"};
-        case (x < 95):
-            return {manufacturer: "Sun Frost", model: "917667"};
-        case (x  < 100):
-            return {manufacturer: "Sundanzer", model: "13930007"}
-        default:
-            return {manufacturer: "Dometic", model: "TCW40 SDD"};
-    }
-}
-
-// getFilterKey and getChildFilterKey are for working mapbox shapefiles
-export const getFilterKey = type => {
-    switch (type) {
-        case 'country_selected':
-            return 'ADM0_A3';
-        case 'state_selected':
-            return 'gn_name';
-        case 'lga_selected':
-            return 'admin2Name';
-        default:
-            return null;
-    }
-}
-export const getChildFilterKey = type => {
-    switch (type) {
-        case 'country_selected':
-            return 'adm0_a3';
-        case 'state_selected':
-            return 'admin1Name';
-        case 'lga_selected':
-            return 'admin2Name';
-        default:
-            return null;
-    }
-}
-
-export const getCountryName = code => {
-    const c = cc.find({alpha3: code});
-    const name = c.name;
-    return name;
-}
-
-export const getCountryCode = country => {
-    const c = cc.find({name: country});
-    const code = c.alpha3;
-    return code;
-}
-
-// TODO: this function will eventually move into a Data Processing Saga
-// so we can synchronously derive the data state from the selected  metric/filter/time params
-export const getData = (tier, navigation) => {
-
-    const curNM = getNMap(tier, 'tier'); // current navigation map
-    const childNM = getNMapChild(tier, 'tier'); // child navigation map
-
-    let data = getGeoJson(childNM.type);
-
-    if (curNM.type !== 'All') {
-        data = data.filter(f => f.properties[curNM.code] === navigation[curNM.type]);
-    }
-
-    data = data.reduce((acc, cur) => {
-        let name = cur.properties[childNM.code];
-        acc.push({
-            [childNM.map]: name,
-            'alarms': 0,
-        });
-        return acc;
-    }, []);
-
-    return data;
 }
 
 /**
@@ -126,7 +40,6 @@ const getNMSibling = (value, id = false, sibling) => {
     }
 
     // console.log(`%c Utils NM for ${value}: ${JSON.stringify(map)}`, 'background: #ffc107; color: white; display: block;');
-
     return map;
 
 }
@@ -163,7 +76,7 @@ export const navigationMap = [
     {
         index: -1,
         type: 'world_selected',
-        tier: "GWORLD_LEVEL",
+        tier: "WORLD_LEVEL",
     },
     {
         index: 0,
@@ -194,6 +107,7 @@ export const navigationMap = [
     }
 ];
 
+// export navMap = {}
 
 export const geoJsonDataMap = {
     'country_selected': countriesData,

@@ -1,8 +1,7 @@
 // import {fromJS} from 'immutable';
+import cc from 'country-code';
 import GGConsts from './../Constants';
 import MAP_STYLE from '../Data/style.json';
-
-import { getFilterKey, getCountryCode } from './../Utils';
 
 const getSourceLayer = type => {
     switch(type) {
@@ -69,6 +68,38 @@ export const getChildFilter = (type, value) => {
     }
 
     return filter;
+}
+
+// getFilterKey and getChildFilterKey are for working mapbox shapefiles
+export const getFilterKey = type => {
+    switch (type) {
+        case 'country_selected':
+            return 'ADM0_A3';
+        case 'state_selected':
+            return 'gn_name';
+        case 'lga_selected':
+            return 'admin2Name';
+        default:
+            return null;
+    }
+}
+export const getChildFilterKey = type => {
+    switch (type) {
+        case 'country_selected':
+            return 'adm0_a3';
+        case 'state_selected':
+            return 'admin1Name';
+        case 'lga_selected':
+            return 'admin2Name';
+        default:
+            return null;
+    }
+}
+
+export const getCountryCode = country => {
+    const c = cc.find({name: country});
+    const code = c.alpha3;
+    return code;
 }
 
 export const applyLayerFilter = (map_style = MAP_STYLE, type = 'country_selected', filter = {fkey: null, fval: 'all'}, mode = 'exclude') => {

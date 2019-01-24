@@ -111,7 +111,6 @@ export default class CityPin extends PureComponent {
                     </text>
                 }
             </svg>
-
         );
     }
 }
