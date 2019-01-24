@@ -32,6 +32,11 @@ function* getMarkers(display_data = null)  {
     const metric = yield select(metricSelector);
 
     const childNM = getNMapChild(tier, 'tier');
+
+    if (!childNM) {
+        return;
+    }
+
     const curNM = getNMap(tier, 'tier');
     const geoJson = getGeoJson(childNM.type);
 
@@ -75,10 +80,8 @@ function* getMarkers(display_data = null)  {
         } else {
 
             // https://github.com/google/open-location-code/wiki/Plus-codes-API
-            const country = '7F2F';
-            const code = `${country}${c.location}`;
-            const OLC = new OpenLocationCode(code);
-            const geo = OLC.decode(code);
+            const OLC = new OpenLocationCode();
+            const geo = OLC.decode(c.location);
 
             marker.longitude = geo.longitudeCenter;
             marker.latitude = geo.latitudeCenter;

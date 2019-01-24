@@ -31,7 +31,7 @@ const styles = theme => ({
 class App extends Component {
     constructor(props, context) {
         super(props, context);
-        this.state = {authenticated: false}
+        this.state = {authenticated: true}
 
         // TODO: mapContainerRef needs to be saved to the store so the viewport can be calibrated on load and on resize
         this.mapContainerRef = React.createRef();

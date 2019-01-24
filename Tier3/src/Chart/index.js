@@ -153,18 +153,26 @@ class Chart extends Component {
                                 onMouseEnter={this.onHover}
                                 fill={GGConsts.COLOR_BLUE}
                             >
-                                {
-                                    data.map((cell, index) => {
-                                        const NM = getNMapChild(nav_tier, 'tier');
+                                {data && data.map((cell, index) => {
+                                    const NM = getNMapChild(nav_tier, 'tier');
 
-                                        return (
-                                            <Cell fill={
-                                                (hover && hover.value === cell[NM.map])
+                                    if (!NM) {
+                                        return null;
+                                    }
+
+                                    const location = cell[NM.map];
+
+                                    return (
+                                        <Cell
+                                            key={`chart-bar-${location}`}
+                                            fill={
+                                                (hover && hover.value === location)
                                                     ? `#dcc2ef`
                                                     : GGConsts.COLOR_BLUE
-                                            }/>
-                                        )
-                                    })
+                                            }
+                                        />
+                                    )
+                                })
                                 }
                             </Bar>
                         </BarChart>

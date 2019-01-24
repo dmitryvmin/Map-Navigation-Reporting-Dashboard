@@ -13,7 +13,11 @@ export const filterSensorsByMfc = (sensors, mfc) => {
 
 export const reduceSensorsByFilter = (sensors, metric) => {
     const reduced = sensors.reduce((a, c) => {
-        a.push(_.get(c, metric));
+        let val = _.get(c, metric);
+        if (_.isArray(val)) {
+            val = _.round(_.mean(val));
+        }
+        a.push(val);
         return a;
     }, []);
 

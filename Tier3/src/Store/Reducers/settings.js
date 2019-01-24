@@ -2,7 +2,7 @@ import GGConsts from '../../Constants';
 
 const initState = {
     settings_updating: false,
-    metrics_threshold: 0.8,
+    metrics_threshold: 0.2,
 }
 
 const settingsReducer = (state = initState, action) => {
