@@ -25,7 +25,7 @@ import {
 // import {addToGL} from './MapUtils';
 // import IconClusterLayer from './IconClusterLayer';
 // import iconMapping from '../Data/location-icon-mapping.json';
-import CityPin from './Pin';
+import LocationPin from './Pin';
 import POITooltip from './Tooltip';
 
 class Map extends Component {
@@ -262,7 +262,7 @@ class Map extends Component {
                                 longitude={m.longitude}
                                 latitude={m.latitude}
                             >
-                                <CityPin
+                                <LocationPin
                                     value={m.value}
                                     chart={m.chart}
                                     zoom={viewState.zoom}
