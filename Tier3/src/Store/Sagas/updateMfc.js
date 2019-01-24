@@ -1,6 +1,7 @@
 import GGConsts from '../../Constants';
 import _ from 'lodash';
 import composeDisplayData from './composeDisplayData';
+import getMarkers from './getMarkers';
 
 import {
     select,
@@ -41,6 +42,10 @@ export function* updateMfc(action) {
     // ## Update Data
     const display_data = yield call(composeDisplayData); // TODO: pass the type of update as the second arg - dataParam
     yield put({type: GGConsts.DISPLAY_DATA, display_data });
+
+    // ## Update Map
+    const markers = yield call(getMarkers);
+    yield put({type: GGConsts.MARKERS, markers});
 
 }
 
