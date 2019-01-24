@@ -251,8 +251,6 @@ class Map extends Component {
         const {gl} = this.state;
         const cohort = this.getCohort();
 
-        console.log('@@@', cohort);
-
         return (
             <MapContainer>
                 <DeckGL

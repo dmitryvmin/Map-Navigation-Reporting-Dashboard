@@ -10,6 +10,7 @@ import {
     mfcSelector,
     // deviceTypeSelector,
     timeframeSelector,
+    thresholdSelector,
 } from './../Selectors';
 
 import {
@@ -34,6 +35,7 @@ function* composeDisplayData( dataParam ) {
 
     // ### Current State
     const sensors = yield select(sensorsSelector);
+    const metricsThreshold = yield select(thresholdSelector);
 
     // 1. Location
     const navigation = yield select(navSelector);
@@ -190,7 +192,9 @@ function* composeDisplayData( dataParam ) {
 
     }, []);
 
-    cells = composePercentiles(cells, metricSelected);
+    console.log('@@@', metricsThreshold);
+
+    cells = composePercentiles(cells, metricSelected, metricsThreshold);
 
     return {columns, cells, rows};
 

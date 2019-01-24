@@ -114,6 +114,11 @@ const DISPLAY_DATA = "DISPLAY_DATA";
 
 const MARKERS = "MARKERS";
 
+const UPDATE_MANUFACTURER = "UPDATE_MANUFACTURER";
+
+const SETTINGS = "SETTINGS";
+const SETTINGS_UPDATING = "SETTINGS_UPDATING";
+
 const MFC_MAP = 'MFC_MAP';
 const MFC_UPDATING = 'MFC_UPDATING';
 const MFC_SELECTED = 'MFC_SELECTED';
@@ -395,6 +400,17 @@ export default class GGConsts {
 
     static get OWNER_ID() {
         return OWNER_ID;
+    }
+
+    static get UPDATE_MANUFACTURER() {
+        return UPDATE_MANUFACTURER;
+    }
+
+    static get SETTINGS() {
+        return SETTINGS;
+    }
+    static get SETTINGS_UPDATING() {
+        return SETTINGS_UPDATING;
     }
 
     static get UPLOADED_DEVICES() {

@@ -31,6 +31,8 @@ const deviceTypeSelector = state => state.deviceReducer.device_type_selected;
 
 const timeframeSelector = state => state.timeframeReducer.timeframe_selected;
 
+const thresholdSelector = state => state.settingsReducer.metrics_threshold;
+
 export {
     navSelector,
     tierSelector,
@@ -45,4 +47,5 @@ export {
     mfcSelector,
     deviceTypeSelector,
     timeframeSelector,
+    thresholdSelector
 }
