@@ -23,9 +23,7 @@ import {
     filterSensorsByMfc,
     reduceSensorsByFilter,
     makeColumn,
-    updateMetricPercentiles,
-    updateDevicePercentiles,
-    storeProp,
+    composePercentiles
 } from './../../Utils/DataUtils';
 
 /**
@@ -180,7 +178,6 @@ function* composeDisplayData( dataParam ) {
             'Alarms': _.isArray(alarms) ? _.sum(alarms) : alarms,
             'AlarmsByDay': (alarms === '-' || timeframe === 'All') ? '-' : Array.from({length: timeframe}, () => Math.floor(Math.random() * 2)),
             'Holdover': _.isArray(holdover) ? _.mean(holdover) : holdover,
-            'chart': (alarms !== '-'),
             'Manufacturers': mfc,
             'Total Devices': devices,
             location,
@@ -192,40 +189,6 @@ function* composeDisplayData( dataParam ) {
         return acc;
 
     }, []);
-
-    // ## Apply Device and Metric Percentiles
-    const composePercentiles = (cells, metricSelected) => {
-        // separate data into arrays that are filler and ones that have data
-        const cellsEmpty = [];
-        let cellsData = [];
-
-        cells.forEach(cell => {
-            if (cell[metricSelected] !== '-') {
-                cellsData.push(cell);
-            }
-            else {
-                cellsEmpty.push(cell);
-            }
-        });
-
-        if (cellsData.length) {
-            // 1. calculate and save Device percentiles
-            cellsData = updateMetricPercentiles(0.8, cellsData, metricSelected);
-
-            // 2. Calculate and save Metric percentiles
-            cellsData = updateDevicePercentiles(cellsData);
-
-            // 3. Calculate and save total devices in this cohort
-            const total = cellsData.reduce((total, amount) => total + amount['Total Devices'], 0);
-            storeProp(cellsData, 'devicesPercentileTotal', total);
-
-        }
-        // 4. Merge cells
-        cells = [...cellsData, ...cellsEmpty];
-
-        return cells;
-
-    }
 
     cells = composePercentiles(cells, metricSelected);
 

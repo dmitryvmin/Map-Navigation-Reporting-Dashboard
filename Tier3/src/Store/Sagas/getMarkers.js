@@ -86,9 +86,7 @@ function* getMarkers()  {
         marker.name = name;
         marker.metric = metric;
         marker.value = c[metric];
-        // Chart prop below is for testing
-        marker.chart = c.chart;
-
+        marker.metricPercentile = c.metricPercentile || null;
         markers.push(marker);
 
     });

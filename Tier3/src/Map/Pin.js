@@ -29,14 +29,21 @@ export default class CityPin extends PureComponent {
         const {
             chart,
             zoom,
-            name,
-            value
+            marker
         } = this.props;
+
+        const {
+            name,
+            value,
+            metricPercentile,
+        } = marker;
 
         const size = this.getTextSize(zoom) * zoom / 5;
         const fontSize = size / 1.5;
         const pieSize = size * 2;
         const containerSize = size * 3;
+
+        console.log('@@@', marker);
 
         return (
             <svg
@@ -46,7 +53,7 @@ export default class CityPin extends PureComponent {
                 style={{transform: `translate(${-containerSize/2}px,${-containerSize/2}px)`, overflow: 'visible'}}
                 className={`${name}-marker`}
             >
-                {chart &&
+                {(metricPercentile && metricPercentile === 'top') &&
                     <svg
                         width={containerSize}
                         height={containerSize}
@@ -74,7 +81,7 @@ export default class CityPin extends PureComponent {
                     width={containerSize}
                     height={containerSize}
                 >
-                {chart
+                {(metricPercentile && metricPercentile === 'top')
                     ?
                     <PieChart
                         lineWidth={pieSize / 1.25}
@@ -90,15 +97,15 @@ export default class CityPin extends PureComponent {
                     >
                         <circle
                             pointerEvents="none"
-                            fill={GGConsts.COLOR_GREEN}
-                            r={size/5}
+                            fill={(metricPercentile && metricPercentile === 'bottom') ? GGConsts.COLOR_GREEN : GGConsts.COLOR_GRAY}
+                            r={(metricPercentile && metricPercentile === 'bottom') ? size/4 : size/6}
                             cx="50%"
                             cy="50%"
                         />
                     </svg>
                 }
                 </foreignObject>
-                {chart &&
+                {(metricPercentile && metricPercentile === 'top') &&
                     <text
                         className="locationName"
                         textAnchor="middle"

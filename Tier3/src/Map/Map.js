@@ -263,10 +263,8 @@ class Map extends Component {
                                 latitude={m.latitude}
                             >
                                 <CityPin
-                                    value={m.value}
-                                    chart={m.chart}
+                                    marker={m}
                                     zoom={viewState.zoom}
-                                    name={m.name}
                                 />
                             </Marker>
                         )}
