@@ -34,6 +34,8 @@ class EnhancedTableHead extends React.Component {
             label === 'Uptime'
         ) {
             return 'right';
+        } else if (label === 'Alarms') {
+            return 'center';
         }
         return 'left';
     }
@@ -82,14 +84,14 @@ const StyledTableCell = styled(TableCell)`
     position: sticky;
     top: 0;
     padding-right: 20px !important;
-    width: 22%;
+    width: 25%;
     
     ${props => 
         props.total === 'true' && css`
             // & > span {
             //     width: 112px; 
             // }
-            width: 34%;
+            width: 25%;
     `}
 `;
 const StyledTableHead = styled(TableHead)`

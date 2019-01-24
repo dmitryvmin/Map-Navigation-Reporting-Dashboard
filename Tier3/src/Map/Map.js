@@ -221,6 +221,25 @@ class Map extends Component {
         return layers;
     }
 
+    getCohort = () => {
+        const {
+            display_data,
+            hover,
+            tier,
+        } = this.props;
+
+        if (!hover.value || tier === GGConsts.LGA_LEVEL || tier === GGConsts.FACILITY_LEVEL) {
+            return null;
+        }
+
+        const NMchild = getNMapChild(tier, 'tier');
+        const filtered = display_data.cells.filter(f => f[NMchild.map] === hover.value);
+        const cohort = filtered.length ? filtered[0] : null;
+
+        return cohort;
+
+    }
+
     render() {
         const {
             viewState,
@@ -230,6 +249,9 @@ class Map extends Component {
         } = this.props;
 
         const {gl} = this.state;
+        const cohort = this.getCohort();
+
+        console.log('@@@', cohort);
 
         return (
             <MapContainer>
@@ -263,16 +285,20 @@ class Map extends Component {
                                 latitude={m.latitude}
                             >
                                 <LocationPin
-                                    value={m.value}
-                                    chart={m.chart}
+                                    
+                                    marker={m}
                                     zoom={viewState.zoom}
-                                    name={m.name}
                                 />
                             </Marker>
                         )}
                     </StaticMap>
                     }
-                    {hover && <POITooltip hover={hover}/>}
+                    {cohort &&
+                        <POITooltip
+                            hover={hover}
+                            cohort={cohort}
+                        />
+                    }
                 </DeckGL>
             </MapContainer>
         );

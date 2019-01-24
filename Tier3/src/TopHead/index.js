@@ -73,7 +73,7 @@ const TitleArea = styled.div`
     }
 `;
 const StyledAvatarFlag = styled(Avatar)`
-    box-shadow: 0 0 0px 3px #00915b;
+    box-shadow: 0 0 0px 2px #00915b;
     & > img {
         height: 150% !important;
     }

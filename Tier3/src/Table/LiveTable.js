@@ -70,7 +70,6 @@ class LiveTable extends React.Component {
 
         const data = this.mapPropsToTableColumns(sensors);
         this.props.storeErrors(this.state.errors);
-        console.log('@@@', data);
         this.setState({ data });
       }
     } catch (err) {

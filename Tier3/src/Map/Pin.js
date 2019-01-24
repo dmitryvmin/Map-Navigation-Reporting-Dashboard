@@ -30,10 +30,15 @@ class LocationPin extends Component {
         const {
             chart,
             zoom,
-            name,
-            value
+            marker
         } = this.props;
         console.log("props of Pin:", this.props);
+
+        const {
+            name,
+            value,
+            metricPercentile,
+        } = marker;
 
         const size = this.getTextSize(zoom) * zoom / 5;
         const fontSize = size / 1.5;
@@ -48,7 +53,7 @@ class LocationPin extends Component {
                 style={{transform: `translate(${-containerSize/2}px,${-containerSize/2}px)`, overflow: 'visible'}}
                 className={`${name}-marker`}
             >
-                {chart &&
+                {(metricPercentile && metricPercentile === 'top') &&
                     <svg
                         width={containerSize}
                         height={containerSize}
@@ -76,7 +81,7 @@ class LocationPin extends Component {
                     width={containerSize}
                     height={containerSize}
                 >
-                {chart
+                {(metricPercentile && metricPercentile === 'top')
                     ?
                     <PieChart
                         lineWidth={pieSize / 1.25}
@@ -92,15 +97,15 @@ class LocationPin extends Component {
                     >
                         <circle
                             pointerEvents="none"
-                            fill={GGConsts.COLOR_GREEN}
-                            r={size/5}
+                            fill={(metricPercentile && metricPercentile === 'bottom') ? GGConsts.COLOR_GREEN : GGConsts.COLOR_GRAY}
+                            r={(metricPercentile && metricPercentile === 'bottom') ? size/4 : size/6}
                             cx="50%"
                             cy="50%"
                         />
                     </svg>
                 }
                 </foreignObject>
-                {chart &&
+                {(metricPercentile && metricPercentile === 'top') &&
                     <text
                         className="locationName"
                         textAnchor="middle"
@@ -113,7 +118,6 @@ class LocationPin extends Component {
                     </text>
                 }
             </svg>
-
         );
     }
 }

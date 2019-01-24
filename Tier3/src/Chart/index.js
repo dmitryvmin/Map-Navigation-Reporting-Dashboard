@@ -40,7 +40,7 @@ class CustomTooltip extends Component {
             tier,
         } = this.props;
 
-        if (!active || tier === GGConsts.FACILITY_LEVEL) {
+        if (!active || !payload || tier === GGConsts.FACILITY_LEVEL) {
             return null;
         }
 
