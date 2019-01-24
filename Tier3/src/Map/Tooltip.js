@@ -105,10 +105,10 @@ const Top = styled.div`
     display: flex;
 `;
 const Left = styled.div`
-    flex: 50%;
+    flex: 75%;
 `;
 const Right = styled.div`
-    flex: 50%;
+    flex: 25%;
 `;
 const Row = styled.div`
     display: flex;
