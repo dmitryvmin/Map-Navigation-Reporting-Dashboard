@@ -1,4 +1,5 @@
-import React, {PureComponent} from 'react';
+import React, {Component} from 'react';
+import {connect} from "react-redux";
 import GGConsts from '../Constants';
 import PieChart from 'react-minimal-pie-chart';
 // import Transition from 'react-transition-group/Transition';
@@ -16,7 +17,7 @@ const data = [
     {title: 'Three', value: 20, color: GGConsts.COLOR_GREEN},
 ]
 
-export default class CityPin extends PureComponent {
+class LocationPin extends Component {
 
     getTextSize = (zoom) => {
         const a1 = 6;
@@ -31,6 +32,7 @@ export default class CityPin extends PureComponent {
             zoom,
             marker
         } = this.props;
+        console.log("props of Pin:", this.props);
 
         const {
             name,
@@ -70,7 +72,7 @@ export default class CityPin extends PureComponent {
                             className="mapLabel"
                             alignmentBaseline="central"
                         >
-                            {value}
+                            {!isNaN(value) ? Math.round(value * 100) / 100 : value}
                         </text>
                     </svg>
                 }
@@ -119,3 +121,12 @@ export default class CityPin extends PureComponent {
         );
     }
 }
+
+const mapStateToProps = state => {
+    return {
+        display_data: state.displayReducer.display_data,
+        metric_selected: state.metricReducer.metric_selected,
+    }
+}
+
+export default connect(mapStateToProps)(LocationPin);
