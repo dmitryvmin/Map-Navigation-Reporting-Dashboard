@@ -43,8 +43,6 @@ export default class CityPin extends PureComponent {
         const pieSize = size * 2;
         const containerSize = size * 3;
 
-        console.log('@@@', marker);
-
         return (
             <svg
                 width={containerSize}
