@@ -18,9 +18,12 @@ import {
     getNMap,
 } from './../../Utils';
 
-function* getMarkers()  {
+function* getMarkers(display_data = null)  {
 
-    const data = yield select(displaySelector);
+    let data = display_data;
+    if (!display_data) {
+        data = yield select(displaySelector);
+    }
     const tier = yield select(tierSelector);  
 
     // see if this has marker data saved

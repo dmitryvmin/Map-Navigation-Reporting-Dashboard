@@ -54,7 +54,7 @@ function TopHead({authenticate, dispatch}) {
                 onClose={handleModalClose}
             >
                 <StyledDialogContent>
-                    <h4>Metrics Threshold</h4>
+                    <h4>Map Markers Threshold</h4>
                     <Slider
                         value={threshold}
                         aria-labelledby="label"

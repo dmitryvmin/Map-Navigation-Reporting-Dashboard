@@ -15,9 +15,8 @@ export default function* updateSettings(action) {
 
     // ## Update Data
     const display_data = yield call(composeDisplayData); // TODO: pass the type of update as the second arg - dataParam
-    yield put({type: GGConsts.DISPLAY_DATA, display_data });
+    const markers = yield call(getMarkers, display_data);
 
-    const markers = yield call(getMarkers);
     yield put({type: GGConsts.MARKERS, markers});
 
 }
