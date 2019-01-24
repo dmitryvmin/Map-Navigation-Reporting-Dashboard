@@ -4,6 +4,39 @@ import {put} from 'redux-saga/effects';
 // TODO: build out the fake data here...
 const data = [
     {
+        "id": "aff33bcb-8afa-4049-84bb-dee05343186d",
+        "manufacturer": "Dometic",
+        "model": "TCW40 EEE",
+        "location": "GG34+G8",
+        "metrics": {
+            "start_time": "2008-09-15T15:53:00+05:00",
+            "end_time": "2008-16-15T15:53:00+05:00",
+            "alarm_count": 3,
+            "alarm_over_seconds": 1000,
+            "alarm_under_seconds": 1000,
+            "temp_mean": 5,
+            "uptime_percent": 0.44,
+            "unknown_time_percent": 0.32,
+            "holdover_mean": 8
+        },
+        "temperature_data_logger": {
+            "id": "aa04ff56-085d-4c97-9a07-39d3434d0d1f",
+            "manufacturer": "Berlinger",
+            "model": "Fridgetag 2L",
+            "serial": "3434343"
+        },
+        "facility": {
+            "id": "aa04ff56-085d-4c97-9a07-334344d0d1f",
+            "name": "PHC Gashaka",
+            "location": "GG34+G8",
+            "regions": {
+                "0": "Nigeria",
+                "1": "Taraba",
+                "2": "Gashaka"
+            }
+        }
+    },
+    {
         "id": "aff33bcb-8afa-4049-84bb-dee058b4186d",
         "manufacturer": "Dometic",
         "model": "TCW40 SDD",

@@ -16,7 +16,7 @@ import styled from 'styled-components';
 function TopHead({authenticate, dispatch}) {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [open, setOpen] = React.useState(false);
-    const [threshold, setSlider] = React.useState(0.8);
+    const [threshold, setSlider] = React.useState(0.8); // TODO: pull in threshold value from the store
 
     function handleClick(event) {
         setAnchorEl(event.currentTarget);
