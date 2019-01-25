@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+// import {StoreContext} from 'redux-react-hook';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import TopHead from './TopHead';
 import FootPane from './FootPane';
@@ -49,7 +50,10 @@ class App extends Component {
                     {authenticated
                         ?
                         <>
-                            <TopHead authenticate={this.authenticate} />
+                            <TopHead
+                                authenticate={this.authenticate}
+                                dispatch={store.dispatch}
+                            />
                             <StickyFootWrap>
                                 {/*<Alert />*/}
                                 <MiddlePane>

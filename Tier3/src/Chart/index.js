@@ -7,12 +7,13 @@ import Tab from '@material-ui/core/Tab';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import GGConsts from '../Constants';
-import _ from 'lodash';
+import CustomTooltip from './Tooltip';
 
 import {
     BarChart,
     Bar,
     Brush,
+    Cell,
     Tooltip,
     LineChart,
     Line,
@@ -29,34 +30,6 @@ const styles = theme => ({
         minWidth: 70,
     }
 })
-
-class CustomTooltip extends Component {
-
-    render() {
-        const {
-            active,
-            payload,
-            label,
-            tier,
-        } = this.props;
-
-        if (!active || !payload || tier === GGConsts.FACILITY_LEVEL) {
-            return null;
-        }
-
-        const NM = getNMapChild(tier, 'tier');
-        const item = payload[0].payload[NM.map];
-        const location = payload[0].name
-        const value = _.round(payload[0].value, 2)
-
-        return (
-            <div className="custom-tooltip">
-                <h4>{`${item}`}</h4>
-                <p className="label">{`${location} : ${value}`}</p>
-            </div>
-        )
-    }
-}
 
 class Chart extends Component {
     constructor(props) {
@@ -87,7 +60,8 @@ class Chart extends Component {
         const {
             nav_tier,
             hover,
-            navHovered } = this.props;
+            navHovered
+        } = this.props;
 
         if (nav_tier !== GGConsts.FACILITY_LEVEL) {
 
@@ -96,7 +70,7 @@ class Chart extends Component {
             const selected = value === hover;
 
             if (!selected) {
-                navHovered({ value });
+                navHovered({value});
             }
         }
     }
@@ -105,11 +79,11 @@ class Chart extends Component {
         const {
             nav_tier,
             classes,
-//            navigation,
             timeframe_selected,
             metric_selected,
             display_data,
             navHovered,
+            hover
         } = this.props;
 
 
@@ -118,94 +92,112 @@ class Chart extends Component {
         }
 
         const {
-//            columns,
             cells,
         } = display_data || null;
 
         const {chartType} = this.state;
-
         const data = cells.filter(f => f[metric_selected] !== '-');
-        // const label = (nav_tier !== 'FACILITY_LEVEL') ? getNMapChild(nav_tier, 'tier').map : null;
 
         return (
             <>
-                <Controls>
-                    <StyledTabs
-                        value={timeframe_selected}
-                        classes={{
-                            root: classes.tabsRoot,
-                            indicator: classes.indicator,
-                        }}
-                        onChange={this.handleChange}
-                    >
-                        {GGConsts.TIMEFRAMES.map(t =>
-                            <Tab
-                                key={`timeframe-${t}`}
-                                classes={{
-                                    root: classes.tabRoot
-                                }}
-                                label={t}
-                                value={t}
-                            />
-                        )}
-                    </StyledTabs>
-                    <SwitchContainer>
-                        <span>Trend</span>
-                        <StyledFormControlLabel
-                            control={
-                                <Switch
-                                    checked={(chartType === 'Bar')}
-                                    onChange={this.toggle}
-                                    color="secondary"
-                                />
-                            }
+            <Controls>
+                <StyledTabs
+                    value={timeframe_selected}
+                    classes={{
+                        root: classes.tabsRoot,
+                        indicator: classes.indicator,
+                    }}
+                    onChange={this.handleChange}
+                >
+                    {GGConsts.TIMEFRAMES.map(t =>
+                        <Tab
+                            key={`timeframe-${t}`}
+                            classes={{
+                                root: classes.tabRoot
+                            }}
+                            label={t}
+                            value={t}
                         />
-                        <span>Rank</span>
-                    </SwitchContainer>
-                </Controls>
+                    )}
+                </StyledTabs>
+                <SwitchContainer>
+                    <span>Trend</span>
+                    <StyledFormControlLabel
+                        control={
+                            <Switch
+                                checked={(chartType === 'Bar')}
+                                onChange={this.toggle}
+                                color="secondary"
+                            />
+                        }
+                    />
+                    <span>Rank</span>
+                </SwitchContainer>
+            </Controls>
 
-                <ResponsiveContainer
-                    width="100%"
-                    height={150}>
-                    {
-                        (chartType === 'Bar')
-                            ?
-                            <BarChart
-                                data={data}
-                                margin={{top: 50, right: 20, left: 20, bottom: 20}}
+            <ResponsiveContainer
+                width="100%"
+                height={150}>
+                {
+                    (chartType === 'Bar')
+                        ?
+                        <BarChart
+                            data={data}
+                            margin={{top: 50, right: 20, left: 20, bottom: 20}}
+                        >
+                            <Tooltip cursor={{fill: 'none'}} content={
+                                <CustomTooltip tier={nav_tier}/>}
+                            />
+                            <Bar
+                                dataKey={metric_selected}
+                                onMouseEnter={this.onHover}
+                                fill={GGConsts.COLOR_BLUE}
                             >
-                                <Tooltip cursor={{ fill: 'none' }} content={
-                                    <CustomTooltip tier={nav_tier} />}
-                                />
-                                {/*<Brush dataKey='alarms' height={30} stroke="#dbdbdb"/>*/}
-                                <Bar
-                                    dataKey={metric_selected}
-                                    fill={GGConsts.COLOR_BLUE}
-                                    onMouseEnter={this.onHover}
-                                />
-                            </BarChart>
-                            :
-                            <LineChart
-                                data={this.getTrendData}
-                                margin={{top: 50, right: 20, left: 20, bottom: 20}}
-                            >
-                                <Tooltip cursor={{ fill: 'none' }} content={
-                                    <CustomTooltip tier={nav_tier}/>}
-                                />
-                                <Line
-                                    type="step"
-                                    dataKey={metric_selected}
-                                    stroke={GGConsts.COLOR_BLUE}
-                                    strokeWidth={2}
-                                />
-                                <Brush
-                                    dataKey='alarms'
-                                    height={30}
-                                    stroke="#dbdbdb"
-                                />
-                            </LineChart>
-                    }
-                </ResponsiveContainer>
+                                {data && data.map((cell, index) => {
+                                    const NM = getNMapChild(nav_tier, 'tier');
+
+                                    if (!NM) {
+                                        return null;
+                                    }
+
+                                    const location = cell[NM.map];
+
+                                    return (
+                                        <Cell
+                                            key={`chart-bar-${location}`}
+                                            fill={
+                                                (hover && hover.value === location)
+                                                    ? `#dcc2ef`
+                                                    : GGConsts.COLOR_BLUE
+                                            }
+                                        />
+                                    )
+                                })
+                                }
+                            </Bar>
+                        </BarChart>
+                        :
+                        <LineChart
+                            data={this.getTrendData}
+                            margin={{top: 50, right: 20, left: 20, bottom: 20}}
+                        >
+                            <Tooltip cursor={{fill: 'none'}} content={
+                                <CustomTooltip tier={nav_tier}/>}
+                            />
+                            <Line
+                                type="step"
+                                dataKey={metric_selected}
+                                stroke={GGConsts.COLOR_BLUE}
+                                strokeWidth={2}
+                            />
+                            <Brush
+                                dataKey='alarms'
+                                height={30}
+                                stroke="#dbdbdb"
+                            />
+                        </LineChart>
+                }
+            </ResponsiveContainer>
             </>
         )
     }

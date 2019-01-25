@@ -1,35 +1,20 @@
 import React, {Component} from 'react';
 // import {connect} from "react-redux";
 import GGConsts from '../Constants';
+import { withStyles } from "@material-ui/core/styles";
 import _ from 'lodash';
 import styled from 'styled-components';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
-import {chunkArray} from './../Utils';
+import Chiclets from './Chiclets';
 
-const drawBoolLEDs = (value, days, id) => {
-    let chuncks = chunkArray(days, 10);
-
-    return (
-        <Alarm>
-            <AlarmVal>
-                {value}
-            </AlarmVal>
-            <AlarmChart>
-                {chuncks.map((chunk, i) =>
-                    <AlarmRow key={`alarmrow-${id}-${i}`}>
-                        {chunk.map((d, i) =>
-                            <AlarmCell
-                                key={`alarmcell-${id}-${d}-${i}`}
-                                alarm={d}
-                            />
-                        )}
-                    </AlarmRow>
-                )}
-            </AlarmChart>
-        </Alarm>
-    )
-}
+const styles = theme => ({
+    tableRow: {
+        "&:hover": {
+            backgroundColor: `${GGConsts.COLOR_PURPLE} !important`
+        }
+    }
+});
 
 class Row extends Component {
     constructor(props) {
@@ -67,11 +52,18 @@ class Row extends Component {
 
         if (id === 'Alarms') {
             if (data.AlarmsByDay === '-') {
-                return <StyledCell>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{value}</StyledCell>;
+                return <StyledCell>{value}</StyledCell>;
             }
             else {
-                let cell = drawBoolLEDs(value, data.AlarmsByDay, id);
-                return <StyledCell>{cell}</StyledCell>;
+                return (
+                <StyledCell>
+                    <Chiclets
+                        value={value}
+                        days={data.AlarmsByDay}
+                        id={id}
+                    />
+                </StyledCell>
+                )
             }
         }
         else if (id === 'Manufacturers' && _.isArray(value) && value.length > 1) {
@@ -110,6 +102,7 @@ class Row extends Component {
                 key={data.id}
                 selected={selected}
                 aria-checked={selected}
+                className={(selected) ? 'rowSelected' : null}
             >
                 {columns.map((col, index) =>
                     <TableCell key={`cell-${col.id}-${index}`}>
@@ -126,29 +119,5 @@ const StyledCell = styled.div`
         text-align: right; 
     `)}
 `;
-const AlarmVal = styled.span`
-    width: 30px; 
-    text-align: right;
-`;
-const Alarm = styled.div`
-    display: flex; 
-    align-items: center;
-    justify-content: center;
-`;
-const AlarmChart = styled.div`
-     margin: 0 0 0 7px;
-     width: 90px;
-     line-height: 2px;
-     float: right; 
-`;
-const AlarmRow = styled.div`
-`;
-const AlarmCell = styled.div`
-    display: inline-block;
-    width: 7px;
-    height: 7px;
-    margin: 1px;
-    background-color: ${props => (props.alarm === null) ? GGConsts.COLOR_YELLOW : (props.alarm === 0) ? GGConsts.COLOR_GREEN : GGConsts.COLOR_RED}; 
-`;
 
-export default Row;
+export default withStyles(styles)(Row);

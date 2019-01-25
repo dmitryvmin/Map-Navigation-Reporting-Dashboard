@@ -13,7 +13,11 @@ export const filterSensorsByMfc = (sensors, mfc) => {
 
 export const reduceSensorsByFilter = (sensors, metric) => {
     const reduced = sensors.reduce((a, c) => {
-        a.push(_.get(c, metric));
+        let val = _.get(c, metric);
+        if (_.isArray(val)) {
+            val = _.round(_.mean(val));
+        }
+        a.push(val);
         return a;
     }, []);
 
@@ -110,7 +114,7 @@ export const updateDevicePercentiles = (arr) => {
 }
 
 // ## Apply Device and Metric Percentiles
-export const composePercentiles = (cells, metricSelected) => {
+export const composePercentiles = (cells, metricSelected, threshold) => {
     // separate data into arrays that are filler and ones that have data
     const cellsEmpty = [];
     let cellsData = [];
@@ -126,7 +130,7 @@ export const composePercentiles = (cells, metricSelected) => {
 
     if (cellsData.length) {
         // 1. calculate and save Device percentiles
-        cellsData = updateMetricPercentiles(0.8, cellsData, metricSelected);
+        cellsData = updateMetricPercentiles(threshold, cellsData, metricSelected);
 
         // 2. Calculate and save Metric percentiles
         cellsData = updateDevicePercentiles(cellsData);

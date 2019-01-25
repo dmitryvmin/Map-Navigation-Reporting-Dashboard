@@ -1,13 +1,22 @@
 import React from 'react';
+import _ from 'lodash';
+
+import GGConsts from './../Constants';
+
 import Avatar from '@material-ui/core/Avatar';
 import Person from '@material-ui/icons/PersonOutline';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import 'typeface-roboto';
+import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
+import Slider from '@material-ui/lab/Slider';
+
 import styled from 'styled-components';
 
-function TopHead({authenticate}) {
+function TopHead({authenticate, dispatch}) {
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const [open, setOpen] = React.useState(false);
+    const [threshold, setSlider] = React.useState(0.2); // TODO: pull in threshold value from the store
 
     function handleClick(event) {
         setAnchorEl(event.currentTarget);
@@ -17,13 +26,49 @@ function TopHead({authenticate}) {
         setAnchorEl(null);
     }
 
+    function handleModalClose() {
+        setOpen(false);
+    }
+
     function logOut() {
         setAnchorEl(null);
         authenticate(false);
     }
 
+    function manageSettings() {
+        setOpen(true);
+        setAnchorEl(null);
+    }
+
+    function handleSlider(event, value) {
+        setSlider(value);
+        dispatch({
+            type: GGConsts.SETTINGS_UPDATING,
+            metrics_threshold: value,
+        });
+    }
+
     return (
         <Header>
+            <Dialog
+                open={open}
+                onClose={handleModalClose}
+            >
+                <StyledDialogContent>
+                    <h4>Map Markers Threshold</h4>
+                    <Row>
+                        <Slider
+                            value={threshold}
+                            aria-labelledby="label"
+                            min={0}
+                            max={1}
+                            step={0.05}
+                            onChange={handleSlider}
+                        />
+                        <Span>{_.round(threshold * 100)}%</Span>
+                    </Row>
+                </StyledDialogContent>
+            </Dialog>
             <TitleArea>
                 <StyledAvatarFlag
                     src="/img/flag.png"
@@ -45,7 +90,7 @@ function TopHead({authenticate}) {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
             >
-                <MenuItem onClick={handleClose}>Settings</MenuItem>
+                <MenuItem onClick={manageSettings}>Settings</MenuItem>
                 <MenuItem onClick={logOut}>Logout</MenuItem>
             </Menu>
         </Header>
@@ -88,6 +133,16 @@ const UserArea = styled.div`
     margin: 0px 2em;
     align-items: center;
     display: flex;
+`;
+const StyledDialogContent = styled(DialogContent)`
+    overflow: hidden;
+`;
+const Row = styled.div`
+    display: flex;
+    align-items: center;
+`;
+const Span = styled.span`
+    margin-left: 1em;
 `;
 
 export default TopHead;

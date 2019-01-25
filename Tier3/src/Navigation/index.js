@@ -186,6 +186,7 @@ class Navigation extends Component {
             mfc_selected,
             mfc_map,
         } = this.props;
+
         return (
             <NavBar>
                 <Grid

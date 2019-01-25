@@ -18,9 +18,12 @@ import {
     getNMap,
 } from './../../Utils';
 
-function* getMarkers()  {
+function* getMarkers(display_data = null)  {
 
-    const data = yield select(displaySelector);
+    let data = display_data;
+    if (!display_data) {
+        data = yield select(displaySelector);
+    }
     const tier = yield select(tierSelector);  
 
     // see if this has marker data saved
@@ -29,6 +32,11 @@ function* getMarkers()  {
     const metric = yield select(metricSelector);
 
     const childNM = getNMapChild(tier, 'tier');
+
+    if (!childNM) {
+        return;
+    }
+
     const curNM = getNMap(tier, 'tier');
     const geoJson = getGeoJson(childNM.type);
 
@@ -72,10 +80,8 @@ function* getMarkers()  {
         } else {
 
             // https://github.com/google/open-location-code/wiki/Plus-codes-API
-            const country = '7F2F';
-            const code = `${country}${c.location}`;
-            const OLC = new OpenLocationCode(code);
-            const geo = OLC.decode(code);
+            const OLC = new OpenLocationCode();
+            const geo = OLC.decode(c.location);
 
             marker.longitude = geo.longitudeCenter;
             marker.latitude = geo.latitudeCenter;
@@ -91,9 +97,8 @@ function* getMarkers()  {
 
     });
 
-
     //loopMarkers();
-    yield put({ type: GGConsts.GEO_MAP, data: {[childNM.map]: geoState} });
+    // yield put({ type: GGConsts.GEO_MAP, data: {[childNM.map]: geoState} });
     return markers;
 
 }

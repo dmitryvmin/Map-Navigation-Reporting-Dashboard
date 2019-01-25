@@ -29,7 +29,10 @@ tbody tr {
     /*cursor: pointer;*/
 /*}*/
 
-[class^="MuiTableBody-"]>[class^="MuiTableRow-"]:hover {
+[class^="MuiTableRow-"]:hover {
+	background-color: #f1e0ff !important;
+}
+.rowSelected {
 	background-color: #f1e0ff !important;
 }
 

@@ -15,19 +15,19 @@ function POITooltip({hover, cohort}) {
                             <CircleContainer>
                                 <Circle size="large"/>
                             </CircleContainer>
-                            {(cohort.devicesPercentile === 'top') ? <span>{hover.value}</span> : null}
+                            {(cohort.devicesPercentile === 'top') ? <Span> - {hover.value}</Span> : null}
                         </Row>
                         <Row>
                             <CircleContainer>
                                 <Circle size="medium"/>
                             </CircleContainer>
-                            {(cohort.devicesPercentile === 'middle') ? <span>{hover.value}</span> : null}
+                            {(cohort.devicesPercentile === 'middle') ? <Span top> - {hover.value}</Span> : null}
                         </Row>
                         <Row>
                             <CircleContainer>
                                 <Circle size="small"/>
                             </CircleContainer>
-                            {(cohort.devicesPercentile === 'bottom') ? <span>{hover.value}</span> : null}
+                            {(cohort.devicesPercentile === 'bottom') ? <Span> - {hover.value}</Span> : null}
                         </Row>
                     </Left>
                     <Right>
@@ -88,8 +88,13 @@ const Circle = styled.div`
         height: 5px; 
     `} 
 `;
+const Span = styled.span`
+    ${({top}) => top && css`
+        margin-top: 5px; 
+    `}
+`;
 const CircleContainer = styled.div`
-    width: 20px;
+    width: 15px;
     display: flex; 
     justify-content: center;
     margin-right: 0.5em;
@@ -100,10 +105,10 @@ const Top = styled.div`
     display: flex;
 `;
 const Left = styled.div`
-    flex: 50%;
+    flex: 75%;
 `;
 const Right = styled.div`
-    flex: 50%;
+    flex: 25%;
 `;
 const Row = styled.div`
     display: flex;
