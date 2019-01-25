@@ -148,12 +148,12 @@ class Map extends Component {
         }
     }
 
-    makeGeoLayer = (layerType, map, data, hover) => {
+    makeGeoLayer = (layerType, map, data, hover, tier) => {
         let val = hover ? hover.value : null;
         let id = (val) ? `${map.tier}_hover_${val}` : `${map.tier}`;
-
         const activeColor = (layerType === 'active') ? GGConsts.COLOR_SELECTED : [175, 175, 175];
         const inactiveColor = (layerType === 'active') ? [255, 255, 255] : [200, 200, 200];
+        const NMchild = getNMapChild(tier, 'tier');
 
         return new GeoJsonLayer({
             id,
@@ -166,7 +166,7 @@ class Map extends Component {
             fp64: true,
             lineWidthMinPixels: 1,
             getLineColor: [175, 175, 175],
-            getFillColor: f => (f.properties[map.code] === val) ? activeColor : inactiveColor,
+            getFillColor: f => (f.properties[map.code] === val && map.tier === NMchild.tier ) ? activeColor : inactiveColor,
             updateTrigger: {getFillColor: val},
             pickable: true,
             onHover: info => this.onLayerChange(info, 'hover'),
@@ -174,7 +174,7 @@ class Map extends Component {
         })
     }
 
-    getGeoLayers = (navigation, type, hover) => {
+    getGeoLayers = (navigation, type, hover, tier) => {
         const selected = navigation[type];
         if (!selected || type === 'facility_selected') {
             return;
@@ -193,13 +193,13 @@ class Map extends Component {
                 data = data.filter(f => f.properties[parentNM.code] === navigation[parentNM.type]);
             }
 
-            const activeLayer = this.makeGeoLayer('active', NM, data, hover);
+            const activeLayer = this.makeGeoLayer('active', NM, data, hover, tier);
 
             return activeLayer;
         }
         else {
             data = data.filter(f => f.properties[NM.code] !== selected);
-            const inactiveLayer = this.makeGeoLayer('inactive', NM, data, hover);
+            const inactiveLayer = this.makeGeoLayer('inactive', NM, data, hover, tier);
 
             return inactiveLayer;
         }
@@ -210,10 +210,11 @@ class Map extends Component {
         const {
             navigation,
             hover,
+            tier,
         } = this.props;
 
         const layers = _.toArray(navigationMap).reduce((acc, cur) => {
-            let layer = this.getGeoLayers(navigation, cur.type, hover);
+            let layer = this.getGeoLayers(navigation, cur.type, hover, tier);
             if (layer) acc.push(layer);
             return acc;
         }, []);
