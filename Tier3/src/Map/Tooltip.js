@@ -1,73 +1,82 @@
-import React from 'react';
+import React, {Component} from 'react';
 import GGConsts from '../Constants';
-import styled, { css } from 'styled-components';
+import styled, {css} from 'styled-components';
 import Card from '@material-ui/core/Card';
 
-function POITooltip({hover, cohort}) {
+const colors = {
+    green: GGConsts.COLOR_GREEN,
+    orange: GGConsts.COLOR_YELLOW,
+    red: GGConsts.COLOR_RED,
+}
 
-    return (
-        <Tooltip>
-            <Top>
-                {(cohort.devicesPercentile)
-                    ? <>
-                    <Left>
-                        <Row>
-                            <CircleContainer>
-                                <Circle size="large"/>
-                            </CircleContainer>
-                            {(cohort.devicesPercentile === 'top') ? <Span> - {hover.value}</Span> : null}
-                        </Row>
-                        <Row>
-                            <CircleContainer>
-                                <Circle size="medium"/>
-                            </CircleContainer>
-                            {(cohort.devicesPercentile === 'middle') ? <Span top> - {hover.value}</Span> : null}
-                        </Row>
-                        <Row>
-                            <CircleContainer>
-                                <Circle size="small"/>
-                            </CircleContainer>
-                            {(cohort.devicesPercentile === 'bottom') ? <Span> - {hover.value}</Span> : null}
-                        </Row>
-                    </Left>
-                    <Right>
-                        <Row>
-                            <CircleContainer>
-                                <Circle
-                                    size="medium"
-                                    color={GGConsts.COLOR_GREEN}
-                                />
-                            </CircleContainer>
-                        </Row>
-                        <Row>
-                            <CircleContainer>
-                                <Circle
-                                    size="medium"
-                                    color={GGConsts.COLOR_YELLOW}
-                                />
-                            </CircleContainer>
-                        </Row>
-                        <Row>
-                            <CircleContainer>
-                                <Circle
-                                    size="medium"
-                                    color={GGConsts.COLOR_RED}
-                                />
-                            </CircleContainer>
-                        </Row>
-                    </Right>
-                    </>
-                    : <NoData>{hover.value}</NoData>}
-            </Top>
-            <Bottom>
-            {
-                (cohort.devicesPercentile)
-                ? <p>{`${cohort['Total Devices']} / ${cohort.devicesPercentileTotal} devices`}</p>
-                : null
-            }
-            </Bottom>
-        </Tooltip>
-    );
+class POITooltip extends Component {
+
+    render() {
+        const {
+            hover,
+            cohort,
+            markers,
+        } = this.props;
+
+        // TODO: move this out of render ###
+        const marker = markers.filter(f => f.name === hover.value);
+        let metricsPie = null
+        if (marker && marker[0].metricsPie) {
+            metricsPie = marker[0].metricsPie;
+        }
+        // TODO: ###
+
+        return (
+            <Tooltip>
+                <Top>
+                    {(cohort.devicesPercentile)
+                        ? <>
+                        <Left>
+                            <Row>
+                                <CircleContainer>
+                                    <Circle size="large"/>
+                                </CircleContainer>
+                                {(cohort.devicesPercentile === 'top') ? <Span> - {hover.value}</Span> : null}
+                            </Row>
+                            <Row>
+                                <CircleContainer>
+                                    <Circle size="medium"/>
+                                </CircleContainer>
+                                {(cohort.devicesPercentile === 'middle') ? <Span top> - {hover.value}</Span> : null}
+                            </Row>
+                            <Row>
+                                <CircleContainer>
+                                    <Circle size="small"/>
+                                </CircleContainer>
+                                {(cohort.devicesPercentile === 'bottom') ? <Span> - {hover.value}</Span> : null}
+                            </Row>
+                        </Left>
+                        <Right>
+                            {metricsPie && Object.keys(metricsPie).map(m =>
+                                <Row key={`tooltip-${m}`}>
+                                    <CircleContainer>
+                                        <Circle
+                                            size="device"
+                                            color={colors[m]}
+                                        />
+                                    </CircleContainer>
+                                    <Devices>{metricsPie[m]}</Devices>
+                                </Row>
+                            )}
+                        </Right>
+                        </>
+                        : <NoData>{hover.value}</NoData>}
+                </Top>
+                <Bottom>
+                    {
+                        (cohort.devicesPercentile)
+                            ? <p>{`${cohort['Total Devices']} / ${cohort.devicesPercentileTotal} devices`}</p>
+                            : null
+                    }
+                </Bottom>
+            </Tooltip>
+        );
+    }
 }
 
 const Circle = styled.div`
@@ -87,6 +96,10 @@ const Circle = styled.div`
         width: 5px;
         height: 5px; 
     `} 
+    ${props => (props.size === 'device') && css`
+        width: 9px;
+        height: 9px;  
+    `}
 `;
 const Span = styled.span`
     ${({top}) => top && css`
@@ -97,18 +110,22 @@ const CircleContainer = styled.div`
     width: 15px;
     display: flex; 
     justify-content: center;
-    margin-right: 0.5em;
+    margin-right: 0.25em;
 `;
 const Top = styled.div`
     width: 180px;
     height: 45px;
     display: flex;
 `;
+const Devices = styled.div`
+    font-size: 0.75em;
+    width: 30px;
+`;
 const Left = styled.div`
-    flex: 75%;
+    flex: 65%;
 `;
 const Right = styled.div`
-    flex: 25%;
+    flex: 35%;
 `;
 const Row = styled.div`
     display: flex;

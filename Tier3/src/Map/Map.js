@@ -294,6 +294,7 @@ class Map extends Component {
                     }
                     {cohort &&
                         <POITooltip
+                            markers={markers}
                             hover={hover}
                             cohort={cohort}
                         />
