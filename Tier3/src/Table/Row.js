@@ -148,7 +148,7 @@ const AlarmCell = styled.div`
     width: 7px;
     height: 7px;
     margin: 1px;
-    background-color: ${props => props.alarm ? GGConsts.COLOR_GREEN : GGConsts.COLOR_RED}; 
+    background-color: ${props => (props.alarm === null) ? GGConsts.COLOR_YELLOW : (props.alarm === 0) ? GGConsts.COLOR_GREEN : GGConsts.COLOR_RED}; 
 `;
 
 export default Row;

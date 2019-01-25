@@ -30,6 +30,14 @@ import {
  *  Saga responsible for formatting data for the Map / Table views
  *  @param { object } dataParam - if a dataParam is provided we can assume other params haven't changed
 */
+
+const OneZeroOrNull = () => {
+    const rDum = Math.floor(Math.random() * 3);
+    let rtn = 0;
+    (rDum === 0) ? rtn = 0 : (rDum === 1) ? rtn = 1 : rtn = null;
+    return rtn;
+}
+
 function* composeDisplayData( dataParam ) {
 
     // ### Current State
@@ -176,7 +184,7 @@ function* composeDisplayData( dataParam ) {
         acc.push({
             [regionType]: regionName,
             'Alarms': _.isArray(alarms) ? _.sum(alarms) : alarms,
-            'AlarmsByDay': (alarms === '-' || timeframe === 'All') ? '-' : Array.from({length: timeframe}, () => Math.floor(Math.random() * 2)),
+            'AlarmsByDay': (alarms === '-' || timeframe === 'All') ? '-' : Array.from({length: timeframe}, () => OneZeroOrNull()),
             'Holdover': _.isArray(holdover) ? _.mean(holdover) : holdover,
             'Manufacturers': mfc,
             'Total Devices': devices,

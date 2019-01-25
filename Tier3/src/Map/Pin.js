@@ -26,13 +26,41 @@ class LocationPin extends Component {
         return witch;
     }
 
+    matchData = () => {
+
+        // console.log("props of Pin, marker name:", this.props.marker.name);
+        // console.log("props of Pin, cells display data:", this.props.display_data.cells);
+        this.props.display_data.cells.forEach( v => {
+            if (v.location === this.props.marker.name) {
+                
+                if (v.Alarms !== '-') {
+                    console.log("Match & Alarms!:", v);
+                    data.forEach( d => {
+                        d.value = 0;
+                    });
+                    v.AlarmsByDay.forEach( a =>  {
+                        if (a === null) {
+                            data[1].value++;
+                        }
+                        if (a === 0) {
+                            data[2].value++;
+                        }
+                        if (a === 1) {
+                            data[0].value++;
+                        }
+                    });
+                    console.log("data after real:", data);
+                }
+            }
+        } );
+    }
+
     render() {
         const {
             chart,
             zoom,
             marker
         } = this.props;
-        console.log("props of Pin:", this.props);
 
         const {
             name,
@@ -44,6 +72,9 @@ class LocationPin extends Component {
         const fontSize = size / 1.5;
         const pieSize = size * 2;
         const containerSize = size * 3;
+
+        this.matchData();
+        
 
         return (
             <svg
