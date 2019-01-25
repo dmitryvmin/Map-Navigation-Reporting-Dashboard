@@ -18,7 +18,7 @@ function* loadSensor() {
         config: GGConsts.RT_HEADER,
         key: 'fridges',
     });
-
+debugger;
     const data = [...fakeSensors, ...realSensors]
         .filter(f => !_.isNull(f) && !_.isUndefined(f))
         .filter(f => !_.isUndefined(f.facility));
