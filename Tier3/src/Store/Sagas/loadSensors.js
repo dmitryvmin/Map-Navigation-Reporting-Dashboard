@@ -11,8 +11,8 @@ import fakeSensors from './../../Data/fakeSensors.json';
 // TODO: Sensors Saga will be responsible for refreshing/hydrating sensors Map and Data - will be called at intervals
 function* loadSensor() {
 
-    const fakeSensors = yield call(loadFakeSensors, 100);
-console.log(fakeSensors);
+    // const fakeSensors = yield call(loadFakeSensors, 100);
+
     const realSensors = yield fetchSaga({
         uri: GGConsts.SENSORS_ENDPOINT,
         config: GGConsts.RT_HEADER,

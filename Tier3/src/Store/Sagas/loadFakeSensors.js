@@ -31,6 +31,20 @@ const generateRanArrNull = (size, range) => {
     return arr;
 }
 
+const generateRanAlarms = (size, range) => {
+    const ran = _.random(0,2);
+
+    if (ran === 0) {
+        return generateRanArrNull(size, range);
+    }
+    else if (ran === 1) {
+        return Array(size).fill(0);
+    }
+    else if (ran === 2) {
+        return Array(size).fill(null);
+    }
+}
+
 const fridgesArr = [
     {manufacturer: "Dulas", model: "VC150 SDD"},
     {manufacturer: "Dometic", model: "TCW40 SDD"},
@@ -70,11 +84,11 @@ function timeout(ms) {
 const loadFakeSensors = async (f) => {
 
     const sensorsArr = [];
-    const locationsArr = getLocationsArr(lgasData.features, 100);
+    const locationsArr = getLocationsArr(lgasData.features, 1);
 
     await asyncForEach(locationsArr, async (el) => {
 
-        // const wait = await timeout(10000); // TODO: FOR GOOGLE'S MAP REQUEST LIMIT!
+        const wait = await timeout(1001); // TODO: FOR GOOGLE'S MAP REQUEST LIMIT!
 
         if (el.properties['admin1Name'] !== 'Bauchi') {
             const location = `${el.properties['admin0Name']}, ${el.properties['admin1Name']}, ${el.properties['admin2Name']}`;
@@ -93,7 +107,7 @@ const loadFakeSensors = async (f) => {
                     "metric": {
                         "start_time": "2008-09-15T15:53:00+05:00",
                         "end_time": "2008-16-15T15:53:00+05:00",
-                        "alarm-count": generateRanArrNull(60, 2),
+                        "alarm-count": generateRanAlarms(60, 2),
                         "alarm_over_seconds": generateRanArrNull(60, 10000),
                         "alarm_under_seconds": generateRanArrNull(60, 10000),
                         "temperature-mean": generateRanArrNull(60, 0, 11),
@@ -130,8 +144,8 @@ const loadFakeSensors = async (f) => {
             }
 
             // // TODO: remove. for debugging.
-            // console.log('@@SENSOR', sensorsArr);
-            // window.sensors = sensorsArr;
+            console.log('@@SENSOR', sensorsArr);
+            window.sensors = sensorsArr;
         }
     });
 
