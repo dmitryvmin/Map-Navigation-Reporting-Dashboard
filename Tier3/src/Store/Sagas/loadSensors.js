@@ -1,22 +1,29 @@
 import GGConsts from '../../Constants';
-// import {call} from 'redux-saga/effects';
-import {fetchUpdateData} from './fetch';
-// import composeDisplayData from './composeDisplayData';
-
-// Right now we are just fetching sensors data
-// In case we need data from other sources,
-// use this Saga to fetch and store data to store
+import _ from 'lodash';
+import {
+    call,
+    put
+} from 'redux-saga/effects';
+import {fetchSaga} from './fetch';
+import loadFakeSensors from './loadFakeSensors';
+import fakeSensors from './../../Data/fakeSensors.json';
 
 // TODO: Sensors Saga will be responsible for refreshing/hydrating sensors Map and Data - will be called at intervals
 function* loadSensor() {
 
-    yield fetchUpdateData({
+    const fakeSensors = yield call(loadFakeSensors, 100);
+console.log(fakeSensors);
+    const realSensors = yield fetchSaga({
         uri: GGConsts.SENSORS_ENDPOINT,
         config: GGConsts.RT_HEADER,
-        resource: GGConsts.SENSORS_MAP,
+        key: 'fridges',
     });
 
-    // yield composeDisplayData();
+    const data = [...fakeSensors, ...realSensors]
+        .filter(f => !_.isNull(f) && !_.isUndefined(f))
+        .filter(f => !_.isUndefined(f.facility));
+
+    yield put({type: GGConsts.SENSORS_MAP, data});
 
 }
 

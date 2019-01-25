@@ -20,24 +20,21 @@ import {
 } from './../../Utils';
 
 import {
+    reduceSensorsByFilter,
     filterSensorsByLoc,
     filterSensorsByMfc,
-    reduceSensorsByFilter,
+    getTotalByFilter,
+    getMeanByFilter,
+    getMetricsPie,
     makeColumn,
-    composePercentiles
+    composePercentiles,
+    OneZeroOrNull,
 } from './../../Utils/DataUtils';
 
 /**
  *  Saga responsible for formatting data for the Map / Table views
  *  @param { object } dataParam - if a dataParam is provided we can assume other params haven't changed
 */
-
-const OneZeroOrNull = () => {
-    const rDum = Math.floor(Math.random() * 3);
-    let rtn = 0;
-    (rDum === 0) ? rtn = 0 : (rDum === 1) ? rtn = 1 : rtn = null;
-    return rtn;
-}
 
 function* composeDisplayData( dataParam ) {
 
@@ -121,6 +118,8 @@ function* composeDisplayData( dataParam ) {
         let alarms = '-';
         let holdover = '-';
         let mfc = '-';
+        let AlarmsByDay = '-';
+        let metricsPie = null;
         let regionType;
         let regionName;
         let location;
@@ -138,8 +137,9 @@ function* composeDisplayData( dataParam ) {
             if (sensorsFiltered.length) {
 
                 devices = sensorsFiltered.length;
-                alarms = reduceSensorsByFilter(sensorsFiltered, 'metrics.alarm_count');
-                holdover = reduceSensorsByFilter(sensorsFiltered, 'metrics.holdover_mean');
+                alarms = getTotalByFilter(sensorsFiltered, 'metric.alarm-count');
+                metricsPie = getMetricsPie(sensorsFiltered, metricSelected);
+                holdover = getMeanByFilter(sensorsFiltered, 'metric.holdover-mean') || '-'; // TODO: need a workaround for when there is no metrics
                 mfc = reduceSensorsByFilter(sensorsFiltered, 'manufacturer');
 
             }
@@ -156,8 +156,8 @@ function* composeDisplayData( dataParam ) {
             if (sensorsFiltered.length) {
 
                 devices = sensorsFiltered.length;
-                alarms = cur.metrics.alarm_count;
-                holdover = cur.metrics.holdover_mean;
+                alarms = cur.metric['alarm-count'];
+                holdover = cur.metric['holdover-mean'];
                 mfc = cur.manufacturer;
                 id = cur.id;
                 name = cur.facility.name;
@@ -175,21 +175,25 @@ function* composeDisplayData( dataParam ) {
 
             regionType = 'device';
             regionName = cur.facility.name;
-            alarms = cur.metrics.alarm_count;
-            holdover = cur.metrics.holdover_mean;
+            alarms = cur.metric['alarm-count'];
+            holdover = cur.metric['holdover-mean'];
             mfc = cur.manufacturer;
             id = cur.id;
             name = cur.facility.name;
             model = cur.model;
+            AlarmsByDay = '';
+
+            debugger;
         }
 
         acc.push({
             [regionType]: regionName,
             'Alarms': _.isArray(alarms) ? _.sum(alarms) : alarms,
-            'AlarmsByDay': (alarms === '-' || timeframe === 'All') ? '-' : Array.from({length: timeframe}, () => OneZeroOrNull()),
             'Holdover': _.isArray(holdover) ? _.mean(holdover) : holdover,
             'Manufacturers': mfc,
             'Total Devices': devices,
+            AlarmsByDay,
+            metricsPie,
             location,
             id,
             name,
@@ -199,8 +203,6 @@ function* composeDisplayData( dataParam ) {
         return acc;
 
     }, []);
-
-    console.log('@@@', metricsThreshold);
 
     cells = composePercentiles(cells, metricSelected, metricsThreshold);
 

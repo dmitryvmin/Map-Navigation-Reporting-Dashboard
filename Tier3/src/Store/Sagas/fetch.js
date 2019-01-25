@@ -1,5 +1,6 @@
 import GGConsts from '../../Constants';
 import axios from "axios";
+import _ from 'lodash';
 import {
     put,
     call
@@ -13,16 +14,16 @@ function* fetchData(...args) {
 }
 
 // Fetch and Update - makes the api request and saves to the resource arg
-function* fetchUpdateData({uri, config, resource}) {
+function* fetchSaga({uri, config, key}) {
+
     try {
         const response = yield call(fetchData, uri, config);
-        const data = response.data;
+        const data = _.get(response, `data.${key}`);
 
         // dispatch a success action to the store
         yield put({type: GGConsts.API_CALL_SUCCESS});
 
-        // store API response in the appropriate store map
-        yield put({type: resource, data});
+        return data;
 
     } catch (error) {
         // dispatch a failure action to the store with the error
@@ -32,5 +33,5 @@ function* fetchUpdateData({uri, config, resource}) {
 
 export {
     fetchData,
-    fetchUpdateData,
+    fetchSaga,
 };

@@ -93,12 +93,14 @@ function* getMarkers(display_data = null)  {
         marker.metric = metric;
         marker.value = c[metric];
         marker.metricPercentile = c.metricPercentile || null;
+        marker.metricsPie = c.metricsPie;
         markers.push(marker);
 
     });
 
     //loopMarkers();
     // yield put({ type: GGConsts.GEO_MAP, data: {[childNM.map]: geoState} });
+
     return markers;
 
 }

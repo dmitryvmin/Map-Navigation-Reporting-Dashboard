@@ -55,7 +55,7 @@ const REPORTING_PORT = '9000';
 const AUCMA_PORT = '9003';
 const ADMIN_PORT = '8099';
 const UPLOADED_DEVICES = '8780';
-const SENSORS_ENDPOINT = `${API}:${REPORTING_PORT}/sensor/state`;
+const SENSORS_ENDPOINT = `${API}:${UPLOADED_DEVICES}/fridge?metricStart=2018-11-01&metricEnd=2018-12-01`;
 
 // API Actions
 const API_CALL_REQUEST = "API_CALL_REQUEST";

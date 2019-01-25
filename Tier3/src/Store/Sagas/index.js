@@ -6,21 +6,16 @@ import {
     throttle,
 } from 'redux-saga/effects';
 
-// import composeDisplayData from './composeDisplayData';
 import updateNav from './updateNav';
 import getGeo from './getGeo';
 import updateHover from './updateHover';
 import updateMetric from './updateMetric';
-// import loadSensors from './loadSensors';
-import loadFake from './loadFake';
+import loadSensors from './loadSensors';
 import updateTimeframe from './updateTimeframe';
 import updateDevice from './updateDevice';
 import updateSettings from './updateSettings';
-
-import {
-    loadMfcs,
-    updateMfc
-} from './updateMfc';
+import loadMfcs from './loadMfcs';
+import updateMfc from './updateMfc';
 
 // Watches for Saga actions
 export function* watcherSaga() {
@@ -50,9 +45,7 @@ export function* startupSaga() {
     yield put({type: GGConsts.GEO_MAP, data: {'countries': data}});
 
     // Sensor data is fetched, save to store, formatted for visualization views
-    // yield loadSensors();
-
-    yield loadFake();
+    yield loadSensors();
 
     yield loadMfcs();
 

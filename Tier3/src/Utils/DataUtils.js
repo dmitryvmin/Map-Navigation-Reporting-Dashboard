@@ -2,13 +2,144 @@ import GGConsts from '../Constants';
 import _ from 'lodash';
 
 export const filterSensorsByLoc = (sensors, index, location) => {
-    const filtered = sensors.filter(f => f.facility.regions[index] === location);
+    const filtered = sensors.filter(f => f.facility.regions[`tier${index}`] === location);
     return filtered;
 }
 
 export const filterSensorsByMfc = (sensors, mfc) => {
     const filtered = sensors.filter(f => mfc.includes(f.manufacturer));
     return filtered;
+}
+
+export const getTotalByFilter = (sensors, metric) => {
+    const reduced = sensors.reduce((a, c) => {
+        let t = _.get(c, metric);
+
+        // skip over if sensor doesn't have a metric value
+        if (!t) {
+            return a;
+        }
+
+        if (_.isArray(t)) {
+            t = t.reduce((a, b) => a + b, 0);
+        }
+
+        a.push(t);
+
+        return a;
+
+    }, []);
+
+    // const unique = _.uniqBy(reduced);
+    const total = reduced.reduce((a, b) => a + b, 0)
+
+    return total;
+}
+
+export const getRedbyFilter = (sensors, metric) => {
+    const reduced = sensors.reduce((a, c) => {
+        let val = _.get(c, metric);
+
+        if (!val) {
+            return a;
+        }
+
+        if (_.isArray(val)) {
+            let red = val.filter(f => f > 0);
+            let nullsTotal = red.reduce((a, b) => a + b, 0);
+            a.push(nullsTotal);
+            return a;
+        }
+        else {
+            return a;
+        }
+    }, []);
+
+    const total = reduced.reduce((a, b) => a + b, 0);
+
+    return total;
+}
+
+export const getMetricsPie = (sensors, metric) => {
+    const pie = {
+        green: 0,
+        red: 0,
+        orange: 0,
+    }
+
+    if (metric === 'Alarms') {
+        const key = 'metric.alarm-count';
+
+        sensors.forEach(s => {
+            const vals = _.get(s, key);
+
+            if (!vals) {
+                return;
+            }
+
+            if (vals.includes(1)) {
+                pie.red++;
+            }
+            if (!vals.includes(1) && !vals.includes(null)) {
+                pie.green++;
+            }
+            if (!vals.includes(1) && !vals.includes(0)) {
+                pie.orange++;
+            }
+
+        })
+
+    }
+
+    return pie;
+}
+
+export const getNullsByFilter = (sensors, metric) => {
+    const reduced = sensors.reduce((a, c) => {
+        let val = _.get(c, metric);
+
+        if (!val) {
+            return a;
+        }
+
+        if (_.isArray(val)) {
+            let nulls = val.filter(f => _.isNull(f));
+            let nullsTotal = nulls.reduce((a, b) => a + b, 0);
+            a.push(nullsTotal);
+            return a;
+        }
+        else {
+            return a;
+        }
+    }, []);
+
+    const total = reduced.reduce((a, b) => a + b, 0);
+
+    return total;
+}
+
+export const getMeanByFilter = (sensors, metric) => {
+    const reduced = sensors.reduce((a, c) => {
+        let val = _.get(c, metric);
+
+        if (!val) {
+            return a;
+        }
+
+        if (_.isArray(val)) {
+            val = _.mean(val).toFixed(2);
+        }
+
+        let float = parseFloat(val);
+        a.push(float);
+
+        return a;
+
+    }, []);
+
+    const mean = parseFloat(_.mean(reduced).toFixed(2));
+
+    return mean;
 }
 
 export const reduceSensorsByFilter = (sensors, metric) => {
@@ -50,7 +181,7 @@ export const updateMetricPercentiles = (p, arr, metricSelected) => {
 
     arr.sort((a, b) => b[metricSelected] - a[metricSelected]);
 
-    const cutoff = _.round(arr.length * p) || 1;
+    const cutoff = _.round(arr.length * p) || 0;
     const top = arr.slice(0, cutoff);
     const bottom = arr.slice(cutoff, arr.length);
 
@@ -145,4 +276,11 @@ export const composePercentiles = (cells, metricSelected, threshold) => {
 
     return cells;
 
+}
+
+export const OneZeroOrNull = () => {
+    const rDum = Math.floor(Math.random() * 3);
+    let rtn = 0;
+    (rDum === 0) ? rtn = 0 : (rDum === 1) ? rtn = 1 : rtn = null;
+    return rtn;
 }

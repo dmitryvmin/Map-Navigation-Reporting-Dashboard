@@ -11,12 +11,6 @@ import PieChart from 'react-minimal-pie-chart';
 //     entered: {opacity: 1},
 // };
 
-const data = [
-    {title: 'One', value: 10, color: GGConsts.COLOR_RED},
-    {title: 'Two', value: 15, color: GGConsts.COLOR_YELLOW},
-    {title: 'Three', value: 20, color: GGConsts.COLOR_GREEN},
-]
-
 class LocationPin extends Component {
 
     getTextSize = (zoom) => {
@@ -26,33 +20,42 @@ class LocationPin extends Component {
         return witch;
     }
 
-    matchData = () => {
+    getPieData = () => {
+        const {metricsPie} = this.props.marker;
 
-        // console.log("props of Pin, marker name:", this.props.marker.name);
-        // console.log("props of Pin, cells display data:", this.props.display_data.cells);
-        this.props.display_data.cells.forEach( v => {
-            if (v.location === this.props.marker.name) {
-                
-                if (v.Alarms !== '-') {
-                    console.log("Match & Alarms!:", v);
-                    data.forEach( d => {
-                        d.value = 0;
-                    });
-                    v.AlarmsByDay.forEach( a =>  {
-                        if (a === null) {
-                            data[1].value++;
-                        }
-                        if (a === 0) {
-                            data[2].value++;
-                        }
-                        if (a === 1) {
-                            data[0].value++;
-                        }
-                    });
-                    console.log("data after real:", data);
-                }
-            }
-        } );
+        if (!metricsPie) {
+            return null;
+        }
+
+        return [
+            {title: 'One', value: metricsPie.red, color: GGConsts.COLOR_RED},
+            {title: 'Two', value: metricsPie.orange, color: GGConsts.COLOR_YELLOW},
+            {title: 'Three', value: metricsPie.green, color: GGConsts.COLOR_GREEN},
+        ]
+    }
+
+    matchData = () => {
+        // this.props.display_data.cells.forEach( v => {
+        //     if (v.location === this.props.marker.name) {
+        //
+        //         if (v.Alarms !== '-') {
+        //             data.forEach( d => {
+        //                 d.value = 0;
+        //             });
+        //             v.AlarmsByDay.forEach( a =>  {
+        //                 if (a === null) {
+        //                     data[1].value++;
+        //                 }
+        //                 if (a === 0) {
+        //                     data[2].value++;
+        //                 }
+        //                 if (a === 1) {
+        //                     data[0].value++;
+        //                 }
+        //             });
+        //         }
+        //     }
+        // } );
     }
 
     render() {
@@ -72,9 +75,7 @@ class LocationPin extends Component {
         const fontSize = size / 1.5;
         const pieSize = size * 2;
         const containerSize = size * 3;
-
-        this.matchData();
-        
+        const pieData = this.getPieData();
 
         return (
             <svg
@@ -119,7 +120,7 @@ class LocationPin extends Component {
                         radius={pieSize - 10}
                         startAngle={-90}
                         animate={true}
-                        data={data}
+                        data={pieData}
                     />
                     :
                     <svg
