@@ -25,7 +25,7 @@ class CustomTooltip extends Component {
         const item = payload[0].payload[NM.map];
         const location = payload[0].name;
         const value = _.round(payload[0].value, 2);
-        
+
         return (
             <div className="custom-tooltip">
                 <h4>{`${item}`}</h4>
