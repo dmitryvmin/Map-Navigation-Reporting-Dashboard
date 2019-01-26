@@ -62,9 +62,9 @@ export const getRedbyFilter = (sensors, metric) => {
 
 export const getMetricsPie = (sensors, metric) => {
     const pie = {
-        green: 0,
         red: 0,
         orange: 0,
+        green: 0,
     }
 
     if (metric === 'Alarms') {
