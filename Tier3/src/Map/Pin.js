@@ -34,10 +34,6 @@ class LocationPin extends Component {
             green,
         } = metricsPie;
 
-        if (!red || !_.isNumber(red) || !orange || !_.isNumber(orange) || !green || !_.isNumber(green)) {
-            return null
-        }
-
         return [
             {title: 'One', value: metricsPie.red, color: GGConsts.COLOR_RED},
             {title: 'Two', value: metricsPie.orange, color: GGConsts.COLOR_YELLOW},
