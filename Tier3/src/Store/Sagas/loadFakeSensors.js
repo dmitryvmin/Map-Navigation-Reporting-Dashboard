@@ -88,7 +88,7 @@ const loadFakeSensors = async (f) => {
 
     await asyncForEach(locationsArr, async (el) => {
 
-        const wait = await timeout(1001); // TODO: FOR GOOGLE'S MAP REQUEST LIMIT!
+        const wait = await timeout(5000); // TODO: FOR GOOGLE'S MAP REQUEST LIMIT!
 
         if (el.properties['admin1Name'] !== 'Bauchi') {
             const location = `${el.properties['admin0Name']}, ${el.properties['admin1Name']}, ${el.properties['admin2Name']}`;
@@ -96,6 +96,8 @@ const loadFakeSensors = async (f) => {
             const coordinates = await getLatLng(_.first(results));
             const OLC = new OpenLocationCode;
             const code = OLC.encode(coordinates.lat, coordinates.lng, 10);
+
+            const facilityName = `${el.properties['admin2Name']} ${ranStr(3)}`;
 
             const saveSensor = () => {
 
@@ -123,7 +125,7 @@ const loadFakeSensors = async (f) => {
                     },
                     "facility": {
                         "id": crypto.getRandomValues(new Uint32Array(4)).join('-'),
-                        "name": `${el.properties['admin2Name']} ${ranStr(3)}`,
+                        "name": facilityName,
                         "location": code,
                         "regions": {
                             "tier0": el.properties['admin0Name'],

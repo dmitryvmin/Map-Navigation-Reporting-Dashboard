@@ -183,7 +183,6 @@ function* composeDisplayData( dataParam ) {
             model = cur.model;
             AlarmsByDay = '';
 
-            debugger;
         }
 
         acc.push({
