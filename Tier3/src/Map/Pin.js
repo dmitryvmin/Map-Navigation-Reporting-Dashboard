@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {connect} from "react-redux";
 import GGConsts from '../Constants';
 import PieChart from 'react-minimal-pie-chart';
+import _ from 'lodash';
 // import Transition from 'react-transition-group/Transition';
 // import TwoLevelPieChart from './Pie.js';
 
@@ -25,6 +26,16 @@ class LocationPin extends Component {
 
         if (!metricsPie) {
             return null;
+        }
+
+        const {
+            red,
+            orange,
+            green,
+        } = metricsPie;
+
+        if (!red || !_.isNumber(red) || !orange || !_.isNumber(orange) || !green || !_.isNumber(green)) {
+            return null
         }
 
         return [
@@ -115,13 +126,19 @@ class LocationPin extends Component {
                 >
                 {(metricPercentile && metricPercentile === 'top')
                     ?
-                    <PieChart
-                        lineWidth={pieSize / 1.25}
-                        radius={pieSize - 10}
-                        startAngle={-90}
-                        animate={true}
-                        data={pieData}
-                    />
+                    <>
+                    {pieData
+                        ?
+                        <PieChart
+                            lineWidth={pieSize / 1.25}
+                            radius={pieSize - 10}
+                            startAngle={-90}
+                            animate={true}
+                            data={pieData}
+                        />
+                        : null
+                    }
+                    </>
                     :
                     <svg
                         width={containerSize}
