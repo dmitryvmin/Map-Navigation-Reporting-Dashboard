@@ -28,7 +28,8 @@ import {
     getMetricsPie,
     makeColumn,
     composePercentiles,
-    OneZeroOrNull,
+    getMetricKey,
+    getMetricFinal,
 } from './../../Utils/DataUtils';
 
 /**
@@ -39,7 +40,7 @@ import {
 function* composeDisplayData( dataParam ) {
 
     // ### Current State
-    const sensors = yield select(sensorsSelector);
+    const allSensors = yield select(sensorsSelector);
     const metricsThreshold = yield select(thresholdSelector);
 
     // 1. Location
@@ -51,6 +52,7 @@ function* composeDisplayData( dataParam ) {
 
     // 2. Metric
     const metricSelected = yield select(metricSelector);
+    const metricKey = getMetricKey(metricSelected);
 
     // 3. Filter - Device Type
     // const deviceType = yield select(deviceTypeSelector);
@@ -60,11 +62,17 @@ function* composeDisplayData( dataParam ) {
 
     // 5. Timeframe
     let timeframe = yield select(timeframeSelector);
+    // TODO: how does all work for the timeframe?
+    // needs to be a constrained number of days that
+    // can be applied across the data set - 360 days?
     timeframe = (timeframe === 'All') ? 'All' : timeframe.match(/\d+/)[0];
 
-    if (!sensors || !navigation || !tier || !metricSelected) {
+    if (!allSensors || !navigation || !tier || !metricSelected) {
         return null;
     }
+
+    // Limit the sensors pool to the current location
+    const sensors = filterSensorsByLoc([...allSensors], curNM.index, curLocation);
 
     // ### Rows
     let rows;
@@ -108,6 +116,16 @@ function* composeDisplayData( dataParam ) {
         columns.push(makeColumn('model'));
     }
 
+    // if (metricSelected === 'Uptime') {
+    //     var r = rows;
+    //     debugger;
+    // }
+
+    // if (curLocation === 'Bauchi') {
+    //     var r = rows;
+    //     debugger;
+    // }
+
     // ### Cells
     let cells = rows.reduce((acc, cur) => {
 
@@ -115,8 +133,7 @@ function* composeDisplayData( dataParam ) {
         let name = '-';
         let model = '-';
         let devices = '-';
-        let alarms = '-';
-        let holdover = '-';
+        let metric = '-';
         let mfc = '-';
         let AlarmsByDay = '-';
         let metricsPie = null;
@@ -137,11 +154,14 @@ function* composeDisplayData( dataParam ) {
             if (sensorsFiltered.length) {
 
                 devices = sensorsFiltered.length;
-                alarms = getTotalByFilter(sensorsFiltered, 'metric.alarm-count');
-                metricsPie = getMetricsPie(sensorsFiltered, metricSelected);
-                holdover = getMeanByFilter(sensorsFiltered, 'metric.holdover-mean') || '-'; // TODO: need a workaround for when there is no metrics
                 mfc = reduceSensorsByFilter(sensorsFiltered, 'manufacturer');
+                metricsPie = getMetricsPie(sensorsFiltered, metricSelected);
 
+                if (metricSelected === 'Alarms') {
+                    metric = getTotalByFilter(sensorsFiltered, metricKey);
+                } else {
+                    metric = getMeanByFilter(sensorsFiltered, metricKey);
+                }
             }
         }
         else if (tier === GGConsts.LGA_LEVEL) {
@@ -156,8 +176,7 @@ function* composeDisplayData( dataParam ) {
             if (sensorsFiltered.length) {
 
                 devices = sensorsFiltered.length;
-                alarms = cur.metric['alarm-count'];
-                holdover = cur.metric['holdover-mean'];
+                metric = cur[metricKey]
                 mfc = cur.manufacturer;
                 id = cur.id;
                 name = cur.facility.name;
@@ -175,8 +194,7 @@ function* composeDisplayData( dataParam ) {
 
             regionType = 'device';
             regionName = cur.facility.name;
-            alarms = cur.metric['alarm-count'];
-            holdover = cur.metric['holdover-mean'];
+            metric = cur[metricKey];
             mfc = cur.manufacturer;
             id = cur.id;
             name = cur.facility.name;
@@ -185,10 +203,10 @@ function* composeDisplayData( dataParam ) {
 
         }
 
+
         acc.push({
             [regionType]: regionName,
-            'Alarms': _.isArray(alarms) ? _.sum(alarms) : alarms,
-            'Holdover': _.isArray(holdover) ? _.mean(holdover) : holdover,
+            [metricSelected]: getMetricFinal(metric, devices, metricSelected),
             'Manufacturers': mfc,
             'Total Devices': devices,
             AlarmsByDay,

@@ -52,7 +52,7 @@ class Row extends Component {
 
         if (id === 'Alarms') {
             if (data.AlarmsByDay === '-') {
-                return <StyledCell>{value}</StyledCell>;
+                right = true;
             }
             else {
                 return (
@@ -71,6 +71,12 @@ class Row extends Component {
         }
         else if (id === 'Holdover') {
             value = (!_.isNaN(value) && value !== '-') ? _.round(value, 2) : value;
+            right = true;
+        }
+        else if (id === 'Reporting') {
+            right = true;
+        }
+        else if (id === 'Uptime') {
             right = true;
         }
         else if ( id === 'Total Devices') {

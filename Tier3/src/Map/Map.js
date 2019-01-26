@@ -118,6 +118,9 @@ class Map extends Component {
         }
 
         const NMchild = getNMapChild(tier, 'tier');
+        if (!NMchild) {
+            return null;
+        }
 
         let value = object.properties[NMchild.code];
         let type;

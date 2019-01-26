@@ -1,8 +1,61 @@
 import GGConsts from '../Constants';
 import _ from 'lodash';
 
+export const getMetricFinal = (data, totalDevices, metricType) => {
+    let finalVal;
+
+    if (metricType === 'Alarms') {
+        finalVal = _.isArray(data) ? _.sum(data) : data;
+    }
+    else if (metricType === 'Holdover') {
+        finalVal = _.isArray(data) ? _.mean(data) : data;
+    }
+    else if (metricType === 'Uptime') {
+        finalVal = _.isArray(data) ? _.sum(data) : data;
+    }
+    else if (metricType === 'Reporting') {
+        finalVal = _.isArray(data) ? _.sum(data) : data;
+    }
+    else {
+        console.log(`%c trouble calculating final ${metricType} value from ${data}`, GGConsts.CONSOLE_ERROR);
+    }
+
+    return finalVal;
+}
+
+export const getMetricKey = (metric) => {
+    if (metric === 'Alarms') {
+        return 'metric.alarm-count';
+    }
+    else if (metric === 'Holdover') {
+        return 'metric.holdover-mean';
+    }
+    else if (metric === 'Uptime') {
+        return 'metric.uptime-percent';
+    }
+    else if (metric === 'Reporting') {
+        return 'metric.unknown-time-percent';
+    }
+    else {
+        console.log(`%c unknown metric passed when getting the metric key for composeDisplayData: ${metric}`, GGConsts.CONSOLE_ERROR);
+    }
+}
+
+const capitalizeFWords = (text) => {
+    const formatted = text.toLowerCase()
+        .split(' ')
+        .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
+        .join(' ');
+
+    return formatted;
+}
+
 export const filterSensorsByLoc = (sensors, index, location) => {
-    const filtered = sensors.filter(f => f.facility.regions[`tier${index}`] === location);
+    const filtered = sensors.filter(f => {
+        const geoLocation = capitalizeFWords(f.facility.regions[`tier${index}`]);
+        const match = geoLocation === location;
+        return match;
+    });
     return filtered;
 }
 
@@ -14,15 +67,22 @@ export const filterSensorsByMfc = (sensors, mfc) => {
 export const getTotalByFilter = (sensors, metric) => {
     const reduced = sensors.reduce((a, c) => {
         let t = _.get(c, metric);
+        //
+        // if (window.test) {
+        //     debugger;
+        // }
 
         // skip over if sensor doesn't have a metric value
         if (!t) {
+            console.log(`% device doesn't contain any metrics - ${metric}`, GGConsts.CONSOLE_WARN);
             return a;
         }
 
         if (_.isArray(t)) {
             t = t.reduce((a, b) => a + b, 0);
         }
+
+        console.warn('device', t);
 
         a.push(t);
 
@@ -31,7 +91,9 @@ export const getTotalByFilter = (sensors, metric) => {
     }, []);
 
     // const unique = _.uniqBy(reduced);
-    const total = reduced.reduce((a, b) => a + b, 0)
+    const total = reduced.reduce((a, b) => a + b, 0);
+
+    console.warn('total', total);
 
     return total;
 }

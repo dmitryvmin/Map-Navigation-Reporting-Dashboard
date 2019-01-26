@@ -31,7 +31,8 @@ class EnhancedTableHead extends React.Component {
         if (
             label === 'Holdover' ||
             label === 'Total Devices' ||
-            label === 'Uptime'
+            label === 'Uptime' ||
+            label === 'Reporting'
         ) {
             return 'right';
         } else if (label === 'Alarms') {
