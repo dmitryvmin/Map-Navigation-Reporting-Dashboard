@@ -49,7 +49,6 @@ class Navigation extends Component {
         if (source === GGConsts.METRIC_SELECTED) {
             const value = e.target.textContent; // can't curry value by e.target.value from Tabs
             this.props.updateMetric(value);
-
         } else {
             const value = e.target.value;
             this.props.updateNav(source, value);

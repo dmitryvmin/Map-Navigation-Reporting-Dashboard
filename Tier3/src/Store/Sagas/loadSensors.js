@@ -19,7 +19,7 @@ function* loadSensor() {
         key: 'fridges',
     });
 
-    const data = [...fakeSensors, ...realSensors]
+    const data = [...realSensors]  //for fake data... const data = [...fakeSensors, ...realSensors]
         .filter(f => !_.isNull(f) && !_.isUndefined(f))
         .filter(f => !_.isUndefined(f.facility));
 
