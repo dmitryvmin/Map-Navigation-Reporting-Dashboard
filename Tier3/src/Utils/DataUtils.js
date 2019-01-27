@@ -2,12 +2,19 @@ import GGConsts from '../Constants';
 import _ from 'lodash';
 
 function getProperName(name) {
+    if (!name) {
+        return;
+    }
+
     name = name.toLowerCase();
-    if(name === "bauchi state") {
+
+    if (name === "bauchi state") {
         name = "bauchi"
     } else if (name === "jama&#39;are") {
         name = "jama'are"
-    } else if (name === "t/balewa" || name === "tafawa-balewa") {
+    } else if (
+        name === "t/balewa" ||
+        name === "tafawa-balewa") {
         name = "balewa"
     } else if (
         name === "bashe / ningi lga" ||
@@ -16,7 +23,7 @@ function getProperName(name) {
     ) {
         name = "ningi";
     } else if (name === "itas-gadau") {
-        name = "itas gadau";
+        name = "itas gadau"
     } else if (name === "kirfi lga") {
         name = "kirfi"
     } else if (name === "dass lga") {
@@ -25,7 +32,7 @@ function getProperName(name) {
         name === "itas-gadau" ||
         name === "Itas gadau"
     ) {
-        return "Itas/Gadau";
+        return "Itas/Gadau"
     }
 
     return(toTitleCase(name));
@@ -86,6 +93,10 @@ export const filterSensorsByLoc = (sensors, index, location) => {
         const match = geoLocation === location;
         return match;
     });
+    return filtered;
+}
+export const filterSensorsByFacility = (sensors, facility) => {
+    const filtered = sensors.filter(f => f.facility.name === facility);
     return filtered;
 }
 

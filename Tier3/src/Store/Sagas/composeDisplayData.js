@@ -22,6 +22,7 @@ import {
 import {
     reduceSensorsByFilter,
     filterSensorsByLoc,
+    filterSensorsByFacility,
     filterSensorsByMfc,
     getTotalByFilter,
     getMeanByFilter,
@@ -39,40 +40,57 @@ import {
 
 function* composeDisplayData( dataParam ) {
 
-    // ### Current State
+    // ### Get Current State
+    // 1. Sensors
     const allSensors = yield select(sensorsSelector);
     const metricsThreshold = yield select(thresholdSelector);
 
-    // 1. Location
+    // 2. Location
     const navigation = yield select(navSelector);
     const tier = yield select(tierSelector);
     const curNM = getNMap(tier, 'tier'); // current navigation map
     const curLocation = navigation[curNM.type];
     const childNM = getNMapChild(tier, 'tier');
 
-    // 2. Metric
+    // 3. Metric
     const metricSelected = yield select(metricSelector);
     const metricKey = getMetricKey(metricSelected);
 
-    // 3. Filter - Device Type
+    // 4. Filter - Device Type
     // const deviceType = yield select(deviceTypeSelector);
 
-    // 4. Filter - Device MFC
+    // 5. Filter - Device MFC
     const mfcSelected = yield select(mfcSelector);
 
-    // 5. Timeframe
+    // 6. Timeframe
     let timeframe = yield select(timeframeSelector);
     // TODO: how does all work for the timeframe?
     // needs to be a constrained number of days that
     // can be applied across the data set - 360 days?
     timeframe = (timeframe === 'All') ? 'All' : timeframe.match(/\d+/)[0];
 
-    if (!allSensors || !navigation || !tier || !metricSelected) {
+    // ### check that we have all the needed data
+    if (
+        !allSensors ||
+        !navigation ||
+        !tier ||
+        !metricSelected ||
+        !curNM ||
+        !curLocation
+    ) {
         return null;
     }
 
     // Limit the sensors pool to the current location
-    const sensors = filterSensorsByLoc([...allSensors], curNM.index, curLocation);
+    // TODO: to optimize, cache the reduced sensor pool
+    // deeper searches would use this reduced pool instead of
+    // searching through all the sensors
+    let sensors;
+    if (tier === GGConsts.FACILITY_LEVEL) {
+        sensors = filterSensorsByFacility([...allSensors], curLocation);
+    } else {
+        sensors = filterSensorsByLoc([...allSensors], curNM.index, curLocation);
+    }
 
     // ### Rows
     let rows;
@@ -92,39 +110,17 @@ function* composeDisplayData( dataParam ) {
     // ### Columns
     let columns = [];
 
-    if (tier === GGConsts.COUNTRY_LEVEL) {
-        columns.push(makeColumn(childNM.map));
-        columns.push(makeColumn(metricSelected));
-        columns.push(makeColumn('Manufacturers'));
-        columns.push(makeColumn('Total Devices'));
-    }
-    else if (tier === GGConsts.STATE_LEVEL) {
-        columns.push(makeColumn(childNM.map));
-        columns.push(makeColumn(metricSelected));
-        columns.push(makeColumn('Manufacturers'));
-        columns.push(makeColumn('Total Devices'));
-    }
-    else if (tier === GGConsts.LGA_LEVEL) {
-        columns.push(makeColumn(childNM.map));
-        columns.push(makeColumn(metricSelected));
-        columns.push(makeColumn('Manufacturers'));
-        columns.push(makeColumn('Total Devices'));
-    }
-    else if (tier === GGConsts.FACILITY_LEVEL) {
+    if (tier === GGConsts.FACILITY_LEVEL) {
         columns.push(makeColumn(metricSelected));
         columns.push(makeColumn('Manufacturers'));
         columns.push(makeColumn('model'));
     }
-
-    // if (metricSelected === 'Uptime') {
-    //     var r = rows;
-    //     debugger;
-    // }
-
-    // if (curLocation === 'Bauchi') {
-    //     var r = rows;
-    //     debugger;
-    // }
+    else {
+        columns.push(makeColumn(childNM.map));
+        columns.push(makeColumn(metricSelected));
+        columns.push(makeColumn('Manufacturers'));
+        columns.push(makeColumn('Total Devices'));
+    }
 
     // ### Cells
     let cells = rows.reduce((acc, cur) => {
@@ -190,6 +186,7 @@ function* composeDisplayData( dataParam ) {
             }
         }
         else if (tier === GGConsts.FACILITY_LEVEL) {
+
             location = cur.facility.location;
 
             if (mfcSelected.includes(cur.manufacturer)) {
@@ -212,9 +209,7 @@ function* composeDisplayData( dataParam ) {
             } else {
                 metric = _.mean(_.get(cur, metricKey).reduce((a, b) => a + b, 0));
             }
-
         }
-
 
         acc.push({
             [regionType]: regionName,

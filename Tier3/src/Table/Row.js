@@ -70,7 +70,7 @@ class Row extends Component {
             value = value.join(', ');
         }
         else if (id === 'Holdover') {
-            value = (!_.isNaN(value) && value !== '-') ? _.round(value, 2) : value;
+            value = (!_.isNaN(value) && value !== '-') ? _.round(value, 2) : '-';
             right = true;
         }
         else if (id === 'Reporting') {
