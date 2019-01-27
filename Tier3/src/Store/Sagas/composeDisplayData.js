@@ -181,6 +181,12 @@ function* composeDisplayData( dataParam ) {
                 id = cur.id;
                 name = cur.facility.name;
 
+                if (metricSelected === 'Alarms') {
+                    metric = getTotalByFilter(sensorsFiltered, metricKey);
+                } else {
+                    metric = getMeanByFilter(sensorsFiltered, metricKey);
+                }
+
             }
         }
         else if (tier === GGConsts.FACILITY_LEVEL) {
@@ -200,6 +206,12 @@ function* composeDisplayData( dataParam ) {
             name = cur.facility.name;
             model = cur.model;
             AlarmsByDay = '';
+
+            if (metricSelected === 'Alarms') {
+                metric = _.get(cur, metricKey).reduce((a, b) => a + b, 0);
+            } else {
+                metric = _.mean(_.get(cur, metricKey).reduce((a, b) => a + b, 0));
+            }
 
         }
 

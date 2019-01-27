@@ -1,6 +1,36 @@
 import GGConsts from '../Constants';
 import _ from 'lodash';
 
+function getProperName(name) {
+    name = name.toLowerCase();
+    if(name === "bauchi state") {
+        name = "bauchi"
+    } else if (name === "jama&#39;are") {
+        name = "jama'are"
+    } else if (name === "t/balewa" || name === "tafawa-balewa") {
+        name = "balewa"
+    } else if (
+        name === "bashe / ningi lga" ||
+        name === "burra / ningi lga" ||
+        name === "kurmi / ningi lga"
+    ) {
+        name = "ningi";
+    } else if (name === "itas-gadau") {
+        name = "itas gadau";
+    } else if (name === "kirfi lga") {
+        name = "kirfi"
+    } else if (name === "dass lga") {
+        name = "dass"
+    } else if (
+        name === "itas-gadau" ||
+        name === "Itas gadau"
+    ) {
+        return "Itas/Gadau";
+    }
+
+    return(toTitleCase(name));
+}
+
 export const getMetricFinal = (data, totalDevices, metricType) => {
     let finalVal;
 
@@ -41,7 +71,7 @@ export const getMetricKey = (metric) => {
     }
 }
 
-const capitalizeFWords = (text) => {
+const toTitleCase = (text) => {
     const formatted = text.toLowerCase()
         .split(' ')
         .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
@@ -52,7 +82,7 @@ const capitalizeFWords = (text) => {
 
 export const filterSensorsByLoc = (sensors, index, location) => {
     const filtered = sensors.filter(f => {
-        const geoLocation = capitalizeFWords(f.facility.regions[`tier${index}`]);
+        const geoLocation = getProperName(f.facility.regions[`tier${index}`]);
         const match = geoLocation === location;
         return match;
     });
@@ -67,10 +97,6 @@ export const filterSensorsByMfc = (sensors, mfc) => {
 export const getTotalByFilter = (sensors, metric) => {
     const reduced = sensors.reduce((a, c) => {
         let t = _.get(c, metric);
-        //
-        // if (window.test) {
-        //     debugger;
-        // }
 
         // skip over if sensor doesn't have a metric value
         if (!t) {
@@ -82,18 +108,12 @@ export const getTotalByFilter = (sensors, metric) => {
             t = t.reduce((a, b) => a + b, 0);
         }
 
-        console.warn('device', t);
-
         a.push(t);
-
         return a;
 
     }, []);
 
-    // const unique = _.uniqBy(reduced);
     const total = reduced.reduce((a, b) => a + b, 0);
-
-    console.warn('total', total);
 
     return total;
 }
@@ -124,9 +144,9 @@ export const getRedbyFilter = (sensors, metric) => {
 
 export const getMetricsPie = (sensors, metric) => {
     const pie = {
-        red: 0,
-        orange: 0,
-        green: 0,
+        red: 1,
+        orange: 1,
+        green: 1,
     }
 
     if (metric === 'Alarms') {
@@ -152,6 +172,8 @@ export const getMetricsPie = (sensors, metric) => {
         })
 
     }
+
+    // else {}
 
     return pie;
 }
