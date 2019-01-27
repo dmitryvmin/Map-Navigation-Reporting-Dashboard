@@ -31,6 +31,7 @@ import {
     composePercentiles,
     getMetricKey,
     getMetricFinal,
+    applyTimeframe,
 } from './../../Utils/DataUtils';
 
 /**
@@ -40,7 +41,7 @@ import {
 
 function* composeDisplayData( dataParam ) {
 
-    // ### Get Current State
+    // ### Get Current State ###
     // 1. Sensors
     const allSensors = yield select(sensorsSelector);
     const metricsThreshold = yield select(thresholdSelector);
@@ -57,19 +58,16 @@ function* composeDisplayData( dataParam ) {
     const metricKey = getMetricKey(metricSelected);
 
     // 4. Filter - Device Type
+    // TODO: turn this on once device type has been added to the endpoint
     // const deviceType = yield select(deviceTypeSelector);
 
     // 5. Filter - Device MFC
     const mfcSelected = yield select(mfcSelector);
 
     // 6. Timeframe
-    let timeframe = yield select(timeframeSelector);
-    // TODO: how does all work for the timeframe?
-    // needs to be a constrained number of days that
-    // can be applied across the data set - 360 days?
-    timeframe = (timeframe === 'All') ? 'All' : timeframe.match(/\d+/)[0];
+    const timeframe = yield select(timeframeSelector);
 
-    // ### check that we have all the needed data
+    // ### check that we have all the needed data ###
     if (
         !allSensors ||
         !navigation ||
@@ -81,6 +79,7 @@ function* composeDisplayData( dataParam ) {
         return null;
     }
 
+    // ### Reduce the data by location and timeframe ###
     // Limit the sensors pool to the current location
     // TODO: to optimize, cache the reduced sensor pool
     // deeper searches would use this reduced pool instead of
@@ -91,8 +90,10 @@ function* composeDisplayData( dataParam ) {
     } else {
         sensors = filterSensorsByLoc([...allSensors], curNM.index, curLocation);
     }
+    sensors = applyTimeframe(sensors, timeframe, metricKey);
+    // TODO: this is where we would also limit mfc list to ones available in curLocation
 
-    // ### Rows
+    // ### Rows ###
     let rows;
 
     if (tier === GGConsts.COUNTRY_LEVEL || tier === GGConsts.STATE_LEVEL) {
@@ -107,7 +108,7 @@ function* composeDisplayData( dataParam ) {
         rows = sensors.filter(f => f.facility.name === curLocation);
     }
 
-    // ### Columns
+    // ### Columns ###
     let columns = [];
 
     if (tier === GGConsts.FACILITY_LEVEL) {
@@ -122,7 +123,7 @@ function* composeDisplayData( dataParam ) {
         columns.push(makeColumn('Total Devices'));
     }
 
-    // ### Cells
+    // ### Cells ###
     let cells = rows.reduce((acc, cur) => {
 
         let id = crypto.getRandomValues(new Uint32Array(4)).join('-');
@@ -228,6 +229,7 @@ function* composeDisplayData( dataParam ) {
 
     }, []);
 
+    // ### Calculate and save percentiles
     cells = composePercentiles(cells, metricSelected, metricsThreshold);
 
     return {columns, cells, rows};

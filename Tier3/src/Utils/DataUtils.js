@@ -1,40 +1,69 @@
 import GGConsts from '../Constants';
 import _ from 'lodash';
 
+export const applyTimeframe = (sensors, timeframe, metricKey) => {
+    // TODO: how does `All` work for the timeframe?
+    // needs to be a constrained number of days that
+    // can be applied across the data set - 360 days?
+
+    if (timeframe === 'All') {
+        return sensors;
+    }
+
+    const days = timeframe.match(/\d+/)[0];
+
+    const sensorsSegment = sensors.reduce((a, c) => {
+
+        if (!c.metric) {
+            return a;
+        }
+
+        _.get(c, metricKey).splice(days);
+        a.push(c);
+
+        return a;
+
+    }, []);
+
+    return sensorsSegment;
+}
+
 function getProperName(name) {
     if (!name) {
         return;
     }
-
     name = name.toLowerCase();
-
     if (name === "bauchi state") {
         name = "bauchi"
     } else if (name === "jama&#39;are") {
         name = "jama'are"
-    } else if (
-        name === "t/balewa" ||
-        name === "tafawa-balewa") {
-        name = "balewa"
-    } else if (
-        name === "bashe / ningi lga" ||
-        name === "burra / ningi lga" ||
-        name === "kurmi / ningi lga"
-    ) {
+    } else if (name === "jamaare") {
+        name = "jama'are"
+    } else if (name === "t/balewa") {
+        name = "Tafawa Balewa"
+    } else if (name === "tafawa-balewa") {
+        name = "Tafawa Balewa"
+    } else if (name === "balewa") {
+        name = "Tafawa Balewa"
+    } else if (name === "bashe / ningi lga") {
+        name = "ningi";
+    } else if (name === "burra / ningi lga") {
+        name = "ningi";
+    } else if (name === "kurmi / ningi lga") {
         name = "ningi";
     } else if (name === "itas-gadau") {
-        name = "itas gadau"
+        name = "Itas/Gadau";
+    } else if (name === "itas gadau") {
+        name = "Itas/Gadau"
     } else if (name === "kirfi lga") {
         name = "kirfi"
     } else if (name === "dass lga") {
         name = "dass"
-    } else if (
-        name === "itas-gadau" ||
-        name === "Itas gadau"
-    ) {
-        return "Itas/Gadau"
+    } else if (name === "dambam") {
+        name = "damban"
+    } else if (name === "dagauda") {
+        name = "damban"
     }
-
     return(toTitleCase(name));
 }
 
@@ -78,13 +107,10 @@ export const getMetricKey = (metric) => {
     }
 }
 
-const toTitleCase = (text) => {
-    const formatted = text.toLowerCase()
-        .split(' ')
-        .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
-        .join(' ');
-
-    return formatted;
+function toTitleCase(str) {
+    return str.replace(/\w\S*/g, function(txt){
+        return txt.charAt(0).toUpperCase() + txt.substr(1);
+    });
 }
 
 export const filterSensorsByLoc = (sensors, index, location) => {

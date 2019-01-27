@@ -1,7 +1,7 @@
 import GGConsts from '../../Constants';
 
 const initState = {
-    timeframe_selected: GGConsts.TIMEFRAME_2,
+    timeframe_selected: GGConsts.TIMEFRAME_3,
     timeframe_updating: false
 }
 

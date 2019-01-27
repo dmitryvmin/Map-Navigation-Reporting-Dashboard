@@ -32,24 +32,22 @@ class POITooltip extends Component {
                     {(cohort.devicesPercentile)
                         ? <>
                         <Left>
-                            <Row>
-                                <CircleContainer>
-                                    <Circle size="large"/>
-                                </CircleContainer>
-                                {(cohort.devicesPercentile === 'top') ? <Span> - {hover.value}</Span> : null}
-                            </Row>
-                            <Row>
-                                <CircleContainer>
-                                    <Circle size="medium"/>
-                                </CircleContainer>
-                                {(cohort.devicesPercentile === 'middle') ? <Span top> - {hover.value}</Span> : null}
-                            </Row>
-                            <Row>
-                                <CircleContainer>
-                                    <Circle size="small"/>
-                                </CircleContainer>
-                                {(cohort.devicesPercentile === 'bottom') ? <Span> - {hover.value}</Span> : null}
-                            </Row>
+                            {
+                                ['top', 'middle', 'bottom'].map(c =>
+                                    <Row>
+                                        <CircleContainer>
+                                            <Circle size={c}/>
+                                        </CircleContainer>
+                                        {
+                                            (cohort.devicesPercentile === c)
+                                                ? <Span top={cohort.devicesPercentile === 'middle' ? "true" : "false"}>
+                                                    - {hover.value}
+                                                  </Span>
+                                                : null
+                                        }
+                                    </Row>
+                                )
+                            }
                         </Left>
                         <Right>
                             {metricsPie && Object.keys(metricsPie).map(m =>
@@ -83,16 +81,16 @@ const Circle = styled.div`
     background-color: ${({color}) => color ? color : 'black'}; 
     border-radius: 50%;
     
-    ${props => (props.size === 'large') && css`
+    ${props => (props.size === 'top') && css`
         width: 15px;
         height: 15px; 
     `}
-    ${props => (props.size === 'medium') && css`
+    ${props => (props.size === 'middle') && css`
         width: 9px;
         height: 9px; 
         margin-top: 4px; 
     `}
-    ${props => (props.size === 'small') && css`
+    ${props => (props.size === 'bottom') && css`
         width: 5px;
         height: 5px; 
     `} 

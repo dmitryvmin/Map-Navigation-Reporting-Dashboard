@@ -3,14 +3,6 @@ import {connect} from "react-redux";
 import GGConsts from '../Constants';
 import PieChart from 'react-minimal-pie-chart';
 import _ from 'lodash';
-// import Transition from 'react-transition-group/Transition';
-// import TwoLevelPieChart from './Pie.js';
-
-// const duration = 2000;
-// const transitionStyles = {
-//     entering: {opacity: 0},
-//     entered: {opacity: 1},
-// };
 
 class LocationPin extends Component {
 
@@ -45,7 +37,8 @@ class LocationPin extends Component {
         const {
             chart,
             zoom,
-            marker
+            marker,
+            tier,
         } = this.props;
 
         const {
@@ -118,7 +111,11 @@ class LocationPin extends Component {
                     >
                         <circle
                             pointerEvents="none"
-                            fill={(metricPercentile && metricPercentile === 'bottom') ? GGConsts.COLOR_GREEN : GGConsts.COLOR_GRAY}
+                            fill={
+                                (metricPercentile && metricPercentile === 'bottom')
+                                    ? GGConsts.COLOR_GREEN
+                                    : GGConsts.COLOR_GRAY
+                            }
                             r={(metricPercentile && metricPercentile === 'bottom') ? size/4 : size/6}
                             cx="50%"
                             cy="50%"
@@ -126,17 +123,21 @@ class LocationPin extends Component {
                     </svg>
                 }
                 </foreignObject>
-                {(metricPercentile && metricPercentile === 'top') &&
-                    <text
-                        className="locationName"
-                        textAnchor="middle"
-                        y={containerSize + size / 3}
-                        x={containerSize / 2}
-                        fontSize={fontSize}
-                        fill={'black'}
-                    >
-                        {name}
-                    </text>
+                {(
+                    metricPercentile && metricPercentile === 'top' ||
+                    tier === 'LGA_LEVEL' ||
+                    tier === 'FACILITY_LEVEL'
+                ) &&
+                <text
+                    className="locationName"
+                    textAnchor="middle"
+                    y={containerSize + size / 3}
+                    x={containerSize / 2}
+                    fontSize={fontSize}
+                    fill={'black'}
+                >
+                    {name}
+                </text>
                 }
             </svg>
         );
@@ -147,6 +148,7 @@ const mapStateToProps = state => {
     return {
         display_data: state.displayReducer.display_data,
         metric_selected: state.metricReducer.metric_selected,
+        tier: state.navigationReducer.nav_tier,
     }
 }
 
