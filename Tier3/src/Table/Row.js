@@ -73,9 +73,11 @@ class Row extends Component {
             right = true;
         }
         else if (id === 'Reporting') {
+            value = (!_.isNaN(value) && value !== '-') ? _.round(value, 2) : '-';
             right = true;
         }
         else if (id === 'Uptime') {
+            value = (!_.isNaN(value) && value !== '-') ? _.round(value, 2) : '-';
             right = true;
         }
         else if ( id === 'Total Devices') {
