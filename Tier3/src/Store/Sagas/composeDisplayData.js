@@ -214,7 +214,7 @@ function* composeDisplayData( dataParam ) {
         if (tier !== GGConsts.FACILITY_LEVEL) {
             metric = getMetricFinal(metric, devices, metricSelected);
         } else {
-            days = (timeframe === 'All') ? metric.length : timeframe.match(/\d+/)[0];
+            days = (timeframe === 'All') ? (metric && metric.length || null) : timeframe.match(/\d+/)[0];
         }
 
         acc.push({
