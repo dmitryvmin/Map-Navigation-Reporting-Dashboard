@@ -132,7 +132,7 @@ function* composeDisplayData( dataParam ) {
         let devices = '-';
         let metric = '-';
         let mfc = '-';
-        let AlarmsByDay = '-';
+        let days = null; // TODO: temporary - only showing chiclets at facility level
         let metricsPie = null;
         let regionType;
         let regionName;
@@ -203,21 +203,26 @@ function* composeDisplayData( dataParam ) {
             id = cur.id;
             name = cur.facility.name;
             model = cur.model;
-            AlarmsByDay = '';
 
             if (metricSelected === 'Alarms') {
-                metric = _.get(cur, metricKey).reduce((a, b) => a + b, 0);
+                metric = _.get(cur, metricKey);
             } else {
                 metric = _.mean(_.get(cur, metricKey).reduce((a, b) => a + b, 0));
             }
         }
 
+        if (tier !== GGConsts.FACILITY_LEVEL) {
+            metric = getMetricFinal(metric, devices, metricSelected);
+        } else {
+            days = (timeframe === 'All') ? metric.length : timeframe.match(/\d+/)[0];
+        }
+
         acc.push({
             [regionType]: regionName,
-            [metricSelected]: getMetricFinal(metric, devices, metricSelected),
+            [metricSelected]: metric,
             'Manufacturers': mfc,
             'Total Devices': devices,
-            AlarmsByDay,
+            days,
             metricsPie,
             location,
             id,

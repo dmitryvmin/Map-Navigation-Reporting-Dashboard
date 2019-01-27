@@ -34,7 +34,7 @@ class POITooltip extends Component {
                         <Left>
                             {
                                 ['top', 'middle', 'bottom'].map(c =>
-                                    <Row>
+                                    <Row key={`tooltip-circle-${c}`}>
                                         <CircleContainer>
                                             <Circle size={c}/>
                                         </CircleContainer>

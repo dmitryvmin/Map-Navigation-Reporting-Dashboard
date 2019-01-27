@@ -3,13 +3,13 @@ import GGConsts from '../Constants';
 import styled from 'styled-components';
 import {chunkArray} from './../Utils';
 
-const Chiclets = ({value, days, id}) => {
-    let chuncks = chunkArray(days, 10);
+const Chiclets = ({value, id}) => {
+    let chuncks = chunkArray(value, 10);
 
     return (
         <Alarm>
             <AlarmVal>
-                {value}
+                {value.reduce((a, b) => a + b, 0)}
             </AlarmVal>
             <AlarmChart>
                 {chuncks.map((chunk, i) =>

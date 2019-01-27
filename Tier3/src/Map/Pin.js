@@ -3,6 +3,7 @@ import {connect} from "react-redux";
 import GGConsts from '../Constants';
 import PieChart from 'react-minimal-pie-chart';
 import _ from 'lodash';
+import {toTitleCase} from './../Utils/DataUtils';
 
 class LocationPin extends Component {
 

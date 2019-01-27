@@ -51,7 +51,7 @@ class Row extends Component {
         let right = false;
 
         if (id === 'Alarms') {
-            if (data.AlarmsByDay === '-') {
+            if (!data.days) {
                 right = true;
             }
             else {
@@ -59,7 +59,6 @@ class Row extends Component {
                 <StyledCell>
                     <Chiclets
                         value={value}
-                        days={data.AlarmsByDay}
                         id={id}
                     />
                 </StyledCell>
