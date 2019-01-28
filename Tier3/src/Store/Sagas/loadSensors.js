@@ -19,9 +19,14 @@ function* loadSensor() {
         key: 'fridges',
     });
 
-    const data = [...realSensors]  //for fake data... const data = [...fakeSensors, ...realSensors]
-        .filter(f => !_.isNull(f) && !_.isUndefined(f))
-        .filter(f => !_.isUndefined(f.facility));
+    let data = [...realSensors]  //for fake data... const data = [...fakeSensors, ...realSensors]
+        .filter(f => !_.isNull(f) && !_.isUndefined(f));
+        // .filter(f => !_.isUndefined(f.facility));
+
+    // TODO: for debugging
+    const noFacility = data.filter(f => _.isUndefined(f.facility));
+    console.log(`no facilities object found on these sensors: ${JSON.stringify(noFacility, null, 2)}`);
+    data = data.filter(f => !_.isUndefined(f.facility));
 
     yield put({type: GGConsts.SENSORS_MAP, data});
 

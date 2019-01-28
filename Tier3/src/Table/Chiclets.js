@@ -2,6 +2,7 @@ import React from 'react';
 import GGConsts from '../Constants';
 import styled from 'styled-components';
 import {chunkArray} from './../Utils';
+import _ from 'lodash';
 
 const Chiclets = ({value, id}) => {
     let chuncks = chunkArray(value, 10);
@@ -9,7 +10,11 @@ const Chiclets = ({value, id}) => {
     return (
         <Alarm>
             <AlarmVal>
-                {value.reduce((a, b) => a + b, 0)}
+                {
+                    _.isArray(value)
+                    ? value.reduce((a, b) => a + b, 0)
+                    : (value || '-')
+                }
             </AlarmVal>
             <AlarmChart>
                 {chuncks.map((chunk, i) =>
