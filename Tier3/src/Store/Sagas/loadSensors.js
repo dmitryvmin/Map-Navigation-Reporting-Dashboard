@@ -22,8 +22,8 @@ function* loadSensor() {
     let data = [...realSensors]  //for fake data... const data = [...fakeSensors, ...realSensors]
         .filter(f => !_.isNull(f) && !_.isUndefined(f))
         .filter(f => !_.isUndefined(f.facility))
-        // TODO: remove filter below, filtering out !Bacuhi for demo
-        .filter(f => f.facility.regions.tier1 === 'Bauchi');
+        // TODO: remove filter below, filtering out Kano and Yobe for demo
+        .filter(f => f.facility.regions.tier1 !== 'Kano' && f.facility.regions.tier1 !== 'Yobe');
 
     yield put({type: GGConsts.SENSORS_MAP, data});
 
