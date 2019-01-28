@@ -250,6 +250,7 @@ class Map extends Component {
             mapStyle,
             markers,
             hover,
+            tier,
         } = this.props;
 
         const {gl} = this.state;
@@ -287,9 +288,9 @@ class Map extends Component {
                                 latitude={m.latitude}
                             >
                                 <LocationPin
-                                    
                                     marker={m}
                                     zoom={viewState.zoom}
+                                    tier={tier}
                                 />
                             </Marker>
                         )}

@@ -158,15 +158,17 @@ class Navigation extends Component {
             updateNav,
             navigation
         } = this.props;
-        console.log("The Navigation level:", navigation);
+
         // get actual "source" which is country_selected, state_selected, or lga_selected
         if (navigation.lga_selected === 'All' || navigation.lga_selected === false) {
             if (navigation.state_selected === 'All' || navigation.state_selected === false) {
                     // could need to do something here too. Hold please. :)
-            } else {
+            }
+            else {
                 updateNav("state_selected", "All");
             }
-        } else {
+        }
+        else {
             updateNav("lga_selected", "All");
         }
         

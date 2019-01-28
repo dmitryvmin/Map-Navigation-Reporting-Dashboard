@@ -8,7 +8,7 @@ import {fetchSaga} from './fetch';
 import loadFakeSensors from './loadFakeSensors';
 import fakeSensors from './../../Data/fakeSensors.json';
 
-// TODO: Sensors Saga will be responsible for refreshing/hydrating sensors Map and Data - will be called at intervals
+// TODO: Sensors Saga will be responsible for refreshing/hydrating sensors Map and Data
 function* loadSensor() {
 
     // const fakeSensors = yield call(loadFakeSensors, 100);
@@ -20,13 +20,10 @@ function* loadSensor() {
     });
 
     let data = [...realSensors]  //for fake data... const data = [...fakeSensors, ...realSensors]
-        .filter(f => !_.isNull(f) && !_.isUndefined(f));
-        // .filter(f => !_.isUndefined(f.facility));
-
-    // TODO: for debugging
-    const noFacility = data.filter(f => _.isUndefined(f.facility));
-    console.log(`no facilities object found on these sensors: ${JSON.stringify(noFacility, null, 2)}`);
-    data = data.filter(f => !_.isUndefined(f.facility));
+        .filter(f => !_.isNull(f) && !_.isUndefined(f))
+        .filter(f => !_.isUndefined(f.facility))
+        // TODO: remove filter below, filtering out !Bacuhi for demo
+        .filter(f => f.facility.regions.tier1 === 'Bauchi');
 
     yield put({type: GGConsts.SENSORS_MAP, data});
 

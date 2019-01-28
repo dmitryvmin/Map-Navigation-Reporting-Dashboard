@@ -302,7 +302,7 @@ export const updateMetricPercentiles = (p, arr, metricSelected) => {
 
     arr.sort((a, b) => b[metricSelected] - a[metricSelected]);
 
-    const cutoff = _.round(arr.length * p) || 0;
+    const cutoff = _.round(arr.length * p) || 1;
     const top = arr.slice(0, cutoff);
     const bottom = arr.slice(cutoff, arr.length);
 
@@ -335,11 +335,10 @@ export const updateDevicePercentiles = (arr) => {
     top = cells.slice(0, cutoffOne || cells.length);
 
     if (cells.length < 2) {
-        cells[0].devicesPercentile = 'top';
+        cells[0].devicesPercentile = 'bottom';
         cells[0].devicesPercentileTotal = cells[0]['Total Devices'];
 
         return cells;
-
     }
     else if (cells.length < 3) {
         cells[0].devicesPercentile = 'top';

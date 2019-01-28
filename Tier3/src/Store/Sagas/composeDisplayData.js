@@ -177,6 +177,7 @@ function* composeDisplayData( dataParam ) {
                 mfc = cur.manufacturer;
                 id = cur.id;
                 name = cur.facility.name;
+                metricsPie = getMetricsPie(sensorsFiltered, metricSelected);
 
                 if (metricSelected === 'Alarms') {
                     metric = getTotalByFilter(sensorsFiltered, metricKey);

@@ -40,6 +40,7 @@ class LocationPin extends Component {
             zoom,
             marker,
             tier,
+            navigation,
         } = this.props;
 
         const {
@@ -96,7 +97,7 @@ class LocationPin extends Component {
                     {pieData
                         ?
                         <PieChart
-                            lineWidth={pieSize / 1.25}
+                            lineWidth={pieSize/1.25}
                             radius={pieSize - 10}
                             startAngle={-90}
                             animate={true}
@@ -132,8 +133,8 @@ class LocationPin extends Component {
                 <text
                     className="locationName"
                     textAnchor="middle"
-                    y={containerSize + size / 3}
-                    x={containerSize / 2}
+                    y={(metricPercentile && metricPercentile === 'top') ? containerSize + size/3 : size*3}
+                    x={containerSize/2}
                     fontSize={fontSize}
                     fill={'black'}
                 >

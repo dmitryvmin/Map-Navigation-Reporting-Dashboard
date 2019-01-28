@@ -44,6 +44,12 @@ const getNMSibling = (value, id = false, sibling) => {
 
 }
 
+export const getLocName = (navigation, tier) => {
+    const NM = getNMap(tier, 'tier');
+    const locName = navigation[NM.type];
+    return locName;
+}
+
 export const getNMapChild = (value, id) => {
     let sibling = 1;
     let siblingMap = getNMSibling(value, id, sibling);
