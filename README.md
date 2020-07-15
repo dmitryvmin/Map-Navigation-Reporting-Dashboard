@@ -1,4 +1,4 @@
-# Dashboard for Managing Health Facilities (POC uses Nigeria geodata)
+# Dashboard for Managing Health Facilities (Nigeria geodata POC)
 
 # Build docker container
 
