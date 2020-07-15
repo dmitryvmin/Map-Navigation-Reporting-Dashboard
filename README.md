@@ -1,4 +1,4 @@
-# ui-gg
+# Dashboard for Managing Health Facilities (POC uses Nigeria geodata)
 
 # Build docker container
 
