@@ -2077,6 +2077,13 @@ css-selector-tokenizer@^0.7.0:
     fastparse "^1.1.1"
     regexpu-core "^1.0.0"
 
+css-vendor-prefix@~1.0.0:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/css-vendor-prefix/-/css-vendor-prefix-1.0.1.tgz#191185a541520f8a346c1b24aedf2d64f66dc5d3"
+  dependencies:
+    global "~4.3.0"
+    to-array "~0.1.4"
+
 css-vendor@^0.3.8:
   version "0.3.8"
   resolved "https://registry.yarnpkg.com/css-vendor/-/css-vendor-0.3.8.tgz#6421cfd3034ce664fe7673972fd0119fc28941fa"
@@ -5313,9 +5320,9 @@ mkdirp@0.5.1, mkdirp@0.5.x, "mkdirp@>=0.5 0", mkdirp@^0.5.0, mkdirp@^0.5.1, mkdi
   dependencies:
     minimist "0.0.8"
 
-moment-timezone@^0.5.16:
-  version "0.5.16"
-  resolved "https://registry.yarnpkg.com/moment-timezone/-/moment-timezone-0.5.16.tgz#661717d5f55b4d2c2e002262d726c83785192a5a"
+moment-timezone@^0.5.35:
+  version "0.5.35"
+  resolved "https://registry.yarnpkg.com/moment-timezone/-/moment-timezone-0.5.35.tgz#6fa2631bdbe8ff04f6b8753f7199516be6dc9839"
   dependencies:
     moment ">= 2.9.0"
 
@@ -6497,6 +6504,13 @@ postcss@^6.0.1:
     chalk "^2.0.1"
     source-map "^0.5.6"
     supports-color "^4.1.0"
+
+preflex@~1.0.0:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/preflex/-/preflex-1.0.1.tgz#6a5d6e0c3fccb1187355b6264222dec10170f8b7"
+  dependencies:
+    css-vendor-prefix "~1.0.0"
+    xtend "~4.0.0"
 
 prelude-ls@~1.1.2:
   version "1.1.2"
@@ -8142,6 +8156,10 @@ tmpl@1.0.x:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/tmpl/-/tmpl-1.0.4.tgz#23640dd7b42d00433911140820e5cf440e521dd1"
 
+to-array@~0.1.4:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/to-array/-/to-array-0.1.4.tgz#17e6c11f73dd4f3d74cda7a4ff3238e9ad9bf890"
+
 to-arraybuffer@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/to-arraybuffer/-/to-arraybuffer-1.0.1.tgz#7d229b1fcc637e466ca081180836a7aabff83f43"
@@ -8448,6 +8466,13 @@ verror@1.3.6:
   dependencies:
     extsprintf "1.0.2"
 
+virtual-progress-bar@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/virtual-progress-bar/-/virtual-progress-bar-1.1.0.tgz#7b16b5ee8854dedee4c40cc85df84cb2ad094b6c"
+  dependencies:
+    preflex "~1.0.0"
+    xtend "^4.0.1"
+
 vm-browserify@0.0.4:
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/vm-browserify/-/vm-browserify-0.0.4.tgz#5d7ea45bbef9e4a6ff65f95438e0a87c357d5a73"
@@ -8729,6 +8754,10 @@ xml-name-validator@^2.0.1:
 xtend@^4.0.0, xtend@^4.0.1, xtend@~4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/xtend/-/xtend-4.0.1.tgz#a5c6d532be656e23db820efb943a1f04998d63af"
+
+xtend@~4.0.0:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/xtend/-/xtend-4.0.2.tgz#bb72779f5fa465186b1f438f674fa347fdb5db54"
 
 y18n@^3.2.1:
   version "3.2.1"
